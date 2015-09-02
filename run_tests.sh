@@ -3,7 +3,7 @@
 
 help(){
     echo "Usage: $0 [OPTION]..."
-    echo "Run pymarkdownlint's test suite(s) or some convience commands"
+    echo "Run gitlint's test suite(s) or some convience commands"
     echo "  -h, --help         Show this help output"
     echo "  -p, --pep8         Run pep8 checks"
     echo "  -l, --lint         Run pylint checks"
@@ -25,7 +25,7 @@ run_pep8_check(){
     # exclude settings files and virtualenvs
     FLAKE8_EXCLUDE="*settings.py,*.venv/*.py"
     echo "Running flake8..."
-    flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE pymarkdownlint
+    flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint
 }
 
 run_unit_tests(){
@@ -39,7 +39,7 @@ run_unit_tests(){
 
 run_stats(){
     echo "*** Code ***"
-    radon raw -s pymarkdownlint | tail -n 6
+    radon raw -s gitlint | tail -n 6
 }
 
 # default behavior

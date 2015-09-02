@@ -27,9 +27,26 @@ Options:
 
 You can modify pymarkdownlint's behavior by specifying a config file like so: 
 ```bash
-markdownlint --config myconfigfile 
+gitlint --config myconfigfile 
 ```
-By default, markdownlint will look for an **optional** ```.markdownlint``` file for configuration.
+By default, gitlint will look for an **optional** ```.gitlint``` file for configuration.
+
+## Config file ##
+
+```
+[general]
+# rules can be ignored by name or by id
+ignore=max-line-length, R3
+```
+
+## Supported Rules ##
+
+ID    | Name                | Description
+------|---------------------|----------------------------------------------------
+R1    | max-line-length     | Line length must be &lt; 80 chars.
+R2    | trailing-whitespace | Line cannot have trailing whitespace (space or tab)
+R3    | hard-tabs           | Line contains hard tab characters (\t)
+
 
 ## Development ##
 
