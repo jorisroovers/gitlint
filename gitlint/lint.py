@@ -26,22 +26,7 @@ class GitLinter(object):
             line_nr += 1
         return all_violations
 
-    def lint(self, string):
+    def lint_commit_message(self, string):
         all_violations = []
         all_violations.extend(self._apply_line_rules(string))
         return all_violations
-
-    def lint_files(self, files):
-        """ Lints a list of files.
-        :param files: list of files to lint
-        :return: a list of violations found in the files
-        """
-        all_violations = []
-        for filename in files:
-            with open(filename, 'r') as f:
-                content = f.read()
-                violations = self.lint(content)
-                all_violations.extend(violations)
-                for e in violations:
-                    print("{0}:{1}: {2} {3}".format(filename, e.line_nr, e.rule_id, e.message))
-        return len(all_violations)

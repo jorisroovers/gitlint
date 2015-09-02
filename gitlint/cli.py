@@ -3,6 +3,8 @@ from gitlint.lint import GitLinter
 from gitlint.config import LintConfig
 import os
 import click
+import sys
+import sh
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 
@@ -29,17 +31,20 @@ def get_lint_config(config_path=None):
 @click.option('--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
-@click.argument('path', type=click.Path(exists=True))
 @click.version_option(version=gitlint.__version__)
-def cli(list_files, config, ignore, path):
+def cli(config, ignore):
     """ Git lint tool, checks your git commit messages for styling issues """
 
     lint_config = get_lint_config(config)
     lint_config.apply_on_csv_string(ignore, lint_config.disable_rule)
 
     linter = GitLinter(lint_config)
-    # error_count = linter.lint(files)
-    # exit(error_count)
+    if sys.stdin.isatty():
+        commit_msg = sh.git.log("-1")
+    else:
+        commit_msg = sys.stdin.read()
+    error_count = linter.lint_commit_message(commit_msg)
+    exit(error_count)
 
 
 if __name__ == "__main__":
