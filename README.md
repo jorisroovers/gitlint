@@ -13,8 +13,10 @@ Get started by running:
 ```bash
 # Check the last commit message
 gitlint
-# Alternatively, pipe a commit message to gitlint
+# Alternatively, pipe a commit message to gitlint:
 cat examples/commit-message-1 | gitlint
+# Lint the third latest git commit message
+cat git log -3 -1 | gitlint
 ```
 
 NOTE: The returned exit code equals the number of errors found.
@@ -78,3 +80,4 @@ vagrant ssh
   git log -1 -3
 - More rules:
    - title-contains, title-not-contains    
+- Checks on different attributes of the the commit message: author, date, etc

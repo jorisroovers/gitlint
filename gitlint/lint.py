@@ -26,7 +26,8 @@ class GitLinter(object):
             line_nr += 1
         return all_violations
 
-    def lint_commit_message(self, string):
-        all_violations = []
-        all_violations.extend(self._apply_line_rules(string))
-        return all_violations
+    def lint_commit_message(self, commit_message):
+        violations = self._apply_line_rules(commit_message)
+        for v in violations:
+            print("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content))
+        return len(violations)

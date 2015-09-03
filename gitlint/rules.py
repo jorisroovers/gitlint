@@ -38,13 +38,17 @@ class LineRule(Rule):
 
 
 class RuleViolation(object):
-    def __init__(self, rule_id, message, line_nr=None):
+    def __init__(self, rule_id, message, content=None, line_nr=None):
         self.rule_id = rule_id
         self.line_nr = line_nr
         self.message = message
+        self.content = content
 
     def __eq__(self, other):
-        return self.rule_id == other.rule_id and self.message == other.message and self.line_nr == other.line_nr
+        return self.rule_id == other.rule_id and \
+               self.message == other.message and \
+               self.content == other.content and \
+               self.line_nr == other.line_nr
 
     def __str__(self):
         return "{0}: {1} {2}".format(self.line_nr, self.rule_id, self.message)
@@ -61,7 +65,7 @@ class MaxLineLengthRule(LineRule):
     def validate(self, line):
         max_length = self.options['line-length'].value
         if len(line) > max_length:
-            return RuleViolation(self.id, "Line exceeds max length ({0}>{1})".format(len(line), max_length))
+            return RuleViolation(self.id, "Line exceeds max length ({0}>{1})".format(len(line), max_length), line)
 
 
 class TrailingWhiteSpace(LineRule):
@@ -71,7 +75,7 @@ class TrailingWhiteSpace(LineRule):
     def validate(self, line):
         pattern = re.compile(r"\s$")
         if pattern.search(line):
-            return RuleViolation(self.id, "Line has trailing whitespace")
+            return RuleViolation(self.id, "Line has trailing whitespace", line)
 
 
 class HardTab(LineRule):
@@ -80,4 +84,4 @@ class HardTab(LineRule):
 
     def validate(self, line):
         if "\t" in line:
-            return RuleViolation(self.id, "Line contains hard tab characters (\\t)")
+            return RuleViolation(self.id, "Line contains hard tab characters (\\t)", line)
