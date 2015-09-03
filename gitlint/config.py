@@ -11,15 +11,20 @@ class LintConfigError(Exception):
 
 class LintConfig(object):
     """ Class representing gitlint configuration """
-    default_rule_classes = [rules.MaxLineLengthRule, rules.TrailingWhiteSpace, rules.HardTab]
+    default_rule_classes = [rules.TitleMaxLengthRule, rules.TitleTrailingWhitespace, rules.TitleHardTab,
+                            rules.BodyMaxLengthRule, rules.BodyTrailingWhitespace, rules.BodyHardTab]
 
     def __init__(self):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
 
     @property
-    def rules(self):
-        return self._rules.values()
+    def body_rules(self):
+        return [rule for rule in self._rules.values() if isinstance(rule, rules.CommitMessageBodyRule)]
+
+    @property
+    def title_rules(self):
+        return [rule for rule in self._rules.values() if isinstance(rule, rules.CommitMessageTitleRule)]
 
     def disable_rule_by_id(self, rule_id):
         del self._rules[rule_id]
@@ -29,7 +34,7 @@ class LintConfig(object):
         rule = self._rules.get(rule_id_or_name)
         # if not found, try finding rule by name
         if not rule:
-            rule = next((rule for rule in self.rules if rule.name == rule_id_or_name), None)
+            rule = next((rule for rule in self._rules.values() if rule.name == rule_id_or_name), None)
         return rule
 
     def disable_rule(self, rule_id_or_name):
