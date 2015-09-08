@@ -37,7 +37,7 @@ class LineRule(Rule):
     pass
 
 
-class CommitMessageTitleRule(Rule):
+class CommitMessageTitleRule(LineRule):
     """ 'Tagging' class representing rules that apply to a commit message title """
     pass
 
@@ -129,15 +129,26 @@ class TitleTrailingWhitespace(TrailingWhiteSpace, CommitMessageTitleRule):
     violation_message = "Title has trailing whitespace"
 
 
+class TitleTrailingPunctuation(CommitMessageTitleRule):
+    name = "title-trailing-punctuation"
+    id = "T3"
+
+    def validate(self, line):
+        punctuation_marks = '?:!.,;'
+        for punctuation_mark in punctuation_marks:
+            if line.endswith(punctuation_mark):
+                return RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), line)
+
+
 class TitleHardTab(HardTab, CommitMessageTitleRule):
     name = "title-hard-tab"
-    id = "T3"
+    id = "T4"
     violation_message = "Title contains hard tab characters (\\t)"
 
 
 class TitleMustNotContainWord(LineMustNotContainWord, CommitMessageTitleRule):
     name = "title-must-not-contain-word"
-    id = "T4"
+    id = "T5"
     options_spec = [ListOption('strings', ['WIP'], "Must not contain word")]
     violation_message = "Title contains the word '{0}' (case-insensitive)"
 

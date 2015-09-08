@@ -11,8 +11,8 @@ class LintConfigError(Exception):
 
 class LintConfig(object):
     """ Class representing gitlint configuration """
-    default_rule_classes = [rules.TitleMaxLength, rules.TitleTrailingWhitespace, rules.TitleHardTab,
-                            rules.TitleMustNotContainWord,
+    default_rule_classes = [rules.TitleMaxLength, rules.TitleTrailingWhitespace, rules.TitleTrailingPunctuation,
+                            rules.TitleHardTab, rules.TitleMustNotContainWord,
                             rules.BodyMaxLength, rules.BodyTrailingWhitespace, rules.BodyHardTab,
                             rules.BodyFirstLineEmpty]
 
