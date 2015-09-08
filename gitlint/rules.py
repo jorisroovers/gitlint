@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABCMeta
-from gitlint.options import IntOption
+from gitlint.options import IntOption, ListOption
 
 import re
 
@@ -100,6 +100,23 @@ class HardTab(LineRule):
             return RuleViolation(self.id, self.violation_message, line)
 
 
+class LineMustNotContainWordRule(LineRule):
+    """ Violation if a line contains one of a list of words (NOTE: using a word in the list inside another word is not a
+    violation, e.g: WIPING is not a violation if 'WIP' is a word that is not allowed.) """
+    name = "line-must-not-contain"
+    id = "R5"
+    options_spec = [ListOption('strings', [], "Must not contain strings")]
+    violation_message = "Line contains {0}"
+
+    def validate(self, line):
+        strings = self.options['strings'].value
+        for string in strings:
+            regex = re.compile(r"\b%s\b" % string.lower(), re.I)
+            match = regex.search(line.lower())
+            if match:
+                return RuleViolation(self.id, self.violation_message.format(string), line)
+
+
 class TitleMaxLengthRule(MaxLineLengthRule, CommitMessageTitleRule):
     name = "title-max-length"
     id = "T1"
@@ -116,6 +133,13 @@ class TitleHardTab(HardTab, CommitMessageTitleRule):
     name = "title-hard-tab"
     id = "T3"
     violation_message = "Title contains hard tab characters (\\t)"
+
+
+class TitleMustNotContainWordRule(LineMustNotContainWordRule, CommitMessageTitleRule):
+    name = "title-must-not-contain-word"
+    id = "T4"
+    options_spec = [ListOption('strings', ['WIP'], "Must not contain word")]
+    violation_message = "Title contains the word '{0}' (case-insensitive)"
 
 
 class BodyMaxLengthRule(MaxLineLengthRule, CommitMessageBodyRule):

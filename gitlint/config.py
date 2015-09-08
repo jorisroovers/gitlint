@@ -12,6 +12,7 @@ class LintConfigError(Exception):
 class LintConfig(object):
     """ Class representing gitlint configuration """
     default_rule_classes = [rules.TitleMaxLengthRule, rules.TitleTrailingWhitespace, rules.TitleHardTab,
+                            rules.TitleMustNotContainWordRule,
                             rules.BodyMaxLengthRule, rules.BodyTrailingWhitespace, rules.BodyHardTab]
 
     def __init__(self):

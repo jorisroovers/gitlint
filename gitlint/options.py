@@ -22,7 +22,7 @@ class IntOption(RuleOption):
         super(IntOption, self).__init__(name, value, description)
         self.allow_negative = allow_negative
 
-    def raise_exception(self, value):
+    def _raise_exception(self, value):
         if self.allow_negative:
             error_msg = "Option '{0}' must be an integer (current value: {1})".format(self.name, value)
         else:
@@ -33,7 +33,15 @@ class IntOption(RuleOption):
         try:
             self.value = int(value)
         except ValueError:
-            self.raise_exception(value)
+            self._raise_exception(value)
 
         if not self.allow_negative and self.value < 0:
-            self.raise_exception(value)
+            self._raise_exception(value)
+
+
+class ListOption(RuleOption):
+    def __init__(self, name, value, description):
+        super(ListOption, self).__init__(name, value, description)
+
+    def set(self, value):
+        self.value = [item.trim() for item in str(value).split(",")]
