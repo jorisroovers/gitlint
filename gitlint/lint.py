@@ -11,6 +11,10 @@ class GitLinter(object):
         return [rule for rule in self.config.body_rules if isinstance(rule, rules.LineRule)]
 
     @property
+    def body_multiline_rules(self):
+        return [rule for rule in self.config.body_rules if isinstance(rule, rules.MultiLineRule)]
+
+    @property
     def title_line_rules(self):
         return [rule for rule in self.config.title_rules if isinstance(rule, rules.LineRule)]
 
@@ -28,13 +32,24 @@ class GitLinter(object):
             line_nr += 1
         return all_violations
 
+    def _apply_multiline_rules(self, lines, rules):
+        all_violations = []
+        for rule in rules:
+            violations = rule.validate(lines)
+            if violations:
+                all_violations.extend(violations)
+        return all_violations
+
     def lint_commit_message(self, commit_message):
         lines = commit_message.split("\n")
         commit_message_title = [lines[0]]
         commit_message_body = lines[1:] if len(lines) > 1 else []
         title_violations = self._apply_line_rules(commit_message_title, self.title_line_rules, 1)
         body_violations = self._apply_line_rules(commit_message_body, self.body_line_rules, 2)
+        body_violations.extend(self._apply_multiline_rules(commit_message_body, self.body_multiline_rules))
+
         violations = title_violations + body_violations
+        violations.sort(key=lambda v: v.line_nr) # sort violations by line number
         for v in violations:
             print("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content))
         return len(violations)

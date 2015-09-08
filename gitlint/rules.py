@@ -27,7 +27,7 @@ class Rule(object):
         pass
 
 
-class MultilineRule(Rule):
+class MultiLineRule(Rule):
     """ Class representing rules that act on multiple lines at once """
     pass
 
@@ -67,7 +67,7 @@ class RuleViolation(object):
         return self.__str__()
 
 
-class MaxLineLengthRule(LineRule):
+class MaxLineLength(LineRule):
     name = "max-line-length"
     id = "R1"
     options_spec = [IntOption('line-length', 80, "Max line length")]
@@ -100,7 +100,7 @@ class HardTab(LineRule):
             return RuleViolation(self.id, self.violation_message, line)
 
 
-class LineMustNotContainWordRule(LineRule):
+class LineMustNotContainWord(LineRule):
     """ Violation if a line contains one of a list of words (NOTE: using a word in the list inside another word is not a
     violation, e.g: WIPING is not a violation if 'WIP' is a word that is not allowed.) """
     name = "line-must-not-contain"
@@ -117,7 +117,7 @@ class LineMustNotContainWordRule(LineRule):
                 return RuleViolation(self.id, self.violation_message.format(string), line)
 
 
-class TitleMaxLengthRule(MaxLineLengthRule, CommitMessageTitleRule):
+class TitleMaxLength(MaxLineLength, CommitMessageTitleRule):
     name = "title-max-length"
     id = "T1"
     violation_message = "Title exceeds max length ({0}>{1})"
@@ -135,14 +135,14 @@ class TitleHardTab(HardTab, CommitMessageTitleRule):
     violation_message = "Title contains hard tab characters (\\t)"
 
 
-class TitleMustNotContainWordRule(LineMustNotContainWordRule, CommitMessageTitleRule):
+class TitleMustNotContainWord(LineMustNotContainWord, CommitMessageTitleRule):
     name = "title-must-not-contain-word"
     id = "T4"
     options_spec = [ListOption('strings', ['WIP'], "Must not contain word")]
     violation_message = "Title contains the word '{0}' (case-insensitive)"
 
 
-class BodyMaxLengthRule(MaxLineLengthRule, CommitMessageBodyRule):
+class BodyMaxLength(MaxLineLength, CommitMessageBodyRule):
     name = "body-max-line-length"
     id = "B1"
 
@@ -155,3 +155,13 @@ class BodyTrailingWhitespace(TrailingWhiteSpace, CommitMessageBodyRule):
 class BodyHardTab(HardTab, CommitMessageBodyRule):
     name = "body-hard-tab"
     id = "B3"
+
+
+class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
+    name = "body-first-line-empty"
+    id = "B4"
+
+    def validate(self, lines):
+        if len(lines) >= 1:
+            if lines[0] != "":
+                return [RuleViolation(self.id, "Second line is not empty", lines[0], 2)]
