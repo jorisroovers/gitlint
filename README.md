@@ -52,11 +52,14 @@ ignore=max-line-length, R3
 ## Supported Rules ##
 
 ID    | Name                | Description
-------|---------------------|----------------------------------------------------
-R1    | max-line-length     | Line length must be &lt; 80 chars.
-R2    | trailing-whitespace | Line cannot have trailing whitespace (space or tab)
-R3    | hard-tabs           | Line contains hard tab characters (\t)
-
+------|-----------------------------|----------------------------------------------------
+T1    | title-max-length            | Title length must be &lt; 80 chars.
+T2    | title-trailing-whitespace   | Title cannot have trailing whitespace (space or tab)
+T3    | title-hard-tab              | Title cannot contain hard tab characters (\t)
+T4    | title-must-not-contain-word | Title cannot contain certain words (default: "WIP")
+B1    | body-max-line-length        | Lines in the body must be &lt; 80 chars.            
+B2    | body-trailing-whitespace    | Body cannot have trailing whitespace (space or tab)
+B3    | body-hard-tab               | Body cannot contain hard tab characters (\t)
 
 ## Development ##
 
