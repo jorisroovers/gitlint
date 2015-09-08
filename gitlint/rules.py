@@ -55,16 +55,17 @@ class RuleViolation(object):
         self.content = content
 
     def __eq__(self, other):
-        return self.rule_id == other.rule_id and \
-               self.message == other.message and \
-               self.content == other.content and \
-               self.line_nr == other.line_nr
+        equal = self.rule_id == other.rule_id and self.message == other.message
+        equal = equal and self.content == other.content and self.line_nr == other.line_nr
+        return equal
 
-    def __str__(self):
-        return "{0}: {1} {2}".format(self.line_nr, self.rule_id, self.message)
 
-    def __repr__(self):
-        return self.__str__()
+def __str__(self):
+    return "{0}: {1} {2}".format(self.line_nr, self.rule_id, self.message)
+
+
+def __repr__(self):
+    return self.__str__()
 
 
 class MaxLineLength(LineRule):

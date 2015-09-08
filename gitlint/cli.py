@@ -44,7 +44,7 @@ def cli(config, ignore, verbose, silent):
             lint_config.verbosity = 0
         else:
             lint_config.verbosity = verbose
-    except LintConfigError as   e:
+    except LintConfigError as e:
         click.echo("Lint Config Error: {0}".format(e.message))
         exit(10000)  # return 10000 on config error
 
