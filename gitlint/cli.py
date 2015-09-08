@@ -50,7 +50,8 @@ def cli(config, ignore, verbose, silent):
 
     linter = GitLinter(lint_config)
     if sys.stdin.isatty():
-        commit_msg = sh.git(["-c", "color.ui=no", "log", "-1", "--pretty=%B", "--no-color"])
+        # Use _tty_out = False to disable git color output
+        commit_msg = repr(sh.git.log("-1", "--pretty=%B", _tty_out=False))
     else:
         commit_msg = sys.stdin.read()
     error_count = linter.lint_commit_message(commit_msg)
