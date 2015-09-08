@@ -16,9 +16,21 @@ class LintConfig(object):
                             rules.BodyMaxLength, rules.BodyTrailingWhitespace, rules.BodyHardTab,
                             rules.BodyFirstLineEmpty]
 
+    _verbosity = 2
+
     def __init__(self):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
+
+    @property
+    def verbosity(self):
+        return self._verbosity
+
+    @verbosity.setter
+    def verbosity(self, value):
+        if value < 0 or value > 3:
+            raise LintConfigError("verbosity must be set between 0 and 3")
+        self._verbosity = value
 
     @property
     def body_rules(self):
@@ -71,3 +83,4 @@ class LintConfig(object):
         if parser.has_section('general'):
             ignore = parser.get('general', 'ignore', "")
             LintConfig.apply_on_csv_string(ignore, config.disable_rule)
+            config.verbosity = parser.getint('general', 'verbosity', config.verbosity)

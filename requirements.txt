@@ -1,4 +1,4 @@
 pip==7.1.0
 setuptools
-Click==4.1
+Click==5.1
 sh

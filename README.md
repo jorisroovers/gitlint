@@ -24,13 +24,16 @@ NOTE: The returned exit code equals the number of errors found.
 Other commands and variations:
 
 ```bash
-Usage: gitlint [OPTIONS] PATH
+Usage: gitlint [OPTIONS]
 
-Git lint tool, checks your git commit messsages for styling issues
+  Git lint tool, checks your git commit messages for styling issues
 
 Options:
   --config PATH  Config file location (default: .gitlint).
   --ignore TEXT  Ignore rules (comma-separated by id or name).
+  -v, --verbose  Verbosity, more v's for more verbose output (e.g.: -v, -vv,
+                 -vvv). Default: -vvv
+  -s, --silent   Silent mode (no output).
   --version      Show the version and exit.
   --help         Show this message and exit.
 ```
@@ -47,6 +50,8 @@ By default, gitlint will look for an **optional** ```.gitlint``` file for config
 [general]
 # rules can be ignored by name or by id
 ignore=max-line-length, R3
+# verbosity level: 0-3 (default: 2)
+verbosity=3
 ```
 
 ## Supported Rules ##

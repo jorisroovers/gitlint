@@ -41,15 +41,26 @@ class GitLinter(object):
         return all_violations
 
     def lint_commit_message(self, commit_message):
+        # determine commit message title, commit message body
         lines = commit_message.split("\n")
         commit_message_title = [lines[0]]
         commit_message_body = lines[1:] if len(lines) > 1 else []
-        title_violations = self._apply_line_rules(commit_message_title, self.title_line_rules, 1)
-        body_violations = self._apply_line_rules(commit_message_body, self.body_line_rules, 2)
-        body_violations.extend(self._apply_multiline_rules(commit_message_body, self.body_multiline_rules))
 
-        violations = title_violations + body_violations
-        violations.sort(key=lambda v: v.line_nr) # sort violations by line number
+        # determine violations by applying all rules
+        violations = self._apply_line_rules(commit_message_title, self.title_line_rules, 1)
+        violations.extend(self._apply_line_rules(commit_message_body, self.body_line_rules, 2))
+        violations.extend(self._apply_multiline_rules(commit_message_body, self.body_multiline_rules))
+
+        # sort violations by line number
+        violations.sort(key=lambda v: v.line_nr)  # sort violations by line number
+
+        # print violations
         for v in violations:
-            print("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content))
+            if self.config.verbosity == 1:
+                print("{}: {}".format(v.line_nr, v.rule_id))
+            elif self.config.verbosity == 2:
+                print("{}: {} {}".format(v.line_nr, v.rule_id, v.message))
+            elif self.config.verbosity > 2:
+                print("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content))
+
         return len(violations)
