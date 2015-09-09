@@ -15,8 +15,6 @@ Get started by running:
 gitlint
 # Alternatively, pipe a commit message to gitlint:
 cat examples/commit-message-1 | gitlint
-# Lint the third latest git commit message
-cat git log -3 -1 | gitlint
 ```
 
 NOTE: The returned exit code equals the number of errors found.
@@ -49,7 +47,7 @@ By default, gitlint will look for an **optional** ```.gitlint``` file for config
 ```
 [general]
 # rules can be ignored by name or by id
-ignore=max-line-length, R3
+ignore=title-max-length, B1
 # verbosity level: 0-3 (default: 2)
 verbosity=3
 ```
@@ -84,9 +82,13 @@ vagrant ssh
 ```
 
 ## Wishlist ##
+- More rules: 
+    - title-regex: Title must match a given regex
+    - changed-file-mentioned: If a specific file is changed, it needs to be explicitly mentioned in the commit message
+    - ...
 - Check the entire git log
-- Check a specific commit or range of commits, similar to how git log works, eg.:
-  git log -1 -3
-- More rules:
-   - title-contains, title-not-contains    
+- Rule specific configuration
+- Commandline arguments to set config, e.g.: -c general.ignore T2,B3
+- Unit tests :D
+- Check a specific commit or range of commits, similar to how git log works, eg.: ```git log -1 -3```
 - Checks on different attributes of the the commit message: author, date, etc
