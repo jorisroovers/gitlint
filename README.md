@@ -11,6 +11,8 @@ Git linter written in python. Checks your git log for style.
 
 Get started by running:
 ```bash
+# Install gitlint
+pip install gitlint
 # Check the last commit message
 gitlint
 # Alternatively, pipe a commit message to gitlint:
