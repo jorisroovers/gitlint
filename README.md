@@ -9,6 +9,8 @@ Git linter written in python. Checks your git log for style.
 
 **NOTE: gitlint is still under active development. Please note that the version on pypi might not have all the features described below.**
 
+If you are looking for an alternative written in Ruby, have a look at https://github.com/m1foley/fit-commit
+
 ## Getting Started ##
 ```bash
 # Install gitlint
