@@ -98,7 +98,7 @@ T1    | title-max-length            | Title length must be &lt; 80 chars.
 T2    | title-trailing-whitespace   | Title cannot have trailing whitespace (space or tab)
 T3    | title-trailing-punctuation  | Title cannot have trailing punctuation (?:!.,;)
 T4    | title-hard-tab              | Title cannot contain hard tab characters (\t)
-T5    | title-must-not-contain-word | Title cannot contain certain words (default: "WIP")
+T5    | title-must-not-contain-word | Title cannot contain certain words (default: "WIP"). Matching is case insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING" will not cause a violation, but "WIP: my title" will.
 B1    | body-max-line-length        | Lines in the body must be &lt; 80 chars.            
 B2    | body-trailing-whitespace    | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | Body cannot contain hard tab characters (\t)

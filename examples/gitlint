@@ -1,6 +1,6 @@
 [general]
 ignore=title-trailing-punctuation, T3
-# verbosity should be a value between 1 and 3
+# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
 verbosity = 2
 
 [title-max-length]
@@ -9,3 +9,9 @@ line-length=20
 [B1]
 # B1 = body-max-line-length
 line-length=30
+
+[title-must-not-contain-word]
+# Comma-seperated list of words that should not occur in the title. Matching is case insensitive.
+# It's fine if the keyword occurs as part of a larger word (so "WIPING" will not cause a violation,
+# but "WIP: my title" will.
+words=wip,title

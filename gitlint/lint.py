@@ -25,10 +25,11 @@ class GitLinter(object):
         line_nr = line_nr_start
         for line in lines:
             for rule in rules:
-                violation = rule.validate(line)
-                if violation:
-                    violation.line_nr = line_nr
-                    all_violations.append(violation)
+                violations = rule.validate(line)
+                if violations:
+                    for violation in violations:
+                        violation.line_nr = line_nr
+                        all_violations.append(violation)
             line_nr += 1
         return all_violations
 

@@ -76,7 +76,7 @@ class MaxLineLength(LineRule):
     def validate(self, line):
         max_length = self.options['line-length'].value
         if len(line) > max_length:
-            return RuleViolation(self.id, self.violation_message.format(len(line), max_length), line)
+            return [RuleViolation(self.id, self.violation_message.format(len(line), max_length), line)]
 
 
 class TrailingWhiteSpace(LineRule):
@@ -87,7 +87,7 @@ class TrailingWhiteSpace(LineRule):
     def validate(self, line):
         pattern = re.compile(r"\s$")
         if pattern.search(line):
-            return RuleViolation(self.id, self.violation_message, line)
+            return [RuleViolation(self.id, self.violation_message, line)]
 
 
 class HardTab(LineRule):
@@ -97,7 +97,7 @@ class HardTab(LineRule):
 
     def validate(self, line):
         if "\t" in line:
-            return RuleViolation(self.id, self.violation_message, line)
+            return [RuleViolation(self.id, self.violation_message, line)]
 
 
 class LineMustNotContainWord(LineRule):
@@ -105,16 +105,18 @@ class LineMustNotContainWord(LineRule):
     violation, e.g: WIPING is not a violation if 'WIP' is a word that is not allowed.) """
     name = "line-must-not-contain"
     id = "R5"
-    options_spec = [ListOption('strings', [], "Must not contain strings")]
+    options_spec = [ListOption('words', [], "Comma seperated list of words that should not be found")]
     violation_message = "Line contains {0}"
 
     def validate(self, line):
-        strings = self.options['strings'].value
+        strings = self.options['words'].value
+        violations = []
         for string in strings:
             regex = re.compile(r"\b%s\b" % string.lower(), re.I)
             match = regex.search(line.lower())
             if match:
-                return RuleViolation(self.id, self.violation_message.format(string), line)
+                violations.append(RuleViolation(self.id, self.violation_message.format(string), line))
+        return violations if violations else None
 
 
 class TitleMaxLength(MaxLineLength, CommitMessageTitleRule):
@@ -137,7 +139,7 @@ class TitleTrailingPunctuation(CommitMessageTitleRule):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
             if line.endswith(punctuation_mark):
-                return RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), line)
+                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), line)]
 
 
 class TitleHardTab(HardTab, CommitMessageTitleRule):
@@ -149,7 +151,7 @@ class TitleHardTab(HardTab, CommitMessageTitleRule):
 class TitleMustNotContainWord(LineMustNotContainWord, CommitMessageTitleRule):
     name = "title-must-not-contain-word"
     id = "T5"
-    options_spec = [ListOption('strings', ['WIP'], "Must not contain word")]
+    options_spec = [ListOption('words', ['WIP'], "Must not contain word")]
     violation_message = "Title contains the word '{0}' (case-insensitive)"
 
 

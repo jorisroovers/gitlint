@@ -50,4 +50,4 @@ class ListOption(RuleOption):
         super(ListOption, self).__init__(name, value, description)
 
     def set(self, value):
-        self.value = [item.trim() for item in str(value).split(",")]
+        self.value = [item.strip() for item in str(value).split(",")]
