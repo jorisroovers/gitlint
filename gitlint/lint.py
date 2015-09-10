@@ -53,7 +53,9 @@ class GitLinter(object):
 
         # sort violations by line number
         violations.sort(key=lambda v: v.line_nr)  # sort violations by line number
+        return violations
 
+    def print_violations(self, violations):
         # print violations
         for v in violations:
             if self.config.verbosity == 1:
@@ -62,5 +64,3 @@ class GitLinter(object):
                 print("{}: {} {}".format(v.line_nr, v.rule_id, v.message))
             elif self.config.verbosity > 2:
                 print("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content))
-
-        return len(violations)

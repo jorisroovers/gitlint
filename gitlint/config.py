@@ -70,7 +70,7 @@ class LintConfig(object):
             raise LintConfigError("Invalid file path: {0}".format(filename))
         config = LintConfig()
         try:
-            parser = ConfigParser.ConfigParser()
+            parser = ConfigParser.ConfigParser({'verbosity': '2'})
             parser.read(filename)
             LintConfig._parse_general_section(parser, config)
         except ConfigParser.Error as e:
@@ -83,4 +83,4 @@ class LintConfig(object):
         if parser.has_section('general'):
             ignore = parser.get('general', 'ignore', "")
             LintConfig.apply_on_csv_string(ignore, config.disable_rule)
-            config.verbosity = parser.getint('general', 'verbosity', config.verbosity)
+            config.verbosity = parser.getint('general', 'verbosity')

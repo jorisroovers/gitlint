@@ -54,8 +54,9 @@ def cli(config, ignore, verbose, silent):
         commit_msg = repr(sh.git.log("-1", "--pretty=%B", _tty_out=False))
     else:
         commit_msg = sys.stdin.read()
-    error_count = linter.lint_commit_message(commit_msg)
-    exit(error_count)
+    violations = linter.lint_commit_message(commit_msg)
+    linter.print_violations(violations)
+    exit(len(violations))
 
 
 if __name__ == "__main__":
