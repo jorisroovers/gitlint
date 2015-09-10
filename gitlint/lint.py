@@ -1,10 +1,12 @@
 from __future__ import print_function
 from gitlint import rules
+from gitlint import display
 
 
 class GitLinter(object):
     def __init__(self, config):
         self.config = config
+        self.display = display.Display(config)
 
     @property
     def body_line_rules(self):
@@ -57,11 +59,7 @@ class GitLinter(object):
         return violations
 
     def print_violations(self, violations):
-        # print violations
         for v in violations:
-            if self.config.verbosity == 1:
-                print("{}: {}".format(v.line_nr, v.rule_id))
-            elif self.config.verbosity == 2:
-                print("{}: {} {}".format(v.line_nr, v.rule_id, v.message))
-            elif self.config.verbosity > 2:
-                print("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content))
+            self.display.v("{}: {}".format(v.line_nr, v.rule_id), exact=True)
+            self.display.vv("{}: {} {}".format(v.line_nr, v.rule_id, v.message), exact=True)
+            self.display.vvv("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)

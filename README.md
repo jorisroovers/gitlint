@@ -7,7 +7,7 @@
 
 Git linter written in python. Checks your git log for style.
 
-**NOTE: gitlint is still under active development**
+**NOTE: gitlint is still under active development. Please note that the version on pypi might not have all the features described below.**
 
 ## Getting Started ##
 ```bash
