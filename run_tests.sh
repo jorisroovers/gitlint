@@ -29,7 +29,7 @@ run_pep8_check(){
 }
 
 run_unit_tests(){
-    OMIT=".venv/*"
+    OMIT="*dist-packages*,*site-packages*"
     coverage run --omit=$OMIT -m unittest discover -v
     if [ $include_coverage -eq 1 ]; then
         COVERAGE_REPORT=$(coverage report -m)
