@@ -24,8 +24,14 @@ class LintConfigTests(BaseTestCase):
 
     def test_load_config_from_file(self):
         # regular config file load, no problems
-        LintConfig.load_from_file(self.get_sample_path("gitlintconfig"))
+        config = LintConfig.load_from_file(self.get_sample_path("gitlintconfig"))
 
+        # Do some assertions on the config
+        self.assertEqual(config.verbosity, 1)
+        self.assertEqual(config.get_rule_by_name_or_id('title-max-length').options['line-length'].value, 20)
+        self.assertEqual(config.get_rule_by_name_or_id('body-max-line-length').options['line-length'].value, 30)
+
+    def test_negative_load_config_from_file(self):
         # bad config file load
         foo_path = self.get_sample_path("foo")
         with self.assertRaisesRegexp(LintConfigError, "Invalid file path: {0}".format(foo_path)):

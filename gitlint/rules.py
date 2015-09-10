@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABCMeta
 from gitlint.options import IntOption, ListOption
 
+import copy
 import re
 
 
@@ -14,7 +15,7 @@ class Rule(object):
     def __init__(self, opts={}):
         self.options = {}
         for op_spec in self.options_spec:
-            self.options[op_spec.name] = op_spec
+            self.options[op_spec.name] = copy.deepcopy(op_spec)
             actual_option = opts.get(op_spec.name)
             if actual_option:
                 self.options[op_spec.name].set(actual_option)

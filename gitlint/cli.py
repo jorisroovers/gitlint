@@ -31,7 +31,7 @@ def get_lint_config(config_path=None):
 @click.option('--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
-@click.option('-v', '--verbose', count=True, default=3,
+@click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). Default: -vvv", )
 @click.option('-s', '--silent', help="Silent mode (no output).", is_flag=True)
 @click.version_option(version=gitlint.__version__)
@@ -42,7 +42,7 @@ def cli(config, ignore, verbose, silent):
         lint_config.apply_on_csv_string(ignore, lint_config.disable_rule)
         if silent:
             lint_config.verbosity = 0
-        else:
+        if verbose > 0:
             lint_config.verbosity = verbose
     except LintConfigError as e:
         click.echo("Lint Config Error: {0}".format(e.message))

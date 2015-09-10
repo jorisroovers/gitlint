@@ -16,6 +16,12 @@ class RuleOption(object):
         """ Validates and sets the option's value """
         pass
 
+    def __str__(self):
+        return "({}: {} ({}))".format(self.name, self.value, self.description)
+
+    def __repr__(self):
+        return self.__str__()
+
 
 class IntOption(RuleOption):
     def __init__(self, name, value, description, allow_negative=False):

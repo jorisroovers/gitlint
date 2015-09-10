@@ -1,2 +1,11 @@
 [general]
-ignore=title-max-length, T3
+ignore=title-trailing-whitespace,B2
+verbosity = 1
+
+[title-max-length]
+line-length=20
+
+
+[B1]
+# B1 = body-max-line-length
+line-length=30

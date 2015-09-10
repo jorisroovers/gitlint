@@ -16,11 +16,10 @@ class LintConfig(object):
                             rules.BodyMaxLength, rules.BodyTrailingWhitespace, rules.BodyHardTab,
                             rules.BodyFirstLineEmpty]
 
-    _verbosity = 2
-
     def __init__(self):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
+        self._verbosity = 3
 
     @property
     def verbosity(self):
@@ -70,17 +69,33 @@ class LintConfig(object):
             raise LintConfigError("Invalid file path: {0}".format(filename))
         config = LintConfig()
         try:
-            parser = ConfigParser.ConfigParser({'verbosity': '2'})
+            parser = ConfigParser.ConfigParser()
             parser.read(filename)
             LintConfig._parse_general_section(parser, config)
+            LintConfig._parse_rule_sections(parser, config)
         except ConfigParser.Error as e:
             raise LintConfigError("Error during config file parsing: {0}".format(e.message))
 
         return config
 
     @staticmethod
+    def _parse_rule_sections(parser, config):
+        sections = [section for section in parser.sections() if section != "general"]
+        for section in sections:
+            rule = config.get_rule_by_name_or_id(section)
+            if rule:
+                options = parser.items(section)
+                for option_name, option_value in options:
+                    option = rule.options.get(option_name)
+                    # TODO(jorisroovers): output rules that are ignored
+                    if option:
+                        option.set(option_value)
+
+    @staticmethod
     def _parse_general_section(parser, config):
         if parser.has_section('general'):
-            ignore = parser.get('general', 'ignore', "")
-            LintConfig.apply_on_csv_string(ignore, config.disable_rule)
-            config.verbosity = parser.getint('general', 'verbosity')
+            if parser.has_option('general', 'ignore'):
+                ignore = parser.get('general', 'ignore')
+                LintConfig.apply_on_csv_string(ignore, config.disable_rule)
+            if parser.has_option('general', 'verbosity'):
+                config.verbosity = parser.getint('general', 'verbosity')

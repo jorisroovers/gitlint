@@ -77,16 +77,22 @@ gitlint --config myconfigfile
 By default, gitlint will look for an **optional** ```.gitlint``` file for configuration.
 
 ```
-[general]
-# rules can be ignored by name or by id
-ignore=title-max-length, B1
-# verbosity level: 0-3 (default: 2)
-verbosity=3
+[general] 
+ignore=title-trailing-punctuation, T3
+# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
+verbosity = 2
+
+[title-max-length]
+line-length=20
+
+[B1]
+# B1 = body-max-line-length
+line-length=30
 ```
 
 ## Supported Rules ##
 
-ID    | Name                | Description
+ID    | Name                        | Description
 ------|-----------------------------|----------------------------------------------------
 T1    | title-max-length            | Title length must be &lt; 80 chars.
 T2    | title-trailing-whitespace   | Title cannot have trailing whitespace (space or tab)
