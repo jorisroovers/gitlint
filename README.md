@@ -9,7 +9,7 @@ Git linter written in python. Checks your git log for style.
 
 **NOTE: gitlint is still under active development**
 
-Get started by running:
+## Getting Started ##
 ```bash
 # Install gitlint
 pip install gitlint
@@ -19,7 +19,36 @@ gitlint
 cat examples/commit-message-1 | gitlint
 ```
 
+Output example:
+```bash
+$ cat examples/commit-message-2 | gitlint
+1: T1 Title exceeds max length (134>80): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+1: T2 Title has trailing whitespace: "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+1: T4 Title contains hard tab characters (\t): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+2: B4 Second line is not empty: "This line should not contain text"
+3: B1 Line exceeds max length (125>80): "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
+3: B2 Line has trailing whitespace: "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
+3: B3 Line contains hard tab characters (\t): "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
+```
 NOTE: The returned exit code equals the number of errors found.
+
+You can modify verbosity using the ```-v``` flag, like so:
+```bash
+$ cat examples/commit-message-2 | gitlint -v
+1: T1
+1: T2
+[removed output]
+$ cat examples/commit-message-2 | gitlint -vv
+1: T1 Title exceeds max length (134>80)
+1: T2 Title has trailing whitespace
+1: T4 Title contains hard tab characters (\t)
+[removed output]
+$ cat examples/commit-message-2 | gitlint -vvv
+1: T1 Title exceeds max length (134>80): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+1: T2 Title has trailing whitespace: "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+[removed output]
+```
+The default verbosity is ```-vvv```.
 
 Other commands and variations:
 
@@ -38,13 +67,14 @@ Options:
   --help         Show this message and exit.
 ```
 
+
+## Config file ##
+
 You can modify gitlint's behavior by specifying a config file like so: 
 ```bash
 gitlint --config myconfigfile 
 ```
 By default, gitlint will look for an **optional** ```.gitlint``` file for configuration.
-
-## Config file ##
 
 ```
 [general]
