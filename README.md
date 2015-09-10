@@ -88,6 +88,12 @@ line-length=20
 [B1]
 # B1 = body-max-line-length
 line-length=30
+
+[title-must-not-contain-word]
+# Comma-seperated list of words that should not occur in the title. Matching is case insensitive.
+# It's fine if the keyword occurs as part of a larger word (so "WIPING" will not cause a violation,
+# but "WIP: my title" will.
+words=wip,title
 ```
 
 ## Supported Rules ##
