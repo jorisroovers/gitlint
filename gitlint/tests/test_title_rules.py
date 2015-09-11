@@ -1,9 +1,10 @@
 from gitlint.tests.base import BaseTestCase
-from gitlint.rules import TitleMaxLength, TitleTrailingWhitespace, TitleHardTab, TitleMustNotContainWord, RuleViolation
+from gitlint.rules import TitleMaxLength, TitleTrailingWhitespace, TitleHardTab, TitleMustNotContainWord, \
+    TitleTrailingPunctuation, RuleViolation
 
 
 class TitleRuleTests(BaseTestCase):
-    def test_title_max_line_length(self):
+    def test_max_line_length(self):
         rule = TitleMaxLength()
 
         # assert no error
@@ -53,6 +54,21 @@ class TitleRuleTests(BaseTestCase):
         expected_violation = RuleViolation("T4", "Title contains hard tab characters (\\t)", "This is a\ttest")
         violations = rule.validate("This is a\ttest")
         self.assertListEqual(violations, [expected_violation])
+
+    def test_trailing_punctuation(self):
+        rule = TitleTrailingPunctuation()
+
+        # assert no error
+        violations = rule.validate("This is a test")
+        self.assertIsNone(violations)
+
+        # assert errors for different punctuations
+        punctuation = "?:!.,;"
+        for char in punctuation:
+            line = "This is a test" + char
+            expected_violation = RuleViolation("T3", "Title has trailing punctuation ({})".format(char), line)
+            violations = rule.validate(line)
+            self.assertListEqual(violations, [expected_violation])
 
     def test_title_must_not_contain_word(self):
         rule = TitleMustNotContainWord()

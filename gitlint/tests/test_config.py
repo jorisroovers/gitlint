@@ -76,7 +76,27 @@ class LintConfigTests(BaseTestCase):
 
         # assert error on incorrect rule
         with self.assertRaisesRegexp(LintConfigError, "No such rule 'foo'"):
-            config.apply_config_options(['foo.bar=1', 'title-max-length.line-length=60'])
+            config.apply_config_options(['foo.bar=1'])
+
+        # no equal sign
+        expected_msg = "'foo.bar' is an invalid configuration option. Use '<rule>.<option>=<value>'"
+        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+            config.apply_config_options(['foo.bar'])
+
+        # missing value
+        expected_msg = "'foo.bar=' is an invalid configuration option. Use '<rule>.<option>=<value>'"
+        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+            config.apply_config_options(['foo.bar='])
+
+        # space instead of equal sign
+        expected_msg = "'foo.bar 1' is an invalid configuration option. Use '<rule>.<option>=<value>'"
+        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+            config.apply_config_options(['foo.bar 1'])
+
+        # no period between rule and option names
+        expected_msg = "'foobar=1' is an invalid configuration option. Use '<rule>.<option>=<value>'"
+        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+            config.apply_config_options(['foobar=1'])
 
     def test_load_config_from_file(self):
         # regular config file load, no problems

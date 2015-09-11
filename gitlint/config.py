@@ -91,13 +91,16 @@ class LintConfig(object):
         for config_option in config_options:
             try:
                 config_name, option_value = config_option.split("=", 1)
+                if not option_value:
+                    raise ValueError()
                 rule_name, option_name = config_name.split(".", 1)
                 if rule_name == "general":
                     self.set_general_option(option_name, option_value)
                 else:
                     self.set_rule_option(rule_name, option_name, option_value)
             except ValueError:  # raised if the config string is invalid
-                raise LintConfigError(config_option)
+                raise LintConfigError(
+                    "'{}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
 
     def set_general_option(self, option_name, option_value):
         if option_name == "ignore":

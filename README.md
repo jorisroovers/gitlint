@@ -66,13 +66,17 @@ Usage: gitlint [OPTIONS]
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --config PATH  Config file location (default: .gitlint).
-  --ignore TEXT  Ignore rules (comma-separated by id or name).
-  -v, --verbose  Verbosity, more v's for more verbose output (e.g.: -v, -vv,
-                 -vvv). Default: -vvv
-  -s, --silent   Silent mode (no output).
-  --version      Show the version and exit.
-  --help         Show this message and exit.
+  -C, --config PATH  Config file location (default: .gitlint).
+  -c TEXT            Config flags in format <rule>.<option>=<value> (e.g.: -c
+                     T1.line-length=80). Flag can be used multiple times to
+                     set multiple config values.
+  --ignore TEXT      Ignore rules (comma-separated by id or name).
+  -v, --verbose      Verbosity, more v's for more verbose output (e.g.: -v,
+                     -vv, -vvv). Default: -vvv
+  -s, --silent       Silent mode (no output). Takes precedence over -v, -vv,
+                     -vvv.
+  --version          Show the version and exit.
+  --help             Show this message and exit.
 ```
 
 
@@ -132,6 +136,7 @@ T5    | title-must-not-contain-word | Title cannot contain certain words (defaul
 B1    | body-max-line-length        | Lines in the body must be &lt; 80 chars.            
 B2    | body-trailing-whitespace    | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | Body cannot contain hard tab characters (\t)
+B4    | body-first-line-empty       | First line of the body (second line of commit message) must be empty
 
 ## Development ##
 
@@ -154,10 +159,11 @@ vagrant ssh
     - title-regex: Title must match a given regex
     - changed-file-mentioned: If a specific file is changed, it needs to be explicitly mentioned in the commit message
     - ...
-- Check the entire git log
-- More Unit tests :D
-- Check a specific commit or range of commits, similar to how git log works, eg.: ```git log -1 -3```
-- Checks on different attributes of the the commit message: author, date, etc
-- github releases
-- git commit hooks
-- title-must-not-contain-word: case sensitive match
+- More rule options:
+    - title-must-not-contain-word: case sensitive match
+    - title-trailing-punctuation: define punctuation
+
+- More unit tests :D
+- Check a range of commit messages at once (similar to how git log works, eg.: ```git log -3```)
+- Rules for different attributes of the the commit message: author, date, etc
+- Git commit hooks

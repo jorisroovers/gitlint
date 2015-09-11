@@ -25,7 +25,7 @@ class Rule(object):
 
     @abstractmethod
     def validate(self):
-        pass
+        pass  # pragma: no cover
 
 
 class MultiLineRule(Rule):
@@ -61,10 +61,10 @@ class RuleViolation(object):
         return equal
 
     def __str__(self):
-        return "{}: {} {}: \"{}\"".format(self.line_nr, self.rule_id, self.message, self.content)
+        return "{}: {} {}: \"{}\"".format(self.line_nr, self.rule_id, self.message, self.content) # pragma: no cover
 
     def __repr__(self):
-        return self.__str__()
+        return self.__str__() # pragma: no cover
 
 
 class MaxLineLength(LineRule):

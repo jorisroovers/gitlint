@@ -14,13 +14,13 @@ class RuleOption(object):
     @abstractmethod
     def set(self, value):
         """ Validates and sets the option's value """
-        pass
+        pass  # pragma: no cover
 
     def __str__(self):
-        return "({}: {} ({}))".format(self.name, self.value, self.description)
+        return "({}: {} ({}))".format(self.name, self.value, self.description) # pragma: no cover
 
     def __repr__(self):
-        return self.__str__()
+        return self.__str__() # pragma: no cover
 
 
 class IntOption(RuleOption):

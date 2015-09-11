@@ -3,9 +3,13 @@ from gitlint import cli
 from gitlint import __version__
 
 from click.testing import CliRunner
+from mock import patch
+from StringIO import StringIO
 
 
 class CLITests(BaseTestCase):
+    CONFIG_ERROR_CODE = 10000
+
     def setUp(self):
         self.cli = CliRunner()
 
@@ -17,9 +21,24 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--version"])
         self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
 
+    def test_config_file(self):
+        config_path = self.get_sample_path("config/gitlintconfig")
+        result = self.cli.invoke(cli.cli, ["--config", config_path])
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.output, "Using config from {}\n".format(config_path))
+
     def test_config_file_negative(self):
-        args = ["--config", self.get_sample_path("foo"), self.get_sample_path("sample1.md")]
-        result = self.cli.invoke(cli.cli, args)
+        config_path = self.get_sample_path("foo")
+        result = self.cli.invoke(cli.cli, ["--config", config_path])
         expected_string = "Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" does not exist.".format(
-            self.get_sample_path("foo"))
+            config_path)
         self.assertEqual(result.output.split("\n")[2], expected_string)
+
+    def test_input_stream(self):
+        expected_output = "1: T2 Title has trailing whitespace: \"WIP: title \"\n" + \
+                          "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: title \"\n"
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, input='WIP: title \n')
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 2)
