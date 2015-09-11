@@ -1,0 +1,18 @@
+#!/bin/sh
+### gitlint commit-msg hook start ###
+
+cat "$1" | gitlint
+gitlint_exit_code=$?
+
+if [ $gitlint_exit_code -gt 0 ]; then
+    echo "----------------------"
+    echo "Your commit message: "
+    echo "----------------------"
+    cat "$1" | grep -v '^#'
+else
+    echo "gitlint: OK"
+fi
+
+exit $gitlint_exit_code
+
+### gitlint commit-msg hook end ###

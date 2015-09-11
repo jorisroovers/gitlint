@@ -26,7 +26,7 @@ setup(
     description="Linter for git repositories. Under active development.",
     long_description=long_description,
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Environment :: Console",
@@ -41,6 +41,9 @@ setup(
     author='Joris Roovers',
     url='https://github.com/jorisroovers/gitlint',
     license='MIT',
+    package_data={
+        'gitlint': ['hooks/*']
+    },
     packages=find_packages(exclude=["examples"]),
     entry_points={
         "console_scripts": [

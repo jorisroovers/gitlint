@@ -1,6 +1,7 @@
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfig, LintConfigError
+from gitlint.hooks import GitHookInstaller
 import os
 import click
 import sys
@@ -35,6 +36,7 @@ def get_lint_config(config_path=None):
 
 
 @click.command()
+@click.option('--install-hook', is_flag=True, help="[experimental] Install gitlint as a git commit-msg hook")
 @click.option('-C', '--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
@@ -45,8 +47,11 @@ def get_lint_config(config_path=None):
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). Default: -vvv", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
-def cli(config, c, ignore, verbose, silent):
+def cli(install_hook, config, c, ignore, verbose, silent):
     """ Git lint tool, checks your git commit messages for styling issues """
+
+    if install_hook:
+        GitHookInstaller.install_commit_msg_hook()
 
     try:
         # Config precedence:

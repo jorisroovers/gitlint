@@ -66,6 +66,7 @@ Usage: gitlint [OPTIONS]
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
+  --install-hook     [experimental] Install gitlint as a git commit-msg hook
   -C, --config PATH  Config file location (default: .gitlint).
   -c TEXT            Config flags in format <rule>.<option>=<value> (e.g.: -c
                      T1.line-length=80). Flag can be used multiple times to
@@ -137,6 +138,26 @@ B1    | body-max-line-length        | Lines in the body must be &lt; 80 chars.
 B2    | body-trailing-whitespace    | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | Body cannot contain hard tab characters (\t)
 B4    | body-first-line-empty       | First line of the body (second line of commit message) must be empty
+
+## Experimental: git commit-msg hook ##
+You can also install gitlint as a git ```commit-msg``` hook so that gitlint checks your commit messages automatically
+after each commit.
+
+```bash
+gitlint --install-hook
+```
+
+Note that this is still an experimental feature missing with some important gaps:
+- When your commit message fails to pass gitlint validation,  your commit is aborted (intended) and the commit message
+ you just entered will be lost (unintended). To make this a bit less inconvenient, the gitlint ```commit-msg``` hook
+ will print the commit message you just entered to the commandline so that you can copy-paste and reuse it (this only
+ happens if your commit message contained any violations).
+- You currently cannot uninstall the ```commit-msg``` hook using gitlint. You will need to manually remove the hook from
+  ```.git/hooks/commit-msg``` in your local git repository.
+- Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg``` file in your
+  local repository, gitlint will refuse to install the ```commit-msg``` hook.
+
+
 
 ## Development ##
 
