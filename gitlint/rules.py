@@ -122,6 +122,7 @@ class LineMustNotContainWord(LineRule):
 class TitleMaxLength(MaxLineLength, CommitMessageTitleRule):
     name = "title-max-length"
     id = "T1"
+    options_spec = [IntOption('line-length', 72, "Max line length")]
     violation_message = "Title exceeds max length ({0}>{1})"
 
 

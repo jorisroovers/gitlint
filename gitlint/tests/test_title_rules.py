@@ -7,17 +7,17 @@ class TitleRuleTests(BaseTestCase):
         rule = TitleMaxLength()
 
         # assert no error
-        violation = rule.validate("a" * 80)
+        violation = rule.validate("a" * 72)
         self.assertIsNone(violation)
 
-        # assert error on line length > 81
-        expected_violation = RuleViolation("T1", "Title exceeds max length (81>80)", "a" * 81)
-        violations = rule.validate("a" * 81)
+        # assert error on line length > 72
+        expected_violation = RuleViolation("T1", "Title exceeds max length (73>72)", "a" * 73)
+        violations = rule.validate("a" * 73)
         self.assertListEqual(violations, [expected_violation])
 
-        # set line length to 120, and check no violation on length 81
+        # set line length to 120, and check no violation on length 73
         rule = TitleMaxLength({'line-length': 120})
-        violations = rule.validate("a" * 81)
+        violations = rule.validate("a" * 73)
         self.assertIsNone(violations)
 
         # assert raise on 121
