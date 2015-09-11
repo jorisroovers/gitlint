@@ -30,9 +30,9 @@ class IntOption(RuleOption):
 
     def _raise_exception(self, value):
         if self.allow_negative:
-            error_msg = "Option '{0}' must be an integer (current value: {1})".format(self.name, value)
+            error_msg = "Option '{0}' must be an integer (current value: '{1}')".format(self.name, value)
         else:
-            error_msg = "Option '{0}' must be a positive integer (current value: {1})".format(self.name, value)
+            error_msg = "Option '{0}' must be a positive integer (current value: '{1}')".format(self.name, value)
         raise RuleOptionError(error_msg)
 
     def set(self, value):

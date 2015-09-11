@@ -76,7 +76,7 @@ Options:
 ```
 
 
-## Config file ##
+## Configuration ##
 
 You can modify gitlint's behavior by specifying a config file like so: 
 ```bash
@@ -104,11 +104,27 @@ line-length=30
 words=wip,title
 ```
 
+Alternatively, you can use one or more ```-c``` flags like so:
+
+```
+$ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
+```
+The generic config flag format is ```-c <rule>.<option>=<value>``` and supports all the same rules and options which 
+you can also use in a ```.gitlint``` config file.
+
+### Config precedence ###
+gitlint's behavior can be configured in a couple of different ways.  Different config options take the following order
+of precedence:
+1. Commandline convenience flags (e.g.:  ```-vv```, ```--silent```, ```--ignore```)
+2. Commandline configuration flags (e.g.: ```-c title-max-length=123```)
+3. Configuration file (local ```.gitlint``` file, or file specified using ```-C```/```--config```)
+4. Default gitlint config
+
 ## Supported Rules ##
 
 ID    | Name                        | Description
 ------|-----------------------------|----------------------------------------------------
-T1    | title-max-length            | Title length must be &lt; 80 chars.
+T1    | title-max-length            | Title length must be &lt; 72 chars.
 T2    | title-trailing-whitespace   | Title cannot have trailing whitespace (space or tab)
 T3    | title-trailing-punctuation  | Title cannot have trailing punctuation (?:!.,;)
 T4    | title-hard-tab              | Title cannot contain hard tab characters (\t)
@@ -139,7 +155,6 @@ vagrant ssh
     - changed-file-mentioned: If a specific file is changed, it needs to be explicitly mentioned in the commit message
     - ...
 - Check the entire git log
-- Commandline arguments to set config, e.g.: -c general.ignore T2,B3
 - More Unit tests :D
 - Check a specific commit or range of commits, similar to how git log works, eg.: ```git log -1 -3```
 - Checks on different attributes of the the commit message: author, date, etc

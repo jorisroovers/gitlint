@@ -8,7 +8,7 @@ from gitlint.config import LintConfig
 class RuleOptionTests(BaseTestCase):
     def test_lint(self):
         linter = GitLinter(LintConfig())
-        violations = linter.lint_commit_message(self.get_sample("sample1.md"))
+        violations = linter.lint_commit_message(self.get_sample("commit_message/sample1"))
         expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
                                          "Commit title containing 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",

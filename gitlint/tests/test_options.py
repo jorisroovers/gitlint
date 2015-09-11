@@ -11,12 +11,12 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, 456)
 
         # error on negative int when not allowed
-        expected_error = "Option 'test-name' must be a positive integer \(current value: -123\)"
+        expected_error = "Option 'test-name' must be a positive integer \(current value: '-123'\)"
         with self.assertRaisesRegexp(RuleOptionError, expected_error):
             option.set(-123)
 
         # error on non-int value
-        expected_error = "Option 'test-name' must be a positive integer \(current value: foo\)"
+        expected_error = "Option 'test-name' must be a positive integer \(current value: 'foo'\)"
         with self.assertRaisesRegexp(RuleOptionError, expected_error):
             option.set("foo")
 
@@ -26,6 +26,6 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, -456)
 
         # error on non-int value when negative int is allowed
-        expected_error = "Option 'test-name' must be an integer \(current value: foo\)"
+        expected_error = "Option 'test-name' must be an integer \(current value: 'foo'\)"
         with self.assertRaisesRegexp(RuleOptionError, expected_error):
             option.set("foo")

@@ -20,6 +20,6 @@ class CLITests(BaseTestCase):
     def test_config_file_negative(self):
         args = ["--config", self.get_sample_path("foo"), self.get_sample_path("sample1.md")]
         result = self.cli.invoke(cli.cli, args)
-        expected_string = "Error: Invalid value for \"--config\": Path \"{0}\" does not exist.".format(
+        expected_string = "Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" does not exist.".format(
             self.get_sample_path("foo"))
         self.assertEqual(result.output.split("\n")[2], expected_string)
