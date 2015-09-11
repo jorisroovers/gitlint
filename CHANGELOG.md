@@ -1,11 +1,12 @@
 # Changelog #
 
-## v0.3.0dev (master) ##
+## v0.3.0 (2015-09-11) ##
 - ```title-must-not-contain-word``` now has a ```words``` option that can be used to specify which words should not
   occur in the title
 - gitlint violations are now printed to the stderr instead of stdout
 - Various minor bugfixes
 - gitlint now ignores commented out lines (i.e. starting with #) in your commit messages
+- Experimental: git commit-msg hook support
 - Under-the-hood: better test coverage :-)
 
 ## v0.2.0 (2015-09-10) ##
