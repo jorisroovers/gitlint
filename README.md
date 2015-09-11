@@ -1,15 +1,19 @@
-# gitlint
+# gitlint #
 
 [![Build Status](https://travis-ci.org/jorisroovers/gitlint.svg?branch=master)]
 (https://travis-ci.org/jorisroovers/gitlint)
 [![PyPi Package](https://img.shields.io/pypi/v/gitlint.png)]
 (https://pypi.python.org/pypi/gitlint)
 
-Git linter written in python. Checks your git log for style.
+Git commit message linter written in python.
 
-**NOTE: gitlint is still under active development. Please note that the version on pypi might not have all the features described below.**
+Great for use in a test script in your CI/CD pipeline (e.g. jenkins). Git hook support coming soon!
 
-If you are looking for an alternative written in Ruby, have a look at https://github.com/m1foley/fit-commit
+Note that not all features described below might be available in the latest stable version. Have a look at the
+[Changelog](CHANGELOG.md) for details.
+
+If you are looking for an alternative written in Ruby, have a look at
+[fit-commit](https://github.com/m1foley/fit-commit).
 
 ## Getting Started ##
 ```bash
@@ -19,6 +23,8 @@ pip install gitlint
 gitlint
 # Alternatively, pipe a commit message to gitlint:
 cat examples/commit-message-1 | gitlint
+# or
+git log -1 --pretty=%B | gitlint
 ```
 
 Output example:
@@ -76,7 +82,7 @@ You can modify gitlint's behavior by specifying a config file like so:
 ```bash
 gitlint --config myconfigfile 
 ```
-By default, gitlint will look for an **optional** ```.gitlint``` file for configuration.
+By default, gitlint will look for an optional ```.gitlint``` file for configuration.
 
 ```
 [general] 
@@ -139,4 +145,4 @@ vagrant ssh
 - Checks on different attributes of the the commit message: author, date, etc
 - github releases
 - git commit hooks
-- Changelog
+- title-must-not-contain-word: case sensitive match
