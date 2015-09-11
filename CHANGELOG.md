@@ -5,6 +5,7 @@
   occur in the title
 - gitlint violations are now printed to the stderr instead of stdout
 - Various minor bugfixes
+- gitlint now ignores commented out lines (i.e. starting with #) in your commit messages
 - Under-the-hood: better test coverage :-)
 
 ## v0.2.0 (2015-09-10) ##

@@ -162,7 +162,6 @@ vagrant ssh
 - More rule options:
     - title-must-not-contain-word: case sensitive match
     - title-trailing-punctuation: define punctuation
-
 - More unit tests :D
 - Check a range of commit messages at once (similar to how git log works, eg.: ```git log -3```)
 - Rules for different attributes of the the commit message: author, date, etc

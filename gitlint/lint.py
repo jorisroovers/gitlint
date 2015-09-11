@@ -44,8 +44,8 @@ class GitLinter(object):
         return all_violations
 
     def lint_commit_message(self, commit_message):
-        # determine commit message title, commit message body
-        lines = commit_message.split("\n")
+        # determine commit message title, commit message body, ignore lines starting with a #
+        lines = [line for line in commit_message.split("\n") if not line.startswith("#")]
         commit_message_title = [lines[0]]
         commit_message_body = lines[1:] if len(lines) > 1 else []
 
