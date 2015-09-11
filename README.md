@@ -133,8 +133,10 @@ vagrant ssh
     - changed-file-mentioned: If a specific file is changed, it needs to be explicitly mentioned in the commit message
     - ...
 - Check the entire git log
-- Rule specific configuration
 - Commandline arguments to set config, e.g.: -c general.ignore T2,B3
 - More Unit tests :D
 - Check a specific commit or range of commits, similar to how git log works, eg.: ```git log -1 -3```
 - Checks on different attributes of the the commit message: author, date, etc
+- github releases
+- git commit hooks
+- Changelog
