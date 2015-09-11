@@ -38,7 +38,7 @@ def get_lint_config(config_path=None):
 @click.option('-C', '--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
-              help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " + \
+              help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('-v', '--verbose', count=True, default=0,

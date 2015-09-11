@@ -5,11 +5,12 @@
   occur in the title
 - gitlint violations are now printed to the stderr instead of stdout
 - Various minor bugfixes
+- Under-the-hood: better test coverage :-)
 
 ## v0.2.0 (2015-09-10) ##
  - Rules can now have their behavior configured through options. 
    For example, the ```title-max-length``` rule now has a ```line-length``` option.
- - The codebase now has a basic level of unit test coverage, increasing overall quality assurance
+ - Under-the-hood: The codebase now has a basic level of unit test coverage, increasing overall quality assurance
  
 ## v0.1.1 (2015-09-08) ##
 - Bugfix: added missing ```sh``` dependency

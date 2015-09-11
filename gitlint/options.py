@@ -17,10 +17,10 @@ class RuleOption(object):
         pass  # pragma: no cover
 
     def __str__(self):
-        return "({}: {} ({}))".format(self.name, self.value, self.description) # pragma: no cover
+        return "({}: {} ({}))".format(self.name, self.value, self.description)  # pragma: no cover
 
     def __repr__(self):
-        return self.__str__() # pragma: no cover
+        return self.__str__()  # pragma: no cover
 
 
 class IntOption(RuleOption):
