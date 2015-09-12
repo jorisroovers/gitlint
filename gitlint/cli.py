@@ -1,7 +1,7 @@
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfig, LintConfigError
-from gitlint.hooks import GitHookInstaller
+from gitlint import hooks
 import os
 import click
 import sys
@@ -51,7 +51,14 @@ def cli(install_hook, config, c, ignore, verbose, silent):
     """ Git lint tool, checks your git commit messages for styling issues """
 
     if install_hook:
-        GitHookInstaller.install_commit_msg_hook()
+        try:
+            hooks.GitHookInstaller.install_commit_msg_hook()
+            # declare victory :-)
+            click.echo("Successfully installed gitlint commit-msg hook in {0}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH))
+            exit(0)
+        except hooks.GitHookInstallerError as e:
+            sys.stderr.write(e.message + "\n")
+            exit(1)
 
     try:
         # Config precedence:

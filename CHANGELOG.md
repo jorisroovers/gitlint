@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.4.0dev (master) ##
+
+
+
 ## v0.3.0 (2015-09-11) ##
 - ```title-must-not-contain-word``` now has a ```words``` option that can be used to specify which words should not
   occur in the title

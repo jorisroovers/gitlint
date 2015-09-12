@@ -1,18 +1,40 @@
 #!/bin/sh
 ### gitlint commit-msg hook start ###
 
+# Allows us to read user input below, assigns stdin to keyboard
+exec < /dev/tty
+
 cat "$1" | gitlint
 gitlint_exit_code=$?
 
+
+# Prompts a given yes/no question.
+# Returns 0 if user answers yes, 1 if no
+# Reprompts if different answer
+ask_yes_no(){
+    question="$1"
+    while true; do
+        read -e -p "$question" yn
+        case $yn in
+             [Yy]* ) return 0;;
+             [Nn]* ) return 1;;
+        esac
+    done
+}
+
 if [ $gitlint_exit_code -gt 0 ]; then
-    echo "----------------------"
-    echo "Your commit message: "
-    echo "----------------------"
-    cat "$1" | grep -v '^#'
+    echo "-----------------------------------------------"
+    echo "Your commit message contains the above errors."
+    cat "$1" > "${1}_gitlint_restore"
+    # cat "$1" | grep -v '^#'
+    if ask_yes_no "Continue with commit anyways (this keeps the current commit message)? [y/n] "; then
+        exit 0
+    else
+        echo "Commit aborted"
+    fi
+    exit $gitlint_exit_code
 else
     echo "gitlint: OK"
 fi
-
-exit $gitlint_exit_code
 
 ### gitlint commit-msg hook end ###
