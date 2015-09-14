@@ -119,6 +119,17 @@ class LineMustNotContainWord(LineRule):
         return violations if violations else None
 
 
+class LeadingWhiteSpace(LineRule):
+    name = "leading-whitespace"
+    id = "R6"
+    violation_message = "Line has leading whitespace"
+
+    def validate(self, line):
+        pattern = re.compile(r"^\s")
+        if pattern.search(line):
+            return RuleViolation(self.id, self.violation_message, line)
+
+
 class TitleMaxLength(MaxLineLength, CommitMessageTitleRule):
     name = "title-max-length"
     id = "T1"
@@ -156,6 +167,12 @@ class TitleMustNotContainWord(LineMustNotContainWord, CommitMessageTitleRule):
     violation_message = "Title contains the word '{0}' (case-insensitive)"
 
 
+class TitleLeadingWhitespace(LeadingWhiteSpace, CommitMessageTitleRule):
+    name = "title-leading-whitespace"
+    id = "T6"
+    violation_message = "Title has leading whitespace"
+
+
 class BodyMaxLength(MaxLineLength, CommitMessageBodyRule):
     name = "body-max-line-length"
     id = "B1"
@@ -179,3 +196,22 @@ class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
         if len(lines) >= 1:
             if lines[0] != "":
                 return [RuleViolation(self.id, "Second line is not empty", lines[0], 2)]
+
+
+class BodyTooShort(MultiLineRule, CommitMessageBodyRule):
+    name = "body-too-short"
+    id = "B5"
+
+    def validate(self, lines):
+        if len(lines) == 3:
+            if lines[0] == "" and len(lines[1]) <= 12:
+                return [RuleViolation(self.id, "Body message is too short", lines[1], 3)]
+
+
+class BodyMissing(MultiLineRule, CommitMessageBodyRule):
+    name = "body-is-missing"
+    id = "B6"
+
+    def validate(self, lines):
+        if len(lines) <= 2:
+            return [RuleViolation(self.id, "Body message is missing", '', 3)]
