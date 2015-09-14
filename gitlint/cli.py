@@ -1,11 +1,11 @@
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfig, LintConfigError
+from gitlint.git import GitCommitInfo
 from gitlint import hooks
 import os
 import click
 import sys
-import sh
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 CONFIG_ERROR_CODE = 10000
@@ -83,11 +83,12 @@ def cli(install_hook, config, c, ignore, verbose, silent):
 
     linter = GitLinter(lint_config)
     if sys.stdin.isatty():
-        # Use _tty_out = False to disable git color output
-        commit_msg = repr(sh.git.log("-1", "--pretty=%B", _tty_out=False))
+        commit_info = GitCommitInfo.get_latest_commit()
     else:
-        commit_msg = sys.stdin.read()
-    violations = linter.lint_commit_message(commit_msg)
+        commit_info = GitCommitInfo()
+        commit_info.commit_msg = sys.stdin.read()
+
+    violations = linter.lint_commit_message(commit_info.commit_msg)
     linter.print_violations(violations)
     exit(len(violations))
 
