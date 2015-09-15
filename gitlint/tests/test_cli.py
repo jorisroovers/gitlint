@@ -24,7 +24,7 @@ class CLITests(BaseTestCase):
     def test_config_file(self):
         config_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.exit_code, 1)  # single error: empty body
         self.assertEqual(result.output, "Using config from {}\n".format(config_path))
 
     def test_config_file_negative(self):
@@ -36,9 +36,10 @@ class CLITests(BaseTestCase):
 
     def test_input_stream(self):
         expected_output = "1: T2 Title has trailing whitespace: \"WIP: title \"\n" + \
-                          "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: title \"\n"
+                          "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: title \"\n" + \
+                          "3: B6 Body message is missing: \"\"\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, input='WIP: title \n')
             self.assertEqual(stderr.getvalue(), expected_output)
-            self.assertEqual(result.exit_code, 2)
+            self.assertEqual(result.exit_code, 3)

@@ -15,3 +15,6 @@ line-length=30
 # It's fine if the keyword occurs as part of a larger word (so "WIPING" will not cause a violation,
 # but "WIP: my title" will.
 words=wip,title
+
+[body-min-length]
+min-length=5

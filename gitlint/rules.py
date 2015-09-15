@@ -127,7 +127,7 @@ class LeadingWhiteSpace(LineRule):
     def validate(self, line):
         pattern = re.compile(r"^\s")
         if pattern.search(line):
-            return RuleViolation(self.id, self.violation_message, line)
+            return [RuleViolation(self.id, self.violation_message, line)]
 
 
 class TitleMaxLength(MaxLineLength, CommitMessageTitleRule):
@@ -173,7 +173,7 @@ class TitleLeadingWhitespace(LeadingWhiteSpace, CommitMessageTitleRule):
     violation_message = "Title has leading whitespace"
 
 
-class BodyMaxLength(MaxLineLength, CommitMessageBodyRule):
+class BodyMaxLineLength(MaxLineLength, CommitMessageBodyRule):
     name = "body-max-line-length"
     id = "B1"
 
@@ -198,14 +198,18 @@ class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
                 return [RuleViolation(self.id, "Second line is not empty", lines[0], 2)]
 
 
-class BodyTooShort(MultiLineRule, CommitMessageBodyRule):
-    name = "body-too-short"
+class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
+    name = "body-min-length"
     id = "B5"
+    options_spec = [IntOption('min-length', 20, "Minimum body length")]
 
     def validate(self, lines):
+        min_length = self.options['min-length'].value
         if len(lines) == 3:
-            if lines[0] == "" and len(lines[1]) <= 12:
-                return [RuleViolation(self.id, "Body message is too short", lines[1], 3)]
+            actual_length = len(lines[1])
+            if lines[0] == "" and actual_length <= min_length:
+                violation_message = "Body message is too short ({}<{})".format(actual_length, min_length)
+                return [RuleViolation(self.id, violation_message, lines[1], 3)]
 
 
 class BodyMissing(MultiLineRule, CommitMessageBodyRule):
