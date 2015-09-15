@@ -1,7 +1,7 @@
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfig, LintConfigError
-from gitlint.git import GitCommitInfo
+from gitlint.git import GitContext
 from gitlint import hooks
 import os
 import click
@@ -83,12 +83,12 @@ def cli(install_hook, config, c, ignore, verbose, silent):
 
     linter = GitLinter(lint_config)
     if sys.stdin.isatty():
-        commit_info = GitCommitInfo.get_latest_commit()
+        gitcontext = GitContext.from_environment()
     else:
-        commit_info = GitCommitInfo()
-        commit_info.commit_msg = sys.stdin.read()
+        gitcontext = GitContext()
+        gitcontext.commit_msg = sys.stdin.read()
 
-    violations = linter.lint_commit_message(commit_info.commit_msg)
+    violations = linter.lint(gitcontext)
     linter.print_violations(violations)
     exit(len(violations))
 

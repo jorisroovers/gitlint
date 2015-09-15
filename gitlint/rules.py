@@ -73,7 +73,7 @@ class MaxLineLength(LineRule):
     options_spec = [IntOption('line-length', 80, "Max line length")]
     violation_message = "Line exceeds max length ({0}>{1})"
 
-    def validate(self, line):
+    def validate(self, line, gitcontext):
         max_length = self.options['line-length'].value
         if len(line) > max_length:
             return [RuleViolation(self.id, self.violation_message.format(len(line), max_length), line)]
@@ -84,7 +84,7 @@ class TrailingWhiteSpace(LineRule):
     id = "R2"
     violation_message = "Line has trailing whitespace"
 
-    def validate(self, line):
+    def validate(self, line, gitcontext):
         pattern = re.compile(r"\s$")
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
@@ -95,7 +95,7 @@ class HardTab(LineRule):
     id = "R3"
     violation_message = "Line contains hard tab characters (\\t)"
 
-    def validate(self, line):
+    def validate(self, line, gitcontext):
         if "\t" in line:
             return [RuleViolation(self.id, self.violation_message, line)]
 
@@ -108,7 +108,7 @@ class LineMustNotContainWord(LineRule):
     options_spec = [ListOption('words', [], "Comma seperated list of words that should not be found")]
     violation_message = "Line contains {0}"
 
-    def validate(self, line):
+    def validate(self, line, gitcontext):
         strings = self.options['words'].value
         violations = []
         for string in strings:
@@ -124,7 +124,7 @@ class LeadingWhiteSpace(LineRule):
     id = "R6"
     violation_message = "Line has leading whitespace"
 
-    def validate(self, line):
+    def validate(self, line, gitcontext):
         pattern = re.compile(r"^\s")
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
@@ -147,7 +147,7 @@ class TitleTrailingPunctuation(CommitMessageTitleRule):
     name = "title-trailing-punctuation"
     id = "T3"
 
-    def validate(self, line):
+    def validate(self, line, gitcontext):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
             if line.endswith(punctuation_mark):
@@ -192,7 +192,7 @@ class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
     name = "body-first-line-empty"
     id = "B4"
 
-    def validate(self, lines):
+    def validate(self, lines, gitcontext):
         if len(lines) >= 1:
             if lines[0] != "":
                 return [RuleViolation(self.id, "Second line is not empty", lines[0], 2)]
@@ -203,7 +203,7 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
     id = "B5"
     options_spec = [IntOption('min-length', 20, "Minimum body length")]
 
-    def validate(self, lines):
+    def validate(self, lines, gitcontext):
         min_length = self.options['min-length'].value
         if len(lines) == 3:
             actual_length = len(lines[1])
@@ -216,6 +216,6 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
     name = "body-is-missing"
     id = "B6"
 
-    def validate(self, lines):
+    def validate(self, lines, gitcontext):
         if len(lines) <= 2:
             return [RuleViolation(self.id, "Body message is missing", '', 3)]
