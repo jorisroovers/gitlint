@@ -86,7 +86,7 @@ def cli(install_hook, config, c, ignore, verbose, silent):
         gitcontext = GitContext.from_environment()
     else:
         gitcontext = GitContext()
-        gitcontext.commit_msg = sys.stdin.read()
+        gitcontext.set_commit_msg(sys.stdin.read())
 
     violations = linter.lint(gitcontext)
     linter.print_violations(violations)

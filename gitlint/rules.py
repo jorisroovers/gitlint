@@ -150,8 +150,9 @@ class TitleTrailingPunctuation(CommitMessageTitleRule):
     def validate(self, line, gitcontext):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
-            if line.endswith(punctuation_mark):
-                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), line)]
+            if gitcontext.commit_msg.title.endswith(punctuation_mark):
+                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark),
+                                      gitcontext.commit_msg.title)]
 
 
 class TitleHardTab(HardTab, CommitMessageTitleRule):

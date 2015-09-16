@@ -14,7 +14,7 @@ class RuleOptionTests(BaseTestCase):
     def test_lint(self):
         linter = GitLinter(LintConfig())
         gitcontext = GitContext()
-        gitcontext.commit_msg = self.get_sample("commit_message/sample1")
+        gitcontext.set_commit_msg(self.get_sample("commit_message/sample1"))
         violations = linter.lint(gitcontext)
         expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
                                          "Commit title containing 'WIP', as well as trailing punctuation.", 1),

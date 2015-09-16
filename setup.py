@@ -34,7 +34,7 @@ setup(
         "License :: OSI Approved :: MIT License"
     ],
     install_requires=[
-        'Click==4.1',
+        'Click==5.1',
         'sh==1.11'
     ],
     keywords='gitlint git lint',

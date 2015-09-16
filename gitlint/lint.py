@@ -44,16 +44,11 @@ class GitLinter(object):
         return all_violations
 
     def lint(self, gitcontext):
-        # determine commit message title, commit message body, ignore lines starting with a #
-        lines = [line for line in gitcontext.commit_msg.split("\n") if not line.startswith("#")]
-        commit_message_title = [lines[0]]
-        commit_message_body = lines[1:] if len(lines) > 1 else []
-
         # determine violations by applying all rules
-        violations = self._apply_line_rules(commit_message_title, self.title_line_rules, 1, gitcontext)
-        violations.extend(self._apply_line_rules(commit_message_body, self.body_line_rules, 2, gitcontext))
-        violations.extend(self._apply_multiline_rules(commit_message_body, self.body_multiline_rules, gitcontext))
-
+        violations = self._apply_line_rules([gitcontext.commit_msg.title], self.title_line_rules, 1, gitcontext)
+        violations.extend(self._apply_line_rules(gitcontext.commit_msg.body, self.body_line_rules, 2, gitcontext))
+        violations.extend(self._apply_multiline_rules(gitcontext.commit_msg.body, self.body_multiline_rules,
+                                                      gitcontext))
         # sort violations by line number
         violations.sort(key=lambda v: v.line_nr)  # sort violations by line number
         return violations
