@@ -1,6 +1,4 @@
-pip==7.1.0
 setuptools
 wheel==0.24.0
 Click==5.1
 sh==1.11
-
