@@ -5,10 +5,11 @@ VAGRANTFILE_API_VERSION = "2"
 
 INSTALL_DEPS=<<EOF
 sudo apt-get update
-sudo apt-get install -y python-pip python-virtualenv git ipython
+sudo apt-get install -y python-virtualenv git ipython
 cd /vagrant
 virtualenv .venv
 source .venv/bin/activate
+easy_install -U pip
 pip install -r requirements.txt
 pip install -r test-requirements.txt
 grep 'cd /vagrant' /home/vagrant/.bashrc ||
