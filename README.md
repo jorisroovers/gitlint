@@ -138,6 +138,7 @@ B1    | body-max-line-length        | Lines in the body must be &lt; 80 chars.
 B2    | body-trailing-whitespace    | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | Body cannot contain hard tab characters (\t)
 B4    | body-first-line-empty       | First line of the body (second line of commit message) must be empty
+B7    | body-changed-file-mention   | Body must contain references to certain files if those files are changed (set of files to monitor is configurable).
 
 ## Experimental: git commit-msg hook ##
 You can also install gitlint as a git ```commit-msg``` hook so that gitlint checks your commit messages automatically
@@ -178,12 +179,12 @@ vagrant ssh
 ## Wishlist ##
 - More rules: 
     - title-regex: Title must match a given regex
-    - changed-file-mentioned: If a specific file is changed, it needs to be explicitly mentioned in the commit message
     - ...
 - More rule options:
     - title-must-not-contain-word: case sensitive match
     - title-trailing-punctuation: define punctuation
-- More unit tests :D
 - Check a range of commit messages at once (similar to how git log works, eg.: ```git log -3```)
 - Rules for different attributes of the the commit message: author, date, etc
-- Git commit hooks
+- Developer convenience:
+    - run_tests.sh: Run specific tests
+    - More unit tests, always more unit tests

@@ -23,7 +23,8 @@ class LintConfig(object):
                             rules.BodyMissing,
                             rules.BodyTrailingWhitespace,
                             rules.BodyHardTab,
-                            rules.BodyFirstLineEmpty]
+                            rules.BodyFirstLineEmpty,
+                            rules.BodyChangedFileMention]
 
     def __init__(self, config_path=None):
         # Use an ordered dict so that the order in which rules are applied is always the same

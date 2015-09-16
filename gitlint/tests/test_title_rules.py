@@ -1,16 +1,9 @@
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext
 from gitlint.rules import TitleMaxLength, TitleTrailingWhitespace, TitleHardTab, TitleMustNotContainWord, \
     TitleTrailingPunctuation, RuleViolation
 
 
 class TitleRuleTests(BaseTestCase):
-    def _gitcontext(self, commit_msg_str):
-        """ Utility method to easily create gitcontext objects based on a given commit msg string """
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(commit_msg_str)
-        return gitcontext
-
     def test_max_line_length(self):
         rule = TitleMaxLength()
 
@@ -66,14 +59,14 @@ class TitleRuleTests(BaseTestCase):
         rule = TitleTrailingPunctuation()
 
         # assert no error
-        violations = rule.validate(None, self._gitcontext("This is a test"))
+        violations = rule.validate(None, self.gitcontext("This is a test"))
         self.assertIsNone(violations)
 
         # assert errors for different punctuations
         punctuation = "?:!.,;"
         for char in punctuation:
             line = "This is a test" + char
-            gitcontext = self._gitcontext(line)
+            gitcontext = self.gitcontext(line)
             expected_violation = RuleViolation("T3", "Title has trailing punctuation ({})".format(char), line)
             violations = rule.validate(None, gitcontext)
             self.assertListEqual(violations, [expected_violation])

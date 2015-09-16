@@ -25,7 +25,7 @@ class GitCommitMessage(object):
 class GitContext(object):
     def __init__(self):
         self.commit_msg = None
-        self.files_changed = None
+        self.files_changed = []
 
     def set_commit_msg(self, commit_msg_str):
         """  Sets the commit message by parsing a given string into the different parts of a commit message """

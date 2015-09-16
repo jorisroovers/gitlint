@@ -65,3 +65,42 @@ class BodyRuleTests(BaseTestCase):
         expected_violation = rules.RuleViolation("B4", "Second line is not empty", "not empty", 2)
         violations = rule.validate(["not empty", "This is the second body line"], None)
         self.assertListEqual(violations, [expected_violation])
+
+    def test_body_changed_file_mention(self):
+        rule = rules.BodyChangedFileMention()
+
+        # assert no error when no files have changed and no files need to be mentioned
+        gitcontext = self.gitcontext("This is a test\n\nHere is a mention of foo/test.py")
+        violations = rule.validate(None, gitcontext)
+        self.assertIsNone(violations)
+
+        # assert no error when no files have changed but certain files need to be mentioned on change
+        rule = rules.BodyChangedFileMention({'files': "bar.txt,foo/test.py"})
+        gitcontext = self.gitcontext("This is a test\n\nHere is a mention of foo/test.py")
+        violations = rule.validate(None, gitcontext)
+        self.assertIsNone(violations)
+
+        # assert no error if a file has changed and is mentioned
+        gitcontext = self.gitcontext("This is a test\n\nHere is a mention of foo/test.py", ["foo/test.py"])
+        violations = rule.validate(None, gitcontext)
+        self.assertIsNone(violations)
+
+        # assert no error if multiple files have changed and are mentioned
+        commit_msg = "This is a test\n\nHere is a mention of foo/test.py\nAnd here is a mention of bar.txt"
+        gitcontext = self.gitcontext(commit_msg, ["foo/test.py", "bar.txt"])
+        violations = rule.validate(None, gitcontext)
+        self.assertIsNone(violations)
+
+        # assert error if file has changed and is not mentioned
+        commit_msg = "This is a test\n\nHere is a mention of\nAnd here is a mention of bar.txt"
+        gitcontext = self.gitcontext(commit_msg, ["foo/test.py", "bar.txt"])
+        violations = rule.validate(None, gitcontext)
+        expected_violation = rules.RuleViolation("B7", "Body does not mention changed file 'foo/test.py'", None, 4)
+        self.assertEqual([expected_violation], violations)
+
+        # assert multiple errors if  multiple files habe changed and are not mentioned
+        commit_msg = "This is a test\n\nHere is a mention of\nAnd here is a mention of"
+        gitcontext = self.gitcontext(commit_msg, ["foo/test.py", "bar.txt"])
+        violations = rule.validate(None, gitcontext)
+        expected_violation_2 = rules.RuleViolation("B7", "Body does not mention changed file 'bar.txt'", None, 4)
+        self.assertEqual([expected_violation_2, expected_violation], violations)

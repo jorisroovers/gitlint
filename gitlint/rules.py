@@ -105,7 +105,7 @@ class LineMustNotContainWord(LineRule):
     violation, e.g: WIPING is not a violation if 'WIP' is a word that is not allowed.) """
     name = "line-must-not-contain"
     id = "R5"
-    options_spec = [ListOption('words', [], "Comma seperated list of words that should not be found")]
+    options_spec = [ListOption('words', [], "Comma separated list of words that should not be found")]
     violation_message = "Line contains {0}"
 
     def validate(self, line, gitcontext):
@@ -220,3 +220,21 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
     def validate(self, lines, gitcontext):
         if len(lines) <= 2:
             return [RuleViolation(self.id, "Body message is missing", '', 3)]
+
+
+class BodyChangedFileMention(MultiLineRule, CommitMessageBodyRule):
+    name = "body-changed-file-mention"
+    id = "B7"
+    options_spec = [ListOption('files', [], "Files that need to be mentioned ")]
+
+    def validate(self, lines, gitcontext):
+        violations = []
+        for needs_mentioned_file in self.options['files'].value:
+            # if a file that we need to look out for is actually changed, then check whether it occurs
+            # in the commit msg body
+            if needs_mentioned_file in gitcontext.changed_files:
+                if needs_mentioned_file not in " ".join(gitcontext.commit_msg.body):
+                    violation_message = "Body does not mention changed file '{}'".format(needs_mentioned_file)
+                    violations.append(RuleViolation(self.id, violation_message, None,
+                                                    len(gitcontext.commit_msg.body) + 1))
+        return violations if violations else None
