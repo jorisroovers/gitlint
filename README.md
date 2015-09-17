@@ -60,7 +60,7 @@ The default verbosity is ```-vvv```.
 
 Other commands and variations:
 
-```bash
+```
 Usage: gitlint [OPTIONS]
 
   Git lint tool, checks your git commit messages for styling issues
@@ -89,10 +89,11 @@ gitlint --config myconfigfile
 ```
 By default, gitlint will look for an optional ```.gitlint``` file for configuration.
 
-```
-[general] 
+```ini
+[general]
 ignore=title-trailing-punctuation, T3
-# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
+# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over
+# this
 verbosity = 2
 
 [title-max-length]
@@ -103,10 +104,20 @@ line-length=20
 line-length=30
 
 [title-must-not-contain-word]
-# Comma-seperated list of words that should not occur in the title. Matching is case insensitive.
-# It's fine if the keyword occurs as part of a larger word (so "WIPING" will not cause a violation,
-# but "WIP: my title" will.
+# Comma-seperated list of words that should not occur in the title. Matching is case
+# insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING"
+# will not cause a violation, but "WIP: my title" will.
 words=wip,title
+
+[body-min-length]
+min-length=5
+
+[body-changed-file-mention]
+# List of files that need to be explicitly mentioned in the body when they are changed
+# This is useful for when developers often erroneously edit certain files or git submodules.
+# By specifying this rule, developers can only change the file when they explicitly reference
+# it in the commit message.
+files=gitlint/rules.py,README.md
 ```
 
 Alternatively, you can use one or more ```-c``` flags like so:

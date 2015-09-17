@@ -193,10 +193,11 @@ class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
     name = "body-first-line-empty"
     id = "B4"
 
-    def validate(self, lines, gitcontext):
-        if len(lines) >= 1:
-            if lines[0] != "":
-                return [RuleViolation(self.id, "Second line is not empty", lines[0], 2)]
+    def validate(self, gitcontext):
+        if len(gitcontext.commit_msg.body) >= 1:
+            first_line = gitcontext.commit_msg.body[0]
+            if first_line != "":
+                return [RuleViolation(self.id, "Second line is not empty", first_line, 2)]
 
 
 class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
@@ -204,8 +205,9 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
     id = "B5"
     options_spec = [IntOption('min-length', 20, "Minimum body length")]
 
-    def validate(self, lines, gitcontext):
+    def validate(self, gitcontext):
         min_length = self.options['min-length'].value
+        lines = gitcontext.commit_msg.body
         if len(lines) == 3:
             actual_length = len(lines[1])
             if lines[0] == "" and actual_length <= min_length:
@@ -217,8 +219,8 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
     name = "body-is-missing"
     id = "B6"
 
-    def validate(self, lines, gitcontext):
-        if len(lines) <= 2:
+    def validate(self, gitcontext):
+        if len(gitcontext.commit_msg.body) <= 2:
             return [RuleViolation(self.id, "Body message is missing", '', 3)]
 
 
@@ -227,7 +229,7 @@ class BodyChangedFileMention(MultiLineRule, CommitMessageBodyRule):
     id = "B7"
     options_spec = [ListOption('files', [], "Files that need to be mentioned ")]
 
-    def validate(self, lines, gitcontext):
+    def validate(self, gitcontext):
         violations = []
         for needs_mentioned_file in self.options['files'].value:
             # if a file that we need to look out for is actually changed, then check whether it occurs
