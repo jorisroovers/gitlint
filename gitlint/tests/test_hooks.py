@@ -1,17 +1,21 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.hooks import GitHookInstaller, GitHookInstallerError, COMMIT_MSG_HOOK_SRC_PATH, COMMIT_MSG_HOOK_DST_PATH
-from mock import patch
+from mock import patch, ANY
 
 
 class HookTests(BaseTestCase):
+    @patch('os.chmod')
+    @patch('os.stat')
     @patch('gitlint.hooks.shutil.copy')
     @patch('os.path.exists', return_value=False)
     @patch('os.path.isdir', return_value=True)
-    def test_install_commit_msg_hook(self, isdir, path_exists, copy):
+    def test_install_commit_msg_hook(self, isdir, path_exists, copy, stat, chmod):
         GitHookInstaller.install_commit_msg_hook()
         isdir.assert_called_once_with('.git/hooks')
         path_exists.assert_called_once_with(COMMIT_MSG_HOOK_DST_PATH)
         copy.assert_called_once_with(COMMIT_MSG_HOOK_SRC_PATH, COMMIT_MSG_HOOK_DST_PATH)
+        stat.assert_called_once_with(COMMIT_MSG_HOOK_DST_PATH)
+        chmod.assert_called_once_with(COMMIT_MSG_HOOK_DST_PATH, ANY)
 
     @patch('gitlint.hooks.shutil.copy')
     @patch('os.path.exists', return_value=False)

@@ -26,4 +26,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dev.vm.provision "shell", inline: "#{INSTALL_DEPS}"
     end
 
+    if Vagrant.has_plugin?("vagrant-cachier")
+        config.cache.scope = :box
+    end
+
 end
