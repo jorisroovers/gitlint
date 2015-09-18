@@ -1,6 +1,6 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import TitleMaxLength, TitleTrailingWhitespace, TitleHardTab, TitleMustNotContainWord, \
-    TitleTrailingPunctuation, RuleViolation
+    TitleTrailingPunctuation, TitleLeadingWhitespace, RuleViolation
 
 
 class TitleRuleTests(BaseTestCase):
@@ -108,3 +108,20 @@ class TitleRuleTests(BaseTestCase):
         expected_violation2 = RuleViolation("T5", "Title contains the word 'test' (case-insensitive)",
                                             "WIP:This is a test")
         self.assertListEqual(violations, [expected_violation, expected_violation2])
+
+    def test_leading_whitespace(self):
+        rule = TitleLeadingWhitespace()
+
+        # assert no error
+        violations = rule.validate("a", None)
+        self.assertIsNone(violations)
+
+        # leading space
+        expected_violation = RuleViolation("T6", "Title has leading whitespace", " a")
+        violations = rule.validate(" a", None)
+        self.assertListEqual(violations, [expected_violation])
+
+        # leading tab
+        expected_violation = RuleViolation("T6", "Title has leading whitespace", "\ta")
+        violations = rule.validate("\ta", None)
+        self.assertListEqual(violations, [expected_violation])
