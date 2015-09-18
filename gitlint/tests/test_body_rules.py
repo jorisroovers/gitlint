@@ -69,6 +69,54 @@ class BodyRuleTests(BaseTestCase):
         violations = rule.validate(gitcontext)
         self.assertListEqual(violations, [expected_violation])
 
+    def test_body_min_length(self):
+        rule = rules.BodyMinLength()
+
+        # assert no error - body is long enough
+        gitcontext = self.gitcontext("Title\n\nThis is the second body line\n")
+        violations = rule.validate(gitcontext)
+        self.assertIsNone(violations)
+
+        # assert no error - no body
+        gitcontext = self.gitcontext("Title\n")
+        violations = rule.validate(gitcontext)
+        self.assertIsNone(violations)
+
+        # assert no error - short but more than one body line
+        gitcontext = self.gitcontext("Title\n\nsecond\nthird\n")
+        violations = rule.validate(gitcontext)
+        self.assertIsNone(violations)
+
+        # body is too short
+        expected_violation = rules.RuleViolation("B5", "Body message is too short (8<20)", "tooshort", 3)
+
+        gitcontext = self.gitcontext("Title\n\ntooshort\n")
+        violations = rule.validate(gitcontext)
+        self.assertListEqual(violations, [expected_violation])
+
+        # set line length to 120, and check violation on length 21
+        expected_violation = rules.RuleViolation("B5", "Body message is too short (21<120)", "a" * 21, 3)
+
+        rule = rules.BodyMinLength({'min-length': 120})
+        gitcontext = self.gitcontext("Title\n\n%s\n" % ("a" * 21))
+        violations = rule.validate(gitcontext)
+        self.assertListEqual(violations, [expected_violation])
+
+    def test_body_missing(self):
+        rule = rules.BodyMissing()
+
+        # assert no error - body is present
+        gitcontext = self.gitcontext("Title\n\nThis is the first body line\n")
+        violations = rule.validate(gitcontext)
+        self.assertIsNone(violations)
+
+        # body is too short
+        expected_violation = rules.RuleViolation("B6", "Body message is missing", "", 3)
+
+        gitcontext = self.gitcontext("Title\n")
+        violations = rule.validate(gitcontext)
+        self.assertListEqual(violations, [expected_violation])
+
     def test_body_changed_file_mention(self):
         rule = rules.BodyChangedFileMention()
 
