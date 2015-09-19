@@ -36,7 +36,7 @@ def get_lint_config(config_path=None):
 
 
 @click.command()
-@click.option('--install-hook', is_flag=True, help="[experimental] Install gitlint as a git commit-msg hook")
+@click.option('--install-hook', is_flag=True, help="Install gitlint as a git commit-msg hook")
 @click.option('-C', '--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
