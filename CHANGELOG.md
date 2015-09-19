@@ -1,5 +1,7 @@
 # Changelog #
 
+## v0.5.0dev (master) ##
+
 ## v0.4.1 (2015-09-19) ##
 
 - Internal fix: added missing comma to setup.py which prevented pypi upload
