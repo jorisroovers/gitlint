@@ -57,6 +57,7 @@ docs/_build/
 target/
 
 .venv/
+virtualenv
 
 # Vagrant
 .vagrant

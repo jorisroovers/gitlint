@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 
 help(){
@@ -31,9 +31,14 @@ run_pep8_check(){
 run_unit_tests(){
     OMIT="*dist-packages*,*site-packages*,gitlint/tests/*"
     coverage run --omit=$OMIT -m unittest discover -v
+    TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
         COVERAGE_REPORT=$(coverage report -m)
         echo "$COVERAGE_REPORT"
+    fi
+
+    if [ $TEST_RESULT  -gt 0 ]; then
+        exit $TEST_RESULT;
     fi
 }
 
