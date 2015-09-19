@@ -49,7 +49,7 @@ setup(
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Quality Assurance",
-        "Topic :: Software Development :: Testing"
+        "Topic :: Software Development :: Testing",
         "License :: OSI Approved :: MIT License"
     ],
     install_requires=[
