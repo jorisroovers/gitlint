@@ -1,9 +1,9 @@
 # Changelog #
 
-## v0.4.0dev (master) ##
+## v0.4.0 (2015-09-19) ##
 
 - New rules: ```body-is-missing```, ```body-min-length```, ```title-leading-whitespace```,
-  ```body-changed-file-mention```. Details can be found in the [Rules section of the README](README.md#supported-rules).
+  ```body-changed-file-mention```. Details can be found in the [Rules section of the README](README.md#rules).
 - The git ```commit-msg```  hook now allows you to keep or discard the commit when it fails gitlint validation
 - gitlint is now also released as a [python wheel](http://pythonwheels.com/) on pypi.
 - Internal: rule classes now have access to a gitcontext containing body the commit message and the files changed in the
