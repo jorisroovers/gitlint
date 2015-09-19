@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.4.1 (2015-09-19) ##
+
+- Internal fix: added missing comma to setup.py which prevented pypi upload
+
 ## v0.4.0 (2015-09-19) ##
 
 - New rules: ```body-is-missing```, ```body-min-length```, ```title-leading-whitespace```,
