@@ -221,7 +221,7 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
 
     def validate(self, gitcontext):
         if len(gitcontext.commit_msg.body) <= 2:
-            return [RuleViolation(self.id, "Body message is missing", '', 3)]
+            return [RuleViolation(self.id, "Body message is missing", None, 3)]
 
 
 class BodyChangedFileMention(MultiLineRule, CommitMessageBodyRule):

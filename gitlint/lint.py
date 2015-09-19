@@ -57,4 +57,7 @@ class GitLinter(object):
         for v in violations:
             self.display.e("{}: {}".format(v.line_nr, v.rule_id), exact=True)
             self.display.ee("{}: {} {}".format(v.line_nr, v.rule_id, v.message), exact=True)
-            self.display.eee("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
+            if v.content:
+                self.display.eee("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
+            else:
+                self.display.eee("{}: {} {}".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)

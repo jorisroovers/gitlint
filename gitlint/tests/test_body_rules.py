@@ -111,7 +111,7 @@ class BodyRuleTests(BaseTestCase):
         self.assertIsNone(violations)
 
         # body is too short
-        expected_violation = rules.RuleViolation("B6", "Body message is missing", "", 3)
+        expected_violation = rules.RuleViolation("B6", "Body message is missing", None, 3)
 
         gitcontext = self.gitcontext("Title\n")
         violations = rule.validate(gitcontext)

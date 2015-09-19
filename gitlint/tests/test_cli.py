@@ -37,7 +37,7 @@ class CLITests(BaseTestCase):
     def test_input_stream(self):
         expected_output = "1: T2 Title has trailing whitespace: \"WIP: title \"\n" + \
                           "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: title \"\n" + \
-                          "3: B6 Body message is missing: \"\"\n"
+                          "3: B6 Body message is missing\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, input='WIP: title \n')
