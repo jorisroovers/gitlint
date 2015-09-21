@@ -23,6 +23,11 @@ class RuleOption(object):
         return self.__str__()  # pragma: no cover
 
 
+class StrOption(RuleOption):
+    def set(self, value):
+        self.value = str(value)
+
+
 class IntOption(RuleOption):
     def __init__(self, name, value, description, allow_negative=False):
         super(IntOption, self).__init__(name, value, description)
@@ -50,4 +55,4 @@ class ListOption(RuleOption):
         super(ListOption, self).__init__(name, value, description)
 
     def set(self, value):
-        self.value = [item.strip() for item in str(value).split(",")]
+        self.value = [item.strip() for item in str(value).split(",") if item.strip() != ""]

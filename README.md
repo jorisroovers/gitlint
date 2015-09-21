@@ -229,10 +229,14 @@ python setup.py --long-description | rst2html.py > output.html
     - Overwrite rules: In some cases, gitlint config might need to disabled/overwritten for a specific commit. This
       could be done using by adding lines similar to ```gitlint: disable``` or
       ```gitlint-config: general.ignore=T2, T1.line-length=100``` to the commit message.
+    - max-lines-change: Maximum lines of change in a single commit (-1 = unlimited)
     - ...
 - More rule options:
     - title-must-not-contain-word: case sensitive match
     - title-trailing-punctuation: define punctuation
+- Rule improvements:
+    - body-changed-file-mention: list all files/directories that need to be mentioned as part of the violation
+    - body-changed-file-mention: distinction between change file and directory in output
 - Git hooks:
     - uninstall of gitlint ```commit-msg``` hook (only uninstall if the hook is a gitlint hook)
     - appending to an existing hook (after user confirmation)

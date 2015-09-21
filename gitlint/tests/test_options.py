@@ -1,6 +1,6 @@
 from gitlint.tests.base import BaseTestCase
 
-from gitlint.options import IntOption, RuleOptionError
+from gitlint.options import IntOption, StrOption, ListOption, RuleOptionError
 
 
 class RuleOptionTests(BaseTestCase):
@@ -29,3 +29,35 @@ class RuleOptionTests(BaseTestCase):
         expected_error = "Option 'test-name' must be an integer \(current value: 'foo'\)"
         with self.assertRaisesRegexp(RuleOptionError, expected_error):
             option.set("foo")
+
+    def test_str_option(self):
+        # normal behavior
+        option = StrOption("test-name", "bar", "Test Description")
+        option.set("foo")
+        self.assertEqual(option.value, "foo")
+
+        # conversion to str
+        option.set(123)
+        self.assertEqual(option.value, "123")
+
+        # conversion to str
+        option.set(-123)
+        self.assertEqual(option.value, "-123")
+
+    def test_list_option(self):
+        # normal behavior
+        option = ListOption("test-name", "bar", "Test Description")
+        option.set("a,b,c,d")
+        self.assertListEqual(option.value, ["a", "b", "c", "d"])
+
+        # trailing comma
+        option.set("e,f,g,")
+        self.assertListEqual(option.value, ["e", "f", "g"])
+
+        # spaces should be trimmed
+        option.set(" abc , def   , ghi \t ")
+        self.assertListEqual(option.value, ["abc", "def", "ghi"])
+
+        # conversion to string before split
+        option.set(123)
+        self.assertListEqual(option.value, ["123"])
