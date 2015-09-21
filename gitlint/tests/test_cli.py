@@ -1,5 +1,6 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint import cli
+from gitlint import hooks
 from gitlint import __version__
 
 from click.testing import CliRunner
@@ -21,10 +22,11 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--version"])
         self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
 
-    def test_config_file(self):
+    @patch('gitlint.cli.GitLinter')
+    def test_config_file(self, git_linter):
         config_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        self.assertEqual(result.exit_code, 1)  # single error: empty body
+        self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, "Using config from {}\n".format(config_path))
 
     def test_config_file_negative(self):
@@ -43,3 +45,18 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli, input='WIP: title \n')
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 3)
+
+    @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
+    def test_install_hook(self, install_hook):
+        result = self.cli.invoke(cli.cli, ["--install-hook"])
+        expected = "Successfully installed gitlint commit-msg hook in {}\n\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH)
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.output, expected)
+        install_hook.assert_called_once_with()
+
+    @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
+    def test_install_hook_negative(self, install_hook):
+        result = self.cli.invoke(cli.cli, ["--install-hook"])
+        self.assertEqual(result.exit_code, 1)
+        self.assertEqual(result.output, "test\n")
+        install_hook.assert_called_once_with()

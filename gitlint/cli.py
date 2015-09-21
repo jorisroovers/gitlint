@@ -35,8 +35,21 @@ def get_lint_config(config_path=None):
     return config
 
 
+def install_hook(ctx, param, value):
+    if value:
+        try:
+            hooks.GitHookInstaller.install_commit_msg_hook()
+            # declare victory :-)
+            click.echo("Successfully installed gitlint commit-msg hook in {0}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH))
+            ctx.exit(0)
+        except hooks.GitHookInstallerError as e:
+            click.echo(e.message, err=True)
+            ctx.exit(1)
+
+
 @click.command()
-@click.option('--install-hook', is_flag=True, help="Install gitlint as a git commit-msg hook")
+@click.option('--install-hook', is_flag=True, callback=install_hook, is_eager=True, expose_value=False,
+              help="Install gitlint as a git commit-msg hook")
 @click.option('-C', '--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
@@ -47,18 +60,8 @@ def get_lint_config(config_path=None):
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). Default: -vvv", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
-def cli(install_hook, config, c, ignore, verbose, silent):
+def cli(config, c, ignore, verbose, silent):
     """ Git lint tool, checks your git commit messages for styling issues """
-
-    if install_hook:
-        try:
-            hooks.GitHookInstaller.install_commit_msg_hook()
-            # declare victory :-)
-            click.echo("Successfully installed gitlint commit-msg hook in {0}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH))
-            exit(0)
-        except hooks.GitHookInstallerError as e:
-            sys.stderr.write(e.message + "\n")
-            exit(1)
 
     try:
         # Config precedence:
@@ -81,13 +84,13 @@ def cli(install_hook, config, c, ignore, verbose, silent):
         click.echo("Config Error: {0}".format(e.message))
         exit(CONFIG_ERROR_CODE)  # return 10000 on config error
 
-    linter = GitLinter(lint_config)
     if sys.stdin.isatty():
         gitcontext = GitContext.from_environment()
     else:
         gitcontext = GitContext()
         gitcontext.set_commit_msg(sys.stdin.read())
 
+    linter = GitLinter(lint_config)
     violations = linter.lint(gitcontext)
     linter.print_violations(violations)
     exit(len(violations))

@@ -29,7 +29,7 @@ run_pep8_check(){
 }
 
 run_unit_tests(){
-    OMIT="*dist-packages*,*site-packages*,gitlint/tests/*"
+    OMIT="*dist-packages*,*site-packages*,gitlint/tests/*,.venv/*,virtualenv/*"
     coverage run --omit=$OMIT -m unittest discover -v
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
