@@ -18,6 +18,7 @@ class LintConfig(object):
                             rules.TitleTrailingPunctuation,
                             rules.TitleHardTab,
                             rules.TitleMustNotContainWord,
+                            rules.TitleRegexMatches,
                             rules.BodyMaxLineLength,
                             rules.BodyMinLength,
                             rules.BodyMissing,

@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABCMeta
-from gitlint.options import IntOption, ListOption
+from gitlint.options import IntOption, StrOption, ListOption
 
 import copy
 import re
@@ -172,6 +172,19 @@ class TitleLeadingWhitespace(LeadingWhiteSpace, CommitMessageTitleRule):
     name = "title-leading-whitespace"
     id = "T6"
     violation_message = "Title has leading whitespace"
+
+
+class TitleRegexMatches(CommitMessageTitleRule):
+    name = "title-match-regex"
+    id = "T7"
+    options_spec = [StrOption('regex', ".*", "Regex the title should match")]
+
+    def validate(self, line, gitcontext):
+        regex = self.options['regex'].value
+        pattern = re.compile(regex)
+        if not pattern.search(gitcontext.commit_msg.title):
+            violation_msg = "Title does match regex ({})".format(regex)
+            return [RuleViolation(self.id, violation_msg, gitcontext.commit_msg.title)]
 
 
 class BodyMaxLineLength(MaxLineLength, CommitMessageBodyRule):

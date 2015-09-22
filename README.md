@@ -102,6 +102,7 @@ T3    | title-trailing-punctuation  | Title cannot have trailing punctuation (?:
 T4    | title-hard-tab              | Title cannot contain hard tab characters (\t)
 T5    | title-must-not-contain-word | Title cannot contain certain words (default: "WIP")
 T6    | title-leading-whitespace    | Title cannot have leading whitespace (space or tab)
+T7    | title-match-regex           | Title must match a given regex (default: .*)
 B1    | body-max-line-length        | Lines in the body must be &lt; 80 chars
 B2    | body-trailing-whitespace    | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | Body cannot contain hard tab characters (\t)
@@ -128,15 +129,22 @@ verbosity = 2
 [title-max-length]
 line-length=20
 
-[B1]
-# B1 = body-max-line-length
-line-length=30
-
 [title-must-not-contain-word]
-# Comma-seperated list of words that should not occur in the title. Matching is case
+# Comma-separated list of words that should not occur in the title. Matching is case
 # insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING"
 # will not cause a violation, but "WIP: my title" will.
 words=wip,title
+
+[title-match-regex]
+# python like regex (https://docs.python.org/2/library/re.html) that the
+# commit-msg title must be matched to.
+# Note that the regex can contradict with other rules if not used correctly
+# (e.g. title-must-not-contain-word).
+regex=^US[0-9]*
+
+[B1]
+# B1 = body-max-line-length
+line-length=30
 
 [body-min-length]
 min-length=5

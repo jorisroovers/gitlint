@@ -1,6 +1,6 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import TitleMaxLength, TitleTrailingWhitespace, TitleHardTab, TitleMustNotContainWord, \
-    TitleTrailingPunctuation, TitleLeadingWhitespace, RuleViolation
+    TitleTrailingPunctuation, TitleLeadingWhitespace, TitleRegexMatches, RuleViolation
 
 
 class TitleRuleTests(BaseTestCase):
@@ -124,4 +124,23 @@ class TitleRuleTests(BaseTestCase):
         # leading tab
         expected_violation = RuleViolation("T6", "Title has leading whitespace", "\ta")
         violations = rule.validate("\ta", None)
+        self.assertListEqual(violations, [expected_violation])
+
+    def test_match_regex(self):
+        gitcontext = self.gitcontext("US1234: abc\n")
+
+        # assert no violation on default regex (=everything allowed)
+        rule = TitleRegexMatches()
+        violations = rule.validate(None, gitcontext)
+        self.assertIsNone(violations)
+
+        # assert no violation on matching regex
+        rule = TitleRegexMatches({'regex': "^US[0-9]*"})
+        violations = rule.validate(None, gitcontext)
+        self.assertIsNone(violations)
+
+        # assert violation when no matching regex
+        rule = TitleRegexMatches({'regex': "^UA[0-9]*"})
+        violations = rule.validate(None, gitcontext)
+        expected_violation = RuleViolation("T7", "Title does match regex (^UA[0-9]*)", "US1234: abc")
         self.assertListEqual(violations, [expected_violation])
