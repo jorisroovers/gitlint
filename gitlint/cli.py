@@ -47,9 +47,24 @@ def install_hook(ctx, param, value):
             ctx.exit(1)
 
 
+def uninstall_hook(ctx, param, value):
+    if value:
+        try:
+            hooks.GitHookInstaller.uninstall_commit_msg_hook()
+            # declare victory :-)
+            msg = "Successfully uninstalled gitlint commit-msg hook from {0}\n"
+            click.echo(msg.format(hooks.COMMIT_MSG_HOOK_DST_PATH))
+            ctx.exit(0)
+        except hooks.GitHookInstallerError as e:
+            click.echo(e.message, err=True)
+            ctx.exit(1)
+
+
 @click.command()
 @click.option('--install-hook', is_flag=True, callback=install_hook, is_eager=True, expose_value=False,
               help="Install gitlint as a git commit-msg hook")
+@click.option('--uninstall-hook', is_flag=True, callback=uninstall_hook, is_eager=True, expose_value=False,
+              help="[experimental] Uninstall gitlint commit-msg hook")
 @click.option('-C', '--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
