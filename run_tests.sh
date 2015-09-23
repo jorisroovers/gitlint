@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 
 help(){
@@ -30,7 +30,15 @@ run_pep8_check(){
 
 run_unit_tests(){
     OMIT="*dist-packages*,*site-packages*,gitlint/tests/*,.venv/*,virtualenv/*"
-    coverage run --omit=$OMIT -m unittest discover -v
+    if [ -n "$testargs" ]; then
+        # if the test is specified, do some string manipulation to replace paths with qualified paths
+        # this way, you can pass a test file path to the CLI which is convenient
+        testargs="${testargs//\//.}" # replace slashes with dots
+        testargs="${testargs/.py/}" # remove trailing .py
+        coverage run --omit=$OMIT -m unittest -v "$testargs"
+    else
+        coverage run --omit=$OMIT -m unittest discover -v
+    fi
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
         COVERAGE_REPORT=$(coverage report -m)
@@ -52,6 +60,7 @@ just_pep8=0
 just_lint=0
 just_stats=0
 include_coverage=1
+testargs=""
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -60,6 +69,7 @@ while [ "$#" -gt 0 ]; do
         -l|--lint) shift; just_lint=1;;
         -s|--stats) shift; just_stats=1;;
         --no-coverage)shift; include_coverage=0;;
+        *) testargs="$1"; shift;
    esac
 done
 
