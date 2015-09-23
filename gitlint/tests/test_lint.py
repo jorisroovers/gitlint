@@ -51,10 +51,10 @@ class RuleOptionTests(BaseTestCase):
 
         title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
-                    RuleViolation("T6", "Title has leading whitespace", title, 1),
                     RuleViolation("T3", "Title has trailing punctuation (.)", title, 1),
                     RuleViolation("T4", "Title contains hard tab characters (\\t)", title, 1),
                     RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)", title, 1),
+                    RuleViolation("T6", "Title has leading whitespace", title, 1),
                     RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                     RuleViolation("B1", "Line exceeds max length (101>80)",
                                   "This is the first line is meant to test a line that exceeds the maximum line " +

@@ -245,7 +245,6 @@ python setup.py --long-description | rst2html.py > output.html
 - Rule improvements:
     - body-changed-file-mention: list all files/directories that need to be mentioned as part of the violation
     - body-changed-file-mention: distinction between change file and directory in output
-    - general: sort violations first by line number, then by rule number
 - Git hooks:
     - uninstall of gitlint ```commit-msg``` hook (only uninstall if the hook is a gitlint hook)
     - appending to an existing hook (after user confirmation)

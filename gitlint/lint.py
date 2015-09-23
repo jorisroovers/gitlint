@@ -49,7 +49,7 @@ class GitLinter(object):
         violations.extend(self._apply_line_rules(gitcontext.commit_msg.body, self.body_line_rules, 2, gitcontext))
         violations.extend(self._apply_multiline_rules(self.body_multiline_rules, gitcontext))
         # sort violations by line number
-        violations.sort(key=lambda v: v.line_nr)  # sort violations by line number
+        violations.sort(key=lambda v: (v.line_nr, v.rule_id))  # sort violations by line number and rule_id
         return violations
 
     def print_violations(self, violations):
