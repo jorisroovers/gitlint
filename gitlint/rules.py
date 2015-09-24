@@ -233,6 +233,9 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
     id = "B6"
 
     def validate(self, gitcontext):
+        # ignore merges, which may have no body
+        if gitcontext.commit_msg.title.find("Merge") == 0:
+            return
         if len(gitcontext.commit_msg.body) <= 2:
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
 
