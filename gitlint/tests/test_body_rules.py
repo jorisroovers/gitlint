@@ -110,6 +110,11 @@ class BodyRuleTests(BaseTestCase):
         violations = rule.validate(gitcontext)
         self.assertIsNone(violations)
 
+        # assert no error - merge commit
+        gitcontext = self.gitcontext("Merge: Title\n")
+        violations = rule.validate(gitcontext)
+        self.assertIsNone(violations)
+
         # body is too short
         expected_violation = rules.RuleViolation("B6", "Body message is missing", None, 3)
 
