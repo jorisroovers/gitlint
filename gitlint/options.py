@@ -8,8 +8,9 @@ class RuleOptionError(Exception):
 class RuleOption(object):
     def __init__(self, name, value, description):
         self.name = name
-        self.value = value
         self.description = description
+        self.value = None
+        self.set(value)
 
     @abstractmethod
     def set(self, value):
@@ -30,8 +31,8 @@ class StrOption(RuleOption):
 
 class IntOption(RuleOption):
     def __init__(self, name, value, description, allow_negative=False):
-        super(IntOption, self).__init__(name, value, description)
         self.allow_negative = allow_negative
+        super(IntOption, self).__init__(name, value, description)
 
     def _raise_exception(self, value):
         if self.allow_negative:
@@ -50,9 +51,17 @@ class IntOption(RuleOption):
             self._raise_exception(value)
 
 
-class ListOption(RuleOption):
-    def __init__(self, name, value, description):
-        super(ListOption, self).__init__(name, value, description)
-
+class BoolOption(RuleOption):
     def set(self, value):
-        self.value = [item.strip() for item in str(value).split(",") if item.strip() != ""]
+        value = str(value).strip().lower()
+        if value not in ['true', 'false']:
+            raise RuleOptionError("Option '{}' must be either 'true' or 'false'".format(self.name))
+        self.value = value == 'true'
+
+
+class ListOption(RuleOption):
+    def set(self, value):
+        if isinstance(value, list):
+            self.value = value
+        else:
+            self.value = [item.strip() for item in str(value).split(",") if item.strip() != ""]

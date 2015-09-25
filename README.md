@@ -149,6 +149,11 @@ line-length=30
 [body-min-length]
 min-length=5
 
+[body-is-missing]
+# Whether to ignore this rule on merge commits (which typically only have a title)
+# default = True
+ignore-merge-commits=false
+
 [body-changed-file-mention]
 # List of files that need to be explicitly mentioned in the body when they are changed
 # This is useful for when developers often erroneously edit certain files or git submodules.

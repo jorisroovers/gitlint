@@ -1,12 +1,17 @@
 from gitlint.tests.base import BaseTestCase
 
-from gitlint.options import IntOption, StrOption, ListOption, RuleOptionError
+from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RuleOptionError
 
 
 class RuleOptionTests(BaseTestCase):
     def test_int_option(self):
         # normal behavior
         option = IntOption("test-name", 123, "Test Description")
+        self.assertEqual(option.value, 123)
+        self.assertEqual(option.name, "test-name")
+        self.assertEqual(option.description, "Test Description")
+
+        # re-set value
         option.set(456)
         self.assertEqual(option.value, 456)
 
@@ -32,7 +37,12 @@ class RuleOptionTests(BaseTestCase):
 
     def test_str_option(self):
         # normal behavior
-        option = StrOption("test-name", "bar", "Test Description")
+        option = StrOption("test-name", "foo", "Test Description")
+        self.assertEqual(option.value, "foo")
+        self.assertEqual(option.name, "test-name")
+        self.assertEqual(option.description, "Test Description")
+
+        # re-set value
         option.set("foo")
         self.assertEqual(option.value, "foo")
 
@@ -44,11 +54,36 @@ class RuleOptionTests(BaseTestCase):
         option.set(-123)
         self.assertEqual(option.value, "-123")
 
+    def test_boolean_option(self):
+        # normal behavior
+        option = BoolOption("test-name", "true", "Test Description")
+        self.assertEqual(option.value, True)
+
+        # re-set value
+        option.set("False")
+        self.assertEqual(option.value, False)
+
+        # Re-set using actual boolean
+        option.set(True)
+        self.assertEqual(option.value, True)
+
+        # error on incorrect value
+        expected_error = "Option 'test-name' must be either 'true' or 'false'"
+        with self.assertRaisesRegexp(RuleOptionError, expected_error):
+            option.set("foo")
+
     def test_list_option(self):
         # normal behavior
-        option = ListOption("test-name", "bar", "Test Description")
-        option.set("a,b,c,d")
+        option = ListOption("test-name", "a,b,c,d", "Test Description")
         self.assertListEqual(option.value, ["a", "b", "c", "d"])
+
+        # re-set value
+        option.set("1,2,3,4")
+        self.assertListEqual(option.value, ["1", "2", "3", "4"])
+
+        # set list
+        option.set(["foo", "bar", "test"])
+        self.assertListEqual(option.value, ["foo", "bar", "test"])
 
         # trailing comma
         option.set("e,f,g,")

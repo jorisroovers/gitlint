@@ -110,16 +110,25 @@ class BodyRuleTests(BaseTestCase):
         violations = rule.validate(gitcontext)
         self.assertIsNone(violations)
 
-        # assert no error - merge commit
-        gitcontext = self.gitcontext("Merge: Title\n")
-        violations = rule.validate(gitcontext)
-        self.assertIsNone(violations)
-
         # body is too short
         expected_violation = rules.RuleViolation("B6", "Body message is missing", None, 3)
 
         gitcontext = self.gitcontext("Title\n")
         violations = rule.validate(gitcontext)
+        self.assertListEqual(violations, [expected_violation])
+
+    def test_body_missing_merge_commit(self):
+        rule = rules.BodyMissing()
+
+        # assert no error - merge commit
+        gitcontext = self.gitcontext("Merge: Title\n")
+        violations = rule.validate(gitcontext)
+        self.assertIsNone(violations)
+
+        # assert error for merge commits if ignore-merge-commits is disabled
+        rule = rules.BodyMissing({'ignore-merge-commits': False})
+        violations = rule.validate(gitcontext)
+        expected_violation = rules.RuleViolation("B6", "Body message is missing", None, 3)
         self.assertListEqual(violations, [expected_violation])
 
     def test_body_changed_file_mention(self):

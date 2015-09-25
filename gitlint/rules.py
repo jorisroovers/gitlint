@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABCMeta
-from gitlint.options import IntOption, StrOption, ListOption
+from gitlint.options import IntOption, BoolOption, StrOption, ListOption
 
 import copy
 import re
@@ -17,7 +17,7 @@ class Rule(object):
         for op_spec in self.options_spec:
             self.options[op_spec.name] = copy.deepcopy(op_spec)
             actual_option = opts.get(op_spec.name)
-            if actual_option:
+            if actual_option is not None:
                 self.options[op_spec.name].set(actual_option)
 
     def __eq__(self, other):
@@ -231,10 +231,11 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
 class BodyMissing(MultiLineRule, CommitMessageBodyRule):
     name = "body-is-missing"
     id = "B6"
+    options_spec = [BoolOption('ignore-merge-commits', True, "Ignore merge commits")]
 
     def validate(self, gitcontext):
-        # ignore merges, which may have no body
-        if gitcontext.commit_msg.title.find("Merge") == 0:
+        # ignore merges when option tells us to, which may have no body
+        if self.options['ignore-merge-commits'].value and gitcontext.commit_msg.title.startswith("Merge"):
             return
         if len(gitcontext.commit_msg.body) <= 2:
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
