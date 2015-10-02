@@ -35,7 +35,7 @@ class GitContext(object):
         """  Sets the commit message by parsing a given string into the different parts of a commit message """
         lines = [line for line in commit_msg_str.split("\n") if not line.startswith("#")]
         full = "\n".join(lines)
-        title = lines[0]
+        title = lines[0] if len(lines) > 0 else ""
         body = lines[1:] if len(lines) > 1 else []
         self.commit_msg = GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
 

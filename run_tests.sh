@@ -34,7 +34,7 @@ run_unit_tests(){
         # this way, you can pass a test file path to the CLI which is convenient
         testargs="${testargs//\//.}" # replace slashes with dots
         testargs="${testargs/.py/}" # remove trailing .py
-        coverage run -m discover -v "$testargs"
+        coverage run -m unittest -v "$testargs"
     else
         coverage run -m discover -v
     fi
