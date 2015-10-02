@@ -60,3 +60,19 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, 1)
         self.assertEqual(result.output, "test\n")
         install_hook.assert_called_once_with()
+
+    @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
+    def test_uninstall_hook(self, uninstall_hook):
+        result = self.cli.invoke(cli.cli, ["--uninstall-hook"])
+        expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n\n".format(
+            hooks.COMMIT_MSG_HOOK_DST_PATH)
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.output, expected)
+        uninstall_hook.assert_called_once_with()
+
+    @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
+    def test_uninstall_hook_negative(self, uninstall_hook):
+        result = self.cli.invoke(cli.cli, ["--uninstall-hook"])
+        self.assertEqual(result.exit_code, 1)
+        self.assertEqual(result.output, "test\n")
+        uninstall_hook.assert_called_once_with()

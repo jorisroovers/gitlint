@@ -64,7 +64,7 @@ def uninstall_hook(ctx, param, value):
 @click.option('--install-hook', is_flag=True, callback=install_hook, is_eager=True, expose_value=False,
               help="Install gitlint as a git commit-msg hook")
 @click.option('--uninstall-hook', is_flag=True, callback=uninstall_hook, is_eager=True, expose_value=False,
-              help="[experimental] Uninstall gitlint commit-msg hook")
+              help="Uninstall gitlint commit-msg hook")
 @click.option('-C', '--config', type=click.Path(exists=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
@@ -97,7 +97,7 @@ def cli(config, c, ignore, verbose, silent):
             lint_config.verbosity = verbose
     except LintConfigError as e:
         click.echo("Config Error: {0}".format(e.message))
-        exit(CONFIG_ERROR_CODE)  # return 10000 on config error
+        exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
 
     if sys.stdin.isatty():
         gitcontext = GitContext.from_local_repository()

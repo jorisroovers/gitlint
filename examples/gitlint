@@ -1,3 +1,4 @@
+# All these sections are optional, edit this file as you like.
 [general]
 ignore=title-trailing-punctuation, T3
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over

@@ -78,6 +78,7 @@ Usage: gitlint [OPTIONS]
 
 Options:
   --install-hook     Install gitlint as a git commit-msg hook
+  --uninstall-hook   Uninstall gitlint commit-msg hook
   -C, --config PATH  Config file location (default: .gitlint).
   -c TEXT            Config flags in format <rule>.<option>=<value> (e.g.: -c
                      T1.line-length=80). Flag can be used multiple times to
@@ -120,6 +121,7 @@ gitlint --config myconfigfile
 By default, gitlint will look for an optional ```.gitlint``` file for configuration.
 
 ```ini
+# All these sections are optional, edit this file as you like.
 [general]
 ignore=title-trailing-punctuation, T3
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over
@@ -200,15 +202,13 @@ after each commit.
 
 ```bash
 gitlint --install-hook
+# To remove the hook
+gitlint --uninstall-hook
 ```
 
-Important Notes:
-
-- You currently cannot uninstall the ```commit-msg``` hook using gitlint. You will need to manually remove the hook from
-  ```.git/hooks/commit-msg``` in your local git repository.
-- Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg``` file in your
-  local repository, gitlint will refuse to install the ```commit-msg``` hook.
-
+Important: Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg```
+file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. gitlint will also only
+uninstall unmodified commit-msg hooks that were installed by gitlint.
 
 ## Contributing ##
 
@@ -262,7 +262,6 @@ python setup.py --long-description | rst2html.py > output.html
     - body-changed-file-mention: list all files/directories that need to be mentioned as part of the violation
     - body-changed-file-mention: distinction between change file and directory in output
 - Git hooks:
-    - uninstall of gitlint ```commit-msg``` hook (only uninstall if the hook is a gitlint hook)
     - appending to an existing hook (after user confirmation)
 - Check a range of commit messages at once (similar to how git log works, eg.: ```git log -3```)
 - Rules for different attributes of the the commit message: author, date, etc
