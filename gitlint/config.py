@@ -2,7 +2,7 @@ from gitlint import rules
 from gitlint import options
 import ConfigParser
 from collections import OrderedDict
-
+import re
 import os
 
 
@@ -31,6 +31,7 @@ class LintConfig(object):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = 3
+        self.enabled = True
         self.config_path = config_path
 
     @property
@@ -94,6 +95,16 @@ class LintConfig(object):
             raise LintConfigError(
                 "'{}' is not a valid value for option '{}.{}'. {}.".format(option_value, rule_name_or_id, option_name,
                                                                            e.message))
+
+    def apply_config_from_gitcontext(self, gitcontext):
+        """ Given a git context, applies config specified in the commit message.
+            Supported:
+             - gitlint: disable
+        """
+        for line in gitcontext.commit_msg.full.split("\n"):
+            pattern = re.compile(r"^gitlint-ignore:\s*all")
+            if pattern.search(line):
+                self.enabled = False
 
     def apply_config_options(self, config_options):
         """ Given a list of config options of the form "<rule>.<option>=<value>", parses out the correct rule and option

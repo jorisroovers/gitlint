@@ -69,6 +69,17 @@ class RuleOptionTests(BaseTestCase):
 
         self.assertListEqual(violations, expected)
 
+    def test_lint_sample4(self):
+        gitcontext = GitContext()
+        gitcontext.set_commit_msg(self.get_sample("commit_message/sample4"))
+        lintconfig = LintConfig()
+        lintconfig.apply_config_from_gitcontext(gitcontext)
+        linter = GitLinter(lintconfig)
+        violations = linter.lint(gitcontext)
+        # expect no violations because sample4 has a 'gitlint: disable line'
+        expected = []
+        self.assertListEqual(violations, expected)
+
     def test_print_violations(self):
         violations = [RuleViolation("RULE_ID_1", "Error Message 1", "Violating Content 1", 1),
                       RuleViolation("RULE_ID_2", "Error Message 2", "Violating Content 2", 2)]

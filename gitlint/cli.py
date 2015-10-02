@@ -100,11 +100,15 @@ def cli(config, c, ignore, verbose, silent):
         exit(CONFIG_ERROR_CODE)  # return 10000 on config error
 
     if sys.stdin.isatty():
-        gitcontext = GitContext.from_environment()
+        gitcontext = GitContext.from_local_repository()
     else:
         gitcontext = GitContext()
         gitcontext.set_commit_msg(sys.stdin.read())
 
+    # Apply an additional config that is specified in the gitcontext (= commit message)
+    lint_config.apply_config_from_gitcontext(gitcontext)
+
+    # Let's get linting!
     linter = GitLinter(lint_config)
     violations = linter.lint(gitcontext)
     linter.print_violations(violations)

@@ -170,14 +170,28 @@ $ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-l
 The generic config flag format is ```-c <rule>.<option>=<value>``` and supports all the same rules and options which 
 you can also use in a ```.gitlint``` config file.
 
+Finally, you can also disable gitlint for specific commit messages by adding ```gitlint-ignore: all``` to the commit
+message like so:
+
+```
+WIP: This is my commit message
+
+I want gitlint to ignore this entire commit message.
+gitlint-ignore: all
+```
+
+```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line.
+**NOTE: gitlint currently does not support disabling \*specific\* rules on a per commit basis**
+
 ### Config precedence ###
 gitlint's behavior can be configured in a couple of different ways.  Different config options take the following order
 of precedence:
 
-1. Commandline convenience flags (e.g.:  ```-vv```, ```--silent```, ```--ignore```)
-2. Commandline configuration flags (e.g.: ```-c title-max-length=123```)
-3. Configuration file (local ```.gitlint``` file, or file specified using ```-C```/```--config```)
-4. Default gitlint config
+1. Commit specific config (e.g.: ```gitlint-ignore: all``` in the commit message) 
+2. Commandline convenience flags (e.g.:  ```-vv```, ```--silent```, ```--ignore```)
+3. Commandline configuration flags (e.g.: ```-c title-max-length=123```)
+4. Configuration file (local ```.gitlint``` file, or file specified using ```-C```/```--config```)
+5. Default gitlint config
 
 
 ## Using gitlint as a commit-msg hook ##
@@ -235,12 +249,9 @@ python setup.py --long-description | rst2html.py > output.html
 
 ## Wishlist ##
 - More rules: 
-    - title-regex: Title must match a given regex
     - Checkbox rules: Developers must add a line to the end of the commit specifying that they've considered
       a number of aspects when committing the code. E.g.: ```gitlint-checks: tests, documentation```.
       This can be useful as a reminder if developers often submit code without updating the documentation or tests.
-    - Overwrite rules: In some cases, gitlint config might need to disabled/overwritten for a specific commit. This
-      could be done using by adding lines similar to ```gitlint: disable``` or
       ```gitlint-config: general.ignore=T2, T1.line-length=100``` to the commit message.
     - max-lines-change: Maximum lines of change in a single commit (-1 = unlimited)
     - ...

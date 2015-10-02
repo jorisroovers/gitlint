@@ -1,5 +1,6 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.config import LintConfig, LintConfigError
+from gitlint.git import GitContext
 
 from gitlint import rules
 
@@ -138,3 +139,31 @@ class LintConfigTests(BaseTestCase):
                              "Option 'line-length' must be a positive integer \(current value: 'foo'\)."
         with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
+
+    def test_gitcontext_disable_gitlint(self):
+        config = LintConfig()
+        self.assertTrue(config.enabled)
+
+        # nothing gitlint
+        context = GitContext()
+        context.set_commit_msg("test\ngitlint\nfoo")
+        config.apply_config_from_gitcontext(context)
+        self.assertTrue(config.enabled)
+
+        # disable gitlint
+        context = GitContext()
+        context.set_commit_msg("test\ngitlint-ignore: all\nfoo")
+        config.apply_config_from_gitcontext(context)
+        self.assertFalse(config.enabled)
+
+        # disable gitlint, no space
+        config.enabled = True
+        context.set_commit_msg("test\ngitlint-ignore:all\nfoo")
+        config.apply_config_from_gitcontext(context)
+        self.assertFalse(config.enabled)
+
+        # disable gitlint, more spacing
+        config.enabled = True
+        context.set_commit_msg("test\ngitlint-ignore: \t all\nfoo")
+        config.apply_config_from_gitcontext(context)
+        self.assertFalse(config.enabled)

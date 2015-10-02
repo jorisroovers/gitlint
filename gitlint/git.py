@@ -23,6 +23,10 @@ class GitCommitMessage(object):
 
 
 class GitContext(object):
+    """ Class representing the git context in which gitlint is operating: a data object storing information about
+    the git repository that gitlint is linting.
+    """
+
     def __init__(self):
         self.commit_msg = None
         self.changed_files = []
@@ -36,7 +40,7 @@ class GitContext(object):
         self.commit_msg = GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
 
     @staticmethod
-    def from_environment():
+    def from_local_repository():
         commit_info = GitContext()
         commit_info.set_commit_msg(sh.git.log("-1", "--pretty=%B", _tty_out=False))
 
