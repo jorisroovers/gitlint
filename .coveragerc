@@ -1,0 +1,2 @@
+[run]
+omit=*dist-packages*,*site-packages*,gitlint/tests/*,.venv/*,*virtualenv*

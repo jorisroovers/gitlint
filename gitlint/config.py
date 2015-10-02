@@ -1,6 +1,12 @@
 from gitlint import rules
 from gitlint import options
-import ConfigParser
+
+try:
+    # python 2.x
+    import ConfigParser
+except ImportError:
+    # python 3.x
+    from configparser import ConfigParser
 from collections import OrderedDict
 import re
 import os

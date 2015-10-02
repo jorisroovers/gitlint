@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/jorisroovers/gitlint.svg?branch=master)]
 (https://travis-ci.org/jorisroovers/gitlint)
+[![Coverage Status](https://coveralls.io/repos/jorisroovers/gitlint/badge.svg?branch=master&service=github)]
+(https://coveralls.io/github/jorisroovers/gitlint?branch=master)
 [![PyPi Package](https://img.shields.io/pypi/v/gitlint.png)]
 (https://pypi.python.org/pypi/gitlint)
 
@@ -266,5 +268,6 @@ python setup.py --long-description | rst2html.py > output.html
 - Git hooks:
     - appending to an existing hook (after user confirmation)
 - Python 3 support
+    - Currently blocked on Click: [http://click.pocoo.org/5/python3](http://click.pocoo.org/5/python3)
 - Developer convenience:
     - More unit tests, always more unit tests

@@ -56,7 +56,7 @@ docs/_build/
 # PyBuilder
 target/
 
-.venv/
+.venv*
 virtualenv
 
 # Vagrant
