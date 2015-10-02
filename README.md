@@ -183,6 +183,7 @@ gitlint-ignore: all
 ```
 
 ```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line.
+
 **NOTE: gitlint currently does not support disabling \*specific\* rules on a per commit basis**
 
 ### Config precedence ###
@@ -252,18 +253,18 @@ python setup.py --long-description | rst2html.py > output.html
     - Checkbox rules: Developers must add a line to the end of the commit specifying that they've considered
       a number of aspects when committing the code. E.g.: ```gitlint-checks: tests, documentation```.
       This can be useful as a reminder if developers often submit code without updating the documentation or tests.
-      ```gitlint-config: general.ignore=T2, T1.line-length=100``` to the commit message.
     - max-lines-change: Maximum lines of change in a single commit (-1 = unlimited)
-    - ...
+    - Rules for different attributes of the the commit message: author, date, etc
 - More rule options:
     - title-must-not-contain-word: case sensitive match
     - title-trailing-punctuation: define punctuation
+- Config improvements:
+    - gitlint ignore for specific rules in commit message: ```gitlint-ignore: T2,body-hard-tab```
 - Rule improvements:
     - body-changed-file-mention: list all files/directories that need to be mentioned as part of the violation
     - body-changed-file-mention: distinction between change file and directory in output
 - Git hooks:
     - appending to an existing hook (after user confirmation)
-- Check a range of commit messages at once (similar to how git log works, eg.: ```git log -3```)
-- Rules for different attributes of the the commit message: author, date, etc
+- Python 3 support
 - Developer convenience:
     - More unit tests, always more unit tests

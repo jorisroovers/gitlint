@@ -5,3 +5,5 @@ install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"
 script: "./run_tests.sh && ./run_tests.sh --pep8"
+after_success:
+  - coveralls
