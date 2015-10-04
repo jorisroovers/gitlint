@@ -1,0 +1,6 @@
+This is the title of a commit message that 	is over 72 characters and contains hard tabs and trailing whitespace and the word wiping
+This line should not contain text
+Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120.
+
+# This line will be ignored by gitlint because it starts with a #.
+gitlint-ignore: B4, title-hard-tab

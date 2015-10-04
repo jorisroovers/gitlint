@@ -1,4 +1,4 @@
 This is the title of a commit message that 	is over 72 characters and contains hard tabs and trailing whitespace and the word wiping  
 This line should not contain text
 Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. 
-gitlint-ignore: all. This line will disable gitlint.
+gitlint-ignore: all

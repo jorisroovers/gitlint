@@ -184,7 +184,8 @@ I want gitlint to ignore this entire commit message.
 gitlint-ignore: all
 ```
 
-```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line.
+```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line. You can also specify
+specific rules to be ignore as follows: ```gitlint-ignore: T1, body-hard-tab```.
 
 **NOTE: gitlint currently does not support disabling \*specific\* rules on a per commit basis**
 
@@ -260,8 +261,6 @@ python setup.py --long-description | rst2html.py > output.html
 - More rule options:
     - title-must-not-contain-word: case sensitive match
     - title-trailing-punctuation: define punctuation
-- Config improvements:
-    - gitlint ignore for specific rules in commit message: ```gitlint-ignore: T2,body-hard-tab```
 - Rule improvements:
     - body-changed-file-mention: list all files/directories that need to be mentioned as part of the violation
     - body-changed-file-mention: distinction between change file and directory in output

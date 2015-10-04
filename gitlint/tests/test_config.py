@@ -140,30 +140,39 @@ class LintConfigTests(BaseTestCase):
         with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 
-    def test_gitcontext_disable_gitlint(self):
+    def test_gitcontext_ignore_all(self):
         config = LintConfig()
-        self.assertTrue(config.enabled)
+        original_rules = config.rules
 
         # nothing gitlint
         context = GitContext()
         context.set_commit_msg("test\ngitlint\nfoo")
         config.apply_config_from_gitcontext(context)
-        self.assertTrue(config.enabled)
+        self.assertListEqual(config.rules, original_rules)
 
-        # disable gitlint
+        # ignore all rules
         context = GitContext()
         context.set_commit_msg("test\ngitlint-ignore: all\nfoo")
         config.apply_config_from_gitcontext(context)
-        self.assertFalse(config.enabled)
+        self.assertEqual(config.rules, [])
 
-        # disable gitlint, no space
-        config.enabled = True
+        # ignore all rules, no space
+        config = LintConfig()
         context.set_commit_msg("test\ngitlint-ignore:all\nfoo")
         config.apply_config_from_gitcontext(context)
-        self.assertFalse(config.enabled)
+        self.assertEqual(config.rules, [])
 
-        # disable gitlint, more spacing
-        config.enabled = True
+        # ignore all rules, more spacing
+        config = LintConfig()
         context.set_commit_msg("test\ngitlint-ignore: \t all\nfoo")
         config.apply_config_from_gitcontext(context)
-        self.assertFalse(config.enabled)
+        self.assertEqual(config.rules, [])
+
+    def test_gitcontext_ignore_specific(self):
+        # ignore specific rules
+        config = LintConfig()
+        context = GitContext()
+        context.set_commit_msg("test\ngitlint-ignore: T1, body-hard-tab")
+        config.apply_config_from_gitcontext(context)
+        expected_rules = [rule for rule in config.rules if rule.id not in ["T1", "body-hard-tab"]]
+        self.assertEqual(config.rules, expected_rules)

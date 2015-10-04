@@ -80,6 +80,28 @@ class RuleOptionTests(BaseTestCase):
         expected = []
         self.assertListEqual(violations, expected)
 
+    def test_lint_sample5(self):
+        gitcontext = GitContext()
+        gitcontext.set_commit_msg(self.get_sample("commit_message/sample5"))
+        lintconfig = LintConfig()
+        lintconfig.apply_config_from_gitcontext(gitcontext)
+        linter = GitLinter(lintconfig)
+        violations = linter.lint(gitcontext)
+        title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
+        # expect only certain violations because sample5 has a 'gitlint: T3,'
+        expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
+                    RuleViolation("T4", "Title contains hard tab characters (\\t)", title, 1),
+                    RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)", title, 1),
+                    RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
+                    RuleViolation("B2", "Line has trailing whitespace",
+                                  "This line has a trailing space. ", 4),
+                    RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t",
+                                  5),
+                    RuleViolation("B3", "Line contains hard tab characters (\\t)",
+                                  "This line has a trailing tab.\t", 5),
+                    ]
+        self.assertListEqual(violations, expected)
+
     def test_print_violations(self):
         violations = [RuleViolation("RULE_ID_1", "Error Message 1", "Violating Content 1", 1),
                       RuleViolation("RULE_ID_2", "Error Message 2", "Violating Content 2", 2)]

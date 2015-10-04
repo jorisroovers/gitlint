@@ -4,9 +4,9 @@ from gitlint import options
 try:
     # python 2.x
     import ConfigParser
-except ImportError:
+except ImportError:  # pragma: no cover
     # python 3.x
-    from configparser import ConfigParser
+    from configparser import ConfigParser  # pragma: no cover
 from collections import OrderedDict
 import re
 import os
@@ -37,7 +37,6 @@ class LintConfig(object):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = 3
-        self.enabled = True
         self.config_path = config_path
 
     @property
@@ -51,6 +50,10 @@ class LintConfig(object):
         self._verbosity = value
 
     @property
+    def rules(self):
+        return [rule for rule in self._rules.values()]
+
+    @property
     def body_rules(self):
         return [rule for rule in self._rules.values() if isinstance(rule, rules.CommitMessageBodyRule)]
 
@@ -62,9 +65,12 @@ class LintConfig(object):
         del self._rules[rule_id]
 
     def disable_rule(self, rule_id_or_name):
-        rule = self.get_rule(rule_id_or_name)
-        if rule:
-            self.disable_rule_by_id(rule.id)
+        if rule_id_or_name == "all":
+            self._rules = OrderedDict()
+        else:
+            rule = self.get_rule(rule_id_or_name)
+            if rule:
+                self.disable_rule_by_id(rule.id)
 
     def get_rule(self, rule_id_or_name):
         # try finding rule by id
@@ -108,8 +114,10 @@ class LintConfig(object):
              - gitlint: disable
         """
         for line in gitcontext.commit_msg.full.split("\n"):
-            pattern = re.compile(r"^gitlint-ignore:\s*all")
-            if pattern.search(line):
+            pattern = re.compile(r"^gitlint-ignore:\s*(.*)")
+            matches = pattern.match(line)
+            if matches and len(matches.groups()) == 1:
+                self.set_general_option('ignore', matches.group(1))
                 self.enabled = False
 
     def apply_config_options(self, config_options):

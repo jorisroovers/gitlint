@@ -23,6 +23,12 @@ class Rule(object):
     def __eq__(self, other):
         return self.id == other.id and self.name == other.name
 
+    def __str__(self):
+        return "{} {}".format(self.id, self.name)  # pragma: no cover
+
+    def __repr__(self):
+        return self.__str__()  # pragma: no cover
+
     @abstractmethod
     def validate(self):
         pass  # pragma: no cover

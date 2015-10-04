@@ -46,14 +46,12 @@ class GitLinter(object):
     def lint(self, gitcontext):
         """ Lint a given git context by applying all title, body and general rules. """
         violations = []
-        if self.config.enabled:
-            # determine violations by applying all rules
-            violations.extend(
-                self._apply_line_rules([gitcontext.commit_msg.title], self.title_line_rules, 1, gitcontext))
-            violations.extend(self._apply_line_rules(gitcontext.commit_msg.body, self.body_line_rules, 2, gitcontext))
-            violations.extend(self._apply_multiline_rules(self.body_multiline_rules, gitcontext))
-            # sort violations by line number
-            violations.sort(key=lambda v: (v.line_nr, v.rule_id))  # sort violations by line number and rule_id
+        # determine violations by applying all rules
+        violations.extend(self._apply_line_rules([gitcontext.commit_msg.title], self.title_line_rules, 1, gitcontext))
+        violations.extend(self._apply_line_rules(gitcontext.commit_msg.body, self.body_line_rules, 2, gitcontext))
+        violations.extend(self._apply_multiline_rules(self.body_multiline_rules, gitcontext))
+        # sort violations by line number
+        violations.sort(key=lambda v: (v.line_nr, v.rule_id))  # sort violations by line number and rule_id
         return violations
 
     def print_violations(self, violations):
