@@ -1,8 +1,15 @@
 # Changelog #
 
-## v0.5.0dev (master) ##
+## v0.5.0 (2015-10-04) ##
 
-- New Rules: ```title-match-regex```
+- New Rule: ```title-match-regex```
+- Uninstall previously installed gitlint git commit hooks using: ```gitlint --uninstall-hook```
+- Ignore rules on a per commit basis by adding ```gitlint-ignore: T1, body-hard-tab``` to your git commit message.
+  Use ```gitlint-ignore: all``` to disable gitlint all together for a specific commit.
+- ```body-is-missing``` will now automatically be disabled for merge commits (use the ```ignore-merge-commit: false```
+  option to disable this behavior)
+- Violations are now sorted by line number first and then by and rule id (previously the order of violations on the
+  same line was arbitrary)
 
 ## v0.4.1 (2015-09-19) ##
 
