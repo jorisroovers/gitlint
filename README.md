@@ -118,9 +118,9 @@ B7    | body-changed-file-mention   | Body must contain references to certain fi
 
 You can modify gitlint's behavior by specifying a config file like so: 
 ```bash
-gitlint --config myconfigfile 
+gitlint --config myconfigfile.ini 
 ```
-By default, gitlint will look for an optional ```.gitlint``` file for configuration.
+By default, gitlint will look for an optional ```.gitlint``` config file.
 
 ```ini
 # All these sections are optional, edit this file as you like.
@@ -185,13 +185,10 @@ gitlint-ignore: all
 ```
 
 ```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line. You can also specify
-specific rules to be ignore as follows: ```gitlint-ignore: T1, body-hard-tab```.
-
-**NOTE: gitlint currently does not support disabling \*specific\* rules on a per commit basis**
+specific rules to be ignored as follows: ```gitlint-ignore: T1, body-hard-tab```.
 
 ### Config precedence ###
-gitlint's behavior can be configured in a couple of different ways.  Different config options take the following order
-of precedence:
+Configuring gitlint happens the following order of precedence:
 
 1. Commit specific config (e.g.: ```gitlint-ignore: all``` in the commit message) 
 2. Commandline convenience flags (e.g.:  ```-vv```, ```--silent```, ```--ignore```)
