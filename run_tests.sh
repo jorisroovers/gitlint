@@ -30,13 +30,10 @@ run_pep8_check(){
 
 run_unit_tests(){
     if [ -n "$testargs" ]; then
-        # if the test is specified, do some string manipulation to replace paths with qualified paths
-        # this way, you can pass a test file path to the CLI which is convenient
-        testargs="${testargs//\//.}" # replace slashes with dots
         testargs="${testargs/.py/}" # remove trailing .py
-        coverage run -m unittest -v "$testargs"
+        coverage run -m pytest "$testargs"
     else
-        coverage run -m discover -v
+        coverage run -m pytest gitlint
     fi
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then

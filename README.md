@@ -283,8 +283,6 @@ python setup.py --long-description | rst2html.py > output.html
     - ```--count``` option: only print out the number of violations
     - ```--report```: html report
 - Work on a different git repo than the current directory
-- Bugfix:
-    - Linux doesn't do exit codes larger than 255 [http://tldp.org/LDP/abs/html/exitcodes.html](), fix config error codes
 - Documentation site on ```gh-pages``` branch using Jekyll
  -  Create animation using [https://asciinema.org/]()
 - Python 3 support
