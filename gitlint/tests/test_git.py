@@ -34,8 +34,8 @@ class GitTests(BaseTestCase):
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_git_error(self, sh):
-        sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", "",
-                                                 "fatal: Not a git repository (or any of the parent directories): .git")
+        err = b"fatal: Not a git repository (or any of the parent directories): .git"
+        sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
 
         with self.assertRaisesRegexp(GitContextError, "The current directory is not a git repository."):
             GitContext.from_local_repository()

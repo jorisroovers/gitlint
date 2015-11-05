@@ -282,10 +282,11 @@ python setup.py --long-description | rst2html.py > output.html
     - ```--summary``` option: print out a summary at the end. Contains: number/type or errors
     - ```--count``` option: only print out the number of violations
     - ```--report```: html report
-- Work on a different git repo than the current directory
-- Documentation site on ```gh-pages``` branch using Jekyll
- -  Create animation using [https://asciinema.org/]()
-- Python 3 support
-    - Currently blocked on Click: [http://click.pocoo.org/5/python3](http://click.pocoo.org/5/python3)
+- Configuration
+    - Work on a different git repo than the current directory: ```--target``` parameter.
+- Documentation 
+    - Documentation site on ```gh-pages``` branch using Jekyll
+    - Create demo using [https://asciinema.org/]()
 - Developer convenience:
     - More unit tests, always more unit tests
+    - Integration tests

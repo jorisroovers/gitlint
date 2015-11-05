@@ -60,7 +60,7 @@ class GitContext(object):
             raise GitContextError(error_msg)
         except ErrorReturnCode as e:  # Something went wrong while executing the git command
             error_msg = e.stderr.strip()
-            if "Not a git repository" in error_msg:
+            if b"Not a git repository" in error_msg:
                 error_msg = "The current directory is not a git repository."
             else:
                 error_msg = "An error occured while executing '{}': {}".format(e.full_cmd, error_msg)

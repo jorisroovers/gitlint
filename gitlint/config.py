@@ -3,10 +3,10 @@ from gitlint import options
 
 try:
     # python 2.x
-    import ConfigParser
+    from ConfigParser import ConfigParser, Error as ConfigParserError
 except ImportError:  # pragma: no cover
     # python 3.x
-    from configparser import ConfigParser  # pragma: no cover
+    from configparser import ConfigParser, Error as ConfigParserError  # pragma: no cover
 from collections import OrderedDict
 import re
 import os
@@ -106,7 +106,7 @@ class LintConfig(object):
         except options.RuleOptionError as e:
             raise LintConfigError(
                 "'{}' is not a valid value for option '{}.{}'. {}.".format(option_value, rule_name_or_id, option_name,
-                                                                           e.message))
+                                                                           str(e)))
 
     def apply_config_from_gitcontext(self, gitcontext):
         """ Given a git context, applies config specified in the commit message.
@@ -158,12 +158,12 @@ class LintConfig(object):
             raise LintConfigError("Invalid file path: {0}".format(filename))
         config = LintConfig(config_path=os.path.abspath(filename))
         try:
-            parser = ConfigParser.ConfigParser()
+            parser = ConfigParser()
             parser.read(filename)
             LintConfig._parse_general_section(parser, config)
             LintConfig._parse_rule_sections(parser, config)
-        except ConfigParser.Error as e:
-            raise LintConfigError(e.message)
+        except ConfigParserError as e:
+            raise LintConfigError(str(e))
 
         return config
 

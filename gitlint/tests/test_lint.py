@@ -1,13 +1,16 @@
 from gitlint.tests.base import BaseTestCase
-
 from gitlint.lint import GitLinter
 from gitlint.rules import RuleViolation
 from gitlint.config import LintConfig
 from gitlint.git import GitContext
-
 from mock import patch
 
-from StringIO import StringIO
+try:
+    # python 2.x
+    from StringIO import StringIO
+except ImportError:
+    # python 3.x
+    from io import StringIO
 
 
 class RuleOptionTests(BaseTestCase):

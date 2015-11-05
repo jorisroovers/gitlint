@@ -30,7 +30,7 @@ def get_lint_config(config_path=None):
             config = LintConfig.load_from_file(DEFAULT_CONFIG_FILE)
 
     except LintConfigError as e:
-        click.echo("Error during config file parsing: {0}".format(e.message))
+        click.echo("Error during config file parsing: {0}".format(str(e)))
         exit(CONFIG_ERROR_CODE)
 
     # no config file
@@ -50,7 +50,7 @@ def install_hook(ctx, param, value):
             click.echo("Successfully installed gitlint commit-msg hook in {0}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH))
             ctx.exit(0)
         except hooks.GitHookInstallerError as e:
-            click.echo(e.message, err=True)
+            click.echo(str(e), err=True)
             ctx.exit(1)
 
 
@@ -63,7 +63,7 @@ def uninstall_hook(ctx, param, value):
             click.echo(msg.format(hooks.COMMIT_MSG_HOOK_DST_PATH))
             ctx.exit(0)
         except hooks.GitHookInstallerError as e:
-            click.echo(e.message, err=True)
+            click.echo(str(e), err=True)
             ctx.exit(1)
 
 
@@ -93,7 +93,7 @@ def cli(config, c, ignore, verbose, silent):
         try:
             lint_config.apply_config_options(c)
         except LintConfigError as e:
-            click.echo("Config Error: {}".format(e.message))
+            click.echo("Config Error: {}".format(str(e)))
             exit(CONFIG_ERROR_CODE)
 
         # Finally, overwrite with any convenience commandline flags
@@ -103,7 +103,7 @@ def cli(config, c, ignore, verbose, silent):
         elif verbose > 0:
             lint_config.verbosity = verbose
     except LintConfigError as e:
-        click.echo("Config Error: {0}".format(e.message))
+        click.echo("Config Error: {0}".format(str(e)))
         exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
 
     try:
@@ -113,7 +113,7 @@ def cli(config, c, ignore, verbose, silent):
             gitcontext = GitContext()
             gitcontext.set_commit_msg(sys.stdin.read())
     except GitContextError as e:
-        click.echo(e.message)
+        click.echo(str(e))
         exit(GIT_CONTEXT_ERROR_CODE)
 
     # Apply an additional config that is specified in the gitcontext (= commit message)

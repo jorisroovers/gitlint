@@ -4,8 +4,14 @@ from gitlint import hooks
 from gitlint import __version__
 from click.testing import CliRunner
 from mock import patch
-from StringIO import StringIO
 from sh import CommandNotFound
+
+try:
+    # python 2.x
+    from StringIO import StringIO
+except ImportError:
+    # python 3.x
+    from io import StringIO
 
 
 class CLITests(BaseTestCase):

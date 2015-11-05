@@ -2,6 +2,7 @@
 
 ## v0.6.0dev ##
 
+- Python 3 support!
 - Better error handling when gitlint is executed in a directory that is not a git repository or 
   when git is not installed.
 - Breaking change: exit code behavior has changed. More details in the

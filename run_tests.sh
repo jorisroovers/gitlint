@@ -30,7 +30,6 @@ run_pep8_check(){
 
 run_unit_tests(){
     if [ -n "$testargs" ]; then
-        testargs="${testargs/.py/}" # remove trailing .py
         coverage run -m pytest "$testargs"
     else
         coverage run -m pytest gitlint
