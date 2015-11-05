@@ -2,7 +2,6 @@ from gitlint.tests.base import BaseTestCase
 from gitlint import cli
 from gitlint import hooks
 from gitlint import __version__
-
 from click.testing import CliRunner
 from mock import patch
 from StringIO import StringIO

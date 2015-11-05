@@ -1,6 +1,6 @@
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext
-
+from gitlint.git import GitContext, GitContextError
+from sh import ErrorReturnCode, CommandNotFound
 from mock import patch
 
 
@@ -20,6 +20,28 @@ class GitTests(BaseTestCase):
         # assert that changed files are read using git command
         sh.git.assert_called_once_with('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD', _tty_out=False)
         self.assertListEqual(context.changed_files, ["file1.txt", "path/to/file2.txt"])
+
+    @patch('gitlint.git.sh')
+    def test_get_latest_commit_command_not_found(self, sh):
+        sh.git.log.side_effect = CommandNotFound("git")
+        expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
+                       "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
+        with self.assertRaisesRegexp(GitContextError, expected_msg):
+            GitContext.from_local_repository()
+
+        # assert that commit message was read using git command
+        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False)
+
+    @patch('gitlint.git.sh')
+    def test_get_latest_commit_git_error(self, sh):
+        sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", "",
+                                                 "fatal: Not a git repository (or any of the parent directories): .git")
+
+        with self.assertRaisesRegexp(GitContextError, "The current directory is not a git repository."):
+            GitContext.from_local_repository()
+
+        # assert that commit message was read using git command
+        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False)
 
     def test_set_commit_msg_full(self):
         gitcontext = GitContext()

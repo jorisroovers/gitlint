@@ -1,5 +1,11 @@
 # Changelog #
 
+## v0.6.0dev ##
+
+- Better error handling when gitlint is executed in a directory that is not a git repository or 
+  when git is not installed.
+
+
 ## v0.5.0 (2015-10-04) ##
 
 - New Rule: ```title-match-regex```. Details can be found in the [Rules section of the README](README.md#rules).

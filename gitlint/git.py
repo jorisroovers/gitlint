@@ -1,4 +1,11 @@
 import sh
+# import exceptions separately, this makes it a little easier to mock them out in the unit tests
+from sh import CommandNotFound, ErrorReturnCode
+
+
+class GitContextError(Exception):
+    """ Exception indicating there is an issue with the git context """
+    pass
 
 
 class GitCommitMessage(object):
@@ -41,10 +48,26 @@ class GitContext(object):
 
     @staticmethod
     def from_local_repository():
-        commit_info = GitContext()
-        commit_info.set_commit_msg(sh.git.log("-1", "--pretty=%B", _tty_out=False))
+        try:
+            # Get info from the local git repository
+            # last commit message
+            commit_msg = sh.git.log("-1", "--pretty=%B", _tty_out=False)
+            # changed files in last commit
+            changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", _tty_out=False)
+        except CommandNotFound:
+            error_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
+                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
+            raise GitContextError(error_msg)
+        except ErrorReturnCode as e:  # Something went wrong while executing the git command
+            error_msg = e.stderr.strip()
+            if "Not a git repository" in error_msg:
+                error_msg = "The current directory is not a git repository."
+            else:
+                error_msg = "An error occured while executing '{}': {}".format(e.full_cmd, error_msg)
+            raise GitContextError(error_msg)
 
-        # changed files in last commit
-        changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", _tty_out=False)
+        # Create GitContext object with the retrieved info and return
+        commit_info = GitContext()
+        commit_info.set_commit_msg(commit_msg)
         commit_info.changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]
         return commit_info

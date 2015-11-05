@@ -263,6 +263,15 @@ python setup.py --long-description | rst2html.py > output.html
     - body-changed-file-mention: distinction between change file and directory in output
 - Git hooks:
     - appending to an existing hook (after user confirmation)
+- Reporting:
+    - ```--summary``` option: print out a summary at the end. Contains: number/type or errors
+    - ```--count``` option: only print out the number of violations
+    - ```--report```: html report
+- Work on a different git repo than the current directory
+- Bugfix:
+    - Linux doesn't do exit codes larger than 255 [http://tldp.org/LDP/abs/html/exitcodes.html](), fix config error codes
+- Documentation site on ```gh-pages``` branch using Jekyll
+ -  Create animation using [https://asciinema.org/]()
 - Python 3 support
     - Currently blocked on Click: [http://click.pocoo.org/5/python3](http://click.pocoo.org/5/python3)
 - Developer convenience:

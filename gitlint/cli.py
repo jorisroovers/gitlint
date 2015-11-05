@@ -1,7 +1,7 @@
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfig, LintConfigError
-from gitlint.git import GitContext
+from gitlint.git import GitContext, GitContextError
 from gitlint import hooks
 import os
 import click
@@ -9,6 +9,7 @@ import sys
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 CONFIG_ERROR_CODE = 10000
+GIT_CONTEXT_ERROR = 10001
 
 
 def get_lint_config(config_path=None):
@@ -99,11 +100,15 @@ def cli(config, c, ignore, verbose, silent):
         click.echo("Config Error: {0}".format(e.message))
         exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
 
-    if sys.stdin.isatty():
-        gitcontext = GitContext.from_local_repository()
-    else:
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(sys.stdin.read())
+    try:
+        if sys.stdin.isatty():
+            gitcontext = GitContext.from_local_repository()
+        else:
+            gitcontext = GitContext()
+            gitcontext.set_commit_msg(sys.stdin.read())
+    except GitContextError as e:
+        click.echo(e.message)
+        exit(GIT_CONTEXT_ERROR)
 
     # Apply an additional config that is specified in the gitcontext (= commit message)
     lint_config.apply_config_from_gitcontext(gitcontext)
