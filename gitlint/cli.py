@@ -8,8 +8,14 @@ import click
 import sys
 
 DEFAULT_CONFIG_FILE = ".gitlint"
-CONFIG_ERROR_CODE = 10000
-GIT_CONTEXT_ERROR = 10001
+
+# Error codes
+MAX_VIOLATION_ERROR_CODE = 252
+USAGE_ERROR_CODE = 253
+GIT_CONTEXT_ERROR_CODE = 254
+CONFIG_ERROR_CODE = 255
+# Since we use the return code to denote the amount of errors, we need to change the default click usage error code
+click.UsageError.exit_code = USAGE_ERROR_CODE
 
 
 def get_lint_config(config_path=None):
@@ -25,7 +31,7 @@ def get_lint_config(config_path=None):
 
     except LintConfigError as e:
         click.echo("Error during config file parsing: {0}".format(e.message))
-        exit(CONFIG_ERROR_CODE)  # return 10000 on config error
+        exit(CONFIG_ERROR_CODE)
 
     # no config file
     if config:
@@ -66,7 +72,7 @@ def uninstall_hook(ctx, param, value):
               help="Install gitlint as a git commit-msg hook")
 @click.option('--uninstall-hook', is_flag=True, callback=uninstall_hook, is_eager=True, expose_value=False,
               help="Uninstall gitlint commit-msg hook")
-@click.option('-C', '--config', type=click.Path(exists=True),
+@click.option('-C', '--config', type=click.Path(exists=True, resolve_path=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
@@ -108,7 +114,7 @@ def cli(config, c, ignore, verbose, silent):
             gitcontext.set_commit_msg(sys.stdin.read())
     except GitContextError as e:
         click.echo(e.message)
-        exit(GIT_CONTEXT_ERROR)
+        exit(GIT_CONTEXT_ERROR_CODE)
 
     # Apply an additional config that is specified in the gitcontext (= commit message)
     lint_config.apply_config_from_gitcontext(gitcontext)
@@ -117,7 +123,8 @@ def cli(config, c, ignore, verbose, silent):
     linter = GitLinter(lint_config)
     violations = linter.lint(gitcontext)
     linter.print_violations(violations)
-    exit(len(violations))
+    exit_code = min(MAX_VIOLATION_ERROR_CODE, len(violations))
+    exit(exit_code)
 
 
 if __name__ == "__main__":

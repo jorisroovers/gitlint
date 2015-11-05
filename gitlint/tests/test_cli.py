@@ -5,10 +5,13 @@ from gitlint import __version__
 from click.testing import CliRunner
 from mock import patch
 from StringIO import StringIO
+from sh import CommandNotFound
 
 
 class CLITests(BaseTestCase):
-    CONFIG_ERROR_CODE = 10000
+    USAGE_ERROR_CODE = 253
+    GIT_CONTEXT_ERROR_CODE = 254
+    CONFIG_ERROR_CODE = 255
 
     def setUp(self):
         self.cli = CliRunner()
@@ -28,12 +31,26 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, "Using config from {}\n".format(config_path))
 
-    def test_config_file_negative(self):
+    def test_config_file_nonexisting(self):
         config_path = self.get_sample_path("foo")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         expected_string = "Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" does not exist.".format(
             config_path)
         self.assertEqual(result.output.split("\n")[2], expected_string)
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+
+    def test_config_file_negative(self):
+        config_path = self.get_sample_path("config/invalid-option-value")
+        result = self.cli.invoke(cli.cli, ["--config", config_path])
+        self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
+
+    @patch('gitlint.git.sh')
+    @patch('gitlint.cli.sys')
+    def test_git_error(self, sys, sh):
+        sys.stdin.isatty.return_value = True
+        sh.git.log.side_effect = CommandNotFound("git")
+        result = self.cli.invoke(cli.cli)
+        self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
     def test_input_stream(self):
         expected_output = "1: T2 Title has trailing whitespace: \"WIP: title \"\n" + \

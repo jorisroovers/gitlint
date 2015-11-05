@@ -4,7 +4,8 @@
 
 - Better error handling when gitlint is executed in a directory that is not a git repository or 
   when git is not installed.
-
+- Breaking change: exit code behavior has changed. More details in the
+  [Exit codes section of the README](README.md#exit-codes).
 
 ## v0.5.0 (2015-10-04) ##
 
