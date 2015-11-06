@@ -3,6 +3,8 @@ Gitlint is a git commit message linter written in python: it checks your commit 
 
 Great for use as a ```commit-msg``` git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).
 
+<script type="text/javascript" src="https://asciinema.org/a/2vld64abf1tmwm6f5jw8fsrge.js" id="asciicast-2vld64abf1tmwm6f5jw8fsrge" async></script>
+
 Many of the gitlint validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
@@ -39,7 +41,7 @@ $ cat examples/commit-message-2 | gitlint
 3: B2 Line has trailing whitespace: "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
 3: B3 Line contains hard tab characters (\t): "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
 ```
-NOTE: The returned exit code equals the number of errors found. [Some exit codes are special](README.md#exit-codes).
+NOTE: The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
 
 You can modify verbosity using the ```-v``` flag, like so:
 ```bash

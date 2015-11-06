@@ -11,6 +11,8 @@ Git commit message linter written in python, checks your commit messages for sty
 
 Great for use as a ```commit-msg``` git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).
 
+See [jorisroovers.github.io/gitlint/](http://jorisroovers.github.io/gitlint/) for full documentation.
+
 Many of the gitlint validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
@@ -30,10 +32,15 @@ pip install gitlint
 
 # Check the last commit message
 gitlint
+# Output
+# 1: T1 Title exceeds max length (134>80): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+# 1: T2 Title has trailing whitespace: "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+# 1: T4 Title contains hard tab characters (\t): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
+# 2: B4 Second line is not empty: "This line should not contain text"
+# [truncated]
+
 # Alternatively, pipe a commit message to gitlint:
 cat examples/commit-message-1 | gitlint
-# or
-git log -1 --pretty=%B | gitlint
 
 # To install a gitlint as a commit-msg git hook:
 gitlint --install-hook
@@ -94,180 +101,10 @@ Options:
 ```
 
 
-## Rules ##
-
-ID    | Name                        | Description
-------|-----------------------------|----------------------------------------------------
-T1    | title-max-length            | Title length must be &lt; 72 chars.
-T2    | title-trailing-whitespace   | Title cannot have trailing whitespace (space or tab)
-T3    | title-trailing-punctuation  | Title cannot have trailing punctuation (?:!.,;)
-T4    | title-hard-tab              | Title cannot contain hard tab characters (\t)
-T5    | title-must-not-contain-word | Title cannot contain certain words (default: "WIP")
-T6    | title-leading-whitespace    | Title cannot have leading whitespace (space or tab)
-T7    | title-match-regex           | Title must match a given regex (default: .*)
-B1    | body-max-line-length        | Lines in the body must be &lt; 80 chars
-B2    | body-trailing-whitespace    | Body cannot have trailing whitespace (space or tab)
-B3    | body-hard-tab               | Body cannot contain hard tab characters (\t)
-B4    | body-first-line-empty       | First line of the body (second line of commit message) must be empty
-B5    | body-min-length             | Body length must be at least 20 characters
-B6    | body-is-missing             | Body message must be specified
-B7    | body-changed-file-mention   | Body must contain references to certain files if those files are changed in the last commit
-
-## Configuration ##
-
-You can modify gitlint's behavior by specifying a config file like so: 
-```bash
-gitlint --config myconfigfile.ini 
-```
-By default, gitlint will look for an optional ```.gitlint``` config file.
-
-```ini
-# All these sections are optional, edit this file as you like.
-[general]
-ignore=title-trailing-punctuation, T3
-# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over
-# this
-verbosity = 2
-
-[title-max-length]
-line-length=20
-
-[title-must-not-contain-word]
-# Comma-separated list of words that should not occur in the title. Matching is case
-# insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING"
-# will not cause a violation, but "WIP: my title" will.
-words=wip,title
-
-[title-match-regex]
-# python like regex (https://docs.python.org/2/library/re.html) that the
-# commit-msg title must be matched to.
-# Note that the regex can contradict with other rules if not used correctly
-# (e.g. title-must-not-contain-word).
-regex=^US[0-9]*
-
-[B1]
-# B1 = body-max-line-length
-line-length=30
-
-[body-min-length]
-min-length=5
-
-[body-is-missing]
-# Whether to ignore this rule on merge commits (which typically only have a title)
-# default = True
-ignore-merge-commits=false
-
-[body-changed-file-mention]
-# List of files that need to be explicitly mentioned in the body when they are changed
-# This is useful for when developers often erroneously edit certain files or git submodules.
-# By specifying this rule, developers can only change the file when they explicitly reference
-# it in the commit message.
-files=gitlint/rules.py,README.md
-```
-
-Alternatively, you can use one or more ```-c``` flags like so:
-
-```
-$ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
-```
-The generic config flag format is ```-c <rule>.<option>=<value>``` and supports all the same rules and options which 
-you can also use in a ```.gitlint``` config file.
-
-Finally, you can also disable gitlint for specific commit messages by adding ```gitlint-ignore: all``` to the commit
-message like so:
-
-```
-WIP: This is my commit message
-
-I want gitlint to ignore this entire commit message.
-gitlint-ignore: all
-```
-
-```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line. You can also specify
-specific rules to be ignored as follows: ```gitlint-ignore: T1, body-hard-tab```.
-
-### Config precedence ###
-Configuring gitlint happens the following order of precedence:
-
-1. Commit specific config (e.g.: ```gitlint-ignore: all``` in the commit message) 
-2. Commandline convenience flags (e.g.:  ```-vv```, ```--silent```, ```--ignore```)
-3. Commandline configuration flags (e.g.: ```-c title-max-length=123```)
-4. Configuration file (local ```.gitlint``` file, or file specified using ```-C```/```--config```)
-5. Default gitlint config
-
-
-## Using gitlint as a commit-msg hook ##
-You can also install gitlint as a git ```commit-msg``` hook so that gitlint checks your commit messages automatically
-after each commit.
-
-```bash
-gitlint --install-hook
-# To remove the hook
-gitlint --uninstall-hook
-```
-
-Important: Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg```
-file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. gitlint will also only
-uninstall unmodified commit-msg hooks that were installed by gitlint.
-
-## Exit codes ##
-Gitlint uses the exit code as a simple way to indicate the number of violations found.
-Some exit codes are used to indicate special errors as indicated in the table below.
-
-Because of these special error codes and the fact that
-[bash only supports exit codes between 0 and 255](http://tldp.org/LDP/abs/html/exitcodes.html), the maximum number
-of violations counted by the exit code is 252. Note that gitlint does not have a limit on the number of violations
-it can detect, it will just always return with exit code 252 when the number of violations is greater than or equal
-to 252.
-
-Exit Code  | Description
------------|------------------------------------------------------------
-253        | Wrong invocation of the ```gitlint``` command.
-254        | Something went wrong when invoking git.
-255        | Invalid gitlint configuration
-
 ## Contributing ##
-
-We'd love for you to contribute to gitlint. Just open a pull request and we'll get right on it! 
-You can find a wishlist below, but we're open to any suggestions you might have!
-
-### Development ###
-
-There is a Vagrantfile in this repository that can be used for development.
-```bash
-vagrant up
-vagrant ssh
-```
-
-Or you can choose to use your local environment:
-
-```bash
-virtualenv .venv
-pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
-python setup.py develop
-```
-
-To run tests:
-```bash
-./run_tests.sh                       # run unit tests and print test coverage
-./run_tests.sh --no-coverage         # run unit tests without test coverage
-./run_tests.sh --pep8                # pep8 checks
-./run_tests.sh --stats               # print some code stats
-```
-
-To see the package description in HTML format
-```
-pip install docutils
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-python setup.py --long-description | rst2html.py > output.html
-```
-
-### Documentation ###
-```bash
-mkdocs serve
-```
-
+All contributions are welcome!
+See [jorisroovers.github.io/gitlint/contributing](http://jorisroovers.github.io/gitlint/contributing) for details on
+how to get started - it's easy!
 
 ## Wishlist ##
 - More rules: 
