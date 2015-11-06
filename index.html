@@ -1,96 +1,186 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>Gitlint by jorisroovers</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">Gitlint</h1>
-      <h2 class="project-tagline">Linting for your git commit messages</h2>
-      <a href="https://github.com/jorisroovers/gitlint" class="btn">View on GitHub</a>
-      <a href="https://github.com/jorisroovers/gitlint/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/jorisroovers/gitlint/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Gitlint</title>
+  
 
-    <section class="main-content">
-      <h1>
-<a id="gitlint" class="anchor" href="#gitlint" aria-hidden="true"><span class="octicon octicon-link"></span></a>gitlint</h1>
+  <link rel="shortcut icon" href="./img/favicon.ico">
 
-<p><a href="https://travis-ci.org/jorisroovers/gitlint"><img src="https://travis-ci.org/jorisroovers/gitlint.svg?branch=master" alt="Build Status"></a>
-<a href="https://coveralls.io/github/jorisroovers/gitlint?branch=master"><img src="https://coveralls.io/repos/jorisroovers/gitlint/badge.svg?branch=master&amp;service=github" alt="Coverage Status"></a>
-<a href="https://pypi.python.org/pypi/gitlint"><img src="https://img.shields.io/pypi/v/gitlint.png" alt="PyPi Package"></a></p>
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-<p>Git commit message linter written in python, checks your commit messages for style.</p>
+  <link rel="stylesheet" href="./css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="./css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="./css/highlight.css">
 
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "None";
+  </script>
+  
+  <script src="./js/jquery-2.1.1.min.js"></script>
+  <script src="./js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="./js/highlight.pack.js"></script>
+  <script src="./js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> Gitlint</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href=".">Home</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#intro">Intro</a></li>
+                
+                    <li><a class="toctree-l4" href="#getting-started">Getting Started</a></li>
+                
+                    <li><a class="toctree-l4" href="#using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</a></li>
+                
+                    <li><a class="toctree-l4" href="#exit-codes">Exit codes</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="rules/">Rules</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="configuration/">Configuration</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="contributing/">Contributing</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">Gitlint</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="https://github.com/jorisroovers/gitlint" class="icon icon-github"> Edit on GitHub</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="intro">Intro</h1>
+<p>Gitlint is a git commit message linter written in python: it checks your commit messages for style.</p>
 <p>Great for use as a <code>commit-msg</code> git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).</p>
-
 <p>Many of the gitlint validations are based on
 <a href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">well-known</a>,
 <a href="http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/">community</a>,
 <a href="http://chris.beams.io/posts/git-commit/">standards</a>, others are based on checks that we've found
 useful throughout the years. Gitlint has sane defaults, but you can also easily customize it to your own liking.</p>
-
-<p>Note that not all features described below might be available in the latest stable version. Have a look at the
-<a href="CHANGELOG.md">Changelog</a> for details.</p>
-
 <p>If you are looking for an alternative written in Ruby, have a look at
 <a href="https://github.com/m1foley/fit-commit">fit-commit</a>.</p>
-
-<h2>
-<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
-
-<div class="highlight highlight-source-shell"><pre><span class="pl-c"># Install gitlint</span>
+<h2 id="getting-started">Getting Started</h2>
+<pre><code class="bash"># Install gitlint
 pip install gitlint
 
-<span class="pl-c"># Check the last commit message</span>
+# Check the last commit message
 gitlint
-<span class="pl-c"># Alternatively, pipe a commit message to gitlint:</span>
-cat examples/commit-message-1 <span class="pl-k">|</span> gitlint
-<span class="pl-c"># or</span>
-git log -1 --pretty=%B <span class="pl-k">|</span> gitlint
+# Alternatively, pipe a commit message to gitlint:
+cat examples/commit-message-1 | gitlint
+# or
+git log -1 --pretty=%B | gitlint
 
-<span class="pl-c"># To install a gitlint as a commit-msg git hook:</span>
-gitlint --install-hook</pre></div>
+# To install a gitlint as a commit-msg git hook:
+gitlint --install-hook
+</code></pre>
 
 <p>Output example:</p>
+<pre><code class="bash">$ cat examples/commit-message-2 | gitlint
+1: T1 Title exceeds max length (134&gt;80): &quot;This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
+1: T2 Title has trailing whitespace: &quot;This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
+1: T4 Title contains hard tab characters (\t): &quot;This is the title of a commit message that  is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
+2: B4 Second line is not empty: &quot;This line should not contain text&quot;
+3: B1 Line exceeds max length (125&gt;80): &quot;Lines typically need to have   a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. &quot;
+3: B2 Line has trailing whitespace: &quot;Lines typically need to have   a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. &quot;
+3: B3 Line contains hard tab characters (\t): &quot;Lines typically need to have     a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. &quot;
+</code></pre>
 
-<div class="highlight highlight-source-shell"><pre>$ cat examples/commit-message-2 <span class="pl-k">|</span> gitlint
-1: T1 Title exceeds max length (<span class="pl-k">134&gt;</span>80): <span class="pl-s"><span class="pl-pds">"</span>This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  <span class="pl-pds">"</span></span>
-1: T2 Title has trailing whitespace: <span class="pl-s"><span class="pl-pds">"</span>This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  <span class="pl-pds">"</span></span>
-1: T4 Title contains hard tab characters (<span class="pl-cce">\t</span>): <span class="pl-s"><span class="pl-pds">"</span>This is the title of a commit message that  is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  <span class="pl-pds">"</span></span>
-2: B4 Second line is not empty: <span class="pl-s"><span class="pl-pds">"</span>This line should not contain text<span class="pl-pds">"</span></span>
-3: B1 Line exceeds max length (<span class="pl-k">125&gt;</span>80): <span class="pl-s"><span class="pl-pds">"</span>Lines typically need to have   a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. <span class="pl-pds">"</span></span>
-3: B2 Line has trailing whitespace: <span class="pl-s"><span class="pl-pds">"</span>Lines typically need to have   a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. <span class="pl-pds">"</span></span>
-3: B3 Line contains hard tab characters (<span class="pl-cce">\t</span>): <span class="pl-s"><span class="pl-pds">"</span>Lines typically need to have     a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. <span class="pl-pds">"</span></span></pre></div>
-
-<p>NOTE: The returned exit code equals the number of errors found. <a href="README.md#exit-codes">Some exit codes are special</a>.</p>
-
+<p>NOTE: The returned exit code equals the number of errors found. <a href="./exit-codes">Some exit codes are special</a>.</p>
 <p>You can modify verbosity using the <code>-v</code> flag, like so:</p>
-
-<div class="highlight highlight-source-shell"><pre>$ cat examples/commit-message-2 <span class="pl-k">|</span> gitlint -v
+<pre><code class="bash">$ cat examples/commit-message-2 | gitlint -v
 1: T1
 1: T2
 [removed output]
-$ cat examples/commit-message-2 <span class="pl-k">|</span> gitlint -vv
-1: T1 Title exceeds max length (<span class="pl-k">134&gt;</span>80)
+$ cat examples/commit-message-2 | gitlint -vv
+1: T1 Title exceeds max length (134&gt;80)
 1: T2 Title has trailing whitespace
-1: T4 Title contains hard tab characters (<span class="pl-cce">\t</span>)
+1: T4 Title contains hard tab characters (\t)
 [removed output]
-$ cat examples/commit-message-2 <span class="pl-k">|</span> gitlint -vvv
-1: T1 Title exceeds max length (<span class="pl-k">134&gt;</span>80): <span class="pl-s"><span class="pl-pds">"</span>This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  <span class="pl-pds">"</span></span>
-1: T2 Title has trailing whitespace: <span class="pl-s"><span class="pl-pds">"</span>This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  <span class="pl-pds">"</span></span>
-[removed output]</pre></div>
+$ cat examples/commit-message-2 | gitlint -vvv
+1: T1 Title exceeds max length (134&gt;80): &quot;This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
+1: T2 Title has trailing whitespace: &quot;This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
+[removed output]
+</code></pre>
 
 <p>The default verbosity is <code>-vvv</code>.</p>
-
 <p>Other commands and variations:</p>
-
 <pre><code>Usage: gitlint [OPTIONS]
 
   Git lint tool, checks your git commit messages for styling issues
@@ -111,201 +201,25 @@ Options:
   --help             Show this message and exit.
 </code></pre>
 
-<h2>
-<a id="rules" class="anchor" href="#rules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rules</h2>
-
-<table>
-<thead>
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>T1</td>
-<td>title-max-length</td>
-<td>Title length must be &lt; 72 chars.</td>
-</tr>
-<tr>
-<td>T2</td>
-<td>title-trailing-whitespace</td>
-<td>Title cannot have trailing whitespace (space or tab)</td>
-</tr>
-<tr>
-<td>T3</td>
-<td>title-trailing-punctuation</td>
-<td>Title cannot have trailing punctuation (?:!.,;)</td>
-</tr>
-<tr>
-<td>T4</td>
-<td>title-hard-tab</td>
-<td>Title cannot contain hard tab characters (\t)</td>
-</tr>
-<tr>
-<td>T5</td>
-<td>title-must-not-contain-word</td>
-<td>Title cannot contain certain words (default: "WIP")</td>
-</tr>
-<tr>
-<td>T6</td>
-<td>title-leading-whitespace</td>
-<td>Title cannot have leading whitespace (space or tab)</td>
-</tr>
-<tr>
-<td>T7</td>
-<td>title-match-regex</td>
-<td>Title must match a given regex (default: .*)</td>
-</tr>
-<tr>
-<td>B1</td>
-<td>body-max-line-length</td>
-<td>Lines in the body must be &lt; 80 chars</td>
-</tr>
-<tr>
-<td>B2</td>
-<td>body-trailing-whitespace</td>
-<td>Body cannot have trailing whitespace (space or tab)</td>
-</tr>
-<tr>
-<td>B3</td>
-<td>body-hard-tab</td>
-<td>Body cannot contain hard tab characters (\t)</td>
-</tr>
-<tr>
-<td>B4</td>
-<td>body-first-line-empty</td>
-<td>First line of the body (second line of commit message) must be empty</td>
-</tr>
-<tr>
-<td>B5</td>
-<td>body-min-length</td>
-<td>Body length must be at least 20 characters</td>
-</tr>
-<tr>
-<td>B6</td>
-<td>body-is-missing</td>
-<td>Body message must be specified</td>
-</tr>
-<tr>
-<td>B7</td>
-<td>body-changed-file-mention</td>
-<td>Body must contain references to certain files if those files are changed in the last commit</td>
-</tr>
-</tbody>
-</table>
-
-<h2>
-<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
-
-<p>You can modify gitlint's behavior by specifying a config file like so: </p>
-
-<div class="highlight highlight-source-shell"><pre>gitlint --config myconfigfile.ini </pre></div>
-
-<p>By default, gitlint will look for an optional <code>.gitlint</code> config file.</p>
-
-<div class="highlight highlight-source-ini"><pre><span class="pl-c"># All these sections are optional, edit this file as you like.</span>
-<span class="pl-en">[general]</span>
-<span class="pl-k">ignore</span>=title-trailing-punctuation, T3
-<span class="pl-c"># verbosity should be a value between 1 and 3, the commandline -v flags take precedence over</span>
-<span class="pl-c"># this</span>
-<span class="pl-k">verbosity</span> = 2
-
-<span class="pl-en">[title-max-length]</span>
-<span class="pl-k">line-length</span>=20
-
-<span class="pl-en">[title-must-not-contain-word]</span>
-<span class="pl-c"># Comma-separated list of words that should not occur in the title. Matching is case</span>
-<span class="pl-c"># insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING"</span>
-<span class="pl-c"># will not cause a violation, but "WIP: my title" will.</span>
-<span class="pl-k">words</span>=wip,title
-
-<span class="pl-en">[title-match-regex]</span>
-<span class="pl-c"># python like regex (https://docs.python.org/2/library/re.html) that the</span>
-<span class="pl-c"># commit-msg title must be matched to.</span>
-<span class="pl-c"># Note that the regex can contradict with other rules if not used correctly</span>
-<span class="pl-c"># (e.g. title-must-not-contain-word).</span>
-<span class="pl-k">regex</span>=^US[0-9]*
-
-<span class="pl-en">[B1]</span>
-<span class="pl-c"># B1 = body-max-line-length</span>
-<span class="pl-k">line-length</span>=30
-
-<span class="pl-en">[body-min-length]</span>
-<span class="pl-k">min-length</span>=5
-
-<span class="pl-en">[body-is-missing]</span>
-<span class="pl-c"># Whether to ignore this rule on merge commits (which typically only have a title)</span>
-<span class="pl-c"># default = True</span>
-<span class="pl-k">ignore-merge-commits</span>=false
-
-<span class="pl-en">[body-changed-file-mention]</span>
-<span class="pl-c"># List of files that need to be explicitly mentioned in the body when they are changed</span>
-<span class="pl-c"># This is useful for when developers often erroneously edit certain files or git submodules.</span>
-<span class="pl-c"># By specifying this rule, developers can only change the file when they explicitly reference</span>
-<span class="pl-c"># it in the commit message.</span>
-<span class="pl-k">files</span>=gitlint/rules.py,README.md</pre></div>
-
-<p>Alternatively, you can use one or more <code>-c</code> flags like so:</p>
-
-<pre><code>$ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
-</code></pre>
-
-<p>The generic config flag format is <code>-c &lt;rule&gt;.&lt;option&gt;=&lt;value&gt;</code> and supports all the same rules and options which 
-you can also use in a <code>.gitlint</code> config file.</p>
-
-<p>Finally, you can also disable gitlint for specific commit messages by adding <code>gitlint-ignore: all</code> to the commit
-message like so:</p>
-
-<pre><code>WIP: This is my commit message
-
-I want gitlint to ignore this entire commit message.
-gitlint-ignore: all
-</code></pre>
-
-<p><code>gitlint-ignore: all</code> can occur on any line, as long as it is at the start of the line. You can also specify
-specific rules to be ignored as follows: <code>gitlint-ignore: T1, body-hard-tab</code>.</p>
-
-<h3>
-<a id="config-precedence" class="anchor" href="#config-precedence" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config precedence</h3>
-
-<p>Configuring gitlint happens the following order of precedence:</p>
-
-<ol>
-<li>Commit specific config (e.g.: <code>gitlint-ignore: all</code> in the commit message) </li>
-<li>Commandline convenience flags (e.g.:  <code>-vv</code>, <code>--silent</code>, <code>--ignore</code>)</li>
-<li>Commandline configuration flags (e.g.: <code>-c title-max-length=123</code>)</li>
-<li>Configuration file (local <code>.gitlint</code> file, or file specified using <code>-C</code>/<code>--config</code>)</li>
-<li>Default gitlint config</li>
-</ol>
-
-<h2>
-<a id="using-gitlint-as-a-commit-msg-hook" class="anchor" href="#using-gitlint-as-a-commit-msg-hook" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using gitlint as a commit-msg hook</h2>
-
+<h2 id="using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</h2>
 <p>You can also install gitlint as a git <code>commit-msg</code> hook so that gitlint checks your commit messages automatically
 after each commit.</p>
-
-<div class="highlight highlight-source-shell"><pre>gitlint --install-hook
-<span class="pl-c"># To remove the hook</span>
-gitlint --uninstall-hook</pre></div>
+<pre><code class="bash">gitlint --install-hook
+# To remove the hook
+gitlint --uninstall-hook
+</code></pre>
 
 <p>Important: Gitlint cannot work together with an existing hook. If you already have a <code>.git/hooks/commit-msg</code>
 file in your local repository, gitlint will refuse to install the <code>commit-msg</code> hook. gitlint will also only
 uninstall unmodified commit-msg hooks that were installed by gitlint.</p>
-
-<h2>
-<a id="exit-codes" class="anchor" href="#exit-codes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Exit codes</h2>
-
+<h2 id="exit-codes">Exit codes</h2>
 <p>Gitlint uses the exit code as a simple way to indicate the number of violations found.
 Some exit codes are used to indicate special errors as indicated in the table below.</p>
-
 <p>Because of these special error codes and the fact that
 <a href="http://tldp.org/LDP/abs/html/exitcodes.html">bash only supports exit codes between 0 and 255</a>, the maximum number
 of violations counted by the exit code is 252. Note that gitlint does not have a limit on the number of violations
 it can detect, it will just always return with exit code 252 when the number of violations is greater than or equal
 to 252.</p>
-
 <table>
 <thead>
 <tr>
@@ -328,118 +242,52 @@ to 252.</p>
 </tr>
 </tbody>
 </table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="rules/" class="btn btn-neutral float-right" title="Rules"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
 
-<h2>
-<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+  <hr/>
 
-<p>We'd love for you to contribute to gitlint. Just open a pull request and we'll get right on it! 
-You can find a wishlist below, but we're open to any suggestions you might have!</p>
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
 
-<h3>
-<a id="development" class="anchor" href="#development" aria-hidden="true"><span class="octicon octicon-link"></span></a>Development</h3>
-
-<p>There is a Vagrantfile in this repository that can be used for development.</p>
-
-<div class="highlight highlight-source-shell"><pre>vagrant up
-vagrant ssh</pre></div>
-
-<p>Or you can choose to use your local environment:</p>
-
-<div class="highlight highlight-source-shell"><pre>virtualenv .venv
-pip install -r requirements.txt -r <span class="pl-c1">test</span>-requirements.txt
-python setup.py develop</pre></div>
-
-<p>To run tests:</p>
-
-<div class="highlight highlight-source-shell"><pre>./run_tests.sh                       <span class="pl-c"># run unit tests and print test coverage</span>
-./run_tests.sh --no-coverage         <span class="pl-c"># run unit tests without test coverage</span>
-./run_tests.sh --pep8                <span class="pl-c"># pep8 checks</span>
-./run_tests.sh --stats               <span class="pl-c"># print some code stats</span></pre></div>
-
-<p>To see the package description in HTML format</p>
-
-<pre><code>pip install docutils
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-python setup.py --long-description | rst2html.py &gt; output.html
-</code></pre>
-
-<h2>
-<a id="wishlist" class="anchor" href="#wishlist" aria-hidden="true"><span class="octicon octicon-link"></span></a>Wishlist</h2>
-
-<ul>
-<li>More rules: 
-
-<ul>
-<li>Checkbox rules: Developers must add a line to the end of the commit specifying that they've considered
-a number of aspects when committing the code. E.g.: <code>gitlint-checks: tests, documentation</code>.
-This can be useful as a reminder if developers often submit code without updating the documentation or tests.</li>
-<li>max-lines-change: Maximum lines of change in a single commit (-1 = unlimited)</li>
-<li>Rules for different attributes of the the commit message: author, date, etc</li>
-</ul>
-</li>
-<li>More rule options:
-
-<ul>
-<li>title-must-not-contain-word: case sensitive match</li>
-<li>title-trailing-punctuation: define punctuation</li>
-</ul>
-</li>
-<li>Rule improvements:
-
-<ul>
-<li>body-changed-file-mention: list all files/directories that need to be mentioned as part of the violation</li>
-<li>body-changed-file-mention: distinction between change file and directory in output</li>
-</ul>
-</li>
-<li>Git hooks:
-
-<ul>
-<li>appending to an existing hook (after user confirmation)</li>
-</ul>
-</li>
-<li>Reporting:
-
-<ul>
-<li>
-<code>--summary</code> option: print out a summary at the end. Contains: number/type or errors</li>
-<li>
-<code>--count</code> option: only print out the number of violations</li>
-<li>
-<code>--report</code>: html report</li>
-</ul>
-</li>
-<li>Configuration
-
-<ul>
-<li>Work on a different git repo than the current directory: <code>--target</code> parameter.</li>
-</ul>
-</li>
-<li>Documentation 
-
-<ul>
-<li>Documentation site on <code>gh-pages</code> branch using Jekyll</li>
-<li>Create demo using <a href="">https://asciinema.org/</a>
-</li>
-</ul>
-</li>
-<li>Developer convenience:
-
-<ul>
-<li>More unit tests, always more unit tests</li>
-<li>Integration tests</li>
-</ul>
-</li>
-</ul>
-
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/jorisroovers/gitlint">Gitlint</a> is maintained by <a href="https://github.com/jorisroovers">jorisroovers</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
 
     </section>
 
-  
-  </body>
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+      
+        <span style="margin-left: 15px"><a href="rules/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
 </html>
+
+<!--
+MkDocs version : 0.14.0
+Build Date UTC : 2015-11-06 10:21:12.540450
+-->

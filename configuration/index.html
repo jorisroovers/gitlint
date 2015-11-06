@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuration - Gitlint</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Configuration";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Gitlint</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../rules/">Rules</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Configuration</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#config-files">Config files</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#commandline-config">Commandline config</a></li>
+                
+                    <li><a class="toctree-l4" href="#configuration-precedence">Configuration precedence</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../contributing/">Contributing</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Gitlint</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Configuration</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="https://github.com/jorisroovers/gitlint" class="icon icon-github"> Edit on GitHub</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="config-files">Config files</h1>
+<p>You can modify gitlint's behavior by specifying a config file like so: </p>
+<pre><code class="bash">gitlint --config myconfigfile.ini 
+</code></pre>
+
+<p>By default, gitlint will look for an optional <code>.gitlint</code> config file.</p>
+<pre><code class="ini"># All these sections are optional, edit this file as you like.
+[general]
+ignore=title-trailing-punctuation, T3
+# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over
+# this
+verbosity = 2
+
+[title-max-length]
+line-length=20
+
+[title-must-not-contain-word]
+# Comma-separated list of words that should not occur in the title. Matching is case
+# insensitive. It's fine if the keyword occurs as part of a larger word (so &quot;WIPING&quot;
+# will not cause a violation, but &quot;WIP: my title&quot; will.
+words=wip,title
+
+[title-match-regex]
+# python like regex (https://docs.python.org/2/library/re.html) that the
+# commit-msg title must be matched to.
+# Note that the regex can contradict with other rules if not used correctly
+# (e.g. title-must-not-contain-word).
+regex=^US[0-9]*
+
+[B1]
+# B1 = body-max-line-length
+line-length=30
+
+[body-min-length]
+min-length=5
+
+[body-is-missing]
+# Whether to ignore this rule on merge commits (which typically only have a title)
+# default = True
+ignore-merge-commits=false
+
+[body-changed-file-mention]
+# List of files that need to be explicitly mentioned in the body when they are changed
+# This is useful for when developers often erroneously edit certain files or git submodules.
+# By specifying this rule, developers can only change the file when they explicitly reference
+# it in the commit message.
+files=gitlint/rules.py,README.md
+</code></pre>
+
+<h1 id="commandline-config">Commandline config</h1>
+<p>Alternatively, you can use one or more <code>-c</code> flags like so:</p>
+<pre><code>$ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
+</code></pre>
+
+<p>The generic config flag format is <code>-c &lt;rule&gt;.&lt;option&gt;=&lt;value&gt;</code> and supports all the same rules and options which 
+you can also use in a <code>.gitlint</code> config file.</p>
+<p>Finally, you can also disable gitlint for specific commit messages by adding <code>gitlint-ignore: all</code> to the commit
+message like so:</p>
+<pre><code>WIP: This is my commit message
+
+I want gitlint to ignore this entire commit message.
+gitlint-ignore: all
+</code></pre>
+
+<p><code>gitlint-ignore: all</code> can occur on any line, as long as it is at the start of the line. You can also specify
+specific rules to be ignored as follows: <code>gitlint-ignore: T1, body-hard-tab</code>.</p>
+<h2 id="configuration-precedence">Configuration precedence</h2>
+<p>Configuring gitlint happens the following order of precedence:</p>
+<ol>
+<li>Commit specific config (e.g.: <code>gitlint-ignore: all</code> in the commit message) </li>
+<li>Commandline convenience flags (e.g.:  <code>-vv</code>, <code>--silent</code>, <code>--ignore</code>)</li>
+<li>Commandline configuration flags (e.g.: <code>-c title-max-length=123</code>)</li>
+<li>Configuration file (local <code>.gitlint</code> file, or file specified using <code>-C</code>/<code>--config</code>)</li>
+<li>Default gitlint config</li>
+</ol>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../contributing/" class="btn btn-neutral float-right" title="Contributing"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../rules/" class="btn btn-neutral" title="Rules"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../rules/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../contributing/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
