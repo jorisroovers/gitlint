@@ -129,6 +129,8 @@
                 <h1 id="intro">Intro</h1>
 <p>Gitlint is a git commit message linter written in python: it checks your commit messages for style.</p>
 <p>Great for use as a <code>commit-msg</code> git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).</p>
+<script type="text/javascript" src="https://asciinema.org/a/2vld64abf1tmwm6f5jw8fsrge.js" id="asciicast-2vld64abf1tmwm6f5jw8fsrge" async></script>
+
 <p>Many of the gitlint validations are based on
 <a href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">well-known</a>,
 <a href="http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/">community</a>,
@@ -162,7 +164,7 @@ gitlint --install-hook
 3: B3 Line contains hard tab characters (\t): &quot;Lines typically need to have     a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. &quot;
 </code></pre>
 
-<p>NOTE: The returned exit code equals the number of errors found. <a href="./exit-codes">Some exit codes are special</a>.</p>
+<p>NOTE: The returned exit code equals the number of errors found. <a href=".#exit-codes">Some exit codes are special</a>.</p>
 <p>You can modify verbosity using the <code>-v</code> flag, like so:</p>
 <pre><code class="bash">$ cat examples/commit-message-2 | gitlint -v
 1: T1
@@ -289,5 +291,5 @@ to 252.</p>
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-11-06 10:21:12.540450
+Build Date UTC : 2015-11-06 11:14:37.181276
 -->
