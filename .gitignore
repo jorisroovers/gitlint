@@ -61,3 +61,7 @@ virtualenv
 
 # Vagrant
 .vagrant
+
+
+# mkdocs
+site/

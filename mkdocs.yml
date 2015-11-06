@@ -1,0 +1,13 @@
+site_name: Gitlint
+site_description: Linting for your git commit messages
+site_url: http://jorisroovers.github.io/gitlint/
+repo_url: https://github.com/jorisroovers/gitlint
+pages:
+    - Home: index.md
+    - Rules: rules.md
+    - Configuration: configuration.md
+    - Contributing: contributing.md
+
+markdown_extensions: [admonition]
+theme: readthedocs
+strict: true

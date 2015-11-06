@@ -243,7 +243,7 @@ Or you can choose to use your local environment:
 
 ```bash
 virtualenv .venv
-pip install -r requirements.txt -r test-requirements.txt
+pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
 python setup.py develop
 ```
 
@@ -262,6 +262,12 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 python setup.py --long-description | rst2html.py > output.html
 ```
+
+### Documentation ###
+```bash
+mkdocs serve
+```
+
 
 ## Wishlist ##
 - More rules: 
@@ -285,7 +291,6 @@ python setup.py --long-description | rst2html.py > output.html
 - Configuration
     - Work on a different git repo than the current directory: ```--target``` parameter.
 - Documentation 
-    - Documentation site on ```gh-pages``` branch using Jekyll
     - Create demo using [https://asciinema.org/]()
 - Developer convenience:
     - More unit tests, always more unit tests
