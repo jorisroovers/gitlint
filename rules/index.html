@@ -64,6 +64,34 @@
             
                 <li class="toctree-l3"><a href="#overview">Overview</a></li>
                 
+                    <li><a class="toctree-l4" href="#t1-title-max-length">T1: title-max-length</a></li>
+                
+                    <li><a class="toctree-l4" href="#t2-title-trailing-whitespace">T2: title-trailing-whitespace</a></li>
+                
+                    <li><a class="toctree-l4" href="#t3-title-trailing-punctuation">T3: title-trailing-punctuation</a></li>
+                
+                    <li><a class="toctree-l4" href="#t4-title-hard-tab">T4: title-hard-tab</a></li>
+                
+                    <li><a class="toctree-l4" href="#t5-title-must-not-contain-word">T5: title-must-not-contain-word</a></li>
+                
+                    <li><a class="toctree-l4" href="#t6-title-leading-whitespace">T6: title-leading-whitespace</a></li>
+                
+                    <li><a class="toctree-l4" href="#t7-title-match-regex">T7: title-match-regex</a></li>
+                
+                    <li><a class="toctree-l4" href="#b1-body-max-line-length">B1: body-max-line-length</a></li>
+                
+                    <li><a class="toctree-l4" href="#b2-body-trailing-whitespace">B2: body-trailing-whitespace</a></li>
+                
+                    <li><a class="toctree-l4" href="#b3-body-hard-tab">B3: body-hard-tab</a></li>
+                
+                    <li><a class="toctree-l4" href="#b4-body-first-line-empty">B4: body-first-line-empty</a></li>
+                
+                    <li><a class="toctree-l4" href="#b5-body-min-length">B5: body-min-length</a></li>
+                
+                    <li><a class="toctree-l4" href="#b6-body-is-missing">B6: body-is-missing</a></li>
+                
+                    <li><a class="toctree-l4" href="#b7-body-changed-file-mention">B7: body-changed-file-mention</a></li>
+                
             
             </ul>
         
@@ -120,12 +148,13 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="overview">Overview</h2>
+                <h1 id="overview">Overview</h1>
 <table>
 <thead>
 <tr>
 <th>ID</th>
 <th>Name</th>
+<th>gitlint version</th>
 <th>Description</th>
 </tr>
 </thead>
@@ -133,72 +162,485 @@
 <tr>
 <td>T1</td>
 <td>title-max-length</td>
+<td>&gt;= 0.1</td>
 <td>Title length must be &lt; 72 chars.</td>
 </tr>
 <tr>
 <td>T2</td>
 <td>title-trailing-whitespace</td>
+<td>&gt;= 0.1</td>
 <td>Title cannot have trailing whitespace (space or tab)</td>
 </tr>
 <tr>
 <td>T3</td>
 <td>title-trailing-punctuation</td>
+<td>&gt;= 0.1</td>
 <td>Title cannot have trailing punctuation (?:!.,;)</td>
 </tr>
 <tr>
 <td>T4</td>
 <td>title-hard-tab</td>
+<td>&gt;= 0.1</td>
 <td>Title cannot contain hard tab characters (\t)</td>
 </tr>
 <tr>
 <td>T5</td>
 <td>title-must-not-contain-word</td>
+<td>&gt;= 0.1</td>
 <td>Title cannot contain certain words (default: "WIP")</td>
 </tr>
 <tr>
 <td>T6</td>
 <td>title-leading-whitespace</td>
+<td>&gt;= 0.4</td>
 <td>Title cannot have leading whitespace (space or tab)</td>
 </tr>
 <tr>
 <td>T7</td>
 <td>title-match-regex</td>
+<td>&gt;= 0.5</td>
 <td>Title must match a given regex (default: .*)</td>
 </tr>
 <tr>
 <td>B1</td>
 <td>body-max-line-length</td>
+<td>&gt;= 0.1</td>
 <td>Lines in the body must be &lt; 80 chars</td>
 </tr>
 <tr>
 <td>B2</td>
 <td>body-trailing-whitespace</td>
+<td>&gt;= 0.1</td>
 <td>Body cannot have trailing whitespace (space or tab)</td>
 </tr>
 <tr>
 <td>B3</td>
 <td>body-hard-tab</td>
+<td>&gt;= 0.1</td>
 <td>Body cannot contain hard tab characters (\t)</td>
 </tr>
 <tr>
 <td>B4</td>
 <td>body-first-line-empty</td>
+<td>&gt;= 0.1</td>
 <td>First line of the body (second line of commit message) must be empty</td>
 </tr>
 <tr>
 <td>B5</td>
 <td>body-min-length</td>
+<td>&gt;= 0.4</td>
 <td>Body length must be at least 20 characters</td>
 </tr>
 <tr>
 <td>B6</td>
 <td>body-is-missing</td>
+<td>&gt;= 0.4</td>
 <td>Body message must be specified</td>
 </tr>
 <tr>
 <td>B7</td>
 <td>body-changed-file-mention</td>
+<td>&gt;= 0.4</td>
 <td>Body must contain references to certain files if those files are changed in the last commit</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t1-title-max-length">T1: title-max-length</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1</td>
+<td>title-max-length</td>
+<td>&gt;= 0.1</td>
+<td>Title length must be &lt; 72 chars.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>line-length</td>
+<td>&gt;= 0.2</td>
+<td>72</td>
+<td>Maximum allowed title length</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t2-title-trailing-whitespace">T2: title-trailing-whitespace</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T2</td>
+<td>title-trailing-whitespace</td>
+<td>&gt;= 0.1</td>
+<td>Title cannot have trailing whitespace (space or tab)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t3-title-trailing-punctuation">T3: title-trailing-punctuation</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T3</td>
+<td>title-trailing-punctuation</td>
+<td>&gt;= 0.1</td>
+<td>Title cannot have trailing punctuation (?:!.,;)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t4-title-hard-tab">T4: title-hard-tab</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T4</td>
+<td>title-hard-tab</td>
+<td>&gt;= 0.1</td>
+<td>Title cannot contain hard tab characters (\t)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t5-title-must-not-contain-word">T5: title-must-not-contain-word</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T5</td>
+<td>title-must-not-contain-word</td>
+<td>&gt;= 0.1</td>
+<td>Title cannot contain certain words (default: "WIP")</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_1">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>words</td>
+<td>&gt;= 0.3</td>
+<td>WIP</td>
+<td>Comma-separated list of words that should not be used in the title. Matching is case insensitive</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t6-title-leading-whitespace">T6: title-leading-whitespace</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T6</td>
+<td>title-leading-whitespace</td>
+<td>&gt;= 0.4</td>
+<td>Title cannot have leading whitespace (space or tab)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="t7-title-match-regex">T7: title-match-regex</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T7</td>
+<td>title-match-regex</td>
+<td>&gt;= 0.5</td>
+<td>Title must match a given regex (default: .*)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_2">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regex</td>
+<td>&gt;= 0.5</td>
+<td>.*</td>
+<td><a href="https://docs.python.org/3.5/library/re.html">Python-style regular expression</a> that the title should match.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b1-body-max-line-length">B1: body-max-line-length</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td>body-max-line-length</td>
+<td>&gt;= 0.1</td>
+<td>Lines in the body must be &lt; 80 chars</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_3">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>line-length</td>
+<td>&gt;= 0.2</td>
+<td>80</td>
+<td>Maximum allowed line length in the commit message body</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b2-body-trailing-whitespace">B2: body-trailing-whitespace</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B2</td>
+<td>body-trailing-whitespace</td>
+<td>&gt;= 0.1</td>
+<td>Body cannot have trailing whitespace (space or tab)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b3-body-hard-tab">B3: body-hard-tab</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B3</td>
+<td>body-hard-tab</td>
+<td>&gt;= 0.1</td>
+<td>Body cannot contain hard tab characters (\t)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b4-body-first-line-empty">B4: body-first-line-empty</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B4</td>
+<td>body-first-line-empty</td>
+<td>&gt;= 0.1</td>
+<td>First line of the body (second line of commit message) must be empty</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b5-body-min-length">B5: body-min-length</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B5</td>
+<td>body-min-length</td>
+<td>&gt;= 0.4</td>
+<td>Body length must be at least 20 characters</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_4">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>min-length</td>
+<td>&gt;= 0.4</td>
+<td>20</td>
+<td>Minimum number of required characters in body</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b6-body-is-missing">B6: body-is-missing</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B6</td>
+<td>body-is-missing</td>
+<td>&gt;= 0.4</td>
+<td>Body message must be specified</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_5">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ignore-merge-commits</td>
+<td>&gt;= 0.4</td>
+<td>true</td>
+<td>Whether this rule should be ignored during merge commits. Allowed values: true,false.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="b7-body-changed-file-mention">B7: body-changed-file-mention</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B7</td>
+<td>body-changed-file-mention</td>
+<td>&gt;= 0.4</td>
+<td>Body must contain references to certain files if those files are changed in the last commit</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_6">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>files</td>
+<td>&gt;= 0.4</td>
+<td>(empty)</td>
+<td>Comma-separated list of files that need to an explicit mention in the commit message in case they are changed.</td>
 </tr>
 </tbody>
 </table>
