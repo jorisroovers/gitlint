@@ -34,6 +34,9 @@ python setup.py --long-description | rst2html.py > output.html
 ```
 
 ### Documentation ###
+Outside the vagrant box (on your host machine):
 ```bash
 mkdocs serve
 ```
+
+Then access the documentation website on your host machine on [http://localhost:8000]().

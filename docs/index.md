@@ -43,6 +43,8 @@ $ cat examples/commit-message-2 | gitlint
 ```
 NOTE: The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
 
+For a list of available rules and their configuration options, have a look at the [Rules](rules.md) page.
+
 You can modify verbosity using the ```-v``` flag, like so:
 ```bash
 $ cat examples/commit-message-2 | gitlint -v
