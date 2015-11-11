@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 INSTALL_DEPS=<<EOF
 sudo add-apt-repository -y ppa:fkrull/deadsnakes
 sudo apt-get update
-sudo apt-get install -y python-virtualenv git ipython python2.6 python2.6-dev python3-pip
+sudo apt-get install -y python-virtualenv git ipython python2.6 python2.6-dev python3-pip silversearcher-ag
 sudo pip3 install virtualenv
 cd /vagrant
 virtualenv .venv

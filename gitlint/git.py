@@ -47,13 +47,18 @@ class GitContext(object):
         self.commit_msg = GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
 
     @staticmethod
-    def from_local_repository():
+    def from_local_repository(repository_path):
         try:
+            # Special arguments passed to sh: http://amoffat.github.io/sh/special_arguments.html
+            sh_special_args = {
+                '_tty_out': False,
+                '_cwd': repository_path
+            }
             # Get info from the local git repository
             # last commit message
-            commit_msg = sh.git.log("-1", "--pretty=%B", _tty_out=False)
+            commit_msg = sh.git.log("-1", "--pretty=%B", **sh_special_args)
             # changed files in last commit
-            changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", _tty_out=False)
+            changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", **sh_special_args)
         except CommandNotFound:
             error_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                         "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."

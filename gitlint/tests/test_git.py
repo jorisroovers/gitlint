@@ -10,15 +10,19 @@ class GitTests(BaseTestCase):
         sh.git.log.return_value = "commit-title\n\ncommit-body"
         sh.git.return_value = "file1.txt\npath/to/file2.txt\n"
 
-        context = GitContext.from_local_repository()
-
+        context = GitContext.from_local_repository("fake/path")
+        expected_sh_special_args = {
+            '_tty_out': False,
+            '_cwd': "fake/path"
+        }
         # assert that commit message was read using git command
-        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False)
+        sh.git.log.assert_called_once_with('-1', '--pretty=%B', **expected_sh_special_args)
         self.assertEqual(context.commit_msg.title, "commit-title")
         self.assertEqual(context.commit_msg.body, ["", "commit-body"])
 
         # assert that changed files are read using git command
-        sh.git.assert_called_once_with('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD', _tty_out=False)
+        sh.git.assert_called_once_with('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD',
+                                       **expected_sh_special_args)
         self.assertListEqual(context.changed_files, ["file1.txt", "path/to/file2.txt"])
 
     @patch('gitlint.git.sh')
@@ -27,10 +31,10 @@ class GitTests(BaseTestCase):
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
         with self.assertRaisesRegexp(GitContextError, expected_msg):
-            GitContext.from_local_repository()
+            GitContext.from_local_repository("fake/path")
 
         # assert that commit message was read using git command
-        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False)
+        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False, _cwd="fake/path")
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_git_error(self, sh):
@@ -38,10 +42,10 @@ class GitTests(BaseTestCase):
         sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
 
         with self.assertRaisesRegexp(GitContextError, "The current directory is not a git repository."):
-            GitContext.from_local_repository()
+            GitContext.from_local_repository("fake/path")
 
         # assert that commit message was read using git command
-        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False)
+        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False, _cwd="fake/path")
 
     def test_set_commit_msg_full(self):
         gitcontext = GitContext()

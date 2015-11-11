@@ -50,6 +50,29 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
+    @patch('gitlint.cli.sys')
+    def test_target(self, sys):
+        sys.stdin.isatty.return_value = True
+        result = self.cli.invoke(cli.cli, ["--target", "/tmp"])
+        # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
+        # into account).
+        self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
+        self.assertEqual(result.output, "The current directory is not a git repository.\n")
+
+    def test_target_negative(self):
+        # try setting a non-existing target
+        result = self.cli.invoke(cli.cli, ["--target", "/foo/bar"])
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+        expected_msg = "Error: Invalid value for \"--target\": Directory \"/foo/bar\" does not exist."
+        self.assertEqual(result.output.split("\n")[2], expected_msg)
+
+        # try setting a file as target
+        target_path = self.get_sample_path("config/gitlintconfig")
+        result = self.cli.invoke(cli.cli, ["--target", target_path])
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+        expected_msg = "Error: Invalid value for \"--target\": Directory \"{}\" is a file.".format(target_path)
+        self.assertEqual(result.output.split("\n")[2], expected_msg)
+
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
     def test_git_error(self, sys, sh):

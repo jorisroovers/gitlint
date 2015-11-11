@@ -72,6 +72,8 @@ def uninstall_hook(ctx, param, value):
               help="Install gitlint as a git commit-msg hook")
 @click.option('--uninstall-hook', is_flag=True, callback=uninstall_hook, is_eager=True, expose_value=False,
               help="Uninstall gitlint commit-msg hook")
+@click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
+              default=os.getcwd(), help="Path of the target git repository (defaults to the current directory).")
 @click.option('-C', '--config', type=click.Path(exists=True, resolve_path=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
@@ -82,9 +84,8 @@ def uninstall_hook(ctx, param, value):
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). Default: -vvv", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
-def cli(config, c, ignore, verbose, silent):
+def cli(target, config, c, ignore, verbose, silent):
     """ Git lint tool, checks your git commit messages for styling issues """
-
     try:
         # Config precedence:
         # First, load default config or config from configfile
@@ -108,7 +109,7 @@ def cli(config, c, ignore, verbose, silent):
 
     try:
         if sys.stdin.isatty():
-            gitcontext = GitContext.from_local_repository()
+            gitcontext = GitContext.from_local_repository(target)
         else:
             gitcontext = GitContext()
             gitcontext.set_commit_msg(sys.stdin.read())
