@@ -47,7 +47,7 @@ def install_hook(ctx, param, value):
         try:
             hooks.GitHookInstaller.install_commit_msg_hook()
             # declare victory :-)
-            click.echo("Successfully installed gitlint commit-msg hook in {0}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH))
+            click.echo("Successfully installed gitlint commit-msg hook in {0}".format(hooks.COMMIT_MSG_HOOK_DST_PATH))
             ctx.exit(0)
         except hooks.GitHookInstallerError as e:
             click.echo(str(e), err=True)
@@ -59,7 +59,7 @@ def uninstall_hook(ctx, param, value):
         try:
             hooks.GitHookInstaller.uninstall_commit_msg_hook()
             # declare victory :-)
-            msg = "Successfully uninstalled gitlint commit-msg hook from {0}\n"
+            msg = "Successfully uninstalled gitlint commit-msg hook from {0}"
             click.echo(msg.format(hooks.COMMIT_MSG_HOOK_DST_PATH))
             ctx.exit(0)
         except hooks.GitHookInstallerError as e:

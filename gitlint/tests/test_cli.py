@@ -71,7 +71,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
     def test_install_hook(self, install_hook):
         result = self.cli.invoke(cli.cli, ["--install-hook"])
-        expected = "Successfully installed gitlint commit-msg hook in {}\n\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected = "Successfully installed gitlint commit-msg hook in {}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
         install_hook.assert_called_once_with()
@@ -86,7 +86,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
     def test_uninstall_hook(self, uninstall_hook):
         result = self.cli.invoke(cli.cli, ["--uninstall-hook"])
-        expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n\n".format(
+        expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(
             hooks.COMMIT_MSG_HOOK_DST_PATH)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
