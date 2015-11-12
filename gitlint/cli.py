@@ -74,7 +74,7 @@ def uninstall_hook(ctx, param, value):
               help="Uninstall gitlint commit-msg hook")
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               default=os.getcwd(), help="Path of the target git repository (defaults to the current directory).")
-@click.option('-C', '--config', type=click.Path(exists=True, resolve_path=True),
+@click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
               help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +

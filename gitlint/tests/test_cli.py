@@ -37,7 +37,16 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, "Using config from {}\n".format(config_path))
 
-    def test_config_file_nonexisting(self):
+    def test_config_file_negative(self):
+        # Directory as config file
+        config_path = self.get_sample_path("config")
+        result = self.cli.invoke(cli.cli, ["--config", config_path])
+        expected_string = "Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" is a directory.".format(
+            config_path)
+        self.assertEqual(result.output.split("\n")[2], expected_string)
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+
+        # Non existing file
         config_path = self.get_sample_path("foo")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         expected_string = "Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" does not exist.".format(
@@ -45,7 +54,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.output.split("\n")[2], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
-    def test_config_file_negative(self):
+        # Invalid config file
         config_path = self.get_sample_path("config/invalid-option-value")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
