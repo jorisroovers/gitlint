@@ -88,7 +88,7 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--generate-config"], input="testfile\n")
         self.assertEqual(result.exit_code, 0)
         expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: testfile\n" + \
-                       "Successfully generated /vagrant/testfile\n"
+                       "Successfully generated {}\n".format(os.path.abspath("testfile"))
         self.assertEqual(result.output, expected_msg)
         generate_config.assert_called_once_with(os.path.abspath("testfile"))
 
