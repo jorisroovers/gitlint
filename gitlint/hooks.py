@@ -2,7 +2,7 @@ import shutil
 import stat
 import os
 
-COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hooks/commit-msg")
+COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/commit-msg")
 COMMIT_MSG_HOOK_DST_PATH = os.path.abspath(".git/hooks/commit-msg")
 GITLINT_HOOK_IDENTIFIER = "### gitlint commit-msg hook start ###\n"
 

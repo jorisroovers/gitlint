@@ -1,8 +1,8 @@
 from gitlint.tests.base import BaseTestCase
-from gitlint.config import LintConfig, LintConfigError
+from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
 from gitlint.git import GitContext
-
 from gitlint import rules
+from mock import patch
 
 
 class LintConfigTests(BaseTestCase):
@@ -176,3 +176,10 @@ class LintConfigTests(BaseTestCase):
         config.apply_config_from_gitcontext(context)
         expected_rules = [rule for rule in config.rules if rule.id not in ["T1", "body-hard-tab"]]
         self.assertEqual(config.rules, expected_rules)
+
+
+class LintConfigGeneratorTests(BaseTestCase):
+    @patch('gitlint.config.shutil.copyfile')
+    def test_install_commit_msg_hook_negative(self, copy):
+        LintConfigGenerator.generate_config("foo/bar/test")
+        copy.assert_called_with(GITLINT_CONFIG_TEMPLATE_SRC_PATH, "foo/bar/test")

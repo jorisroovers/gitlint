@@ -1,16 +1,21 @@
 # Changelog #
 
-## v0.6.0dev ##
+## v0.6.0dev (work in progress) ##
 
 - Python 3 support!
+- All documentation is now hosted on [http://jorisroovers.github.io/gitlint/]()
+- New ```--generate-config``` flag generates a sample gitlint config file
+- New ```--target``` flag allows users to lint different directories than the current working directory
 - Better error handling when gitlint is executed in a directory that is not a git repository or 
   when git is not installed.
 - Breaking change: exit code behavior has changed. More details in the
-  [Exit codes section of the README](README.md#exit-codes).
+  [Exit codes section of the documentation](http://jorisroovers.github.io/gitlint/#exit-codes).
+- Misc: ```--config``` option no longer accepts directories as value
 
 ## v0.5.0 (2015-10-04) ##
 
-- New Rule: ```title-match-regex```. Details can be found in the [Rules section of the README](README.md#rules).
+- New Rule: ```title-match-regex```. Details can be found in the
+  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/).
 - Uninstall previously installed gitlint git commit hooks using: ```gitlint --uninstall-hook```
 - Ignore rules on a per commit basis by adding e.g.: ```gitlint-ignore: T1, body-hard-tab``` to your git commit message.
   Use ```gitlint-ignore: all``` to disable gitlint all together for a specific commit.
@@ -26,7 +31,8 @@
 ## v0.4.0 (2015-09-19) ##
 
 - New rules: ```body-is-missing```, ```body-min-length```, ```title-leading-whitespace```,
-  ```body-changed-file-mention```. Details can be found in the [Rules section of the README](README.md#rules).
+  ```body-changed-file-mention```. Details can be found in the
+  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/).
 - The git ```commit-msg```  hook now allows you to keep or discard the commit when it fails gitlint validation
 - gitlint is now also released as a [python wheel](http://pythonwheels.com/) on pypi.
 - Internal: rule classes now have access to a gitcontext containing body the commit message and the files changed in the

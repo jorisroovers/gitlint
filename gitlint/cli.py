@@ -1,6 +1,6 @@
 import gitlint
 from gitlint.lint import GitLinter
-from gitlint.config import LintConfig, LintConfigError
+from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator
 from gitlint.git import GitContext, GitContextError
 from gitlint import hooks
 import os
@@ -51,7 +51,7 @@ def install_hook(ctx, param, value):
             ctx.exit(0)
         except hooks.GitHookInstallerError as e:
             click.echo(str(e), err=True)
-            ctx.exit(1)
+            ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
 
 def uninstall_hook(ctx, param, value):
@@ -64,24 +64,43 @@ def uninstall_hook(ctx, param, value):
             ctx.exit(0)
         except hooks.GitHookInstallerError as e:
             click.echo(str(e), err=True)
-            ctx.exit(1)
+            ctx.exit(GIT_CONTEXT_ERROR_CODE)
+
+
+def generate_config(ctx, param, value):
+    if value:
+        path = click.prompt('Please specify a location for the sample gitlint config file', default=DEFAULT_CONFIG_FILE)
+        path = os.path.abspath(path)
+        dir_name = os.path.dirname(path)
+        if not os.path.exists(dir_name):
+            click.echo("Error: Directory '{}' does not exist.".format(dir_name), err=True)
+            ctx.exit(USAGE_ERROR_CODE)
+        elif os.path.exists(path):
+            click.echo("Error: File \"{}\" already exists.".format(path), err=True)
+            ctx.exit(USAGE_ERROR_CODE)
+
+        LintConfigGenerator.generate_config(path)
+        click.echo("Successfully generated {}".format(path))
+        ctx.exit(0)
 
 
 @click.command()
 @click.option('--install-hook', is_flag=True, callback=install_hook, is_eager=True, expose_value=False,
-              help="Install gitlint as a git commit-msg hook")
+              help="Install gitlint as a git commit-msg hook.")
 @click.option('--uninstall-hook', is_flag=True, callback=uninstall_hook, is_eager=True, expose_value=False,
-              help="Uninstall gitlint commit-msg hook")
+              help="Uninstall gitlint commit-msg hook.")
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
-              default=os.getcwd(), help="Path of the target git repository (defaults to the current directory).")
+              default=os.getcwd(), help="Path of the target git repository. [default: current working directory]")
+@click.option('--generate-config', is_flag=True, callback=generate_config, is_eager=True, expose_value=False,
+              help="Generates a sample gitlint config file (prompts for destination path).")
 @click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
-              help="Config file location (default: {0}).".format(DEFAULT_CONFIG_FILE))
+              help="Config file location [default: {}]".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('-v', '--verbose', count=True, default=0,
-              help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). Default: -vvv", )
+              help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
 def cli(target, config, c, ignore, verbose, silent):

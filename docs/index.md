@@ -71,17 +71,19 @@ Usage: gitlint [OPTIONS]
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --install-hook      Install gitlint as a git commit-msg hook
-  --uninstall-hook    Uninstall gitlint commit-msg hook
-  --target DIRECTORY  Path of the target git repository (defaults to the
-                      current directory).
-  -C, --config PATH   Config file location (default: .gitlint).
+  --install-hook      Install gitlint as a git commit-msg hook.
+  --uninstall-hook    Uninstall gitlint commit-msg hook.
+  --target DIRECTORY  Path of the target git repository. [default: current
+                      working directory]
+  --generate-config   Generates a sample gitlint config file (prompts for
+                      destination path).
+  -C, --config PATH   Config file location [default: .gitlint]
   -c TEXT             Config flags in format <rule>.<option>=<value> (e.g.: -c
                       T1.line-length=80). Flag can be used multiple times to
                       set multiple config values.
   --ignore TEXT       Ignore rules (comma-separated by id or name).
   -v, --verbose       Verbosity, more v's for more verbose output (e.g.: -v,
-                      -vv, -vvv). Default: -vvv
+                      -vv, -vvv). [default: -vvv]
   -s, --silent        Silent mode (no output). Takes precedence over -v, -vv,
                       -vvv.
   --version           Show the version and exit.

@@ -10,6 +10,7 @@ except ImportError:  # pragma: no cover
 from collections import OrderedDict
 import re
 import os
+import shutil
 
 
 class LintConfigError(Exception):
@@ -17,7 +18,10 @@ class LintConfigError(Exception):
 
 
 class LintConfig(object):
-    """ Class representing gitlint configuration """
+    """ Class representing gitlint configuration.
+        Contains active config as well as number of methods to easily get/set the config
+        (such as reading it from file or parsing commandline input).
+    """
     default_rule_classes = [rules.TitleMaxLength,
                             rules.TitleTrailingWhitespace,
                             rules.TitleLeadingWhitespace,
@@ -179,3 +183,14 @@ class LintConfig(object):
         if parser.has_section('general'):
             for option_name, option_value in parser.items('general'):
                 config.set_general_option(option_name, option_value)
+
+
+GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/gitlint")
+
+
+class LintConfigGenerator(object):
+    @staticmethod
+    def generate_config(dest):
+        """ Generates a gitlint config file at the given destination location.
+            Expects that the given ```dest``` points to a valid destination. """
+        shutil.copyfile(GITLINT_CONFIG_TEMPLATE_SRC_PATH, dest)
