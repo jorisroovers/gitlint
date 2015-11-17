@@ -27,7 +27,7 @@ cat examples/commit-message-1 | gitlint
 git log -1 --pretty=%B | gitlint
 
 # To install a gitlint as a commit-msg git hook:
-gitlint --install-hook
+gitlint install-hook
 ```
 
 Output example:
@@ -66,17 +66,13 @@ The default verbosity is ```-vvv```.
 Other commands and variations:
 
 ```
-Usage: gitlint [OPTIONS]
+Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --install-hook      Install gitlint as a git commit-msg hook.
-  --uninstall-hook    Uninstall gitlint commit-msg hook.
   --target DIRECTORY  Path of the target git repository. [default: current
                       working directory]
-  --generate-config   Generates a sample gitlint config file (prompts for
-                      destination path).
   -C, --config PATH   Config file location [default: .gitlint]
   -c TEXT             Config flags in format <rule>.<option>=<value> (e.g.: -c
                       T1.line-length=80). Flag can be used multiple times to
@@ -88,6 +84,14 @@ Options:
                       -vvv.
   --version           Show the version and exit.
   --help              Show this message and exit.
+
+Commands:
+  generate-config  Generates a sample gitlint config file.
+  install-hook     Install gitlint as a git commit-msg hook.
+  lint             Lints a git repository [default command]
+  uninstall-hook   Uninstall gitlint commit-msg hook.
+
+  When no COMMAND is specified, gitlint defaults to 'gitlint lint'.
 ```
 
 
@@ -96,9 +100,9 @@ You can also install gitlint as a git ```commit-msg``` hook so that gitlint chec
 after each commit.
 
 ```bash
-gitlint --install-hook
+gitlint install-hook
 # To remove the hook
-gitlint --uninstall-hook
+gitlint uninstall-hook
 ```
 
 Important: Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg```

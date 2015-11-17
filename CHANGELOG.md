@@ -4,12 +4,14 @@
 
 - Python 3 support!
 - All documentation is now hosted on [http://jorisroovers.github.io/gitlint/]()
-- New ```--generate-config``` flag generates a sample gitlint config file
+- New ```generate-config``` command generates a sample gitlint config file
 - New ```--target``` flag allows users to lint different directories than the current working directory
 - Better error handling when gitlint is executed in a directory that is not a git repository or 
   when git is not installed.
-- Breaking change: exit code behavior has changed. More details in the
+- **Breaking change**: exit code behavior has changed. More details in the
   [Exit codes section of the documentation](http://jorisroovers.github.io/gitlint/#exit-codes).
+- **Breaking change**: ```--install-hook``` and ```--uninstall-hook``` have been to ```install-hook``` and
+  ```uninstall-hook``` respectively to better express that they are commands instead of options.
 - Misc: ```--config``` option no longer accepts directories as value
 
 ## v0.5.0 (2015-10-04) ##

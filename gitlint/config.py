@@ -42,6 +42,7 @@ class LintConfig(object):
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = 3
         self.config_path = config_path
+        self.target = os.getcwd()
 
     @property
     def verbosity(self):

@@ -85,7 +85,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.config.LintConfigGenerator.generate_config')
     def test_generate_config(self, generate_config):
-        result = self.cli.invoke(cli.cli, ["--generate-config"], input="testfile\n")
+        result = self.cli.invoke(cli.cli, ["generate-config"], input="testfile\n")
         self.assertEqual(result.exit_code, 0)
         expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: testfile\n" + \
                        "Successfully generated {}\n".format(os.path.abspath("testfile"))
@@ -94,7 +94,7 @@ class CLITests(BaseTestCase):
 
     def test_generate_config_negative(self):
         # Non-existing directory
-        result = self.cli.invoke(cli.cli, ["--generate-config"], input="/foo/bar")
+        result = self.cli.invoke(cli.cli, ["generate-config"], input="/foo/bar")
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: /foo/bar\n" + \
                        "Error: Directory '/foo' does not exist.\n"
@@ -102,7 +102,7 @@ class CLITests(BaseTestCase):
 
         # Existing file
         sample_path = self.get_sample_path("config/gitlintconfig")
-        result = self.cli.invoke(cli.cli, ["--generate-config"], input=sample_path)
+        result = self.cli.invoke(cli.cli, ["generate-config"], input=sample_path)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = "Please specify a location for the sample gitlint " + \
                        "config file [.gitlint]: {}\n".format(sample_path) + \
@@ -129,7 +129,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
     def test_install_hook(self, install_hook):
-        result = self.cli.invoke(cli.cli, ["--install-hook"])
+        result = self.cli.invoke(cli.cli, ["install-hook"])
         expected = "Successfully installed gitlint commit-msg hook in {}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
@@ -137,14 +137,14 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
     def test_install_hook_negative(self, install_hook):
-        result = self.cli.invoke(cli.cli, ["--install-hook"])
+        result = self.cli.invoke(cli.cli, ["install-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, "test\n")
         install_hook.assert_called_once_with()
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
     def test_uninstall_hook(self, uninstall_hook):
-        result = self.cli.invoke(cli.cli, ["--uninstall-hook"])
+        result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(
             hooks.COMMIT_MSG_HOOK_DST_PATH)
         self.assertEqual(result.exit_code, 0)
@@ -153,7 +153,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
     def test_uninstall_hook_negative(self, uninstall_hook):
-        result = self.cli.invoke(cli.cli, ["--uninstall-hook"])
+        result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, "test\n")
         uninstall_hook.assert_called_once_with()
