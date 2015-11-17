@@ -37,12 +37,15 @@ class LintConfig(object):
                             rules.BodyFirstLineEmpty,
                             rules.BodyChangedFileMention]
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path=None, target=None):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = 3
         self.config_path = config_path
-        self.target = os.getcwd()
+        if target:
+            self.target = target
+        else:
+            self.target = os.path.abspath(os.getcwd())
 
     @property
     def verbosity(self):
@@ -184,6 +187,12 @@ class LintConfig(object):
         if parser.has_section('general'):
             for option_name, option_value in parser.items('general'):
                 config.set_general_option(option_name, option_value)
+
+    def __eq__(self, other):
+        return self.rules == other.rules and \
+               self.verbosity == other.verbosity and \
+               self.target == other.target and \
+               self.config_path == other.config_path
 
 
 GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/gitlint")

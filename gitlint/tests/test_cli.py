@@ -2,6 +2,7 @@ from gitlint.tests.base import BaseTestCase
 from gitlint import cli
 from gitlint import hooks
 from gitlint import __version__
+from gitlint import config
 from click.testing import CliRunner
 from mock import patch
 from sh import CommandNotFound
@@ -130,30 +131,39 @@ class CLITests(BaseTestCase):
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
     def test_install_hook(self, install_hook):
         result = self.cli.invoke(cli.cli, ["install-hook"])
-        expected = "Successfully installed gitlint commit-msg hook in {}\n".format(hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected_path = os.path.join(os.getcwd(), hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected = "Successfully installed gitlint commit-msg hook in {}\n".format(expected_path)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
-        install_hook.assert_called_once_with()
+        install_hook.assert_called_once_with(config.LintConfig())
+
+        # Specified target
+        install_hook.reset_mock()
+        result = self.cli.invoke(cli.cli, ["--target", "/tmp", "install-hook"])
+        expected = "Successfully installed gitlint commit-msg hook in /tmp/.git/hooks/commit-msg\n"
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.output, expected)
+        install_hook.assert_called_once_with(config.LintConfig(target="/tmp"))
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
     def test_install_hook_negative(self, install_hook):
         result = self.cli.invoke(cli.cli, ["install-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, "test\n")
-        install_hook.assert_called_once_with()
+        install_hook.assert_called_once_with(config.LintConfig())
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
     def test_uninstall_hook(self, uninstall_hook):
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
-        expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(
-            hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected_path = os.path.join(os.getcwd(), hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_path)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
-        uninstall_hook.assert_called_once_with()
+        uninstall_hook.assert_called_once_with(config.LintConfig())
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
     def test_uninstall_hook_negative(self, uninstall_hook):
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, "test\n")
-        uninstall_hook.assert_called_once_with()
+        uninstall_hook.assert_called_once_with(config.LintConfig())
