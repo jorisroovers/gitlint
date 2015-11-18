@@ -18,15 +18,19 @@ class GitHookInstaller(object):
         return os.path.abspath(os.path.join(lint_config.target, COMMIT_MSG_HOOK_DST_PATH))
 
     @staticmethod
-    def install_commit_msg_hook(lint_config):
+    def _assert_git_repo(lint_config):
         # assert that current directory is a git repository
         hooks_dir = os.path.abspath(os.path.join(lint_config.target, HOOKS_DIR_PATH))
         if not os.path.isdir(hooks_dir):
-            raise GitHookInstallerError("The current directory is not a git repository")
+            raise GitHookInstallerError("{} is not a git repository.".format(lint_config.target))
+
+    @staticmethod
+    def install_commit_msg_hook(lint_config):
+        GitHookInstaller._assert_git_repo(lint_config)
         dest_path = GitHookInstaller.commit_msg_hook_path(lint_config)
         if os.path.exists(dest_path):
             raise GitHookInstallerError(
-                "There is already a commit-msg hook file present in {}. ".format(dest_path) +
+                "There is already a commit-msg hook file present in {}.\n".format(dest_path) +
                 "gitlint currently does not support appending to an existing commit-msg file.")
 
         # copy hook file
@@ -37,13 +41,10 @@ class GitHookInstaller(object):
 
     @staticmethod
     def uninstall_commit_msg_hook(lint_config):
-        # assert that current directory is a git repository
-        hooks_dir = os.path.abspath(os.path.join(lint_config.target, HOOKS_DIR_PATH))
-        if not os.path.isdir(hooks_dir):
-            raise GitHookInstallerError("The current directory is not a git repository")
+        GitHookInstaller._assert_git_repo(lint_config)
         dest_path = GitHookInstaller.commit_msg_hook_path(lint_config)
         if not os.path.exists(dest_path):
-            raise GitHookInstallerError("There is no commit-msg hook present in {}".format(dest_path))
+            raise GitHookInstallerError("There is no commit-msg hook present in {}.".format(dest_path))
 
         with open(dest_path) as file:
             lines = file.readlines()

@@ -192,7 +192,7 @@ class LintConfig(object):
         return self.rules == other.rules and \
                self.verbosity == other.verbosity and \
                self.target == other.target and \
-               self.config_path == other.config_path
+               self.config_path == other.config_path  # noqa
 
 
 GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/gitlint")

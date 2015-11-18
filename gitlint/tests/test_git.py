@@ -41,7 +41,7 @@ class GitTests(BaseTestCase):
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
         sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
 
-        with self.assertRaisesRegexp(GitContextError, "The current directory is not a git repository."):
+        with self.assertRaisesRegexp(GitContextError, "fake/path is not a git repository."):
             GitContext.from_local_repository("fake/path")
 
         # assert that commit message was read using git command
