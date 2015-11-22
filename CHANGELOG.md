@@ -2,7 +2,7 @@
 
 ## v0.6.0dev (work in progress) ##
 
-- Python 3 support!
+- Python 3 (3.3+) support!
 - All documentation is now hosted on [http://jorisroovers.github.io/gitlint/]()
 - New ```generate-config``` command generates a sample gitlint config file
 - New ```--target``` flag allows users to lint different directories than the current working directory
