@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.6.1 (2015-11-22) ##
+
+- Fix: ```install-hook``` and ```generate-config``` commands not working when gitlint is installed from pypi.
+
 ## v0.6.0 (2015-11-22) ##
 
 - Python 3 (3.3+) support!

@@ -64,7 +64,7 @@ setup(
     url='https://github.com/jorisroovers/gitlint',
     license='MIT',
     package_data={
-        'gitlint': ['hooks/*']
+        'gitlint': ['files/*']
     },
     packages=find_packages(exclude=["examples"]),
     entry_points={
