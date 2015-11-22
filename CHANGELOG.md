@@ -1,6 +1,6 @@
 # Changelog #
 
-## v0.6.0dev (work in progress) ##
+## v0.6.0 (2015-11-22) ##
 
 - Python 3 (3.3+) support!
 - All documentation is now hosted on [http://jorisroovers.github.io/gitlint/]()
