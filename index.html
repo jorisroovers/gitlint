@@ -129,14 +129,15 @@
                 <h1 id="intro">Intro</h1>
 <p>Gitlint is a git commit message linter written in python: it checks your commit messages for style.</p>
 <p>Great for use as a <code>commit-msg</code> git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).</p>
-<script type="text/javascript" src="https://asciinema.org/a/2vld64abf1tmwm6f5jw8fsrge.js" id="asciicast-2vld64abf1tmwm6f5jw8fsrge" async></script>
+<script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
 <p>Many of the gitlint validations are based on
 <a href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">well-known</a>,
 <a href="http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/">community</a>,
 <a href="http://chris.beams.io/posts/git-commit/">standards</a>, others are based on checks that we've found
 useful throughout the years. Gitlint has sane defaults, but you can also easily customize it to your own liking.</p>
-<p>If you are looking for an alternative written in Ruby, have a look at
+<p>Gitlint supports both python 2.7 and python 3.3+.
+If you are looking for an alternative written in Ruby, have a look at
 <a href="https://github.com/m1foley/fit-commit">fit-commit</a>.</p>
 <h2 id="getting-started">Getting Started</h2>
 <pre><code class="bash"># Install gitlint
@@ -150,7 +151,7 @@ cat examples/commit-message-1 | gitlint
 git log -1 --pretty=%B | gitlint
 
 # To install a gitlint as a commit-msg git hook:
-gitlint --install-hook
+gitlint install-hook
 </code></pre>
 
 <p>Output example:</p>
@@ -184,32 +185,40 @@ $ cat examples/commit-message-2 | gitlint -vvv
 
 <p>The default verbosity is <code>-vvv</code>.</p>
 <p>Other commands and variations:</p>
-<pre><code>Usage: gitlint [OPTIONS]
+<pre><code>Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --install-hook     Install gitlint as a git commit-msg hook
-  --uninstall-hook   Uninstall gitlint commit-msg hook
-  -C, --config PATH  Config file location (default: .gitlint).
-  -c TEXT            Config flags in format &lt;rule&gt;.&lt;option&gt;=&lt;value&gt; (e.g.: -c
-                     T1.line-length=80). Flag can be used multiple times to
-                     set multiple config values.
-  --ignore TEXT      Ignore rules (comma-separated by id or name).
-  -v, --verbose      Verbosity, more v's for more verbose output (e.g.: -v,
-                     -vv, -vvv). Default: -vvv
-  -s, --silent       Silent mode (no output). Takes precedence over -v, -vv,
-                     -vvv.
-  --version          Show the version and exit.
-  --help             Show this message and exit.
+  --target DIRECTORY  Path of the target git repository. [default: current
+                      working directory]
+  -C, --config PATH   Config file location [default: .gitlint]
+  -c TEXT             Config flags in format &lt;rule&gt;.&lt;option&gt;=&lt;value&gt; (e.g.: -c
+                      T1.line-length=80). Flag can be used multiple times to
+                      set multiple config values.
+  --ignore TEXT       Ignore rules (comma-separated by id or name).
+  -v, --verbose       Verbosity, more v's for more verbose output (e.g.: -v,
+                      -vv, -vvv). [default: -vvv]
+  -s, --silent        Silent mode (no output). Takes precedence over -v, -vv,
+                      -vvv.
+  --version           Show the version and exit.
+  --help              Show this message and exit.
+
+Commands:
+  generate-config  Generates a sample gitlint config file.
+  install-hook     Install gitlint as a git commit-msg hook.
+  lint             Lints a git repository [default command]
+  uninstall-hook   Uninstall gitlint commit-msg hook.
+
+  When no COMMAND is specified, gitlint defaults to 'gitlint lint'.
 </code></pre>
 
 <h2 id="using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</h2>
 <p>You can also install gitlint as a git <code>commit-msg</code> hook so that gitlint checks your commit messages automatically
 after each commit.</p>
-<pre><code class="bash">gitlint --install-hook
+<pre><code class="bash">gitlint install-hook
 # To remove the hook
-gitlint --uninstall-hook
+gitlint uninstall-hook
 </code></pre>
 
 <p>Important: Gitlint cannot work together with an existing hook. If you already have a <code>.git/hooks/commit-msg</code>
@@ -292,5 +301,5 @@ to 252.</p>
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-11-10 21:41:00.914828
+Build Date UTC : 2015-11-22 16:56:50.811614
 -->
