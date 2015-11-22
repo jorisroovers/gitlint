@@ -6,13 +6,15 @@
 - All documentation is now hosted on [http://jorisroovers.github.io/gitlint/]()
 - New ```generate-config``` command generates a sample gitlint config file
 - New ```--target``` flag allows users to lint different directories than the current working directory
-- Better error handling when gitlint is executed in a directory that is not a git repository or 
-  when git is not installed.
 - **Breaking change**: exit code behavior has changed. More details in the
   [Exit codes section of the documentation](http://jorisroovers.github.io/gitlint/#exit-codes).
-- **Breaking change**: ```--install-hook``` and ```--uninstall-hook``` have been to ```install-hook``` and
+- **Breaking change**: ```--install-hook``` and ```--uninstall-hook``` have been renamed to ```install-hook``` and
   ```uninstall-hook``` respectively to better express that they are commands instead of options.
-- Misc: ```--config``` option no longer accepts directories as value
+- Better error handling when gitlint is executed in a directory that is not a git repository or 
+  when git is not installed.
+- The git commit message hook now uses pretty colored output
+- Fix: ```--config``` option no longer accepts directories as value
+- Development: unit tests are now ran using py.test
 
 ## v0.5.0 (2015-10-04) ##
 
