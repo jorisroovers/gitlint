@@ -3,7 +3,7 @@ Gitlint is a git commit message linter written in python: it checks your commit 
 
 Great for use as a ```commit-msg``` git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).
 
-<script type="text/javascript" src="https://asciinema.org/a/2vld64abf1tmwm6f5jw8fsrge.js" id="asciicast-2vld64abf1tmwm6f5jw8fsrge" async></script>
+<script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
 Many of the gitlint validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
@@ -11,6 +11,7 @@ Many of the gitlint validations are based on
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years. Gitlint has sane defaults, but you can also easily customize it to your own liking.
 
+Gitlint supports both python 2.7 and python 3.3+.
 If you are looking for an alternative written in Ruby, have a look at
 [fit-commit](https://github.com/m1foley/fit-commit).
 
