@@ -25,7 +25,7 @@ run_pep8_check(){
     # exclude settings files and virtualenvs
     FLAKE8_EXCLUDE="*settings.py,*.venv/*.py"
     echo "Running flake8..."
-    flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint
+    flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa
 }
 
 run_unit_tests(){
@@ -45,6 +45,12 @@ run_unit_tests(){
     fi
 }
 
+run_integration_tests(){
+    # pyt.test -s => print standard output (i.e. show print statement output)
+    py.test -s qa/
+}
+
+
 run_stats(){
     echo "*** Code ***"
     radon raw -s gitlint | tail -n 6
@@ -53,6 +59,7 @@ run_stats(){
 # default behavior
 just_pep8=0
 just_lint=0
+just_integration_tests=0
 just_stats=0
 include_coverage=1
 testargs=""
@@ -63,6 +70,7 @@ while [ "$#" -gt 0 ]; do
         -p|--pep8) shift; just_pep8=1;;
         -l|--lint) shift; just_lint=1;;
         -s|--stats) shift; just_stats=1;;
+        -i|--integration) shift; just_integration_tests=1;;
         --no-coverage)shift; include_coverage=0;;
         *) testargs="$1"; shift;
    esac
@@ -77,5 +85,11 @@ if [ $just_stats -eq 1 ]; then
     run_stats
     exit $?
 fi
+
+if [ $just_integration_tests -eq 1 ]; then
+    run_integration_tests
+    exit $?
+fi
+
 
 run_unit_tests || exit

@@ -21,6 +21,7 @@ To run tests:
 ```bash
 ./run_tests.sh                       # run unit tests and print test coverage
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
+./run_tests.sh --integration         # Run integration tests (Requires that you have gitlint installed)
 ./run_tests.sh --pep8                # pep8 checks
 ./run_tests.sh --stats               # print some code stats
 ```
