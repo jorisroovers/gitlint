@@ -30,9 +30,9 @@ run_pep8_check(){
 
 run_unit_tests(){
     if [ -n "$testargs" ]; then
-        coverage run -m pytest "$testargs"
+        coverage run -m pytest -s "$testargs"
     else
-        coverage run -m pytest gitlint
+        coverage run -m pytest -s gitlint
     fi
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then

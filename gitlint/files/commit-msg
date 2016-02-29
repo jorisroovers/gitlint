@@ -21,7 +21,7 @@ gitlint_exit_code=$?
 ask_yes_no(){
     question="$1"
     while true; do
-        read -e -p "$question" yn
+        read -p "$question" yn
         case $yn in
              [Yy]* ) return 0;;
              [Nn]* ) return 1;;
