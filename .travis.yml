@@ -7,6 +7,6 @@ python:
 install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"
-script: "./run_tests.sh && ./run_tests.sh --pep8"
+script: "./run_tests.sh && ./run_tests.sh --integration && ./run_tests.sh --pep8 && gitlint"
 after_success:
   - coveralls
