@@ -1,6 +1,5 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
-from gitlint.git import GitContext
 from gitlint import rules
 from mock import patch
 
@@ -145,34 +144,31 @@ class LintConfigTests(BaseTestCase):
         original_rules = config.rules
 
         # nothing gitlint
-        context = GitContext()
-        context.set_commit_msg("test\ngitlint\nfoo")
+        context = self.gitcontext("test\ngitlint\nfoo")
         config.apply_config_from_gitcontext(context)
         self.assertListEqual(config.rules, original_rules)
 
         # ignore all rules
-        context = GitContext()
-        context.set_commit_msg("test\ngitlint-ignore: all\nfoo")
+        context = self.gitcontext("test\ngitlint-ignore: all\nfoo")
         config.apply_config_from_gitcontext(context)
         self.assertEqual(config.rules, [])
 
         # ignore all rules, no space
         config = LintConfig()
-        context.set_commit_msg("test\ngitlint-ignore:all\nfoo")
+        context = self.gitcontext("test\ngitlint-ignore:all\nfoo")
         config.apply_config_from_gitcontext(context)
         self.assertEqual(config.rules, [])
 
         # ignore all rules, more spacing
         config = LintConfig()
-        context.set_commit_msg("test\ngitlint-ignore: \t all\nfoo")
+        context = self.gitcontext("test\ngitlint-ignore: \t all\nfoo")
         config.apply_config_from_gitcontext(context)
         self.assertEqual(config.rules, [])
 
     def test_gitcontext_ignore_specific(self):
         # ignore specific rules
         config = LintConfig()
-        context = GitContext()
-        context.set_commit_msg("test\ngitlint-ignore: T1, body-hard-tab")
+        context = self.gitcontext("test\ngitlint-ignore: T1, body-hard-tab")
         config.apply_config_from_gitcontext(context)
         expected_rules = [rule for rule in config.rules if rule.id not in ["T1", "body-hard-tab"]]
         self.assertEqual(config.rules, expected_rules)

@@ -54,7 +54,7 @@ Details about rule config options can be found in the Rules page.
 
 # Commandline config #
 
-Alternatively, you can use one or more ```-c``` flags like so:
+You can also use one or more ```-c``` flags like so:
 
 ```
 $ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
@@ -62,7 +62,9 @@ $ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-l
 The generic config flag format is ```-c <rule>.<option>=<value>``` and supports all the same rules and options which 
 you can also use in a ```.gitlint``` config file.
 
-Finally, you can also disable gitlint for specific commit messages by adding ```gitlint-ignore: all``` to the commit
+# Commit specific config #
+
+You can also disable gitlint for specific commit messages by adding ```gitlint-ignore: all``` to the commit
 message like so:
 
 ```

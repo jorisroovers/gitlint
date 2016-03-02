@@ -2,7 +2,6 @@ from gitlint.tests.base import BaseTestCase
 from gitlint.lint import GitLinter
 from gitlint.rules import RuleViolation
 from gitlint.config import LintConfig
-from gitlint.git import GitContext
 from mock import patch
 
 try:
@@ -16,8 +15,7 @@ except ImportError:
 class RuleOptionTests(BaseTestCase):
     def test_lint_sample1(self):
         linter = GitLinter(LintConfig())
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(self.get_sample("commit_message/sample1"))
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample1"))
         violations = linter.lint(gitcontext)
         expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
                                          "Commit title containing 'WIP', as well as trailing punctuation.", 1),
@@ -37,8 +35,7 @@ class RuleOptionTests(BaseTestCase):
 
     def test_lint_sample2(self):
         linter = GitLinter(LintConfig())
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(self.get_sample("commit_message/sample2"))
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
         violations = linter.lint(gitcontext)
         expected = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
                                   "Just a title containing WIP", 1),
@@ -48,8 +45,7 @@ class RuleOptionTests(BaseTestCase):
 
     def test_lint_sample3(self):
         linter = GitLinter(LintConfig())
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(self.get_sample("commit_message/sample3"))
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample3"))
         violations = linter.lint(gitcontext)
 
         title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
@@ -73,8 +69,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertListEqual(violations, expected)
 
     def test_lint_sample4(self):
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(self.get_sample("commit_message/sample4"))
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample4"))
         lintconfig = LintConfig()
         lintconfig.apply_config_from_gitcontext(gitcontext)
         linter = GitLinter(lintconfig)
@@ -84,8 +79,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertListEqual(violations, expected)
 
     def test_lint_sample5(self):
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(self.get_sample("commit_message/sample5"))
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample5"))
         lintconfig = LintConfig()
         lintconfig.apply_config_from_gitcontext(gitcontext)
         linter = GitLinter(lintconfig)

@@ -1,13 +1,18 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.git import GitContext, GitContextError
 from sh import ErrorReturnCode, CommandNotFound
-from mock import patch
+from mock import patch, call
 
 
 class GitTests(BaseTestCase):
     @patch('gitlint.git.sh')
     def test_get_latest_commit(self, sh):
-        sh.git.log.return_value = "commit-title\n\ncommit-body"
+        def git_log_side_effect(*args, **kwargs):
+            return_values = {'--pretty=%B': "commit-title\n\ncommit-body", '--pretty=%aN': "test author",
+                             '--pretty=%aE': "test-email@foo.com", '--pretty=%aD': "Mon Feb 29 22:19:39 2016 +0100"}
+            return return_values[args[1]]
+
+        sh.git.log.side_effect = git_log_side_effect
         sh.git.return_value = "file1.txt\npath/to/file2.txt\n"
 
         context = GitContext.from_local_repository("fake/path")
@@ -15,15 +20,23 @@ class GitTests(BaseTestCase):
             '_tty_out': False,
             '_cwd': "fake/path"
         }
-        # assert that commit message was read using git command
-        sh.git.log.assert_called_once_with('-1', '--pretty=%B', **expected_sh_special_args)
+        # assert that commit info was read using git command
+        expected_calls = [call('-1', '--pretty=%B', _cwd='fake/path', _tty_out=False),
+                          call('-1', '--pretty=%aN', _cwd='fake/path', _tty_out=False),
+                          call('-1', '--pretty=%aE', _cwd='fake/path', _tty_out=False),
+                          call('-1', '--pretty=%aD', _cwd='fake/path', _tty_out=False)]
+
+        self.assertListEqual(sh.git.log.mock_calls, expected_calls)
+
         self.assertEqual(context.commit_msg.title, "commit-title")
         self.assertEqual(context.commit_msg.body, ["", "commit-body"])
+        self.assertEqual(context.commits[-1].author_name, "test author")
+        self.assertEqual(context.commits[-1].author_email, "test-email@foo.com")
 
         # assert that changed files are read using git command
         sh.git.assert_called_once_with('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD',
                                        **expected_sh_special_args)
-        self.assertListEqual(context.changed_files, ["file1.txt", "path/to/file2.txt"])
+        self.assertListEqual(context.commits[-1].changed_files, ["file1.txt", "path/to/file2.txt"])
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_command_not_found(self, sh):
@@ -47,9 +60,8 @@ class GitTests(BaseTestCase):
         # assert that commit message was read using git command
         sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False, _cwd="fake/path")
 
-    def test_set_commit_msg_full(self):
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(self.get_sample("commit_message/sample1"))
+    def test_from_commit_msg_full(self):
+        gitcontext = GitContext.from_commit_msg(self.get_sample("commit_message/sample1"))
 
         expected_title = "Commit title containing 'WIP', as well as trailing punctuation."
         expected_body = ["This line should be empty",
@@ -66,8 +78,7 @@ class GitTests(BaseTestCase):
         self.assertEqual(gitcontext.commit_msg.original, expected_original)
 
     def test_set_commit_msg_just_title(self):
-        gitcontext = GitContext()
-        gitcontext.set_commit_msg(self.get_sample("commit_message/sample2"))
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
 
         self.assertEqual(gitcontext.commit_msg.title, "Just a title containing WIP")
         self.assertEqual(gitcontext.commit_msg.body, [])

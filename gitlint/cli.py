@@ -101,8 +101,7 @@ def lint(ctx):
         if sys.stdin.isatty():
             gitcontext = GitContext.from_local_repository(lint_config.target)
         else:
-            gitcontext = GitContext()
-            gitcontext.set_commit_msg(sys.stdin.read())
+            gitcontext = GitContext.from_commit_msg(sys.stdin.read())
     except GitContextError as e:
         click.echo(str(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)

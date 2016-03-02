@@ -22,8 +22,42 @@ class GitCommitMessage(object):
         self.title = title
         self.body = body
 
+    @staticmethod
+    def from_full_message(commit_msg_str):
+        """  Parses a full git commit message by parsing a given string into the different parts of a commit message """
+        lines = [line for line in commit_msg_str.split("\n") if not line.startswith("#")]
+        full = "\n".join(lines)
+        title = lines[0] if len(lines) > 0 else ""
+        body = lines[1:] if len(lines) > 1 else []
+        return GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
+
     def __str__(self):
         return self.full  # pragma: no cover
+
+    def __repr__(self):
+        return self.__str__()  # pragma: no cover
+
+
+class GitCommit(object):
+    """ Class representing a git commit.
+        A commit consists of: message, author name, author email, date, list of changed files
+        In the context of gitlint, only the commit message is required.
+    """
+
+    def __init__(self, message, date=None, author_name=None, author_email=None, changed_files=None):
+        self.message = message
+        self.author_name = author_name
+        self.author_email = author_email
+        self.date = date
+
+        if not changed_files:
+            self.changed_files = []
+        else:
+            self.changed_files = changed_files
+
+    def __str__(self):
+        format_str = "Author: %s <%s>\nDate:   %s\n%s"  # pragma: no cover
+        return format_str % (self.author_name, self.author_email, self.date, str(self.message))  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -35,28 +69,45 @@ class GitContext(object):
     """
 
     def __init__(self):
-        self.commit_msg = None
-        self.changed_files = []
+        self.commits = []
 
-    def set_commit_msg(self, commit_msg_str):
-        """  Sets the commit message by parsing a given string into the different parts of a commit message """
-        lines = [line for line in commit_msg_str.split("\n") if not line.startswith("#")]
-        full = "\n".join(lines)
-        title = lines[0] if len(lines) > 0 else ""
-        body = lines[1:] if len(lines) > 1 else []
-        self.commit_msg = GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
+    @property
+    def commit_msg(self):
+        if len(self.commits) > 0:
+            return self.commits[-1].message
+        return None
+
+    @staticmethod
+    def from_commit_msg(commit_msg_str):
+        """ Determines git context based on a commit message.
+        :param commit_msg_str: Full git commit message.
+        """
+        commit_msg_obj = GitCommitMessage.from_full_message(commit_msg_str)
+        commit = GitCommit(commit_msg_obj)
+
+        context = GitContext()
+        context.commits.append(commit)
+        return context
 
     @staticmethod
     def from_local_repository(repository_path):
+        """ Retrieves the git context from a local git repository.
+        :param repository_path: Path to the git repository to retrieve the context from
+        """
         try:
             # Special arguments passed to sh: http://amoffat.github.io/sh/special_arguments.html
             sh_special_args = {
                 '_tty_out': False,
                 '_cwd': repository_path
             }
+
             # Get info from the local git repository
-            # last commit message
+            # https://git-scm.com/docs/pretty-formats
             commit_msg = sh.git.log("-1", "--pretty=%B", **sh_special_args)
+            commit_author_name = sh.git.log("-1", "--pretty=%aN", **sh_special_args)
+            commit_author_email = sh.git.log("-1", "--pretty=%aE", **sh_special_args)
+            commit_date = sh.git.log("-1", "--pretty=%aD", **sh_special_args)
+
             # changed files in last commit
             changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", **sh_special_args)
         except CommandNotFound:
@@ -71,8 +122,13 @@ class GitContext(object):
                 error_msg = "An error occurred while executing '{}': {}".format(e.full_cmd, error_msg)
             raise GitContextError(error_msg)
 
-        # Create GitContext object with the retrieved info and return
-        commit_info = GitContext()
-        commit_info.set_commit_msg(commit_msg)
-        commit_info.changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]
-        return commit_info
+        # Create Git commit object with the retrieved info
+        changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]
+        commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
+        commit = GitCommit(commit_msg_obj, author_name=commit_author_name, author_email=commit_author_email,
+                           date=commit_date, changed_files=changed_files)
+
+        # Create GitContext info with the commit object and return
+        context = GitContext()
+        context.commits.append(commit)
+        return context

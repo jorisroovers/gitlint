@@ -46,7 +46,10 @@ NOTE: The returned exit code equals the number of errors found. [Some exit codes
 
 For a list of available rules and their configuration options, have a look at the [Rules](rules.md) page.
 
-You can modify verbosity using the ```-v``` flag, like so:
+The [Configuration](configuration.md) page explains how you can modify gitlint's runtime behavior via command-line
+flags, a ```.gitlint``` configuration file or on a per commit basis.
+
+As a simple example, you can modify gitlint's verbosity using the ```-v``` flag, like so:
 ```bash
 $ cat examples/commit-message-2 | gitlint -v
 1: T1
