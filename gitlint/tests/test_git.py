@@ -28,15 +28,16 @@ class GitTests(BaseTestCase):
 
         self.assertListEqual(sh.git.log.mock_calls, expected_calls)
 
-        self.assertEqual(context.commit_msg.title, "commit-title")
-        self.assertEqual(context.commit_msg.body, ["", "commit-body"])
-        self.assertEqual(context.commits[-1].author_name, "test author")
-        self.assertEqual(context.commits[-1].author_email, "test-email@foo.com")
+        last_commit = context.commits[-1]
+        self.assertEqual(last_commit.message.title, "commit-title")
+        self.assertEqual(last_commit.message.body, ["", "commit-body"])
+        self.assertEqual(last_commit.author_name, "test author")
+        self.assertEqual(last_commit.author_email, "test-email@foo.com")
 
         # assert that changed files are read using git command
         sh.git.assert_called_once_with('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD',
                                        **expected_sh_special_args)
-        self.assertListEqual(context.commits[-1].changed_files, ["file1.txt", "path/to/file2.txt"])
+        self.assertListEqual(last_commit.changed_files, ["file1.txt", "path/to/file2.txt"])
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_command_not_found(self, sh):
@@ -72,15 +73,15 @@ class GitTests(BaseTestCase):
         expected_full = expected_title + "\n" + "\n".join(expected_body)
         expected_original = expected_full + "# This is a commented  line\n"
 
-        self.assertEqual(gitcontext.commit_msg.title, expected_title)
-        self.assertEqual(gitcontext.commit_msg.body, expected_body)
-        self.assertEqual(gitcontext.commit_msg.full, expected_full)
-        self.assertEqual(gitcontext.commit_msg.original, expected_original)
+        self.assertEqual(gitcontext.commits[-1].message.title, expected_title)
+        self.assertEqual(gitcontext.commits[-1].message.body, expected_body)
+        self.assertEqual(gitcontext.commits[-1].message.full, expected_full)
+        self.assertEqual(gitcontext.commits[-1].message.original, expected_original)
 
     def test_set_commit_msg_just_title(self):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
 
-        self.assertEqual(gitcontext.commit_msg.title, "Just a title containing WIP")
-        self.assertEqual(gitcontext.commit_msg.body, [])
-        self.assertEqual(gitcontext.commit_msg.full, "Just a title containing WIP")
-        self.assertEqual(gitcontext.commit_msg.original, "Just a title containing WIP")
+        self.assertEqual(gitcontext.commits[-1].message.title, "Just a title containing WIP")
+        self.assertEqual(gitcontext.commits[-1].message.body, [])
+        self.assertEqual(gitcontext.commits[-1].message.full, "Just a title containing WIP")
+        self.assertEqual(gitcontext.commits[-1].message.original, "Just a title containing WIP")

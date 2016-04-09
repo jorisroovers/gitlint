@@ -71,12 +71,6 @@ class GitContext(object):
     def __init__(self):
         self.commits = []
 
-    @property
-    def commit_msg(self):
-        if len(self.commits) > 0:
-            return self.commits[-1].message
-        return None
-
     @staticmethod
     def from_commit_msg(commit_msg_str):
         """ Determines git context based on a commit message.

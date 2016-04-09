@@ -106,12 +106,13 @@ def lint(ctx):
         click.echo(str(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
-    # Apply an additional config that is specified in the gitcontext (= commit message)
-    lint_config.apply_config_from_gitcontext(gitcontext)
+    last_commit = gitcontext.commits[-1]
+    # Apply an additional config that is specified in the last commit message
+    lint_config.apply_config_from_commit(last_commit)
 
     # Let's get linting!
     linter = GitLinter(lint_config)
-    violations = linter.lint(gitcontext)
+    violations = linter.lint(last_commit, gitcontext)
     linter.print_violations(violations)
     exit_code = min(MAX_VIOLATION_ERROR_CODE, len(violations))
     ctx.exit(exit_code)

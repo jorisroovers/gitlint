@@ -116,12 +116,12 @@ class LintConfig(object):
                 "'{}' is not a valid value for option '{}.{}'. {}.".format(option_value, rule_name_or_id, option_name,
                                                                            str(e)))
 
-    def apply_config_from_gitcontext(self, gitcontext):
-        """ Given a git context, applies config specified in the commit message.
+    def apply_config_from_commit(self, commit):
+        """ Given a git commit, applies config specified in the commit message.
             Supported:
-             - gitlint: disable
+             - gitlint-ignore: all
         """
-        for line in gitcontext.commit_msg.full.split("\n"):
+        for line in commit.message.full.split("\n"):
             pattern = re.compile(r"^gitlint-ignore:\s*(.*)")
             matches = pattern.match(line)
             if matches and len(matches.groups()) == 1:

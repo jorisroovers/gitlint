@@ -145,31 +145,31 @@ class LintConfigTests(BaseTestCase):
 
         # nothing gitlint
         context = self.gitcontext("test\ngitlint\nfoo")
-        config.apply_config_from_gitcontext(context)
+        config.apply_config_from_commit(context.commits[-1])
         self.assertListEqual(config.rules, original_rules)
 
         # ignore all rules
         context = self.gitcontext("test\ngitlint-ignore: all\nfoo")
-        config.apply_config_from_gitcontext(context)
+        config.apply_config_from_commit(context.commits[-1])
         self.assertEqual(config.rules, [])
 
         # ignore all rules, no space
         config = LintConfig()
         context = self.gitcontext("test\ngitlint-ignore:all\nfoo")
-        config.apply_config_from_gitcontext(context)
+        config.apply_config_from_commit(context.commits[-1])
         self.assertEqual(config.rules, [])
 
         # ignore all rules, more spacing
         config = LintConfig()
         context = self.gitcontext("test\ngitlint-ignore: \t all\nfoo")
-        config.apply_config_from_gitcontext(context)
+        config.apply_config_from_commit(context.commits[-1])
         self.assertEqual(config.rules, [])
 
     def test_gitcontext_ignore_specific(self):
         # ignore specific rules
         config = LintConfig()
         context = self.gitcontext("test\ngitlint-ignore: T1, body-hard-tab")
-        config.apply_config_from_gitcontext(context)
+        config.apply_config_from_commit(context.commits[-1])
         expected_rules = [rule for rule in config.rules if rule.id not in ["T1", "body-hard-tab"]]
         self.assertEqual(config.rules, expected_rules)
 

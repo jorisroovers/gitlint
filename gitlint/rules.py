@@ -153,12 +153,11 @@ class TitleTrailingPunctuation(CommitMessageTitleRule):
     name = "title-trailing-punctuation"
     id = "T3"
 
-    def validate(self, line, gitcontext):
+    def validate(self, title, gitcontext):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
-            if gitcontext.commit_msg.title.endswith(punctuation_mark):
-                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark),
-                                      gitcontext.commit_msg.title)]
+            if title.endswith(punctuation_mark):
+                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), title)]
 
 
 class TitleHardTab(HardTab, CommitMessageTitleRule):
@@ -185,12 +184,12 @@ class TitleRegexMatches(CommitMessageTitleRule):
     id = "T7"
     options_spec = [StrOption('regex', ".*", "Regex the title should match")]
 
-    def validate(self, line, gitcontext):
+    def validate(self, title, gitcontext):
         regex = self.options['regex'].value
         pattern = re.compile(regex)
-        if not pattern.search(gitcontext.commit_msg.title):
+        if not pattern.search(title):
             violation_msg = "Title does match regex ({})".format(regex)
-            return [RuleViolation(self.id, violation_msg, gitcontext.commit_msg.title)]
+            return [RuleViolation(self.id, violation_msg, title)]
 
 
 class BodyMaxLineLength(MaxLineLength, CommitMessageBodyRule):
@@ -212,9 +211,9 @@ class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
     name = "body-first-line-empty"
     id = "B4"
 
-    def validate(self, gitcontext):
-        if len(gitcontext.commit_msg.body) >= 1:
-            first_line = gitcontext.commit_msg.body[0]
+    def validate(self, commit, gitcontext):
+        if len(commit.message.body) >= 1:
+            first_line = commit.message.body[0]
             if first_line != "":
                 return [RuleViolation(self.id, "Second line is not empty", first_line, 2)]
 
@@ -224,9 +223,9 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
     id = "B5"
     options_spec = [IntOption('min-length', 20, "Minimum body length")]
 
-    def validate(self, gitcontext):
+    def validate(self, commit, gitcontext):
         min_length = self.options['min-length'].value
-        lines = gitcontext.commit_msg.body
+        lines = commit.message.body
         if len(lines) == 3:
             actual_length = len(lines[1])
             if lines[0] == "" and actual_length <= min_length:
@@ -239,11 +238,11 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
     id = "B6"
     options_spec = [BoolOption('ignore-merge-commits', True, "Ignore merge commits")]
 
-    def validate(self, gitcontext):
+    def validate(self, commit, gitcontext):
         # ignore merges when option tells us to, which may have no body
-        if self.options['ignore-merge-commits'].value and gitcontext.commit_msg.title.startswith("Merge"):
+        if self.options['ignore-merge-commits'].value and commit.message.title.startswith("Merge"):
             return
-        if len(gitcontext.commit_msg.body) <= 2:
+        if len(commit.message.body) <= 2:
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
 
 
@@ -252,14 +251,13 @@ class BodyChangedFileMention(MultiLineRule, CommitMessageBodyRule):
     id = "B7"
     options_spec = [ListOption('files', [], "Files that need to be mentioned ")]
 
-    def validate(self, gitcontext):
+    def validate(self, commit, gitcontext):
         violations = []
         for needs_mentioned_file in self.options['files'].value:
             # if a file that we need to look out for is actually changed, then check whether it occurs
             # in the commit msg body
-            if needs_mentioned_file in gitcontext.changed_files:
-                if needs_mentioned_file not in " ".join(gitcontext.commit_msg.body):
+            if needs_mentioned_file in commit.changed_files:
+                if needs_mentioned_file not in " ".join(commit.message.body):
                     violation_message = "Body does not mention changed file '{}'".format(needs_mentioned_file)
-                    violations.append(RuleViolation(self.id, violation_message, None,
-                                                    len(gitcontext.commit_msg.body) + 1))
+                    violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))
         return violations if violations else None

@@ -24,8 +24,7 @@ class BaseTestCase(TestCase):
         """ Utility method to easily create gitcontext objects based on a given commit msg string and set of
         changed files"""
         gitcontext = GitContext.from_commit_msg(commit_msg_str)
+        commit = gitcontext.commits[-1]
         if changed_files:
-            gitcontext.changed_files = changed_files
-        else:
-            gitcontext.changed_files = []
+            commit.changed_files = changed_files
         return gitcontext

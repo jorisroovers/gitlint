@@ -59,7 +59,7 @@ class TitleRuleTests(BaseTestCase):
         rule = TitleTrailingPunctuation()
 
         # assert no error
-        violations = rule.validate(None, self.gitcontext("This is a test"))
+        violations = rule.validate("This is a test", self.gitcontext("This is a test"))
         self.assertIsNone(violations)
 
         # assert errors for different punctuations
@@ -68,7 +68,7 @@ class TitleRuleTests(BaseTestCase):
             line = "This is a test" + char
             gitcontext = self.gitcontext(line)
             expected_violation = RuleViolation("T3", "Title has trailing punctuation ({})".format(char), line)
-            violations = rule.validate(None, gitcontext)
+            violations = rule.validate(line, gitcontext)
             self.assertListEqual(violations, [expected_violation])
 
     def test_title_must_not_contain_word(self):
@@ -131,16 +131,16 @@ class TitleRuleTests(BaseTestCase):
 
         # assert no violation on default regex (=everything allowed)
         rule = TitleRegexMatches()
-        violations = rule.validate(None, gitcontext)
+        violations = rule.validate(gitcontext.commits[-1].message.title, gitcontext)
         self.assertIsNone(violations)
 
         # assert no violation on matching regex
         rule = TitleRegexMatches({'regex': "^US[0-9]*"})
-        violations = rule.validate(None, gitcontext)
+        violations = rule.validate(gitcontext.commits[-1].message.title, gitcontext)
         self.assertIsNone(violations)
 
         # assert violation when no matching regex
         rule = TitleRegexMatches({'regex': "^UA[0-9]*"})
-        violations = rule.validate(None, gitcontext)
+        violations = rule.validate(gitcontext.commits[-1].message.title, gitcontext)
         expected_violation = RuleViolation("T7", "Title does match regex (^UA[0-9]*)", "US1234: abc")
         self.assertListEqual(violations, [expected_violation])
