@@ -77,11 +77,39 @@ class GitTests(BaseTestCase):
         self.assertEqual(gitcontext.commits[-1].message.body, expected_body)
         self.assertEqual(gitcontext.commits[-1].message.full, expected_full)
         self.assertEqual(gitcontext.commits[-1].message.original, expected_original)
+        self.assertEqual(gitcontext.commits[-1].author_name, None)
+        self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(len(gitcontext.commits), 1)
 
     def test_set_commit_msg_just_title(self):
-        gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
+        gitcontext = GitContext.from_commit_msg(self.get_sample("commit_message/sample2"))
 
         self.assertEqual(gitcontext.commits[-1].message.title, "Just a title containing WIP")
         self.assertEqual(gitcontext.commits[-1].message.body, [])
         self.assertEqual(gitcontext.commits[-1].message.full, "Just a title containing WIP")
         self.assertEqual(gitcontext.commits[-1].message.original, "Just a title containing WIP")
+        self.assertEqual(gitcontext.commits[-1].author_name, None)
+        self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(len(gitcontext.commits), 1)
+
+    def test_from_commit_msg_empty(self):
+        gitcontext = GitContext.from_commit_msg("")
+
+        self.assertEqual(gitcontext.commits[-1].message.title, "")
+        self.assertEqual(gitcontext.commits[-1].message.body, [])
+        self.assertEqual(gitcontext.commits[-1].message.full, "")
+        self.assertEqual(gitcontext.commits[-1].message.original, "")
+        self.assertEqual(gitcontext.commits[-1].author_name, None)
+        self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(len(gitcontext.commits), 1)
+
+    def test_from_commit_msg_comment(self):
+        gitcontext = GitContext.from_commit_msg("Title\n\nBody 1\n#Comment\nBody 2")
+
+        self.assertEqual(gitcontext.commits[-1].message.title, "Title")
+        self.assertEqual(gitcontext.commits[-1].message.body, ["", "Body 1", "Body 2"])
+        self.assertEqual(gitcontext.commits[-1].message.full, "Title\n\nBody 1\nBody 2")
+        self.assertEqual(gitcontext.commits[-1].message.original, "Title\n\nBody 1\n#Comment\nBody 2")
+        self.assertEqual(gitcontext.commits[-1].author_name, None)
+        self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(len(gitcontext.commits), 1)

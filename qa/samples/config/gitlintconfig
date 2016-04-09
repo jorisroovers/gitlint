@@ -1,0 +1,11 @@
+[general]
+ignore=title-trailing-punctuation,B2
+verbosity = 2
+
+[title-max-length]
+line-length=20
+
+
+[B1]
+# B1 = body-max-line-length
+line-length=30

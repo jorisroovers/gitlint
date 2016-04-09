@@ -1,41 +1,9 @@
-from unittest import TestCase
-from datetime import datetime
-from uuid import uuid4
-from sh import git, rm, gitlint, touch, echo, ErrorReturnCode
-
-
-class BaseTestCase(TestCase):
-    # In case of assert failures, print the full error message
-    maxDiff = None
+from sh import git, gitlint, echo, ErrorReturnCode
+from base import BaseTestCase
 
 
 class IntegrationTests(BaseTestCase):
     """ Simple set of integration tests for gitlint """
-    tmp_git_repo = None
-
-    @classmethod
-    def setUpClass(cls):
-        """ Sets up the integration tests by creating a new temporary git repository """
-        cls.tmp_git_repo = "/tmp/gitlint-test-%s" % datetime.now().strftime("%Y%m%d-%H%M%S")
-        git("init", cls.tmp_git_repo)
-        # configuring name and email is required in every git repot
-        git("config", "user.name", "gitlint-test-user", _cwd=cls.tmp_git_repo)
-        git("config", "user.email", "gitlint@test.com", _cwd=cls.tmp_git_repo)
-
-    @classmethod
-    def tearDownClass(cls):
-        """ Cleans up the temporary git repository """
-        rm("-rf", cls.tmp_git_repo)
-
-    def _create_simple_commit(self, message, out=None):
-        """ Creates a simple commit with an empty test file.
-            :param message: Commit message for the commit. """
-        test_filename = "test-file-" + str(uuid4())
-        touch(test_filename, _cwd=self.tmp_git_repo)
-        git("add", test_filename, _cwd=self.tmp_git_repo)
-        # https://amoffat.github.io/sh/#interactive-callbacks
-        git("commit", "-m", message, _cwd=self.tmp_git_repo, _tty_in=True, _out=out)
-        return test_filename
 
     def test_successful(self):
         self._create_simple_commit("Simple title\n\nSimple body")

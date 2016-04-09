@@ -47,13 +47,21 @@ run_unit_tests(){
 
 run_integration_tests(){
     # pyt.test -s => print standard output (i.e. show print statement output)
-    py.test -s qa/
+     if [ -n "$testargs" ]; then
+        py.test -s "$testargs"
+    else
+        py.test -s qa/
+    fi
 }
-
 
 run_stats(){
     echo "*** Code ***"
     radon raw -s gitlint | tail -n 6
+    echo "*** Tests ***"
+    nr_unit_tests=$(py.test gitlint/ --collect-only | grep TestCaseFunction | wc -l)
+    nr_integration_tests=$(py.test qa/ --collect-only | grep TestCaseFunction | wc -l)
+    echo "    Unit Tests: $nr_unit_tests"
+    echo "    Integration Tests: $nr_integration_tests"
 }
 
 # default behavior
