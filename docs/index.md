@@ -9,7 +9,8 @@ Many of the gitlint validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
-useful throughout the years. Gitlint has sane defaults, but you can also easily customize it to your own liking.
+useful throughout the years. Gitlint has sane defaults, but
+[you can also easily customize it to your own liking](configuration.md).
 
 Gitlint supports both python 2.7 and python 3.3+.
 If you are looking for an alternative written in Ruby, have a look at

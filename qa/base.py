@@ -13,7 +13,7 @@ class BaseTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         """ Sets up the integration tests by creating a new temporary git repository """
-        cls.tmp_git_repo = "/tmp/gitlint-test-%s" % datetime.now().strftime("%Y%m%d-%H%M%S")
+        cls.tmp_git_repo = os.path.realpath("/tmp/gitlint-test-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
         git("init", cls.tmp_git_repo)
         # configuring name and email is required in every git repot
         git("config", "user.name", "gitlint-test-user", _cwd=cls.tmp_git_repo)

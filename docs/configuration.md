@@ -1,10 +1,17 @@
 # Config files #
-You can modify gitlint's behavior by specifying a config file like so: 
+You can modify gitlint's behavior by adding a ```.gitlint``` file to your git repository.
+
+Generate a default ```.gitlint``` config file by running:
+```bash
+gitlint generate-config
+```
+You can also use a different config file like so:
+
 ```bash
 gitlint --config myconfigfile.ini 
 ```
-By default, gitlint will look for an optional ```.gitlint``` config file.
-Details about rule config options can be found in the [Rules](rules.md) page.
+
+The block below shows a sample ```.gitlint``` file. Details about rule config options can be found on the [Rules](rules.md) page.
 
 ```ini
 # All these sections are optional, edit this file as you like.
@@ -49,8 +56,6 @@ ignore-merge-commits=false
 # it in the commit message.
 files=gitlint/rules.py,README.md
 ```
-
-Details about rule config options can be found in the Rules page.
 
 # Commandline config #
 

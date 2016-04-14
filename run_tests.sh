@@ -54,6 +54,11 @@ run_integration_tests(){
     fi
 }
 
+run_git_check(){
+    echo "Running gitlint..."
+    gitlint
+}
+
 run_stats(){
     echo "*** Code ***"
     radon raw -s gitlint | tail -n 6
@@ -67,6 +72,7 @@ run_stats(){
 # default behavior
 just_pep8=0
 just_lint=0
+just_git=0
 just_integration_tests=0
 just_stats=0
 include_coverage=1
@@ -77,6 +83,7 @@ while [ "$#" -gt 0 ]; do
         -h|--help) shift; help;;
         -p|--pep8) shift; just_pep8=1;;
         -l|--lint) shift; just_lint=1;;
+        -g|--git) shift; just_git=1;;
         -s|--stats) shift; just_stats=1;;
         -i|--integration) shift; just_integration_tests=1;;
         --no-coverage)shift; include_coverage=0;;
@@ -99,5 +106,9 @@ if [ $just_integration_tests -eq 1 ]; then
     exit $?
 fi
 
+if [ $just_git -eq 1 ]; then
+    run_git_check
+    exit $?
+fi
 
 run_unit_tests || exit

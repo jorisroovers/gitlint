@@ -1,5 +1,12 @@
 # Changelog #
 
+## v0.7.0dev (master, not released) ##
+
+- Bugfix: commit-msg hook not working properly on linux (#8).
+- Experimental: support for commit-msg hook in SourceTree on OS X (enhancement #7).
+- Development: initial set of integration tests. Test gitlint end-to-end after it is installed.
+- Development: internal refactoring to extract more info from git. This will allow for more complex rules in the future.
+
 ## v0.6.1 (2015-11-22) ##
 
 - Fix: ```install-hook``` and ```generate-config``` commands not working when gitlint is installed from pypi.

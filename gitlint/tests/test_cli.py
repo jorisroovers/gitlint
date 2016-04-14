@@ -68,7 +68,8 @@ class CLITests(BaseTestCase):
         # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
         # into account).
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
-        self.assertEqual(result.output, "/tmp is not a git repository.\n")
+        expected_path = os.path.realpath("/tmp")
+        self.assertEqual(result.output, "%s is not a git repository.\n" % expected_path)
 
     def test_target_negative(self):
         # try setting a non-existing target
@@ -140,10 +141,11 @@ class CLITests(BaseTestCase):
         # Specified target
         install_hook.reset_mock()
         result = self.cli.invoke(cli.cli, ["--target", "/tmp", "install-hook"])
-        expected = "Successfully installed gitlint commit-msg hook in /tmp/.git/hooks/commit-msg\n"
+        expected_path = os.path.realpath("/tmp/.git/hooks/commit-msg")
+        expected = "Successfully installed gitlint commit-msg hook in %s\n" % expected_path
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
-        install_hook.assert_called_once_with(config.LintConfig(target="/tmp"))
+        install_hook.assert_called_once_with(config.LintConfig(target=os.path.realpath("/tmp")))
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
     def test_install_hook_negative(self, install_hook):
@@ -155,7 +157,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
     def test_uninstall_hook(self, uninstall_hook):
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
-        expected_path = os.path.join(os.getcwd(), hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected_path = os.path.realpath(os.path.join(os.getcwd(), hooks.COMMIT_MSG_HOOK_DST_PATH))
         expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_path)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
