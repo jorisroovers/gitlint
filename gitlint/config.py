@@ -7,7 +7,12 @@ try:
 except ImportError:  # pragma: no cover
     # python 3.x
     from configparser import ConfigParser, Error as ConfigParserError  # pragma: no cover
-from collections import OrderedDict
+try:
+    # python >= 2.7
+    from collections import OrderedDict
+except ImportError:  # pragma: no cover
+    # python 2.4-2.6
+    from ordereddict import OrderedDict  # pragma: no cover
 import re
 import os
 import shutil
