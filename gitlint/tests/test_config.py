@@ -1,7 +1,6 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
 from gitlint import rules
-from gitlint import options
 from mock import patch
 
 
@@ -84,15 +83,21 @@ class LintConfigTests(BaseTestCase):
             config.set_general_option("foo", "bar")
 
         # invalid verbosity
-        incorrect_values = [-1, 4, "foo"]
+        incorrect_values = [-1, "foo"]
         for value in incorrect_values:
-            with self.assertRaisesRegexp(LintConfigError, "verbosity must be set between 0 and 3"):
+            expected_msg = "Option 'verbosity' must be a positive integer \(current value: '{}'\)".format(value)
+            with self.assertRaisesRegexp(LintConfigError, expected_msg):
+                config.verbosity = value
+
+        incorrect_values = [4]
+        for value in incorrect_values:
+            with self.assertRaisesRegexp(LintConfigError, "Option 'verbosity' must be set between 0 and 3"):
                 config.verbosity = value
 
         # invalid ignore_merge_commits
         incorrect_values = [-1, 4, "foo"]
         for value in incorrect_values:
-            with self.assertRaisesRegexp(options.RuleOptionError,
+            with self.assertRaisesRegexp(LintConfigError,
                                          "Option 'ignore-merge-commits' must be either 'true' or 'false'"):
                 config.ignore_merge_commits = value
 

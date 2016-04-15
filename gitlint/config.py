@@ -45,7 +45,7 @@ class LintConfig(object):
     def __init__(self, config_path=None, target=None):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
-        self._verbosity = 3
+        self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self.config_path = config_path
         if target:
@@ -55,13 +55,16 @@ class LintConfig(object):
 
     @property
     def verbosity(self):
-        return self._verbosity
+        return self._verbosity.value
 
     @verbosity.setter
     def verbosity(self, value):
-        if value < 0 or value > 3:
-            raise LintConfigError("verbosity must be set between 0 and 3")
-        self._verbosity = value
+        try:
+            self._verbosity.set(value)
+            if self.verbosity < 0 or self.verbosity > 3:
+                raise LintConfigError("Option 'verbosity' must be set between 0 and 3")
+        except options.RuleOptionError as e:
+            raise LintConfigError(str(e))
 
     @property
     def ignore_merge_commits(self):
@@ -69,7 +72,10 @@ class LintConfig(object):
 
     @ignore_merge_commits.setter
     def ignore_merge_commits(self, value):
-        return self._ignore_merge_commits.set(value)
+        try:
+            return self._ignore_merge_commits.set(value)
+        except options.RuleOptionError as e:
+            raise LintConfigError(str(e))
 
     @property
     def rules(self):
