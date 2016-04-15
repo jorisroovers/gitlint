@@ -45,6 +45,11 @@ class GitLinter(object):
 
     def lint(self, commit, gitcontext):
         """ Lint the last commit in a given git context by applying all title, body and general rules. """
+
+        # Skip linting if this is merge commit and if the config is set to ignore those
+        if commit.is_merge_commit and self.config.ignore_merge_commits:
+            return []
+
         violations = []
         # determine violations by applying all rules
         violations.extend(self._apply_line_rules([commit.message.title], self.title_line_rules, 1, gitcontext))

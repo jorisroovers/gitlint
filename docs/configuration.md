@@ -17,9 +17,11 @@ The block below shows a sample ```.gitlint``` file. Details about rule config op
 # All these sections are optional, edit this file as you like.
 [general]
 ignore=title-trailing-punctuation, T3
-# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over
-# this
+# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
 verbosity = 2
+# By default gitlint will ignore merge commits. Set to 'false' to disable.
+ignore-merge-commits=true
+
 
 [title-max-length]
 line-length=20

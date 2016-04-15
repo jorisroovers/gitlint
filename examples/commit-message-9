@@ -1,0 +1,7 @@
+Merge: "This is a merge commit with a long title that most definitely exceeds the normal limit of 72 chars"
+This line should be empty
+This is the first line is meant to test a line that exceeds the maximum line length of 80 characters.
+
+You will notice that gitlint ignores all of these errors by default because this is a merge commit.
+
+If you want to change this behavior, set the following option: 'general.ignore-merge-commits=false'

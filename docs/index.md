@@ -114,6 +114,17 @@ Important: Gitlint cannot work together with an existing hook. If you already ha
 file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. gitlint will also only
 uninstall unmodified commit-msg hooks that were installed by gitlint.
 
+## Merge commits ##
+As of version 0.7.0, gitlint ignores merge commits by default. The rationale behind this is that in many cases
+merge commits are not created by users themselves but by tools such as github,
+[gerrit](https://code.google.com/p/gerrit/) and others. These tools often generate merge commit messages that
+violate gitlint's set of rules and it's not always convenient or desired to change those.
+
+In case you *do* want to lint merge commit messages, you can disable this behavior by setting the
+general ```ignore-merge-commits``` option to ```false```
+[using one of the various ways to configure gitlint](configuration.md).
+
+
 ## Exit codes ##
 Gitlint uses the exit code as a simple way to indicate the number of violations found.
 Some exit codes are used to indicate special errors as indicated in the table below.
@@ -129,3 +140,5 @@ Exit Code  | Description
 253        | Wrong invocation of the ```gitlint``` command.
 254        | Something went wrong when invoking git.
 255        | Invalid gitlint configuration
+
+

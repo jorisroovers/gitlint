@@ -2,6 +2,10 @@
 
 ## v0.7.0dev (master, not released) ##
 
+- **Behavior change**: merge commits are now ignored by default. The rationale is that the original commit
+  should already be linted and that many merge commits that don't pass gitlint checks by default
+  (e.g. exceeding title length or empty body is very common). This behavior can be overwritte by setting the
+  general option ```ignore-merge-commit=false```.
 - Bugfix: commit-msg hook not working properly on linux (#8).
 - Experimental: support for commit-msg hook in SourceTree on OS X (enhancement #7).
 - Development: initial set of integration tests. Test gitlint end-to-end after it is installed.

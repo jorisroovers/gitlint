@@ -99,6 +99,21 @@ class RuleOptionTests(BaseTestCase):
                     ]
         self.assertListEqual(violations, expected)
 
+    def test_lint_merge_commit(self):
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample6"))  # Sample 6 is a merge commit
+        lintconfig = LintConfig()
+        linter = GitLinter(lintconfig)
+        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        # Even though there are a number of violations in the commit message, they are ignored because
+        # we are dealing with a merge commit
+        self.assertListEqual(violations, [])
+
+        # Check that we do see violations if we disable 'ignore-merge-commits'
+        lintconfig.ignore_merge_commits = False
+        linter = GitLinter(lintconfig)
+        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        self.assertTrue(len(violations) > 0)
+
     def test_print_violations(self):
         violations = [RuleViolation("RULE_ID_1", "Error Message 1", "Violating Content 1", 1),
                       RuleViolation("RULE_ID_2", "Error Message 2", "Violating Content 2", 2)]
