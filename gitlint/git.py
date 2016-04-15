@@ -44,11 +44,20 @@ class GitCommit(object):
         In the context of gitlint, only the commit message is required.
     """
 
-    def __init__(self, message, date=None, author_name=None, author_email=None, changed_files=None):
+    def __init__(self, message, date=None, author_name=None, author_email=None, parents=None, is_merge_commit=False,
+                 changed_files=None):
         self.message = message
         self.author_name = author_name
         self.author_email = author_email
         self.date = date
+
+        # parent commit hashes
+        if not parents:
+            self.parents = []
+        else:
+            self.parents = parents
+
+        self.is_merge_commit = is_merge_commit
 
         if not changed_files:
             self.changed_files = []
@@ -77,7 +86,10 @@ class GitContext(object):
         :param commit_msg_str: Full git commit message.
         """
         commit_msg_obj = GitCommitMessage.from_full_message(commit_msg_str)
-        commit = GitCommit(commit_msg_obj)
+
+        # For now, we consider a commit a merge commit if its title starts with "Merge"
+        is_merge_commit = commit_msg_obj.title.startswith("Merge")
+        commit = GitCommit(commit_msg_obj, is_merge_commit=is_merge_commit)
 
         context = GitContext()
         context.commits.append(commit)
@@ -101,6 +113,8 @@ class GitContext(object):
             commit_author_name = sh.git.log("-1", "--pretty=%aN", **sh_special_args)
             commit_author_email = sh.git.log("-1", "--pretty=%aE", **sh_special_args)
             commit_date = sh.git.log("-1", "--pretty=%aD", **sh_special_args)
+            commit_parents = sh.git.log("-1", "--pretty=%P", **sh_special_args).split(" ")
+            commit_is_merge_commit = len(commit_parents) > 1
 
             # changed files in last commit
             changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", **sh_special_args)
@@ -120,7 +134,8 @@ class GitContext(object):
         changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]
         commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
         commit = GitCommit(commit_msg_obj, author_name=commit_author_name, author_email=commit_author_email,
-                           date=commit_date, changed_files=changed_files)
+                           date=commit_date, changed_files=changed_files, parents=commit_parents,
+                           is_merge_commit=commit_is_merge_commit)
 
         # Create GitContext info with the commit object and return
         context = GitContext()

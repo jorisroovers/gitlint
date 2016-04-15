@@ -10,6 +10,24 @@ class IntegrationTests(BaseTestCase):
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
         self.assertEqual(output, "")
 
+    def test_succesful_merge_commit(self):
+        # Create branch on master
+        self._create_simple_commit("Commit on master\n\nSimple body")
+
+        # Create test branch, add a commit and determine the commit hash
+        git("checkout", "-b", "test-branch", _cwd=self.tmp_git_repo)
+        git("checkout", "test-branch", _cwd=self.tmp_git_repo)
+        self._create_simple_commit("Commit on test-branch\n\nSimple body")
+        hash = git("rev-parse", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
+
+        # Checkout master and merge the commit
+        git("checkout", "master", _cwd=self.tmp_git_repo)
+        git("merge", "--no-ff", hash, _cwd=self.tmp_git_repo)
+
+        # Run gitlint and assert output is empty
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
+        self.assertEqual(output, "")
+
     def test_errors(self):
         commit_msg = "WIP: This is a title.\nContent on the second line"
         self._create_simple_commit(commit_msg)
