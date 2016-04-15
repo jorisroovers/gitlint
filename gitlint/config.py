@@ -46,6 +46,7 @@ class LintConfig(object):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = 3
+        self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self.config_path = config_path
         if target:
             self.target = target
@@ -61,6 +62,14 @@ class LintConfig(object):
         if value < 0 or value > 3:
             raise LintConfigError("verbosity must be set between 0 and 3")
         self._verbosity = value
+
+    @property
+    def ignore_merge_commits(self):
+        return self._ignore_merge_commits.value
+
+    @ignore_merge_commits.setter
+    def ignore_merge_commits(self, value):
+        return self._ignore_merge_commits.set(value)
 
     @property
     def rules(self):
@@ -155,6 +164,10 @@ class LintConfig(object):
             self.apply_on_csv_string(option_value, self.disable_rule)
         elif option_name == "verbosity":
             self.verbosity = int(option_value)
+        elif option_name == "ignore-merge-commits":
+            self.ignore_merge_commits = option_value
+        else:
+            raise LintConfigError("'{}' is not a valid gitlint option".format(option_name))
 
     @staticmethod
     def apply_on_csv_string(rules_str, func):

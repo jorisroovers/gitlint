@@ -68,9 +68,11 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, True)
 
         # error on incorrect value
+        incorrect_values = [1, -1, "foo", ["foo"], {'foo': "bar"}]
         expected_error = "Option 'test-name' must be either 'true' or 'false'"
-        with self.assertRaisesRegexp(RuleOptionError, expected_error):
-            option.set("foo")
+        for value in incorrect_values:
+            with self.assertRaisesRegexp(RuleOptionError, expected_error):
+                option.set(value)
 
     def test_list_option(self):
         # normal behavior

@@ -1,6 +1,7 @@
 from gitlint.tests.base import BaseTestCase
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
 from gitlint import rules
+from gitlint import options
 from mock import patch
 
 
@@ -51,11 +52,49 @@ class LintConfigTests(BaseTestCase):
         with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
             config.set_rule_option('title-max-length', 'line-length', "foo")
 
+    def test_set_general_option(self):
+        config = LintConfig()
+
+        # Check that default general options are correct
+        self.assertTrue(config.ignore_merge_commits)
+        self.assertEqual(config.verbosity, 3)
+        active_rule_classes = [type(rule) for rule in config.rules]
+        self.assertListEqual(active_rule_classes, config.default_rule_classes)
+
+        # Check that we can change the general options
+        # ignore
+        config.set_general_option("ignore", "title-trailing-whitespace, B2")
+        expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
+        active_rule_classes = set(type(rule) for rule in config.rules)  # redetermine active rule classes
+        expected_active_rule_classes = set(config.default_rule_classes) - expected_ignored_rules
+        self.assertSetEqual(active_rule_classes, expected_active_rule_classes)
+
+        # verbosity
+        config.set_general_option("verbosity", 1)
+        self.assertEqual(config.verbosity, 1)
+
+        # ignore_merge_commit
+        config.set_general_option("ignore-merge-commits", "false")
+        self.assertFalse(config.ignore_merge_commits)
+
+    def test_set_general_option_negative(self):
+        config = LintConfig()
+
+        with self.assertRaisesRegexp(LintConfigError, "'foo' is not a valid gitlint option"):
+            config.set_general_option("foo", "bar")
+
         # invalid verbosity
-        with self.assertRaisesRegexp(LintConfigError, "verbosity must be set between 0 and 3"):
-            config.verbosity = -1
-        with self.assertRaisesRegexp(LintConfigError, "verbosity must be set between 0 and 3"):
-            config.verbosity = 4
+        incorrect_values = [-1, 4, "foo"]
+        for value in incorrect_values:
+            with self.assertRaisesRegexp(LintConfigError, "verbosity must be set between 0 and 3"):
+                config.verbosity = value
+
+        # invalid ignore_merge_commits
+        incorrect_values = [-1, 4, "foo"]
+        for value in incorrect_values:
+            with self.assertRaisesRegexp(options.RuleOptionError,
+                                         "Option 'ignore-merge-commits' must be either 'true' or 'false'"):
+                config.ignore_merge_commits = value
 
     def test_apply_config_options(self):
         config = LintConfig()
@@ -104,6 +143,13 @@ class LintConfigTests(BaseTestCase):
 
         # Do some assertions on the config
         self.assertEqual(config.verbosity, 1)
+        self.assertFalse(config.ignore_merge_commits)
+
+        # ignored rules
+        expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
+        active_rule_classes = set(type(rule) for rule in config.rules)
+        self.assertSetEqual(set(config.default_rule_classes) - expected_ignored_rules, active_rule_classes)
+
         self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 20)
         self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 30)
         self.assertIsNone(config.get_rule('title-trailing-whitespace'))
@@ -123,6 +169,12 @@ class LintConfigTests(BaseTestCase):
         # non-existing rule
         path = self.get_sample_path("config/nonexisting-rule")
         expected_error_msg = "No such rule 'foobar'"
+        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+            LintConfig.load_from_file(path)
+
+        # non-existing general option
+        path = self.get_sample_path("config/nonexisting-general-option")
+        expected_error_msg = "'foo' is not a valid gitlint option"
         with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 

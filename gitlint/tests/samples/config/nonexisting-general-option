@@ -2,6 +2,7 @@
 ignore=title-trailing-whitespace,B2
 verbosity = 1
 ignore-merge-commits = false
+foo = bar
 
 [title-max-length]
 line-length=20
