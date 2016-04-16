@@ -2,6 +2,7 @@
 
 ## v0.7.0dev (master, not released) ##
 
+- Python 2.6 support
 - **Behavior change**: merge commits are now ignored by default. The rationale is that the original commit
   should already be linted and that many merge commits that don't pass gitlint checks by default
   (e.g. exceeding title length or empty body is very common). This behavior can be overwritte by setting the

@@ -46,7 +46,7 @@ class HookTests(BaseTestCase):
         isdir.return_value = True
         path_exists.return_value = True
         expected_dst = os.path.join("/foo/bar", COMMIT_MSG_HOOK_DST_PATH)
-        expected_msg = "There is already a commit-msg hook file present in {}.\n".format(expected_dst) + \
+        expected_msg = "There is already a commit-msg hook file present in {0}.\n".format(expected_dst) + \
                        "gitlint currently does not support appending to an existing commit-msg file."
         with self.assertRaisesRegexp(GitHookInstallerError, expected_msg):
             GitHookInstaller.install_commit_msg_hook(lint_config)
@@ -83,7 +83,7 @@ class HookTests(BaseTestCase):
         isdir.return_value = True
         path_exists.return_value = False
         expected_dst = os.path.join("/foo/bar", COMMIT_MSG_HOOK_DST_PATH)
-        expected_msg = "There is no commit-msg hook present in {}.".format(expected_dst)
+        expected_msg = "There is no commit-msg hook present in {0}.".format(expected_dst)
         with self.assertRaisesRegexp(GitHookInstallerError, expected_msg):
             GitHookInstaller.uninstall_commit_msg_hook(lint_config)
             isdir.assert_called_once_with('/foo/bar/.git/hooks')
@@ -95,7 +95,7 @@ class HookTests(BaseTestCase):
         path_exists.return_value = True
         read_data = "#!/bin/sh\nfoo"
         expected_dst = os.path.join("/foo/bar", COMMIT_MSG_HOOK_DST_PATH)
-        expected_msg = "The commit-msg hook in {} was not installed by gitlint ".format(expected_dst) + \
+        expected_msg = "The commit-msg hook in {0} was not installed by gitlint ".format(expected_dst) + \
                        "\(or it was modified\).\nUninstallation of 3th party or modified gitlint hooks " + \
                        "is not supported."
         with patch('gitlint.hooks.open', mock_open(read_data=read_data), create=True):

@@ -37,7 +37,7 @@ class CLITests(BaseTestCase):
         config_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(result.output, "Using config from {}\n".format(config_path))
+        self.assertEqual(result.output, "Using config from {0}\n".format(config_path))
 
     def test_config_file_negative(self):
         # Directory as config file
@@ -82,7 +82,7 @@ class CLITests(BaseTestCase):
         target_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--target", target_path])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = "Error: Invalid value for \"--target\": Directory \"{}\" is a file.".format(target_path)
+        expected_msg = "Error: Invalid value for \"--target\": Directory \"{0}\" is a file.".format(target_path)
         self.assertEqual(result.output.split("\n")[2], expected_msg)
 
     @patch('gitlint.config.LintConfigGenerator.generate_config')
@@ -90,7 +90,7 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["generate-config"], input="testfile\n")
         self.assertEqual(result.exit_code, 0)
         expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: testfile\n" + \
-                       "Successfully generated {}\n".format(os.path.abspath("testfile"))
+                       "Successfully generated {0}\n".format(os.path.abspath("testfile"))
         self.assertEqual(result.output, expected_msg)
         generate_config.assert_called_once_with(os.path.abspath("testfile"))
 
@@ -107,8 +107,8 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["generate-config"], input=sample_path)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = "Please specify a location for the sample gitlint " + \
-                       "config file [.gitlint]: {}\n".format(sample_path) + \
-                       "Error: File \"{}\" already exists.\n".format(sample_path)
+                       "config file [.gitlint]: {0}\n".format(sample_path) + \
+                       "Error: File \"{0}\" already exists.\n".format(sample_path)
         self.assertEqual(result.output, expected_msg)
 
     @patch('gitlint.git.sh')
@@ -133,7 +133,7 @@ class CLITests(BaseTestCase):
     def test_install_hook(self, install_hook):
         result = self.cli.invoke(cli.cli, ["install-hook"])
         expected_path = os.path.join(os.getcwd(), hooks.COMMIT_MSG_HOOK_DST_PATH)
-        expected = "Successfully installed gitlint commit-msg hook in {}\n".format(expected_path)
+        expected = "Successfully installed gitlint commit-msg hook in {0}\n".format(expected_path)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
         install_hook.assert_called_once_with(config.LintConfig())

@@ -12,7 +12,7 @@ Many of the gitlint validations are based on
 useful throughout the years. Gitlint has sane defaults, but
 [you can also easily customize it to your own liking](configuration.md).
 
-Gitlint supports both python 2.7 and python 3.3+.
+Gitlint supports python versions 2.6, 2.7 and 3.3+.
 If you are looking for an alternative written in Ruby, have a look at
 [fit-commit](https://github.com/m1foley/fit-commit).
 

@@ -111,11 +111,11 @@ class LintConfig(object):
     def _get_option(self, rule_name_or_id, option_name):
         rule = self.get_rule(rule_name_or_id)
         if not rule:
-            raise LintConfigError("No such rule '{}'".format(rule_name_or_id))
+            raise LintConfigError("No such rule '{0}'".format(rule_name_or_id))
 
         option = rule.options.get(option_name)
         if not option:
-            raise LintConfigError("Rule '{}' has no option '{}'".format(rule_name_or_id, option_name))
+            raise LintConfigError("Rule '{0}' has no option '{1}'".format(rule_name_or_id, option_name))
 
         return option
 
@@ -133,8 +133,8 @@ class LintConfig(object):
             option.set(option_value)
         except options.RuleOptionError as e:
             raise LintConfigError(
-                "'{}' is not a valid value for option '{}.{}'. {}.".format(option_value, rule_name_or_id, option_name,
-                                                                           str(e)))
+                "'{0}' is not a valid value for option '{1}.{2}'. {3}.".format(option_value, rule_name_or_id,
+                                                                               option_name, str(e)))
 
     def apply_config_from_commit(self, commit):
         """ Given a git commit, applies config specified in the commit message.
@@ -163,7 +163,7 @@ class LintConfig(object):
                     self.set_rule_option(rule_name, option_name, option_value)
             except ValueError:  # raised if the config string is invalid
                 raise LintConfigError(
-                    "'{}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
+                    "'{0}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
 
     def set_general_option(self, option_name, option_value):
         if option_name == "ignore":
@@ -173,7 +173,7 @@ class LintConfig(object):
         elif option_name == "ignore-merge-commits":
             self.ignore_merge_commits = option_value
         else:
-            raise LintConfigError("'{}' is not a valid gitlint option".format(option_name))
+            raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
 
     @staticmethod
     def apply_on_csv_string(rules_str, func):

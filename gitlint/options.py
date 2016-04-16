@@ -18,7 +18,7 @@ class RuleOption(object):
         pass  # pragma: no cover
 
     def __str__(self):
-        return "({}: {} ({}))".format(self.name, self.value, self.description)  # pragma: no cover
+        return "({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -55,7 +55,7 @@ class BoolOption(RuleOption):
     def set(self, value):
         value = str(value).strip().lower()
         if value not in ['true', 'false']:
-            raise RuleOptionError("Option '{}' must be either 'true' or 'false'".format(self.name))
+            raise RuleOptionError("Option '{0}' must be either 'true' or 'false'".format(self.name))
         self.value = value == 'true'
 
 

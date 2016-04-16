@@ -125,9 +125,9 @@ class GitContext(object):
         except ErrorReturnCode as e:  # Something went wrong while executing the git command
             error_msg = e.stderr.strip()
             if b"Not a git repository" in error_msg:
-                error_msg = "{} is not a git repository.".format(repository_path)
+                error_msg = "{0} is not a git repository.".format(repository_path)
             else:
-                error_msg = "An error occurred while executing '{}': {}".format(e.full_cmd, error_msg)
+                error_msg = "An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
             raise GitContextError(error_msg)
 
         # Create Git commit object with the retrieved info

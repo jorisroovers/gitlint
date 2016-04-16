@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest2 import TestCase
 from datetime import datetime
 from uuid import uuid4
 from sh import git, rm, touch

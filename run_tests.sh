@@ -95,6 +95,11 @@ run_tests_in_all_env(){
     deactivate 2> /dev/null # deactivate any active environment
     set -e
 
+    source /vagrant/.venv26/bin/activate
+    echo "### PYTHON 2.6 ($(python --version 2>&1)) ###"
+    run_all
+    deactivate
+
     source /vagrant/.venv27/bin/activate
     echo "### PYTHON 2.7 ($(python --version 2>&1)) ###"
     run_all

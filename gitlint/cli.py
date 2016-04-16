@@ -69,7 +69,7 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent):
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               default=os.getcwd(), help="Path of the target git repository. [default: current working directory]")
 @click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
-              help="Config file location [default: {}]".format(DEFAULT_CONFIG_FILE))
+              help="Config file location [default: {0}]".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")
@@ -158,14 +158,14 @@ def generate_config(ctx):
     path = os.path.abspath(path)
     dir_name = os.path.dirname(path)
     if not os.path.exists(dir_name):
-        click.echo("Error: Directory '{}' does not exist.".format(dir_name), err=True)
+        click.echo("Error: Directory '{0}' does not exist.".format(dir_name), err=True)
         ctx.exit(USAGE_ERROR_CODE)
     elif os.path.exists(path):
-        click.echo("Error: File \"{}\" already exists.".format(path), err=True)
+        click.echo("Error: File \"{0}\" already exists.".format(path), err=True)
         ctx.exit(USAGE_ERROR_CODE)
 
     LintConfigGenerator.generate_config(path)
-    click.echo("Successfully generated {}".format(path))
+    click.echo("Successfully generated {0}".format(path))
     ctx.exit(0)
 
 

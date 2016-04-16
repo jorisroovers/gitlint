@@ -63,9 +63,9 @@ class GitLinter(object):
     def print_violations(self, violations):
         """ Print a given set of violations to the standard error output """
         for v in violations:
-            self.display.e("{}: {}".format(v.line_nr, v.rule_id), exact=True)
-            self.display.ee("{}: {} {}".format(v.line_nr, v.rule_id, v.message), exact=True)
+            self.display.e("{0}: {1}".format(v.line_nr, v.rule_id), exact=True)
+            self.display.ee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
             if v.content:
-                self.display.eee("{}: {} {}: \"{}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
+                self.display.eee("{0}: {1} {2}: \"{3}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
             else:
-                self.display.eee("{}: {} {}".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
+                self.display.eee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)

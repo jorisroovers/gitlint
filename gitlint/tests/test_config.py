@@ -85,7 +85,7 @@ class LintConfigTests(BaseTestCase):
         # invalid verbosity
         incorrect_values = [-1, "foo"]
         for value in incorrect_values:
-            expected_msg = "Option 'verbosity' must be a positive integer \(current value: '{}'\)".format(value)
+            expected_msg = "Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
             with self.assertRaisesRegexp(LintConfigError, expected_msg):
                 config.verbosity = value
 

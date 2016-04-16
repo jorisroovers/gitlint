@@ -24,7 +24,7 @@ class Rule(object):
         return self.id == other.id and self.name == other.name
 
     def __str__(self):
-        return "{} {}".format(self.id, self.name)  # pragma: no cover
+        return "{0} {1}".format(self.id, self.name)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -67,7 +67,8 @@ class RuleViolation(object):
         return equal
 
     def __str__(self):
-        return "{}: {} {}: \"{}\"".format(self.line_nr, self.rule_id, self.message, self.content)  # pragma: no cover
+        return "{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
+                                              self.content)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -107,8 +108,8 @@ class HardTab(LineRule):
 
 
 class LineMustNotContainWord(LineRule):
-    """ Violation if a line contains one of a list of words (NOTE: using a word in the list inside another word is not a
-    violation, e.g: WIPING is not a violation if 'WIP' is a word that is not allowed.) """
+    """ Violation if a line contains one of a list of words (NOTE: using a word in the list inside another word is not
+    a violation, e.g: WIPING is not a violation if 'WIP' is a word that is not allowed.) """
     name = "line-must-not-contain"
     id = "R5"
     options_spec = [ListOption('words', [], "Comma separated list of words that should not be found")]
@@ -188,7 +189,7 @@ class TitleRegexMatches(CommitMessageTitleRule):
         regex = self.options['regex'].value
         pattern = re.compile(regex)
         if not pattern.search(title):
-            violation_msg = "Title does match regex ({})".format(regex)
+            violation_msg = "Title does match regex ({0})".format(regex)
             return [RuleViolation(self.id, violation_msg, title)]
 
 
@@ -229,7 +230,7 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
         if len(lines) == 3:
             actual_length = len(lines[1])
             if lines[0] == "" and actual_length <= min_length:
-                violation_message = "Body message is too short ({}<{})".format(actual_length, min_length)
+                violation_message = "Body message is too short ({0}<{1})".format(actual_length, min_length)
                 return [RuleViolation(self.id, violation_message, lines[1], 3)]
 
 
@@ -258,6 +259,6 @@ class BodyChangedFileMention(MultiLineRule, CommitMessageBodyRule):
             # in the commit msg body
             if needs_mentioned_file in commit.changed_files:
                 if needs_mentioned_file not in " ".join(commit.message.body):
-                    violation_message = "Body does not mention changed file '{}'".format(needs_mentioned_file)
+                    violation_message = "Body does not mention changed file '{0}'".format(needs_mentioned_file)
                     violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))
         return violations if violations else None
