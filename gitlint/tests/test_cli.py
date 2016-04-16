@@ -1,11 +1,3 @@
-from gitlint.tests.base import BaseTestCase
-from gitlint import cli
-from gitlint import hooks
-from gitlint import __version__
-from gitlint import config
-from click.testing import CliRunner
-from mock import patch
-from sh import CommandNotFound
 import os
 
 try:
@@ -14,6 +6,16 @@ try:
 except ImportError:
     # python 3.x
     from io import StringIO
+
+from click.testing import CliRunner
+from mock import patch
+from sh import CommandNotFound
+
+from gitlint.tests.base import BaseTestCase
+from gitlint import cli
+from gitlint import hooks
+from gitlint import __version__
+from gitlint import config
 
 
 class CLITests(BaseTestCase):
@@ -33,7 +35,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
 
     @patch('gitlint.cli.GitLinter')
-    def test_config_file(self, git_linter):
+    def test_config_file(self, _git_linter):
         config_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         self.assertEqual(result.exit_code, 0)

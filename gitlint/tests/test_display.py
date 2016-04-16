@@ -1,14 +1,15 @@
-from gitlint.display import Display
-from gitlint.config import LintConfig
-from gitlint.tests.base import BaseTestCase
-from mock import patch
-
 try:
     # python 2.x
     from StringIO import StringIO
 except ImportError:
     # python 3.x
     from io import StringIO
+
+from mock import patch
+
+from gitlint.display import Display
+from gitlint.config import LintConfig
+from gitlint.tests.base import BaseTestCase
 
 
 class DisplayTests(BaseTestCase):

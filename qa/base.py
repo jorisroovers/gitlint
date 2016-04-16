@@ -1,8 +1,9 @@
-from unittest2 import TestCase
+import os
 from datetime import datetime
 from uuid import uuid4
-from sh import git, rm, touch
-import os
+
+from unittest2 import TestCase
+from sh import git, rm, touch  # pylint: disable=no-name-in-module
 
 
 class BaseTestCase(TestCase):

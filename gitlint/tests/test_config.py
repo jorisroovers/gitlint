@@ -1,7 +1,8 @@
-from gitlint.tests.base import BaseTestCase
-from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
-from gitlint import rules
 from mock import patch
+
+from gitlint import rules
+from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
+from gitlint.tests.base import BaseTestCase
 
 
 class LintConfigTests(BaseTestCase):
@@ -14,7 +15,7 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(rule, expected)
 
         # get by name
-        expected = rules.TitleTrailingWhitespace()
+        expected = rules.TitleTrailingWhitespace()  # pylint: disable=redefined-variable-type
         rule = config.get_rule('title-trailing-whitespace')
         self.assertEqual(rule, expected)
 
@@ -47,7 +48,7 @@ class LintConfigTests(BaseTestCase):
 
         # invalid option value
         expected_error_msg = "'foo' is not a valid value for option 'title-max-length.line-length'. " + \
-                             "Option 'line-length' must be a positive integer \(current value: 'foo'\)."
+                             r"Option 'line-length' must be a positive integer \(current value: 'foo'\)."
         with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
             config.set_rule_option('title-max-length', 'line-length', "foo")
 
@@ -85,7 +86,7 @@ class LintConfigTests(BaseTestCase):
         # invalid verbosity
         incorrect_values = [-1, "foo"]
         for value in incorrect_values:
-            expected_msg = "Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
+            expected_msg = r"Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
             with self.assertRaisesRegexp(LintConfigError, expected_msg):
                 config.verbosity = value
 
@@ -98,7 +99,7 @@ class LintConfigTests(BaseTestCase):
         incorrect_values = [-1, 4, "foo"]
         for value in incorrect_values:
             with self.assertRaisesRegexp(LintConfigError,
-                                         "Option 'ignore-merge-commits' must be either 'true' or 'false'"):
+                                         r"Option 'ignore-merge-commits' must be either 'true' or 'false'"):
                 config.ignore_merge_commits = value
 
     def test_apply_config_options(self):
@@ -192,7 +193,7 @@ class LintConfigTests(BaseTestCase):
         # invalid option value
         path = self.get_sample_path("config/invalid-option-value")
         expected_error_msg = "'foo' is not a valid value for option 'title-max-length.line-length'. " + \
-                             "Option 'line-length' must be a positive integer \(current value: 'foo'\)."
+                             r"Option 'line-length' must be a positive integer \(current value: 'foo'\)."
         with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 
@@ -232,7 +233,8 @@ class LintConfigTests(BaseTestCase):
 
 
 class LintConfigGeneratorTests(BaseTestCase):
+    @staticmethod
     @patch('gitlint.config.shutil.copyfile')
-    def test_install_commit_msg_hook_negative(self, copy):
+    def test_install_commit_msg_hook_negative(copy):
         LintConfigGenerator.generate_config("foo/bar/test")
         copy.assert_called_with(GITLINT_CONFIG_TEMPLATE_SRC_PATH, "foo/bar/test")

@@ -1,11 +1,13 @@
+import os
+import sys
+
+import click
+
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator
 from gitlint.git import GitContext, GitContextError
 from gitlint import hooks
-import os
-import click
-import sys
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 
@@ -72,7 +74,7 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent):
               help="Config file location [default: {0}]".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
-                   "Flag can be used multiple times to set multiple config values.")
+                   "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
@@ -170,4 +172,4 @@ def generate_config(ctx):
 
 
 if __name__ == "__main__":
-    cli()
+    cli()  # pylint: disable=no-value-for-parameter

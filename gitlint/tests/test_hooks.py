@@ -1,9 +1,11 @@
+import os
+
+from mock import patch, ANY, mock_open
+
 from gitlint.tests.base import BaseTestCase
 from gitlint.config import LintConfig
 from gitlint.hooks import GitHookInstaller, GitHookInstallerError, COMMIT_MSG_HOOK_SRC_PATH, COMMIT_MSG_HOOK_DST_PATH, \
     GITLINT_HOOK_IDENTIFIER
-from mock import patch, ANY, mock_open
-import os
 
 
 class HookTests(BaseTestCase):
@@ -13,12 +15,13 @@ class HookTests(BaseTestCase):
         path = GitHookInstaller.commit_msg_hook_path(lint_config)
         self.assertEqual(path, expected_path)
 
+    @staticmethod
     @patch('os.chmod')
     @patch('os.stat')
     @patch('gitlint.hooks.shutil.copy')
     @patch('os.path.exists', return_value=False)
     @patch('os.path.isdir', return_value=True)
-    def test_install_commit_msg_hook(self, isdir, path_exists, copy, stat, chmod):
+    def test_install_commit_msg_hook(isdir, path_exists, copy, stat, chmod):
         lint_config = LintConfig(target="/foo/bar")
         expected_dst = os.path.join("/foo/bar", COMMIT_MSG_HOOK_DST_PATH)
         GitHookInstaller.install_commit_msg_hook(lint_config)
@@ -51,10 +54,11 @@ class HookTests(BaseTestCase):
         with self.assertRaisesRegexp(GitHookInstallerError, expected_msg):
             GitHookInstaller.install_commit_msg_hook(lint_config)
 
+    @staticmethod
     @patch('os.remove')
     @patch('os.path.exists', return_value=True)
     @patch('os.path.isdir', return_value=True)
-    def test_uninstall_commit_msg_hook(self, isdir, path_exists, remove):
+    def test_uninstall_commit_msg_hook(isdir, path_exists, remove):
         lint_config = LintConfig(target="/foo/bar")
         read_data = "#!/bin/sh\n" + GITLINT_HOOK_IDENTIFIER
         with patch('gitlint.hooks.open', mock_open(read_data=read_data), create=True):
@@ -96,7 +100,7 @@ class HookTests(BaseTestCase):
         read_data = "#!/bin/sh\nfoo"
         expected_dst = os.path.join("/foo/bar", COMMIT_MSG_HOOK_DST_PATH)
         expected_msg = "The commit-msg hook in {0} was not installed by gitlint ".format(expected_dst) + \
-                       "\(or it was modified\).\nUninstallation of 3th party or modified gitlint hooks " + \
+                       r"\(or it was modified\).\nUninstallation of 3th party or modified gitlint hooks " + \
                        "is not supported."
         with patch('gitlint.hooks.open', mock_open(read_data=read_data), create=True):
             with self.assertRaisesRegexp(GitHookInstallerError, expected_msg):

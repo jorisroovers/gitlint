@@ -1,5 +1,5 @@
-from sh import git, gitlint, echo, ErrorReturnCode
-from base import BaseTestCase
+from sh import git, gitlint, echo, ErrorReturnCode  # pylint: disable=no-name-in-module
+from qa.base import BaseTestCase
 
 
 class IntegrationTests(BaseTestCase):

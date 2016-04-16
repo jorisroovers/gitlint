@@ -1,21 +1,23 @@
-from gitlint import rules
-from gitlint import options
-
 try:
     # python 2.x
     from ConfigParser import ConfigParser, Error as ConfigParserError
 except ImportError:  # pragma: no cover
     # python 3.x
-    from configparser import ConfigParser, Error as ConfigParserError  # pragma: no cover
+    from configparser import ConfigParser, Error as ConfigParserError  # pragma: no cover, pylint: disable=import-error
+
+import re
+import os
+import shutil
+
 try:
     # python >= 2.7
     from collections import OrderedDict
 except ImportError:  # pragma: no cover
     # python 2.4-2.6
     from ordereddict import OrderedDict  # pragma: no cover
-import re
-import os
-import shutil
+
+from gitlint import rules
+from gitlint import options
 
 
 class LintConfigError(Exception):
@@ -146,7 +148,6 @@ class LintConfig(object):
             matches = pattern.match(line)
             if matches and len(matches.groups()) == 1:
                 self.set_general_option('ignore', matches.group(1))
-                self.enabled = False
 
     def apply_config_options(self, config_options):
         """ Given a list of config options of the form "<rule>.<option>=<value>", parses out the correct rule and option

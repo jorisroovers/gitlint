@@ -63,6 +63,11 @@ run_git_check(){
     gitlint
 }
 
+run_lint_check(){
+    echo "Running pylint..."
+    pylint gitlint qa --rcfile=".pylintrc" -r n
+}
+
 run_stats(){
     echo "*** Code ***"
     radon raw -s gitlint | tail -n 6
@@ -166,6 +171,11 @@ fi
 
 if [ $just_git -eq 1 ]; then
     run_git_check
+    exit $?
+fi
+
+if [ $just_lint -eq 1 ]; then
+    run_lint_check
     exit $?
 fi
 

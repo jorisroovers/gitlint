@@ -1,13 +1,14 @@
+from mock import patch, call
+from sh import ErrorReturnCode, CommandNotFound
+
 from gitlint.tests.base import BaseTestCase
 from gitlint.git import GitContext, GitContextError
-from sh import ErrorReturnCode, CommandNotFound
-from mock import patch, call
 
 
 class GitTests(BaseTestCase):
     @patch('gitlint.git.sh')
     def test_get_latest_commit(self, sh):
-        def git_log_side_effect(*args, **kwargs):
+        def git_log_side_effect(*args, **_kwargs):
             return_values = {'--pretty=%B': "commit-title\n\ncommit-body", '--pretty=%aN': "test author",
                              '--pretty=%aE': "test-email@foo.com", '--pretty=%aD': "Mon Feb 29 22:19:39 2016 +0100",
                              '--pretty=%P': "abc"}
@@ -45,7 +46,7 @@ class GitTests(BaseTestCase):
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_merge_commit(self, sh):
-        def git_log_side_effect(*args, **kwargs):
+        def git_log_side_effect(*args, **_kwargs):
             return_values = {'--pretty=%B': "Merge \"foo bar commit\"", '--pretty=%aN': "test author",
                              '--pretty=%aE': "test-email@foo.com", '--pretty=%aD': "Mon Feb 29 22:19:39 2016 +0100",
                              '--pretty=%P': "abc def"}

@@ -1,5 +1,5 @@
-from base import BaseTestCase
-from sh import gitlint
+from sh import gitlint  # pylint: disable=no-name-in-module
+from qa.base import BaseTestCase
 
 
 class ConfigTests(BaseTestCase):

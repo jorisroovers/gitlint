@@ -1,8 +1,7 @@
-from abc import abstractmethod, ABCMeta
-from gitlint.options import IntOption, BoolOption, StrOption, ListOption
-
 import copy
 import re
+
+from gitlint.options import IntOption, BoolOption, StrOption, ListOption
 
 
 class Rule(object):
@@ -10,9 +9,10 @@ class Rule(object):
     options_spec = []
     id = []
     name = ""
-    __metaclass__ = ABCMeta
 
-    def __init__(self, opts={}):
+    def __init__(self, opts=None):
+        if not opts:
+            opts = {}
         self.options = {}
         for op_spec in self.options_spec:
             self.options[op_spec.name] = copy.deepcopy(op_spec)
@@ -28,10 +28,6 @@ class Rule(object):
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
-
-    @abstractmethod
-    def validate(self):
-        pass  # pragma: no cover
 
 
 class MultiLineRule(Rule):
@@ -80,7 +76,7 @@ class MaxLineLength(LineRule):
     options_spec = [IntOption('line-length', 80, "Max line length")]
     violation_message = "Line exceeds max length ({0}>{1})"
 
-    def validate(self, line, gitcontext):
+    def validate(self, line, _gitcontext):
         max_length = self.options['line-length'].value
         if len(line) > max_length:
             return [RuleViolation(self.id, self.violation_message.format(len(line), max_length), line)]
@@ -91,7 +87,7 @@ class TrailingWhiteSpace(LineRule):
     id = "R2"
     violation_message = "Line has trailing whitespace"
 
-    def validate(self, line, gitcontext):
+    def validate(self, line, _gitcontext):
         pattern = re.compile(r"\s$")
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
@@ -102,7 +98,7 @@ class HardTab(LineRule):
     id = "R3"
     violation_message = "Line contains hard tab characters (\\t)"
 
-    def validate(self, line, gitcontext):
+    def validate(self, line, _gitcontext):
         if "\t" in line:
             return [RuleViolation(self.id, self.violation_message, line)]
 
@@ -115,7 +111,7 @@ class LineMustNotContainWord(LineRule):
     options_spec = [ListOption('words', [], "Comma separated list of words that should not be found")]
     violation_message = "Line contains {0}"
 
-    def validate(self, line, gitcontext):
+    def validate(self, line, _gitcontext):
         strings = self.options['words'].value
         violations = []
         for string in strings:
@@ -131,7 +127,7 @@ class LeadingWhiteSpace(LineRule):
     id = "R6"
     violation_message = "Line has leading whitespace"
 
-    def validate(self, line, gitcontext):
+    def validate(self, line, _gitcontext):
         pattern = re.compile(r"^\s")
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
@@ -154,7 +150,7 @@ class TitleTrailingPunctuation(CommitMessageTitleRule):
     name = "title-trailing-punctuation"
     id = "T3"
 
-    def validate(self, title, gitcontext):
+    def validate(self, title, _gitcontext):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
             if title.endswith(punctuation_mark):
@@ -185,7 +181,7 @@ class TitleRegexMatches(CommitMessageTitleRule):
     id = "T7"
     options_spec = [StrOption('regex', ".*", "Regex the title should match")]
 
-    def validate(self, title, gitcontext):
+    def validate(self, title, _gitcontext):
         regex = self.options['regex'].value
         pattern = re.compile(regex)
         if not pattern.search(title):
@@ -212,7 +208,7 @@ class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
     name = "body-first-line-empty"
     id = "B4"
 
-    def validate(self, commit, gitcontext):
+    def validate(self, commit, _gitcontext):
         if len(commit.message.body) >= 1:
             first_line = commit.message.body[0]
             if first_line != "":
@@ -224,7 +220,7 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
     id = "B5"
     options_spec = [IntOption('min-length', 20, "Minimum body length")]
 
-    def validate(self, commit, gitcontext):
+    def validate(self, commit, _gitcontext):
         min_length = self.options['min-length'].value
         lines = commit.message.body
         if len(lines) == 3:
@@ -239,7 +235,7 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
     id = "B6"
     options_spec = [BoolOption('ignore-merge-commits', True, "Ignore merge commits")]
 
-    def validate(self, commit, gitcontext):
+    def validate(self, commit, _gitcontext):
         # ignore merges when option tells us to, which may have no body
         if self.options['ignore-merge-commits'].value and commit.is_merge_commit:
             return
@@ -252,7 +248,7 @@ class BodyChangedFileMention(MultiLineRule, CommitMessageBodyRule):
     id = "B7"
     options_spec = [ListOption('files', [], "Files that need to be mentioned ")]
 
-    def validate(self, commit, gitcontext):
+    def validate(self, commit, _gitcontext):
         violations = []
         for needs_mentioned_file in self.options['files'].value:
             # if a file that we need to look out for is actually changed, then check whether it occurs

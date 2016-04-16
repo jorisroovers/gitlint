@@ -1,15 +1,16 @@
-from gitlint.tests.base import BaseTestCase
-from gitlint.lint import GitLinter
-from gitlint.rules import RuleViolation
-from gitlint.config import LintConfig
-from mock import patch
-
 try:
     # python 2.x
     from StringIO import StringIO
 except ImportError:
     # python 3.x
     from io import StringIO
+
+from mock import patch
+
+from gitlint.tests.base import BaseTestCase
+from gitlint.lint import GitLinter
+from gitlint.rules import RuleViolation
+from gitlint.config import LintConfig
 
 
 class RuleOptionTests(BaseTestCase):
@@ -28,8 +29,7 @@ class RuleOptionTests(BaseTestCase):
                            RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing space. ", 4),
                            RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t", 5),
                            RuleViolation("B3", "Line contains hard tab characters (\\t)",
-                                         "This line has a trailing tab.\t", 5),
-                           ]
+                                         "This line has a trailing tab.\t", 5)]
 
         self.assertListEqual(violations, expected_errors)
 
@@ -63,8 +63,7 @@ class RuleOptionTests(BaseTestCase):
                     RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t",
                                   5),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
-                                  "This line has a trailing tab.\t", 5),
-                    ]
+                                  "This line has a trailing tab.\t", 5)]
 
         self.assertListEqual(violations, expected)
 
@@ -95,8 +94,7 @@ class RuleOptionTests(BaseTestCase):
                     RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t",
                                   5),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
-                                  "This line has a trailing tab.\t", 5),
-                    ]
+                                  "This line has a trailing tab.\t", 5)]
         self.assertListEqual(violations, expected)
 
     def test_lint_merge_commit(self):

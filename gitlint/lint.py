@@ -1,5 +1,5 @@
 from __future__ import print_function
-from gitlint import rules
+from gitlint import rules as gitlint_rules
 from gitlint import display
 
 
@@ -10,17 +10,18 @@ class GitLinter(object):
 
     @property
     def body_line_rules(self):
-        return [rule for rule in self.config.body_rules if isinstance(rule, rules.LineRule)]
+        return [rule for rule in self.config.body_rules if isinstance(rule, gitlint_rules.LineRule)]
 
     @property
     def body_multiline_rules(self):
-        return [rule for rule in self.config.body_rules if isinstance(rule, rules.MultiLineRule)]
+        return [rule for rule in self.config.body_rules if isinstance(rule, gitlint_rules.MultiLineRule)]
 
     @property
     def title_line_rules(self):
-        return [rule for rule in self.config.title_rules if isinstance(rule, rules.LineRule)]
+        return [rule for rule in self.config.title_rules if isinstance(rule, gitlint_rules.LineRule)]
 
-    def _apply_line_rules(self, lines, rules, line_nr_start, gitcontext):
+    @staticmethod
+    def _apply_line_rules(lines, rules, line_nr_start, gitcontext):
         """ Iterates over the lines in a given list of lines and validates a given list of rules against each line """
         all_violations = []
         line_nr = line_nr_start
@@ -34,7 +35,8 @@ class GitLinter(object):
             line_nr += 1
         return all_violations
 
-    def _apply_commit_rules(self, rules, commit, gitcontext):
+    @staticmethod
+    def _apply_commit_rules(rules, commit, gitcontext):
         """ Applies a set of rules against a given commit and gitcontext """
         all_violations = []
         for rule in rules:
@@ -68,4 +70,4 @@ class GitLinter(object):
             if v.content:
                 self.display.eee("{0}: {1} {2}: \"{3}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
             else:
-                self.display.eee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
+                self.display.eee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
