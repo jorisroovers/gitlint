@@ -7,6 +7,10 @@ help(){
     echo "  -h, --help         Show this help output"
     echo "  -p, --pep8         Run pep8 checks"
     echo "  -l, --lint         Run pylint checks"
+    echo "  -g|--git           Run gitlint checks"
+    echo "  -i|--integration   Run integration tests"
+    echo "  -a|--all           Run all tests and checks (unit, integration, pep8, git)"
+    echo "  --all-env      Run all tests against all python environments"
     echo "  -s, --stats        Show some project stats"
     echo "  --no-coverage      Don't make a unit test coverage report"
     echo ""
@@ -65,8 +69,53 @@ run_stats(){
     echo "*** Tests ***"
     nr_unit_tests=$(py.test gitlint/ --collect-only | grep TestCaseFunction | wc -l)
     nr_integration_tests=$(py.test qa/ --collect-only | grep TestCaseFunction | wc -l)
-    echo "    Unit Tests: $nr_unit_tests"
-    echo "    Integration Tests: $nr_integration_tests"
+    echo "    Unit Tests: ${nr_unit_tests//[[:space:]]/}"
+    echo "    Integration Tests: ${nr_integration_tests//[[:space:]]/}"
+}
+
+clean(){
+    set +e
+    find gitlint -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
+    find qa -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
+    set -e
+}
+
+run_all(){
+    clean
+    run_unit_tests
+    run_integration_tests
+    run_pep8_check
+    run_git_check
+}
+
+run_tests_in_all_env(){
+    # Run the tests against all environments in vagrant
+    old_virtualenv="$VIRTUAL_ENV"
+    set +e
+    deactivate 2> /dev/null # deactivate any active environment
+    set -e
+
+    source /vagrant/.venv27/bin/activate
+    echo "### PYTHON 2.7 ($(python --version 2>&1)) ###"
+    run_all
+    deactivate
+
+    source /vagrant/.venv33/bin/activate
+    echo "### PYTHON 3.3 ($(python --version 2>&1)) ###"
+    run_all
+    deactivate
+
+    source /vagrant/.venv34/bin/activate
+    echo "### PYTHON 3.4 ($(python --version 2>&1)) ###"
+    run_all
+    deactivate
+
+    source /vagrant/.venv35/bin/activate
+    echo "### PYTHON 3.5 ($(python --version 2>&1)) ###"
+    run_all
+    deactivate
+
+    source "$old_virtualenv/bin/activate"
 }
 
 # default behavior
@@ -75,6 +124,8 @@ just_lint=0
 just_git=0
 just_integration_tests=0
 just_stats=0
+just_all_env=0
+just_all=0
 include_coverage=1
 testargs=""
 
@@ -86,6 +137,8 @@ while [ "$#" -gt 0 ]; do
         -g|--git) shift; just_git=1;;
         -s|--stats) shift; just_stats=1;;
         -i|--integration) shift; just_integration_tests=1;;
+        -a|--all) shift; just_all=1;;
+        --all-env) shift; just_all_env=1;;
         --no-coverage)shift; include_coverage=0;;
         *) testargs="$1"; shift;
    esac
@@ -110,5 +163,16 @@ if [ $just_git -eq 1 ]; then
     run_git_check
     exit $?
 fi
+
+if [ $just_all_env -eq 1 ]; then
+    run_tests_in_all_env
+    exit $?
+fi
+
+if [ $just_all -eq 1 ]; then
+    run_all
+    exit $?
+fi
+
 
 run_unit_tests || exit

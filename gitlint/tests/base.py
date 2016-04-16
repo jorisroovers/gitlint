@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest2 import TestCase
 from gitlint.git import GitContext
 
 import os
