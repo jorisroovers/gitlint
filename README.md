@@ -12,6 +12,8 @@ Git commit message linter written in python, checks your commit messages for sty
 
 **See [jorisroovers.github.io/gitlint/](http://jorisroovers.github.io/gitlint/) for full documentation.**
 
+<a href="http://jorisroovers.github.io/gitlint/" target="_blank"><img src="https://asciinema.org/a/30477.png" width="640"/></a>
+
 ## Contributing ##
 All contributions are welcome and very much appreciated!
 
