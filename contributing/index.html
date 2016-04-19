@@ -123,8 +123,10 @@
           <div role="main">
             <div class="section">
               
-                <p>We'd love for you to contribute to gitlint. Just open a pull request and we'll get right on it! 
-You can find a wishlist below, but we're open to any suggestions you might have!</p>
+                <p>We'd love for you to <a href="https://github.com/jorisroovers/gitlint">contribute to gitlint</a>.
+Just create an issue or open a pull request and we'll get right on it!
+We maintain a <a href="https://github.com/jorisroovers/gitlint/wiki/Wishlist">wishlist on our wiki</a>,
+but we're obviously open to any suggestions!</p>
 <h3 id="development">Development</h3>
 <p>There is a Vagrantfile in this repository that can be used for development.</p>
 <pre><code class="bash">vagrant up
@@ -140,8 +142,11 @@ python setup.py develop
 <p>To run tests:</p>
 <pre><code class="bash">./run_tests.sh                       # run unit tests and print test coverage
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
+./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
 ./run_tests.sh --pep8                # pep8 checks
 ./run_tests.sh --stats               # print some code stats
+./run_tests.sh --git                 # inception: run gitlint against itself
+./run_tests.sh --lint                # run pylint checks
 </code></pre>
 
 <p>To see the package description in HTML format</p>
