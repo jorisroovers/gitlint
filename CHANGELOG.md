@@ -2,6 +2,9 @@
 
 ## v0.7.0dev (master, not released) ##
 
+- commit-msg hooks improvements: The new commit-msg hook now allows you to edit your message if it contains violations,
+  prints the commit message on aborting and is more compatible with GUI-based git clients such as SourceTree.
+  *You will need to uninstall and reinstall the commit-msg hook for these latest features*.
 - Python 2.6 support
 - **Behavior change**: merge commits are now ignored by default. The rationale is that the original commit
   should already be linted and that many merge commits that don't pass gitlint checks by default

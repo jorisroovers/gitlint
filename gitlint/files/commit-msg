@@ -17,11 +17,6 @@ if [ $stdin_available -eq 1 ]; then
     # Now that we know we have a functional tty, set stdin to it so we can ask the user questions :-)
     exec < /dev/tty
 else
-    # If we don't have a tty, and if ~/.bash_profile exists, source it
-    # This *should* solve any cases of Atlassian SourceTree not finding gitlint on OS X.
-    # More info: https://answers.atlassian.com/questions/140339/sourcetree-hook-failing-because-paths-don-t-seem-to-be-set-correctly
-    test -f ~/.bash_profile && source ~/.bash_profile
-
     # Unset bash colors if we don't have a tty
     RED=""
     YELLOW=""
@@ -29,42 +24,58 @@ else
     END_COLOR=""
 fi
 
-echo "gitlint: checking commit message..."
-cat "$1" | gitlint
-gitlint_exit_code=$?
+run_gitlint(){
+   echo "gitlint: checking commit message..."
+   cat "$1" | python -m gitlint.cli
+   gitlint_exit_code=$?
+}
 
 # Prompts a given yes/no question.
 # Returns 0 if user answers yes, 1 if no
 # Reprompts if different answer
-ask_yes_no(){
+ask_yes_no_edit(){
+    ask_yes_no_edit_result="no"
     # If we don't have a stdin available, then just return "No".
     if [ $stdin_available -eq 0 ]; then
-        return 1;
+        ask_yes_no_edit_result="no"
+        return;
     fi
     # Otherwise, ask the question until the user answers yes or no
     question="$1"
     while true; do
         read -p "$question" yn
         case $yn in
-             [Yy]* ) return 0;;
-             [Nn]* ) return 1;;
+             [Yy]* ) ask_yes_no_edit_result="yes"; return;;
+             [Nn]* ) ask_yes_no_edit_result="no"; return;;
+             [Ee]* ) ask_yes_no_edit_result="edit"; return;;
         esac
     done
 }
 
-if [ $gitlint_exit_code -gt 0 ]; then
+run_gitlint "$1"
+
+while [ $gitlint_exit_code -gt 0 ]; do
     echo "-----------------------------------------------"
     echo "gitlint: ${RED}Your commit message contains the above violations.${END_COLOR}"
-    cat "$1" > "${1}_gitlint_restore"
-    # cat "$1" | grep -v '^#'
-    if ask_yes_no "Continue with commit anyways (this keeps the current commit message)? [y/n] "; then
+    ask_yes_no_edit "Continue with commit anyways (this keeps the current commit message)? [y(es)/n(no)/e(dit)] "
+    if [ $ask_yes_no_edit_result = "yes" ]; then
         exit 0
+    elif [ $ask_yes_no_edit_result = "edit" ]; then
+        EDITOR=${EDITOR:-vim}
+        $EDITOR "$1"
+        run_gitlint "$1"
     else
-        echo "Commit aborted"
+        echo "Commit aborted."
+        echo "Your commit message: "
+        echo "-----------------------------------------------"
+        cat "$1"
+        echo "-----------------------------------------------"
+
+        exit $gitlint_exit_code
     fi
-    exit $gitlint_exit_code
-else
-    echo "gitlint: ${GREEN}OK${END_COLOR} (no violations in commit message)"
-fi
+done
+
+echo "gitlint: ${GREEN}OK${END_COLOR} (no violations in commit message)"
+exit 0
 
 ### gitlint commit-msg hook end ###

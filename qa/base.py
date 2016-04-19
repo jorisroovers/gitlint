@@ -25,14 +25,14 @@ class BaseTestCase(TestCase):
         """ Cleans up the temporary git repository """
         rm("-rf", cls.tmp_git_repo)
 
-    def _create_simple_commit(self, message, out=None):
+    def _create_simple_commit(self, message, out=None, ok_code=None, env=None):
         """ Creates a simple commit with an empty test file.
             :param message: Commit message for the commit. """
         test_filename = "test-file-" + str(uuid4())
         touch(test_filename, _cwd=self.tmp_git_repo)
         git("add", test_filename, _cwd=self.tmp_git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
-        git("commit", "-m", message, _cwd=self.tmp_git_repo, _tty_in=True, _out=out)
+        git("commit", "-m", message, _cwd=self.tmp_git_repo, _tty_in=True, _out=out, _ok_code=ok_code, _env=env)
         return test_filename
 
     @staticmethod

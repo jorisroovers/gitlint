@@ -1,5 +1,7 @@
-We'd love for you to contribute to gitlint. Just open a pull request and we'll get right on it! 
-You can find a wishlist below, but we're open to any suggestions you might have!
+We'd love for you to [contribute to gitlint](https://github.com/jorisroovers/gitlint).
+Just create an issue or open a pull request and we'll get right on it!
+We maintain a [wishlist on our wiki](https://github.com/jorisroovers/gitlint/wiki/Wishlist),
+but we're obviously open to any suggestions!
 
 ### Development ###
 
@@ -25,6 +27,7 @@ To run tests:
 ./run_tests.sh --pep8                # pep8 checks
 ./run_tests.sh --stats               # print some code stats
 ./run_tests.sh --git                 # inception: run gitlint against itself
+./run_tests.sh --lint                # run pylint checks
 ```
 
 To see the package description in HTML format

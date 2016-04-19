@@ -13,8 +13,9 @@ useful throughout the years. Gitlint has sane defaults, but
 [you can also easily customize it to your own liking](configuration.md).
 
 Gitlint supports python versions 2.6, 2.7 and 3.3+.
-If you are looking for an alternative written in Ruby, have a look at
-[fit-commit](https://github.com/m1foley/fit-commit).
+If you are looking for an alternative written in a different language, have a look at
+[fit-commit](https://github.com/m1foley/fit-commit) (Ruby) or
+[node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js).
 
 ## Getting Started ##
 ```bash

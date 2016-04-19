@@ -50,6 +50,7 @@ run_unit_tests(){
 }
 
 run_integration_tests(){
+    clean
     # pyt.test -s => print standard output (i.e. show print statement output)
      if [ -n "$testargs" ]; then
         py.test -s "$testargs"
