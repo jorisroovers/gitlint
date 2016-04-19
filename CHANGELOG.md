@@ -1,19 +1,27 @@
 # Changelog #
 
-## v0.7.0dev (master, not released) ##
+## v0.7.0 (2016-04-20) ##
+This release contains mostly bugfix and internal code improvements. Special thanks to
+[William Turell](https://github.com/wturrell) and [Joe Grund](https://github.com/jgrund) for bug reports and pull
+requests.
 
 - commit-msg hooks improvements: The new commit-msg hook now allows you to edit your message if it contains violations,
   prints the commit message on aborting and is more compatible with GUI-based git clients such as SourceTree.
   *You will need to uninstall and reinstall the commit-msg hook for these latest features*.
 - Python 2.6 support
-- **Behavior change**: merge commits are now ignored by default. The rationale is that the original commit
-  should already be linted and that many merge commits that don't pass gitlint checks by default
-  (e.g. exceeding title length or empty body is very common). This behavior can be overwritte by setting the
+- **Behavior change**: merge commits are now ignored by default. The rationale is that the original commits
+  should already be linted and that many merge commits don't pass gitlint checks by default
+  (e.g. exceeding title length or empty body is very common). This behavior can be overwritten by setting the
   general option ```ignore-merge-commit=false```.
-- Bugfix: commit-msg hook not working properly on linux (#8).
-- Experimental: support for commit-msg hook in SourceTree on OS X (enhancement #7).
-- Development: initial set of integration tests. Test gitlint end-to-end after it is installed.
+- Bugfixes and enhancements:
+    - [#7: Hook compatibility with SourceTree](https://github.com/jorisroovers/gitlint/issues/7)
+    - [#8: Illegal option -e](https://github.com/jorisroovers/gitlint/issues/8)
+    - [#9: print full commit msg to stdout if aborted](https://github.com/jorisroovers/gitlint/issues/9)
+    - [#11 merge commit titles exceeding the max title length by default](https://github.com/jorisroovers/gitlint/issues/11)
+    - Better error handling of invalid general options
 - Development: internal refactoring to extract more info from git. This will allow for more complex rules in the future.
+- Development: initial set of integration tests. Test gitlint end-to-end after it is installed.
+- Development: pylint compliance for python 2.7
 
 ## v0.6.1 (2015-11-22) ##
 
