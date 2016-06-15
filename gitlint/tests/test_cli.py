@@ -37,7 +37,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.cli.GitLinter')
     def test_config_file(self, _git_linter):
         config_path = self.get_sample_path("config/gitlintconfig")
-        result = self.cli.invoke(cli.cli, ["--config", config_path])
+        result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, "Using config from {0}\n".format(config_path))
 

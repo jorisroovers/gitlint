@@ -37,7 +37,7 @@ def load_config_from_path(ctx, config_path=None):
     return config
 
 
-def get_config(ctx, target, config_path, c, ignore, verbose, silent):
+def get_config(ctx, target, config_path, c, ignore, verbose, silent, debug):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     try:
         # Config precedence:
@@ -45,7 +45,8 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent):
         lint_config = load_config_from_path(ctx, config_path)
         # default to default configuration when no config file was loaded
         if lint_config:
-            click.echo("Using config from {0}".format(lint_config.config_path))
+            if debug:
+                click.echo("Using config from {0}".format(lint_config.config_path))
         else:
             lint_config = LintConfig()
 
@@ -79,14 +80,15 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent):
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
+@click.option('-d', '--debug', help="Enable debugging output.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
-def cli(ctx, target, config, c, ignore, verbose, silent):
+def cli(ctx, target, config, c, ignore, verbose, silent, debug):
     """ Git lint tool, checks your git commit messages for styling issues """
 
     # Get the lint config from the commandline parameters and
     # store it in the context (click allows storing an arbitrary object in ctx.obj).
-    lint_config = get_config(ctx, target, config, c, ignore, verbose, silent)
+    lint_config = get_config(ctx, target, config, c, ignore, verbose, silent, debug)
     ctx.obj = lint_config
 
     # If no subcommand is specified, then just lint
