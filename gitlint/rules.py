@@ -185,7 +185,7 @@ class TitleRegexMatches(CommitMessageTitleRule):
         regex = self.options['regex'].value
         pattern = re.compile(regex)
         if not pattern.search(title):
-            violation_msg = "Title does match regex ({0})".format(regex)
+            violation_msg = "Title does not match regex ({0})".format(regex)
             return [RuleViolation(self.id, violation_msg, title)]
 
 
