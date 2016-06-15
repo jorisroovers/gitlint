@@ -59,6 +59,8 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent, debug):
             lint_config.verbosity = 0
         elif verbose > 0:
             lint_config.verbosity = verbose
+        if debug:
+            lint_config.debug = True
 
         # Set target
         lint_config.target = target

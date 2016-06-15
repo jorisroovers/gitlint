@@ -49,6 +49,7 @@ class LintConfig(object):
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
+        self._debug = options.BoolOption('debug', False, "Enable debug mode")
         self.config_path = config_path
         if target:
             self.target = target
@@ -76,6 +77,17 @@ class LintConfig(object):
     def ignore_merge_commits(self, value):
         try:
             return self._ignore_merge_commits.set(value)
+        except options.RuleOptionError as e:
+            raise LintConfigError(str(e))
+
+    @property
+    def debug(self):
+        return self._debug.value
+
+    @debug.setter
+    def debug(self, value):
+        try:
+            return self._debug.set(value)
         except options.RuleOptionError as e:
             raise LintConfigError(str(e))
 
@@ -173,6 +185,8 @@ class LintConfig(object):
             self.verbosity = int(option_value)
         elif option_name == "ignore-merge-commits":
             self.ignore_merge_commits = option_value
+        elif option_name == "debug":
+            self.debug = option_value
         else:
             raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
 

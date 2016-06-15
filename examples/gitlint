@@ -5,6 +5,8 @@ ignore=title-trailing-punctuation, T3
 verbosity = 2
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
 ignore-merge-commits=true
+# Enable debug mode (prints more output). Disabled by default
+debug = true
 
 [title-max-length]
 line-length=20

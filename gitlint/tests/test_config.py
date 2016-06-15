@@ -57,6 +57,7 @@ class LintConfigTests(BaseTestCase):
 
         # Check that default general options are correct
         self.assertTrue(config.ignore_merge_commits)
+        self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
         active_rule_classes = [type(rule) for rule in config.rules]
         self.assertListEqual(active_rule_classes, config.default_rule_classes)
@@ -76,6 +77,10 @@ class LintConfigTests(BaseTestCase):
         # ignore_merge_commit
         config.set_general_option("ignore-merge-commits", "false")
         self.assertFalse(config.ignore_merge_commits)
+
+        # debug
+        config.set_general_option("debug", "true")
+        self.assertTrue(config.debug)
 
     def test_set_general_option_negative(self):
         config = LintConfig()
@@ -101,6 +106,10 @@ class LintConfigTests(BaseTestCase):
             with self.assertRaisesRegexp(LintConfigError,
                                          r"Option 'ignore-merge-commits' must be either 'true' or 'false'"):
                 config.ignore_merge_commits = value
+
+        # invalid debug
+        with self.assertRaisesRegexp(LintConfigError, r"Option 'debug' must be either 'true' or 'false'"):
+            config.debug = "foobar"
 
     def test_apply_config_options(self):
         config = LintConfig()
@@ -149,6 +158,7 @@ class LintConfigTests(BaseTestCase):
 
         # Do some assertions on the config
         self.assertEqual(config.verbosity, 1)
+        self.assertTrue(config.debug)
         self.assertFalse(config.ignore_merge_commits)
 
         # ignored rules

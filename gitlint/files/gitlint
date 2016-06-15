@@ -4,6 +4,10 @@
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over
 # this
 # verbosity = 2
+# By default gitlint will ignore merge commits. Set to 'false' to disable.
+# ignore-merge-commits=true
+# Enable debug mode (prints more output). Disabled by default.
+# debug=true
 
 # [title-max-length]
 # line-length=80

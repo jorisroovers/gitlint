@@ -11,7 +11,9 @@ You can also use a different config file like so:
 gitlint --config myconfigfile.ini 
 ```
 
-The block below shows a sample ```.gitlint``` file. Details about rule config options can be found on the [Rules](rules.md) page.
+The block below shows a sample ```.gitlint``` file. Details about rule config options can be found on the
+[Rules](rules.md) page, details about general can be found on the
+[General Configuration](configuration.md#general-configuration) section of this page.
 
 ```ini
 # All these sections are optional, edit this file as you like.
@@ -84,7 +86,7 @@ gitlint-ignore: all
 ```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line. You can also specify
 specific rules to be ignored as follows: ```gitlint-ignore: T1, body-hard-tab```.
 
-## Configuration precedence ##
+# Configuration precedence #
 Configuring gitlint happens the following order of precedence:
 
 1. Commit specific config (e.g.: ```gitlint-ignore: all``` in the commit message) 
@@ -92,3 +94,15 @@ Configuring gitlint happens the following order of precedence:
 3. Commandline configuration flags (e.g.: ```-c title-max-length=123```)
 4. Configuration file (local ```.gitlint``` file, or file specified using ```-C```/```--config```)
 5. Default gitlint config
+
+# General configuration #
+The table below outlines configuration options that modify gitlint's overall behavior. These options can be specified
+using commandline flags or in ```general``` section in a ```.gitlint``` configuration file.
+
+Name                 | gitlint version | commandline flag                   | Description
+---------------------|-----------------|------------------------------------|-------------------------------------
+silent               | >= 0.1          | ```--silent```                     | Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
+verbosity            | >= 0.1          | ```--verbosity=3```                | Amount of output gitlint will show when printing errors. 
+ignore-merge-commits | >= 0.7.0        |   Not available                    | Whether or not to ignore merge commits.
+ignore               | >= 0.1          | ```--ignore=T1,body-min-length```  | Comma seperated list of rules to ignore (by name or id)
+debug                | >= 0.7.1        |  ```--debug```                     | Enable debugging output 
