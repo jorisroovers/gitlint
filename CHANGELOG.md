@@ -1,5 +1,16 @@
 # Changelog #
 
+## v0.7.1 (2016-06-18) ##
+Bugfixes:
+
+- **Behavior change**: gitlint no longer prints the file path by default when using a ```.gitlint``` file. The path
+will still be printed when using the new ```--debug``` flag. Special thanks to [Slipcon](https://github.com/slipcon).
+for submitting this.
+- Gitlint now prints a correct violation message for the ```title-match-regex``` rule.  Special thanks to
+[Slipcon](https://github.com/slipcon) for submitting this.
+- Gitlint is now better at parsing commit messages cross-platform by taking platform specific line endings into account
+- Minor documentation improvements
+
 ## v0.7.0 (2016-04-20) ##
 This release contains mostly bugfix and internal code improvements. Special thanks to
 [William Turell](https://github.com/wturrell) and [Joe Grund](https://github.com/jgrund) for bug reports and pull
