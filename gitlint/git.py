@@ -25,7 +25,7 @@ class GitCommitMessage(object):
     @staticmethod
     def from_full_message(commit_msg_str):
         """  Parses a full git commit message by parsing a given string into the different parts of a commit message """
-        lines = [line for line in commit_msg_str.split("\n") if not line.startswith("#")]
+        lines = [line for line in commit_msg_str.splitlines() if not line.startswith("#")]
         full = "\n".join(lines)
         title = lines[0] if len(lines) > 0 else ""
         body = lines[1:] if len(lines) > 1 else []

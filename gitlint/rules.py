@@ -223,7 +223,7 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
     def validate(self, commit, _gitcontext):
         min_length = self.options['min-length'].value
         lines = commit.message.body
-        if len(lines) == 3:
+        if len(lines) == 2:
             actual_length = len(lines[1])
             if lines[0] == "" and actual_length <= min_length:
                 violation_message = "Body message is too short ({0}<{1})".format(actual_length, min_length)
@@ -239,7 +239,7 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
         # ignore merges when option tells us to, which may have no body
         if self.options['ignore-merge-commits'].value and commit.is_merge_commit:
             return
-        if len(commit.message.body) <= 2:
+        if len(commit.message.body) < 2:
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
 
 

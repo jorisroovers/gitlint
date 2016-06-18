@@ -112,9 +112,9 @@ class GitTests(BaseTestCase):
                          "This is the first line of the commit message body and it is meant to test a " +
                          "line that exceeds the maximum line length of 80 characters.",
                          "This line has a trailing space. ",
-                         "This line has a trailing tab.\t", ""]
+                         "This line has a trailing tab.\t"]
         expected_full = expected_title + "\n" + "\n".join(expected_body)
-        expected_original = expected_full + "# This is a commented  line\n"
+        expected_original = expected_full + "\n# This is a commented  line\n"
 
         self.assertEqual(gitcontext.commits[-1].message.title, expected_title)
         self.assertEqual(gitcontext.commits[-1].message.body, expected_body)
