@@ -1,6 +1,5 @@
 #!/bin/bash -e
 
-
 help(){
     echo "Usage: $0 [OPTION]..."
     echo "Run gitlint's test suite(s) or some convience commands"
@@ -15,6 +14,17 @@ help(){
     echo "  --no-coverage      Don't make a unit test coverage report"
     echo ""
     exit 0;
+}
+
+RED="\033[31m"
+YELLOW="\033[33m"
+BLUE="\033[94m"
+GREEN="\033[32m"
+NO_COLOR="\033[0m"
+
+title(){
+    MSG="$BLUE$1$NO_COLOR"
+    echo -e $MSG
 }
 
 run_pep8_check(){
@@ -102,27 +112,27 @@ run_tests_in_all_env(){
     set -e
 
     source /vagrant/.venv26/bin/activate
-    echo "### PYTHON 2.6 ($(python --version 2>&1)) ###"
+    title "### PYTHON 2.6 ($(python --version 2>&1), /vagrant/.venv26) ###"
     run_all
     deactivate
 
     source /vagrant/.venv27/bin/activate
-    echo "### PYTHON 2.7 ($(python --version 2>&1)) ###"
+    title "### PYTHON 2.7 ($(python --version 2>&1), /vagrant/.venv27) ###"
     run_all
     deactivate
 
     source /vagrant/.venv33/bin/activate
-    echo "### PYTHON 3.3 ($(python --version 2>&1)) ###"
+    title "### PYTHON 3.3 ($(python --version 2>&1), /vagrant/.venv33) ###"
     run_all
     deactivate
 
     source /vagrant/.venv34/bin/activate
-    echo "### PYTHON 3.4 ($(python --version 2>&1)) ###"
+    title "### PYTHON 3.4 ($(python --version 2>&1), /vagrant/.venv34) ###"
     run_all
     deactivate
 
     source /vagrant/.venv35/bin/activate
-    echo "### PYTHON 3.5 ($(python --version 2>&1)) ###"
+    title "### PYTHON 3.5 ($(python --version 2>&1), /vagrant/.venv35) ###"
     run_all
     deactivate
 

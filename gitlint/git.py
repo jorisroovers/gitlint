@@ -40,12 +40,13 @@ class GitCommitMessage(object):
 
 class GitCommit(object):
     """ Class representing a git commit.
-        A commit consists of: message, author name, author email, date, list of changed files
-        In the context of gitlint, only the commit message is required.
+        A commit consists of: context, message, author name, author email, date, list of changed files
+        In the context of gitlint, only the git context and commit message are required.
     """
 
-    def __init__(self, message, date=None, author_name=None, author_email=None, parents=None, is_merge_commit=False,
-                 changed_files=None):
+    def __init__(self, context, message, date=None, author_name=None, author_email=None, parents=None,
+                 is_merge_commit=False, changed_files=None):
+        self.context = context
         self.message = message
         self.author_name = author_name
         self.author_email = author_email
@@ -85,13 +86,13 @@ class GitContext(object):
         """ Determines git context based on a commit message.
         :param commit_msg_str: Full git commit message.
         """
+        context = GitContext()
         commit_msg_obj = GitCommitMessage.from_full_message(commit_msg_str)
 
         # For now, we consider a commit a merge commit if its title starts with "Merge"
         is_merge_commit = commit_msg_obj.title.startswith("Merge")
-        commit = GitCommit(commit_msg_obj, is_merge_commit=is_merge_commit)
+        commit = GitCommit(context, commit_msg_obj, is_merge_commit=is_merge_commit)
 
-        context = GitContext()
         context.commits.append(commit)
         return context
 
@@ -100,6 +101,7 @@ class GitContext(object):
         """ Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
         """
+        context = GitContext()
         try:
             # Special arguments passed to sh: http://amoffat.github.io/sh/special_arguments.html
             sh_special_args = {
@@ -133,11 +135,11 @@ class GitContext(object):
         # Create Git commit object with the retrieved info
         changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]
         commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
-        commit = GitCommit(commit_msg_obj, author_name=commit_author_name, author_email=commit_author_email,
+        commit = GitCommit(context, commit_msg_obj, author_name=commit_author_name, author_email=commit_author_email,
                            date=commit_date, changed_files=changed_files, parents=commit_parents,
                            is_merge_commit=commit_is_merge_commit)
 
         # Create GitContext info with the commit object and return
-        context = GitContext()
+
         context.commits.append(commit)
         return context

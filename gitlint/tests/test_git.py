@@ -95,10 +95,22 @@ class GitTests(BaseTestCase):
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_git_error(self, sh):
+        # Current directory not a git repo
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
         sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
 
         with self.assertRaisesRegexp(GitContextError, "fake/path is not a git repository."):
+            GitContext.from_local_repository("fake/path")
+
+        # assert that commit message was read using git command
+        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False, _cwd="fake/path")
+
+        sh.git.log.reset_mock()
+        err = b"fatal: Random git error"
+        sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
+
+        expected_msg = "An error occurred while executing 'git log -1 --pretty=%B': {0}".format(err)
+        with self.assertRaisesRegexp(GitContextError, expected_msg):
             GitContext.from_local_repository("fake/path")
 
         # assert that commit message was read using git command

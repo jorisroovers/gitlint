@@ -16,7 +16,7 @@ except ImportError:  # pragma: no cover
     # python 2.4-2.6
     from ordereddict import OrderedDict  # pragma: no cover
 
-from gitlint import rules
+from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
 
 
@@ -94,14 +94,6 @@ class LintConfig(object):
     @property
     def rules(self):
         return [rule for rule in self._rules.values()]
-
-    @property
-    def body_rules(self):
-        return [rule for rule in self._rules.values() if isinstance(rule, rules.CommitMessageBodyRule)]
-
-    @property
-    def title_rules(self):
-        return [rule for rule in self._rules.values() if isinstance(rule, rules.CommitMessageTitleRule)]
 
     def disable_rule_by_id(self, rule_id):
         del self._rules[rule_id]

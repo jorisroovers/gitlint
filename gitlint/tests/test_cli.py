@@ -26,13 +26,38 @@ class CLITests(BaseTestCase):
     def setUp(self):
         self.cli = CliRunner()
 
-    def assert_output_line(self, output, index, sample_filename, error_line, expected_error):
-        expected_output = "{0}:{1}: {2}".format(self.get_sample_path(sample_filename), error_line, expected_error)
-        self.assertEqual(output.split("\n")[index], expected_output)
-
     def test_version(self):
         result = self.cli.invoke(cli.cli, ["--version"])
         self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
+
+    @patch('gitlint.git.sh')
+    @patch('gitlint.cli.sys')
+    def test_lint(self, sys, sh):
+        sys.stdin.isatty.return_value = True
+
+        def git_log_side_effect(*args, **_kwargs):
+            return_values = {'--pretty=%B': "commit-title\n\ncommit-body", '--pretty=%aN': "test author",
+                             '--pretty=%aE': "test-email@foo.com", '--pretty=%aD': "Mon Feb 29 22:19:39 2016 +0100",
+                             '--pretty=%P': "abc"}
+            return return_values[args[1]]
+
+        sh.git.log.side_effect = git_log_side_effect
+        sh.git.return_value = "file1.txt\npath/to/file2.txt\n"
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli)
+            self.assertEqual(stderr.getvalue(), '3: B5 Body message is too short (11<20): "commit-body"\n')
+            self.assertEqual(result.exit_code, 1)
+
+    def test_input_stream(self):
+        expected_output = "1: T2 Title has trailing whitespace: \"WIP: title \"\n" + \
+                          "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: title \"\n" + \
+                          "3: B6 Body message is missing\n"
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, input='WIP: title \n')
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 3)
 
     @patch('gitlint.cli.GitLinter')
     def test_config_file(self, _git_linter):
@@ -127,16 +152,6 @@ class CLITests(BaseTestCase):
         sh.git.log.side_effect = CommandNotFound("git")
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
-
-    def test_input_stream(self):
-        expected_output = "1: T2 Title has trailing whitespace: \"WIP: title \"\n" + \
-                          "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: title \"\n" + \
-                          "3: B6 Body message is missing\n"
-
-        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, input='WIP: title \n')
-            self.assertEqual(stderr.getvalue(), expected_output)
-            self.assertEqual(result.exit_code, 3)
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
     def test_install_hook(self, install_hook):

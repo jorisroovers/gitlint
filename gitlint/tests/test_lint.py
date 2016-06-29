@@ -17,7 +17,7 @@ class RuleOptionTests(BaseTestCase):
     def test_lint_sample1(self):
         linter = GitLinter(LintConfig())
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample1"))
-        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        violations = linter.lint(gitcontext.commits[-1])
         expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
                                          "Commit title containing 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
@@ -36,7 +36,7 @@ class RuleOptionTests(BaseTestCase):
     def test_lint_sample2(self):
         linter = GitLinter(LintConfig())
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
-        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        violations = linter.lint(gitcontext.commits[-1])
         expected = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
                                   "Just a title containing WIP", 1),
                     RuleViolation("B6", "Body message is missing", None, 3)]
@@ -46,7 +46,7 @@ class RuleOptionTests(BaseTestCase):
     def test_lint_sample3(self):
         linter = GitLinter(LintConfig())
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample3"))
-        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        violations = linter.lint(gitcontext.commits[-1])
 
         title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
@@ -72,7 +72,7 @@ class RuleOptionTests(BaseTestCase):
         lintconfig = LintConfig()
         lintconfig.apply_config_from_commit(gitcontext.commits[-1])
         linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        violations = linter.lint(gitcontext.commits[-1])
         # expect no violations because sample4 has a 'gitlint: disable line'
         expected = []
         self.assertListEqual(violations, expected)
@@ -82,7 +82,7 @@ class RuleOptionTests(BaseTestCase):
         lintconfig = LintConfig()
         lintconfig.apply_config_from_commit(gitcontext.commits[-1])
         linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        violations = linter.lint(gitcontext.commits[-1])
         title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
         # expect only certain violations because sample5 has a 'gitlint: T3,'
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
@@ -101,7 +101,7 @@ class RuleOptionTests(BaseTestCase):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample6"))  # Sample 6 is a merge commit
         lintconfig = LintConfig()
         linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        violations = linter.lint(gitcontext.commits[-1])
         # Even though there are a number of violations in the commit message, they are ignored because
         # we are dealing with a merge commit
         self.assertListEqual(violations, [])
@@ -109,7 +109,7 @@ class RuleOptionTests(BaseTestCase):
         # Check that we do see violations if we disable 'ignore-merge-commits'
         lintconfig.ignore_merge_commits = False
         linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1], gitcontext)
+        violations = linter.lint(gitcontext.commits[-1])
         self.assertTrue(len(violations) > 0)
 
     def test_print_violations(self):

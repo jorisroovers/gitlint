@@ -22,12 +22,18 @@ class DisplayTests(BaseTestCase):
             with patch('gitlint.display.stdout', new=StringIO()) as stdout:
                 display.v("test")
                 display.vv("test2")
+                # vvvv should be ignored regardless
+                display.vvv("test3.1")
+                display.vvv("test3.2", exact=True)
                 self.assertEqual("test\ntest2\n", stdout.getvalue())
 
             # exact outputting, should only output v
             with patch('gitlint.display.stdout', new=StringIO()) as stdout:
                 display.v("test", exact=True)
                 display.vv("test2", exact=True)
+                # vvvv should be ignored regardless
+                display.vvv("test3.1")
+                display.vvv("test3.2", exact=True)
                 self.assertEqual("test2\n", stdout.getvalue())
 
             # standard error should be empty throughtout all of this
@@ -42,13 +48,19 @@ class DisplayTests(BaseTestCase):
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                 display.e("test")
                 display.ee("test2")
+                # vvvv should be ignored regardless
+                display.eee("test3.1")
+                display.eee("test3.2", exact=True)
                 self.assertEqual("test\ntest2\n", stderr.getvalue())
 
             # exact outputting, should only output v
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                 display.e("test", exact=True)
                 display.ee("test2", exact=True)
+                # vvvv should be ignored regardless
+                display.eee("test3.1")
+                display.eee("test3.2", exact=True)
                 self.assertEqual("test2\n", stderr.getvalue())
 
-            # standard error should be empty throughtout all of this
+            # standard output should be empty throughtout all of this
             self.assertEqual('', stdout.getvalue())

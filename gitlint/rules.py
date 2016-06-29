@@ -9,6 +9,7 @@ class Rule(object):
     options_spec = []
     id = []
     name = ""
+    target = None
 
     def __init__(self, opts=None):
         if not opts:
@@ -30,8 +31,8 @@ class Rule(object):
         return self.__str__()  # pragma: no cover
 
 
-class MultiLineRule(Rule):
-    """ Class representing rules that act on multiple lines at once """
+class CommitRule(Rule):
+    """ Class representing rules that act on an entire commit at once """
     pass
 
 
@@ -40,13 +41,20 @@ class LineRule(Rule):
     pass
 
 
-class CommitMessageTitleRule(LineRule):
-    """ 'Tagging' class representing rules that apply to a commit message title """
+class LineRuleTarget(object):
+    """ Base class for LineRule targets. A LineRuleTarget specifies where a given rule will be applied
+    (e.g. commit message title, commit message body).
+    Each LineRule MUST have a target specified. """
     pass
 
 
-class CommitMessageBodyRule(Rule):
-    """ 'Tagging' class representing rules that apply to a commit message body """
+class CommitMessageTitle(LineRuleTarget):
+    """ Target class used for rules that apply to a commit message title """
+    pass
+
+
+class CommitMessageBody(LineRuleTarget):
+    """ Target class used for rules that apply to a commit message body """
     pass
 
 
@@ -76,7 +84,7 @@ class MaxLineLength(LineRule):
     options_spec = [IntOption('line-length', 80, "Max line length")]
     violation_message = "Line exceeds max length ({0}>{1})"
 
-    def validate(self, line, _gitcontext):
+    def validate(self, line, _commit):
         max_length = self.options['line-length'].value
         if len(line) > max_length:
             return [RuleViolation(self.id, self.violation_message.format(len(line), max_length), line)]
@@ -87,7 +95,7 @@ class TrailingWhiteSpace(LineRule):
     id = "R2"
     violation_message = "Line has trailing whitespace"
 
-    def validate(self, line, _gitcontext):
+    def validate(self, line, _commit):
         pattern = re.compile(r"\s$")
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
@@ -98,7 +106,7 @@ class HardTab(LineRule):
     id = "R3"
     violation_message = "Line contains hard tab characters (\\t)"
 
-    def validate(self, line, _gitcontext):
+    def validate(self, line, _commit):
         if "\t" in line:
             return [RuleViolation(self.id, self.violation_message, line)]
 
@@ -111,7 +119,7 @@ class LineMustNotContainWord(LineRule):
     options_spec = [ListOption('words', [], "Comma separated list of words that should not be found")]
     violation_message = "Line contains {0}"
 
-    def validate(self, line, _gitcontext):
+    def validate(self, line, _commit):
         strings = self.options['words'].value
         violations = []
         for string in strings:
@@ -127,61 +135,68 @@ class LeadingWhiteSpace(LineRule):
     id = "R6"
     violation_message = "Line has leading whitespace"
 
-    def validate(self, line, _gitcontext):
+    def validate(self, line, _commit):
         pattern = re.compile(r"^\s")
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
 
 
-class TitleMaxLength(MaxLineLength, CommitMessageTitleRule):
+class TitleMaxLength(MaxLineLength):
     name = "title-max-length"
     id = "T1"
+    target = CommitMessageTitle
     options_spec = [IntOption('line-length', 72, "Max line length")]
     violation_message = "Title exceeds max length ({0}>{1})"
 
 
-class TitleTrailingWhitespace(TrailingWhiteSpace, CommitMessageTitleRule):
+class TitleTrailingWhitespace(TrailingWhiteSpace):
     name = "title-trailing-whitespace"
     id = "T2"
+    target = CommitMessageTitle
     violation_message = "Title has trailing whitespace"
 
 
-class TitleTrailingPunctuation(CommitMessageTitleRule):
+class TitleTrailingPunctuation(LineRule):
     name = "title-trailing-punctuation"
     id = "T3"
+    target = CommitMessageTitle
 
-    def validate(self, title, _gitcontext):
+    def validate(self, title, _commit):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
             if title.endswith(punctuation_mark):
                 return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), title)]
 
 
-class TitleHardTab(HardTab, CommitMessageTitleRule):
+class TitleHardTab(HardTab):
     name = "title-hard-tab"
     id = "T4"
+    target = CommitMessageTitle
     violation_message = "Title contains hard tab characters (\\t)"
 
 
-class TitleMustNotContainWord(LineMustNotContainWord, CommitMessageTitleRule):
+class TitleMustNotContainWord(LineMustNotContainWord):
     name = "title-must-not-contain-word"
     id = "T5"
+    target = CommitMessageTitle
     options_spec = [ListOption('words', ['WIP'], "Must not contain word")]
     violation_message = "Title contains the word '{0}' (case-insensitive)"
 
 
-class TitleLeadingWhitespace(LeadingWhiteSpace, CommitMessageTitleRule):
+class TitleLeadingWhitespace(LeadingWhiteSpace):
     name = "title-leading-whitespace"
     id = "T6"
+    target = CommitMessageTitle
     violation_message = "Title has leading whitespace"
 
 
-class TitleRegexMatches(CommitMessageTitleRule):
+class TitleRegexMatches(LineRule):
     name = "title-match-regex"
     id = "T7"
+    target = CommitMessageTitle
     options_spec = [StrOption('regex', ".*", "Regex the title should match")]
 
-    def validate(self, title, _gitcontext):
+    def validate(self, title, _commit):
         regex = self.options['regex'].value
         pattern = re.compile(regex)
         if not pattern.search(title):
@@ -189,38 +204,41 @@ class TitleRegexMatches(CommitMessageTitleRule):
             return [RuleViolation(self.id, violation_msg, title)]
 
 
-class BodyMaxLineLength(MaxLineLength, CommitMessageBodyRule):
+class BodyMaxLineLength(MaxLineLength):
     name = "body-max-line-length"
     id = "B1"
+    target = CommitMessageBody
 
 
-class BodyTrailingWhitespace(TrailingWhiteSpace, CommitMessageBodyRule):
+class BodyTrailingWhitespace(TrailingWhiteSpace):
     name = "body-trailing-whitespace"
     id = "B2"
+    target = CommitMessageBody
 
 
-class BodyHardTab(HardTab, CommitMessageBodyRule):
+class BodyHardTab(HardTab):
     name = "body-hard-tab"
     id = "B3"
+    target = CommitMessageBody
 
 
-class BodyFirstLineEmpty(MultiLineRule, CommitMessageBodyRule):
+class BodyFirstLineEmpty(CommitRule):
     name = "body-first-line-empty"
     id = "B4"
 
-    def validate(self, commit, _gitcontext):
+    def validate(self, commit):
         if len(commit.message.body) >= 1:
             first_line = commit.message.body[0]
             if first_line != "":
                 return [RuleViolation(self.id, "Second line is not empty", first_line, 2)]
 
 
-class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
+class BodyMinLength(CommitRule):
     name = "body-min-length"
     id = "B5"
     options_spec = [IntOption('min-length', 20, "Minimum body length")]
 
-    def validate(self, commit, _gitcontext):
+    def validate(self, commit):
         min_length = self.options['min-length'].value
         lines = commit.message.body
         if len(lines) == 2:
@@ -230,12 +248,12 @@ class BodyMinLength(MultiLineRule, CommitMessageBodyRule):
                 return [RuleViolation(self.id, violation_message, lines[1], 3)]
 
 
-class BodyMissing(MultiLineRule, CommitMessageBodyRule):
+class BodyMissing(CommitRule):
     name = "body-is-missing"
     id = "B6"
     options_spec = [BoolOption('ignore-merge-commits', True, "Ignore merge commits")]
 
-    def validate(self, commit, _gitcontext):
+    def validate(self, commit):
         # ignore merges when option tells us to, which may have no body
         if self.options['ignore-merge-commits'].value and commit.is_merge_commit:
             return
@@ -243,12 +261,12 @@ class BodyMissing(MultiLineRule, CommitMessageBodyRule):
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
 
 
-class BodyChangedFileMention(MultiLineRule, CommitMessageBodyRule):
+class BodyChangedFileMention(CommitRule):
     name = "body-changed-file-mention"
     id = "B7"
     options_spec = [ListOption('files', [], "Files that need to be mentioned ")]
 
-    def validate(self, commit, _gitcontext):
+    def validate(self, commit):
         violations = []
         for needs_mentioned_file in self.options['files'].value:
             # if a file that we need to look out for is actually changed, then check whether it occurs

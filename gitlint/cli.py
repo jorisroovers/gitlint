@@ -118,7 +118,7 @@ def lint(ctx):
 
     # Let's get linting!
     linter = GitLinter(lint_config)
-    violations = linter.lint(last_commit, gitcontext)
+    violations = linter.lint(last_commit)
     linter.print_violations(violations)
     exit_code = min(MAX_VIOLATION_ERROR_CODE, len(violations))
     ctx.exit(exit_code)
@@ -176,4 +176,4 @@ def generate_config(ctx):
 
 
 if __name__ == "__main__":
-    cli()  # pylint: disable=no-value-for-parameter
+    cli()  # pragma: no cover, # pylint: disable=no-value-for-parameter
