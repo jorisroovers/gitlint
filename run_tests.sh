@@ -3,15 +3,18 @@
 help(){
     echo "Usage: $0 [OPTION]..."
     echo "Run gitlint's test suite(s) or some convience commands"
-    echo "  -h, --help         Show this help output"
-    echo "  -p, --pep8         Run pep8 checks"
-    echo "  -l, --lint         Run pylint checks"
-    echo "  -g|--git           Run gitlint checks"
-    echo "  -i|--integration   Run integration tests"
-    echo "  -a|--all           Run all tests and checks (unit, integration, pep8, git)"
-    echo "  --all-env      Run all tests against all python environments"
-    echo "  -s, --stats        Show some project stats"
-    echo "  --no-coverage      Don't make a unit test coverage report"
+    echo "  -h, --help              Show this help output"
+    echo "  -c, --clean             Clean the project of temporary files"
+    echo "  -p, --pep8              Run pep8 checks"
+    echo "  -l, --lint              Run pylint checks"
+    echo "  -g, --git               Run gitlint checks"
+    echo "  -i, --integration       Run integration tests"
+    echo "  -a, --all               Run all tests and checks (unit, integration, pep8, git)"
+    echo "  --all-env               Run all tests against all python environments"
+    echo "  --install-virtualenvs   Install virtualenvs for python 2.6, 2.7, 3.3, 3.4, 3.5"
+    echo "  --remove-virtualenvs    Remove virtualenvs for python 2.6, 2.7, 3.3, 3.4, 3.5"
+    echo "  -s, --stats             Show some project stats"
+    echo "  --no-coverage           Don't make a unit test coverage report"
     echo ""
     exit 0;
 }
@@ -24,6 +27,11 @@ NO_COLOR="\033[0m"
 
 title(){
     MSG="$BLUE$1$NO_COLOR"
+    echo -e $MSG
+}
+
+subtitle() {
+    MSG="$YELLOW$1$NO_COLOR"
     echo -e $MSG
 }
 
@@ -91,30 +99,89 @@ run_stats(){
     nr_integration_tests=$(py.test qa/ --collect-only | grep TestCaseFunction | wc -l)
     echo "    Unit Tests: ${nr_unit_tests//[[:space:]]/}"
     echo "    Integration Tests: ${nr_integration_tests//[[:space:]]/}"
+    echo "*** Git ***"
+    echo "    Number of commits: $(git rev-list --all --count)"
+    echo "    Number of authors: $(git log --format='%aN' | sort -u  | wc -l)"
 }
 
 clean(){
+    echo -n "Cleaning the site, build, dist and all __pycache__directories..."
     set +e
     find gitlint -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
     find qa -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
+    rm -rf "site" "dist" "build"
     set -e
+    echo -e "${GREEN}DONE${NO_COLOR}"
 }
 
 run_all(){
-    clean
+    subtitle "# UNIT TESTS #"
     run_unit_tests
+    subtitle "# INTEGRATION TESTS #"
     run_integration_tests
+    subtitle "# STYLE CHECKS #"
     run_pep8_check
     run_git_check
 }
 
+remove_virtualenvs(){
+    echo -n "Removing .venv26 .venv27 .venv33 .venv34 .venv35..."
+    set +e
+    deactivate 2> /dev/null # deactivate any active environment
+    set -e
+    rm -rf ".venv26" ".venv27" ".venv33" ".venv34" ".venv35"
+    echo -e "${GREEN}DONE${NO_COLOR}"
+}
+
+install_virtualenvs(){
+    echo "Installing .venv26 .venv27 .venv33 .venv34 .venv35..."
+
+    set +e
+    deactivate 2> /dev/null # deactivate any active environment
+    set -e
+
+    # Install the virtualenvs for different python versions
+    virtualenv -p /usr/bin/python2.6 .venv26
+    source .venv26/bin/activate
+    easy_install -U pip
+    pip install -r requirements.txt
+    pip install -r test-requirements.txt
+    deactivate
+
+    virtualenv -p /usr/bin/python2.7 .venv27
+    source .venv27/bin/activate
+    easy_install -U pip
+    pip install -r requirements.txt
+    pip install -r test-requirements.txt
+    deactivate
+
+    virtualenv -p /usr/bin/python3.3 .venv33
+    source .venv33/bin/activate
+    pip3 install -r requirements.txt
+    pip3 install -r test-requirements.txt
+    deactivate
+
+    virtualenv -p /usr/bin/python3.4 .venv34
+    source .venv34/bin/activate
+    pip3 install -r requirements.txt
+    pip3 install -r test-requirements.txt
+    deactivate
+
+    virtualenv -p /usr/bin/python3.5 .venv35
+    source .venv35/bin/activate
+    pip3 install -r requirements.txt
+    pip3 install -r test-requirements.txt
+    deactivate
+}
+
 run_tests_in_all_env(){
-    # Run the tests against all environments in vagrant
+    # Let's make sure we can recover the current virtualenv after we're done
     old_virtualenv="$VIRTUAL_ENV"
     set +e
     deactivate 2> /dev/null # deactivate any active environment
     set -e
 
+    # Run the tests against all environments in vagrant
     source /vagrant/.venv26/bin/activate
     title "### PYTHON 2.6 ($(python --version 2>&1), /vagrant/.venv26) ###"
     run_all
@@ -140,7 +207,9 @@ run_tests_in_all_env(){
     run_all
     deactivate
 
-    source "$old_virtualenv/bin/activate"
+    if [ ! -z "$old_virtualenv" ]; then
+        source "$old_virtualenv/bin/activate"
+    fi
 }
 
 # default behavior
@@ -151,18 +220,24 @@ just_integration_tests=0
 just_stats=0
 just_all_env=0
 just_all=0
+just_clean=0
+just_install_virtualenvs=0
+just_remove_virtualenvs=0
 include_coverage=1
 testargs=""
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
         -h|--help) shift; help;;
+        -c|--clean) shift; just_clean=1;;
         -p|--pep8) shift; just_pep8=1;;
         -l|--lint) shift; just_lint=1;;
         -g|--git) shift; just_git=1;;
         -s|--stats) shift; just_stats=1;;
         -i|--integration) shift; just_integration_tests=1;;
         -a|--all) shift; just_all=1;;
+        --install-virtualenvs) shift; just_install_virtualenvs=1;;
+        --remove-virtualenvs) shift; just_remove_virtualenvs=1;;
         --all-env) shift; just_all_env=1;;
         --no-coverage)shift; include_coverage=0;;
         *) testargs="$1"; shift;
@@ -201,6 +276,21 @@ fi
 
 if [ $just_all -eq 1 ]; then
     run_all
+    exit $?
+fi
+
+if [ $just_clean -eq 1 ]; then
+    clean
+    exit $?
+fi
+
+if [ $just_remove_virtualenvs -eq 1 ]; then
+    remove_virtualenvs
+    exit $?
+fi
+
+if [ $just_install_virtualenvs -eq 1 ]; then
+    install_virtualenvs
     exit $?
 fi
 

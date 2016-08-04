@@ -2,5 +2,5 @@ setuptools
 wheel==0.24.0
 Click==5.1
 sh==1.11
-ordereddict==1.1 # For python 2.6
-importlib==1.0.3 # For python 2.6
+ordereddict==1.1
+importlib==1.0.3; python_version < '2.7'

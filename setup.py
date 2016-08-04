@@ -60,8 +60,12 @@ setup(
         'Click==5.1',
         'sh==1.11',
         'ordereddict==1.1',
-        'importlib==1.0.3'
     ],
+    extras_require={
+        ':python_version == "2.6"': [
+            'importlib==1.0.3',
+        ],
+    },
     keywords='gitlint git lint',
     author='Joris Roovers',
     url='https://github.com/jorisroovers/gitlint',
