@@ -1,4 +1,5 @@
 from abc import abstractmethod
+import os
 
 
 class RuleOptionError(Exception):
@@ -65,3 +66,12 @@ class ListOption(RuleOption):
             self.value = value
         else:
             self.value = [item.strip() for item in str(value).split(",") if item.strip() != ""]
+
+
+class DirectoryOption(RuleOption):
+    def set(self, value):
+        value = str(value)
+        if not os.path.isdir(value):
+            msg = "Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
+            raise RuleOptionError(msg)
+        self.value = os.path.abspath(value)

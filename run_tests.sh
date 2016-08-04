@@ -43,10 +43,13 @@ run_pep8_check(){
 }
 
 run_unit_tests(){
+    clean
+    # py.test -s  => print standard output (i.e. show print statement output)
+    #         -rw => print warnings
     if [ -n "$testargs" ]; then
-        coverage run -m pytest -s "$testargs"
+        coverage run -m pytest -rw -s "$testargs"
     else
-        coverage run -m pytest -s gitlint
+        coverage run -m pytest -rw -s gitlint
     fi
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
@@ -61,8 +64,9 @@ run_unit_tests(){
 
 run_integration_tests(){
     clean
-    # pyt.test -s => print standard output (i.e. show print statement output)
-     if [ -n "$testargs" ]; then
+    # py.test -s => print standard output (i.e. show print statement output)
+    #         -rw => print warnings
+    if [ -n "$testargs" ]; then
         py.test -s "$testargs"
     else
         py.test -s qa/

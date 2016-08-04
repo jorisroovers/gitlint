@@ -60,14 +60,14 @@ class LintConfigTests(BaseTestCase):
         self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
         active_rule_classes = [type(rule) for rule in config.rules]
-        self.assertListEqual(active_rule_classes, config.default_rule_classes)
+        self.assertListEqual(active_rule_classes, config.rule_classes)
 
         # Check that we can change the general options
         # ignore
         config.set_general_option("ignore", "title-trailing-whitespace, B2")
         expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
         active_rule_classes = set(type(rule) for rule in config.rules)  # redetermine active rule classes
-        expected_active_rule_classes = set(config.default_rule_classes) - expected_ignored_rules
+        expected_active_rule_classes = set(config.rule_classes) - expected_ignored_rules
         self.assertSetEqual(active_rule_classes, expected_active_rule_classes)
 
         # verbosity
@@ -81,6 +81,10 @@ class LintConfigTests(BaseTestCase):
         # debug
         config.set_general_option("debug", "true")
         self.assertTrue(config.debug)
+
+        # extra_path
+        config.set_general_option("extra-path", self.get_rule_rules_path())
+        self.assertEqual(config.extra_path, self.get_rule_rules_path())
 
     def test_set_general_option_negative(self):
         config = LintConfig()
@@ -110,6 +114,11 @@ class LintConfigTests(BaseTestCase):
         # invalid debug
         with self.assertRaisesRegexp(LintConfigError, r"Option 'debug' must be either 'true' or 'false'"):
             config.debug = "foobar"
+
+        # invalid extra-path
+        with self.assertRaisesRegexp(LintConfigError,
+                                     r"Option extra_path must be an existing directory \(current value: 'foo/bar'\)"):
+            config.extra_path = "foo/bar"
 
     def test_apply_config_options(self):
         config = LintConfig()
@@ -164,7 +173,7 @@ class LintConfigTests(BaseTestCase):
         # ignored rules
         expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
         active_rule_classes = set(type(rule) for rule in config.rules)
-        self.assertSetEqual(set(config.default_rule_classes) - expected_ignored_rules, active_rule_classes)
+        self.assertSetEqual(set(config.rule_classes) - expected_ignored_rules, active_rule_classes)
 
         self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 20)
         self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 30)

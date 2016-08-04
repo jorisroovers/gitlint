@@ -18,6 +18,7 @@ except ImportError:  # pragma: no cover
 
 from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
+from gitlint import user_rules
 
 
 class LintConfigError(Exception):
@@ -29,28 +30,32 @@ class LintConfig(object):
         Contains active config as well as number of methods to easily get/set the config
         (such as reading it from file or parsing commandline input).
     """
-    default_rule_classes = [rules.TitleMaxLength,
-                            rules.TitleTrailingWhitespace,
-                            rules.TitleLeadingWhitespace,
-                            rules.TitleTrailingPunctuation,
-                            rules.TitleHardTab,
-                            rules.TitleMustNotContainWord,
-                            rules.TitleRegexMatches,
-                            rules.BodyMaxLineLength,
-                            rules.BodyMinLength,
-                            rules.BodyMissing,
-                            rules.BodyTrailingWhitespace,
-                            rules.BodyHardTab,
-                            rules.BodyFirstLineEmpty,
-                            rules.BodyChangedFileMention]
+
+    # Default list of rule classes
+    rule_classes = [rules.TitleMaxLength,
+                    rules.TitleTrailingWhitespace,
+                    rules.TitleLeadingWhitespace,
+                    rules.TitleTrailingPunctuation,
+                    rules.TitleHardTab,
+                    rules.TitleMustNotContainWord,
+                    rules.TitleRegexMatches,
+                    rules.BodyMaxLineLength,
+                    rules.BodyMinLength,
+                    rules.BodyMissing,
+                    rules.BodyTrailingWhitespace,
+                    rules.BodyHardTab,
+                    rules.BodyFirstLineEmpty,
+                    rules.BodyChangedFileMention]
 
     def __init__(self, config_path=None, target=None):
         # Use an ordered dict so that the order in which rules are applied is always the same
-        self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
+        self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.rule_classes])
         self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
         self.config_path = config_path
+        self._extra_path = options.DirectoryOption('extra_path', ".",
+                                                   "Path to a directory with extra user-defined rules")
         if target:
             self.target = target
         else:
@@ -90,6 +95,27 @@ class LintConfig(object):
             return self._debug.set(value)
         except options.RuleOptionError as e:
             raise LintConfigError(str(e))
+
+    @property
+    def extra_path(self):
+        return self._extra_path.value
+
+    @extra_path.setter
+    def extra_path(self, value):
+        try:
+            self._extra_path.set(value)
+            rule_classes = user_rules.find_rule_classes(self.extra_path)
+
+            # Add the newly found rules to the existing rules
+            for rule_class in rule_classes:
+                self.rule_classes.append(rule_class)
+                self._rules[rule_class.id] = rule_class()
+
+        except options.RuleOptionError as e:
+            raise LintConfigError(str(e))
+        except Exception as e:
+            # TODO(joris.roovers): better error message
+            raise e
 
     @property
     def rules(self):
@@ -179,6 +205,8 @@ class LintConfig(object):
             self.ignore_merge_commits = option_value
         elif option_name == "debug":
             self.debug = option_value
+        elif option_name == "extra-path":
+            self.extra_path = option_value
         else:
             raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
 
@@ -223,6 +251,9 @@ class LintConfig(object):
         return self.rules == other.rules and \
                self.verbosity == other.verbosity and \
                self.target == other.target and \
+               self.extra_path == other.extra_path and \
+               self.ignore_merge_commits == other.ignore_merge_commits and \
+               self.debug == other.debug and \
                self.config_path == other.config_path  # noqa
 
 

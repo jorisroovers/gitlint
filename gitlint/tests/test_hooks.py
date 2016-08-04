@@ -25,7 +25,7 @@ class HookTests(BaseTestCase):
         lint_config = LintConfig(target="/foo/bar")
         expected_dst = os.path.join("/foo/bar", COMMIT_MSG_HOOK_DST_PATH)
         GitHookInstaller.install_commit_msg_hook(lint_config)
-        isdir.assert_called_once_with('/foo/bar/.git/hooks')
+        isdir.assert_called_with('/foo/bar/.git/hooks')
         path_exists.assert_called_once_with(expected_dst)
         copy.assert_called_once_with(COMMIT_MSG_HOOK_SRC_PATH, expected_dst)
         stat.assert_called_once_with(expected_dst)
@@ -41,7 +41,7 @@ class HookTests(BaseTestCase):
         expected_msg = "/foo/bar is not a git repository"
         with self.assertRaisesRegexp(GitHookInstallerError, expected_msg):
             GitHookInstaller.install_commit_msg_hook(lint_config)
-            isdir.assert_called_once_with('/foo/bar/.git/hooks')
+            isdir.assert_called_with('/foo/bar/.git/hooks')
             path_exists.assert_not_called()
             copy.assert_not_called()
 
@@ -65,9 +65,9 @@ class HookTests(BaseTestCase):
             GitHookInstaller.uninstall_commit_msg_hook(lint_config)
 
         expected_dst = os.path.join("/foo/bar", COMMIT_MSG_HOOK_DST_PATH)
-        isdir.assert_called_once_with('/foo/bar/.git/hooks')
+        isdir.assert_called_with('/foo/bar/.git/hooks')
         path_exists.assert_called_once_with(expected_dst)
-        remove.assert_called_once_with(expected_dst)
+        remove.assert_called_with(expected_dst)
 
     @patch('os.remove')
     @patch('os.path.exists', return_value=True)
@@ -79,7 +79,7 @@ class HookTests(BaseTestCase):
         expected_msg = "/foo/bar is not a git repository"
         with self.assertRaisesRegexp(GitHookInstallerError, expected_msg):
             GitHookInstaller.uninstall_commit_msg_hook(lint_config)
-            isdir.assert_called_once_with('/foo/bar/.git/hooks')
+            isdir.assert_called_with('/foo/bar/.git/hooks')
             path_exists.assert_not_called()
             remove.assert_not_called()
 
@@ -90,7 +90,7 @@ class HookTests(BaseTestCase):
         expected_msg = "There is no commit-msg hook present in {0}.".format(expected_dst)
         with self.assertRaisesRegexp(GitHookInstallerError, expected_msg):
             GitHookInstaller.uninstall_commit_msg_hook(lint_config)
-            isdir.assert_called_once_with('/foo/bar/.git/hooks')
+            isdir.assert_called_with('/foo/bar/.git/hooks')
             path_exists.assert_called_once_with(expected_dst)
             remove.assert_not_called()
 

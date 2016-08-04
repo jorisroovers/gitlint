@@ -37,7 +37,7 @@ def load_config_from_path(ctx, config_path=None):
     return config
 
 
-def get_config(ctx, target, config_path, c, ignore, verbose, silent, debug):
+def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent, debug):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     try:
         # Config precedence:
@@ -59,6 +59,9 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent, debug):
             lint_config.verbosity = 0
         elif verbose > 0:
             lint_config.verbosity = verbose
+
+        if extra_path:
+            lint_config.extra_path = extra_path
         if debug:
             lint_config.debug = True
 
@@ -78,6 +81,8 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent, debug):
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
+@click.option('-e', '--extra-path', help="Path to a directory with extra user-defined rules",
+              type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True))
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
@@ -85,12 +90,12 @@ def get_config(ctx, target, config_path, c, ignore, verbose, silent, debug):
 @click.option('-d', '--debug', help="Enable debugging output.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
-def cli(ctx, target, config, c, ignore, verbose, silent, debug):
+def cli(ctx, target, config, c, extra_path, ignore, verbose, silent, debug):
     """ Git lint tool, checks your git commit messages for styling issues """
 
     # Get the lint config from the commandline parameters and
     # store it in the context (click allows storing an arbitrary object in ctx.obj).
-    lint_config = get_config(ctx, target, config, c, ignore, verbose, silent, debug)
+    lint_config = get_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
     ctx.obj = lint_config
 
     # If no subcommand is specified, then just lint

@@ -59,7 +59,8 @@ setup(
     install_requires=[
         'Click==5.1',
         'sh==1.11',
-        'ordereddict==1.1'
+        'ordereddict==1.1',
+        'importlib==1.0.3'
     ],
     keywords='gitlint git lint',
     author='Joris Roovers',

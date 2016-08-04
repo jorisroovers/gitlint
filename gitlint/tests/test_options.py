@@ -1,6 +1,8 @@
+import os
+
 from gitlint.tests.base import BaseTestCase
 
-from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RuleOptionError
+from gitlint.options import IntOption, BoolOption, StrOption, ListOption, DirectoryOption, RuleOptionError
 
 
 class RuleOptionTests(BaseTestCase):
@@ -97,3 +99,23 @@ class RuleOptionTests(BaseTestCase):
         # conversion to string before split
         option.set(123)
         self.assertListEqual(option.value, ["123"])
+
+    def test_dir_option(self):
+        option = DirectoryOption("test-directory", ".", "Test Description")
+        self.assertEqual(option.value, os.getcwd())
+        self.assertEqual(option.name, "test-directory")
+        self.assertEqual(option.description, "Test Description")
+
+        # re-set value
+        option.set(self.SAMPLES_DIR)
+        self.assertEqual(option.value, self.SAMPLES_DIR)
+
+        # set to non-existing directory
+        expected = r"Option test-directory must be an existing directory \(current value: '/foo/bar'\)"
+        with self.assertRaisesRegexp(RuleOptionError, expected):
+            option.set("/foo/bar")
+
+        # set to int
+        expected = r"Option test-directory must be an existing directory \(current value: '1234'\)"
+        with self.assertRaisesRegexp(RuleOptionError, expected):
+            option.set(1234)

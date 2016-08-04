@@ -8,16 +8,21 @@ class BaseTestCase(TestCase):
     # In case of assert failures, print the full error message
     maxDiff = None
 
+    SAMPLES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
+
     @staticmethod
     def get_sample_path(filename=""):
-        samples_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
-        return os.path.join(samples_dir, filename)
+        return os.path.join(BaseTestCase.SAMPLES_DIR, filename)
 
     @staticmethod
     def get_sample(filename=""):
         sample_path = BaseTestCase.get_sample_path(filename)
         sample = open(sample_path).read()
         return sample
+
+    @staticmethod
+    def get_rule_rules_path():
+        return os.path.join(BaseTestCase.SAMPLES_DIR, "user_rules")
 
     @staticmethod
     def gitcontext(commit_msg_str, changed_files=None):
