@@ -4,8 +4,9 @@ site_url: http://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
 pages:
     - Home: index.md
-    - Rules: rules.md
     - Configuration: configuration.md
+    - Rules: rules.md
+    - User Defined Rules: user_defined_rules.md
     - Contributing: contributing.md
 
 markdown_extensions: [admonition]

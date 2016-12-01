@@ -24,6 +24,9 @@ class RuleOption(object):
     def __repr__(self):
         return self.__str__()  # pragma: no cover
 
+    def __eq__(self, other):
+        return self.name == other.name and self.description == other.description and self.value == other.value
+
 
 class StrOption(RuleOption):
     def set(self, value):

@@ -1,0 +1,2 @@
+This is just a bogus file.
+This file being here is part of the test: gitlint should ignore it.

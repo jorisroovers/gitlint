@@ -1,13 +1,15 @@
 # All these sections are optional, edit this file as you like.
 # [general]
 # ignore=title-trailing-punctuation, T3
-# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over
-# this
+# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
 # verbosity = 2
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
 # ignore-merge-commits=true
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
+
+# Set the extra path where gitlint will search for user defined rules
+# extra-path=examples/
 
 # [title-max-length]
 # line-length=80

@@ -8,6 +8,9 @@ ignore-merge-commits=true
 # Enable debug mode (prints more output). Disabled by default
 debug = true
 
+# Set the extra path where gitlint will search for user defined rules (uncomment to test)
+# extra-path=examples/
+
 [title-max-length]
 line-length=20
 

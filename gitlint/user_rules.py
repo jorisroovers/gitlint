@@ -7,6 +7,11 @@ import sys
 from gitlint import rules
 
 
+class UserRuleError(Exception):
+    """ Error used to indicate that an error occurred while trying to load a user rule """
+    pass
+
+
 def find_rule_classes(extra_path):
     """
     Searches a given directory for rule classes. This is done by finding all python modules in the given directory,
@@ -33,7 +38,10 @@ def find_rule_classes(extra_path):
     rule_classes = []
     for module in modules:
         # Import the module
-        importlib.import_module(module)
+        try:
+            importlib.import_module(module)
+        except Exception as e:
+            raise UserRuleError("Error while importing extra-path module '{0}': {1}".format(module, str(e)))
 
         # Find all rule classes in the module. We do this my inspecting all members of the module and checking
         # 1) is it a class, if not, skip
@@ -41,15 +49,14 @@ def find_rule_classes(extra_path):
         # 3) is it a subclass of rule
         rule_classes.extend([clazz for _, clazz in inspect.getmembers(sys.modules[module])
                              if
-                             inspect.isclass(clazz) and
-                             clazz.__module__ == module and
-                             issubclass(clazz, rules.Rule) and
+                             inspect.isclass(clazz) and  # check isclass to ensure clazz.__module__ exists
+                             clazz.__module__ == module and  # ignore imported classes
                              assert_valid_rule_class(clazz)])
 
     return rule_classes
 
 
-def assert_valid_rule_class(_clazz):
+def assert_valid_rule_class(clazz):
     # TODO (joris.roovers): checks whether the rule class is valid
     # e.g.: it has an id and name and are of type string, default constructor, etc
-    return True
+    return issubclass(clazz, rules.Rule)

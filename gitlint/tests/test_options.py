@@ -6,6 +6,17 @@ from gitlint.options import IntOption, BoolOption, StrOption, ListOption, Direct
 
 
 class RuleOptionTests(BaseTestCase):
+    def test_option_equals(self):
+        # 2 options are equal if their name, value and description match
+        option1 = IntOption("test-option", 123, "Test Description")
+        option2 = IntOption("test-option", 123, "Test Description")
+        self.assertEqual(option1, option2)
+
+        # Not equal: name, description, value are different
+        self.assertNotEqual(option1, IntOption("test-option1", 123, "Test Description"))
+        self.assertNotEqual(option1, IntOption("test-option", 1234, "Test Description"))
+        self.assertNotEqual(option1, IntOption("test-option", 123, "Test Description2"))
+
     def test_int_option(self):
         # normal behavior
         option = IntOption("test-name", 123, "Test Description")

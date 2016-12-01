@@ -1,10 +1,11 @@
+# This rule is ignored because it doesn't have a .py extension
 from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption
 
 
-class MyUserCommitRule(CommitRule):
-    name = "my-user-commit-rule"
-    id = "TUC1"
+class MyUserCommitRule2(CommitRule):
+    name = "my-user-commit-rule2"
+    id = "TUC2"
     options_spec = [IntOption('violation-count', 0, "Number of violations to return")]
 
     def validate(self, _commit):
@@ -13,12 +14,3 @@ class MyUserCommitRule(CommitRule):
             violations.append(RuleViolation(self.id, "Commit violation %d" % i, "Content %d" % i, i))
 
         return violations
-
-
-# The below code is present so that we can test that we actually ignore it
-
-def func_should_be_ignored():
-    pass
-
-
-global_variable_should_be_ignored = True

@@ -47,7 +47,7 @@ run_pep8_check(){
     # exclude settings files and virtualenvs
     FLAKE8_EXCLUDE="*settings.py,*.venv/*.py"
     echo "Running flake8..."
-    flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa
+    flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa examples
 }
 
 run_unit_tests(){
