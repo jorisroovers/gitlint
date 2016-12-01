@@ -57,7 +57,7 @@ setup(
         "License :: OSI Approved :: MIT License"
     ],
     install_requires=[
-        'Click==5.1',
+        'Click==6.6',
         'sh==1.11',
         'ordereddict==1.1',
     ],

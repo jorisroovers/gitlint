@@ -41,6 +41,9 @@ class BaseTestCase(TestCase):
         touch(test_filename, _cwd=self.tmp_git_repo)
         git("add", test_filename, _cwd=self.tmp_git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
+        if not ok_code:
+            ok_code = [0]
+
         git("commit", "-m", message, _cwd=self.tmp_git_repo, _tty_in=True, _out=out, _ok_code=ok_code, _env=environment)
         return test_filename
 

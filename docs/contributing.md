@@ -59,3 +59,4 @@ mkdocs serve
 ```
 
 Then access the documentation website on your host machine on [http://localhost:8000]().
+Note that this is only supported for python >= 2.7.
