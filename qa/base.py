@@ -28,11 +28,20 @@ class BaseTestCase(TestCase):
     def _create_simple_commit(self, message, out=None, ok_code=None, env=None):
         """ Creates a simple commit with an empty test file.
             :param message: Commit message for the commit. """
+
+        # Let's make sure that we copy the environment in which this python code was executed as environment
+        # variables can influence how git runs.
+        # This was needed to fix https://github.com/jorisroovers/gitlint/issues/15 as we need to make sure to use
+        # the PATH variable that contains the virtualenv's python binary.
+        environment = os.environ
+        if env:
+            environment.update(env)
+
         test_filename = "test-file-" + str(uuid4())
         touch(test_filename, _cwd=self.tmp_git_repo)
         git("add", test_filename, _cwd=self.tmp_git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
-        git("commit", "-m", message, _cwd=self.tmp_git_repo, _tty_in=True, _out=out, _ok_code=ok_code, _env=env)
+        git("commit", "-m", message, _cwd=self.tmp_git_repo, _tty_in=True, _out=out, _ok_code=ok_code, _env=environment)
         return test_filename
 
     @staticmethod

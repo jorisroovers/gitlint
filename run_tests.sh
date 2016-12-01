@@ -73,6 +73,13 @@ run_unit_tests(){
 
 run_integration_tests(){
     clean
+    # Make sure the version of python used by the git hooks in our integration tests
+    # is the same one as the one that is currently active. In order to achieve this, we need to set
+    # GIT_EXEC_PATH (https://git-scm.com/book/en/v2/Git-Internals-Environment-Variables) to the current PATH, otherwise
+    # the git hooks will use the default PATH variable as defined by .bashrc which doesn't contain the current
+    # virtualenv's python binary path.
+    export GIT_EXEC_PATH="$PATH"
+
     # py.test -s => print standard output (i.e. show print statement output)
     #         -rw => print warnings
     if [ -n "$testargs" ]; then
