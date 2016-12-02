@@ -30,12 +30,12 @@ class RuleOptionTests(BaseTestCase):
 
         # error on negative int when not allowed
         expected_error = r"Option 'test-name' must be a positive integer \(current value: '-123'\)"
-        with self.assertRaisesRegexp(RuleOptionError, expected_error):
+        with self.assertRaisesRegex(RuleOptionError, expected_error):
             option.set(-123)
 
         # error on non-int value
         expected_error = r"Option 'test-name' must be a positive integer \(current value: 'foo'\)"
-        with self.assertRaisesRegexp(RuleOptionError, expected_error):
+        with self.assertRaisesRegex(RuleOptionError, expected_error):
             option.set("foo")
 
         # no error on negative value when allowed and negative int is passed
@@ -45,7 +45,7 @@ class RuleOptionTests(BaseTestCase):
 
         # error on non-int value when negative int is allowed
         expected_error = r"Option 'test-name' must be an integer \(current value: 'foo'\)"
-        with self.assertRaisesRegexp(RuleOptionError, expected_error):
+        with self.assertRaisesRegex(RuleOptionError, expected_error):
             option.set("foo")
 
     def test_str_option(self):
@@ -83,7 +83,7 @@ class RuleOptionTests(BaseTestCase):
         # error on incorrect value
         incorrect_values = [1, -1, "foo", ["foo"], {'foo': "bar"}]
         for value in incorrect_values:
-            with self.assertRaisesRegexp(RuleOptionError, "Option 'test-name' must be either 'true' or 'false'"):
+            with self.assertRaisesRegex(RuleOptionError, "Option 'test-name' must be either 'true' or 'false'"):
                 option.set(value)
 
     def test_list_option(self):
@@ -123,10 +123,10 @@ class RuleOptionTests(BaseTestCase):
 
         # set to non-existing directory
         expected = r"Option test-directory must be an existing directory \(current value: '/foo/bar'\)"
-        with self.assertRaisesRegexp(RuleOptionError, expected):
+        with self.assertRaisesRegex(RuleOptionError, expected):
             option.set("/foo/bar")
 
         # set to int
         expected = r"Option test-directory must be an existing directory \(current value: '1234'\)"
-        with self.assertRaisesRegexp(RuleOptionError, expected):
+        with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(1234)

@@ -87,7 +87,7 @@ class GitTests(BaseTestCase):
         sh.git.log.side_effect = CommandNotFound("git")
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
-        with self.assertRaisesRegexp(GitContextError, expected_msg):
+        with self.assertRaisesRegex(GitContextError, expected_msg):
             GitContext.from_local_repository("fake/path")
 
         # assert that commit message was read using git command
@@ -99,7 +99,7 @@ class GitTests(BaseTestCase):
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
         sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
 
-        with self.assertRaisesRegexp(GitContextError, "fake/path is not a git repository."):
+        with self.assertRaisesRegex(GitContextError, "fake/path is not a git repository."):
             GitContext.from_local_repository("fake/path")
 
         # assert that commit message was read using git command
@@ -110,7 +110,7 @@ class GitTests(BaseTestCase):
         sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
 
         expected_msg = "An error occurred while executing 'git log -1 --pretty=%B': {0}".format(err)
-        with self.assertRaisesRegexp(GitContextError, expected_msg):
+        with self.assertRaisesRegex(GitContextError, expected_msg):
             GitContext.from_local_repository("fake/path")
 
         # assert that commit message was read using git command

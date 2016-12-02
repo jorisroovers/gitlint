@@ -15,9 +15,9 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(rule, expected)
 
         # get by name
-        expected = rules.TitleTrailingWhitespace()  # pylint: disable=redefined-variable-type
+        expected2 = rules.TitleTrailingWhitespace()
         rule = config.get_rule('title-trailing-whitespace')
-        self.assertEqual(rule, expected)
+        self.assertEqual(rule, expected2)
 
         # get non-existing
         rule = config.get_rule('foo')
@@ -38,18 +38,18 @@ class LintConfigTests(BaseTestCase):
 
         # non-existing rule
         expected_error_msg = "No such rule 'foobar'"
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config.set_rule_option('foobar', 'line-length', 60)
 
         # non-existing option
         expected_error_msg = "Rule 'title-max-length' has no option 'foobar'"
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config.set_rule_option('title-max-length', 'foobar', 60)
 
         # invalid option value
         expected_error_msg = "'foo' is not a valid value for option 'title-max-length.line-length'. " + \
                              r"Option 'line-length' must be a positive integer \(current value: 'foo'\)."
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config.set_rule_option('title-max-length', 'line-length', "foo")
 
     def test_set_general_option(self):
@@ -89,35 +89,35 @@ class LintConfigTests(BaseTestCase):
     def test_set_general_option_negative(self):
         config = LintConfig()
 
-        with self.assertRaisesRegexp(LintConfigError, "'foo' is not a valid gitlint option"):
+        with self.assertRaisesRegex(LintConfigError, "'foo' is not a valid gitlint option"):
             config.set_general_option("foo", "bar")
 
         # invalid verbosity
         incorrect_values = [-1, "foo"]
         for value in incorrect_values:
             expected_msg = r"Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
-            with self.assertRaisesRegexp(LintConfigError, expected_msg):
+            with self.assertRaisesRegex(LintConfigError, expected_msg):
                 config.verbosity = value
 
         incorrect_values = [4]
         for value in incorrect_values:
-            with self.assertRaisesRegexp(LintConfigError, "Option 'verbosity' must be set between 0 and 3"):
+            with self.assertRaisesRegex(LintConfigError, "Option 'verbosity' must be set between 0 and 3"):
                 config.verbosity = value
 
         # invalid ignore_merge_commits
         incorrect_values = [-1, 4, "foo"]
         for value in incorrect_values:
-            with self.assertRaisesRegexp(LintConfigError,
-                                         r"Option 'ignore-merge-commits' must be either 'true' or 'false'"):
+            with self.assertRaisesRegex(LintConfigError,
+                                        r"Option 'ignore-merge-commits' must be either 'true' or 'false'"):
                 config.ignore_merge_commits = value
 
         # invalid debug
-        with self.assertRaisesRegexp(LintConfigError, r"Option 'debug' must be either 'true' or 'false'"):
+        with self.assertRaisesRegex(LintConfigError, r"Option 'debug' must be either 'true' or 'false'"):
             config.debug = "foobar"
 
         # invalid extra-path
-        with self.assertRaisesRegexp(LintConfigError,
-                                     r"Option extra_path must be an existing directory \(current value: 'foo/bar'\)"):
+        with self.assertRaisesRegex(LintConfigError,
+                                    r"Option extra_path must be an existing directory \(current value: 'foo/bar'\)"):
             config.extra_path = "foo/bar"
 
     def test_apply_config_options(self):
@@ -138,27 +138,27 @@ class LintConfigTests(BaseTestCase):
         config = LintConfig()
 
         # assert error on incorrect rule
-        with self.assertRaisesRegexp(LintConfigError, "No such rule 'foo'"):
+        with self.assertRaisesRegex(LintConfigError, "No such rule 'foo'"):
             config.apply_config_options(['foo.bar=1'])
 
         # no equal sign
         expected_msg = "'foo.bar' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_msg):
             config.apply_config_options(['foo.bar'])
 
         # missing value
         expected_msg = "'foo.bar=' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_msg):
             config.apply_config_options(['foo.bar='])
 
         # space instead of equal sign
         expected_msg = "'foo.bar 1' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_msg):
             config.apply_config_options(['foo.bar 1'])
 
         # no period between rule and option names
         expected_msg = "'foobar=1' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegexp(LintConfigError, expected_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_msg):
             config.apply_config_options(['foobar=1'])
 
     def test_load_config_from_file(self):
@@ -182,38 +182,38 @@ class LintConfigTests(BaseTestCase):
     def test_load_config_from_file_negative(self):
         # bad config file load
         foo_path = self.get_sample_path("foo")
-        with self.assertRaisesRegexp(LintConfigError, "Invalid file path: {0}".format(foo_path)):
+        with self.assertRaisesRegex(LintConfigError, "Invalid file path: {0}".format(foo_path)):
             LintConfig.load_from_file(foo_path)
 
         # error during file parsing
         path = self.get_sample_path("config/no-sections")
         expected_error_msg = "File contains no section headers."
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 
         # non-existing rule
         path = self.get_sample_path("config/nonexisting-rule")
         expected_error_msg = "No such rule 'foobar'"
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 
         # non-existing general option
         path = self.get_sample_path("config/nonexisting-general-option")
         expected_error_msg = "'foo' is not a valid gitlint option"
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 
         # non-existing option
         path = self.get_sample_path("config/nonexisting-option")
         expected_error_msg = "Rule 'title-max-length' has no option 'foobar'"
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 
         # invalid option value
         path = self.get_sample_path("config/invalid-option-value")
         expected_error_msg = "'foo' is not a valid value for option 'title-max-length.line-length'. " + \
                              r"Option 'line-length' must be a positive integer \(current value: 'foo'\)."
-        with self.assertRaisesRegexp(LintConfigError, expected_error_msg):
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             LintConfig.load_from_file(path)
 
     def test_gitcontext_ignore_all(self):

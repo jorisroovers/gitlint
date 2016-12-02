@@ -11,7 +11,7 @@ import shutil
 
 try:
     # python >= 2.7
-    from collections import OrderedDict
+    from collections import OrderedDict  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     # python 2.4-2.6
     from ordereddict import OrderedDict  # pragma: no cover

@@ -60,14 +60,14 @@ class UserRuleTests(BaseTestCase):
         # We don't check the entire error message because that is different based on the python version and underlying
         # operating system
         expected_msg = "Error while importing extra-path module 'invalid_python'"
-        with self.assertRaisesRegexp(UserRuleError, expected_msg):
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
             find_rule_classes(user_rule_path)
 
     def test_find_rule_classes_nonexisting_path(self):
         # When searching an non-existing path, we expect an OSError. That's fine because this case will be caught by
         # the CLI (you cannot specify a non-existing directory). What we do here is just assert that we indeed
         # get an OSError (so we guard against regressions).
-        with self.assertRaisesRegexp(OSError, "No such file or directory"):
+        with self.assertRaisesRegex(OSError, "No such file or directory"):
             find_rule_classes("foo/bar")
 
     def test_assert_valid_rule_class(self):
