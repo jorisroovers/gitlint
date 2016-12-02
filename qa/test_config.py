@@ -70,11 +70,8 @@ class ConfigTests(BaseTestCase):
         config_path = self.get_sample_path("config/gitlintconfig")
         output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
 
-        expected = "Using config from %s\n" % config_path + \
-                   "1: T1 Title exceeds max length (42>20)\n" + \
-                   "1: T5 Title contains the word 'WIP' (case-insensitive)\n" + \
-                   "2: B4 Second line is not empty\n" + \
-                   "3: B1 Line exceeds max length (48>30)\n"
+        expected = self.get_expected('debug_output1', {'config_path': config_path,
+                                                       'extra_path': self.tmp_git_repo})
 
         # TODO(jroovers): test for trailing whitespace -> git automatically strips whitespace when passing
         # taking a commit message via 'git commit -m'

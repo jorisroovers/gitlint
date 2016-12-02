@@ -58,6 +58,41 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli, input='WIP: title \n')
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 3)
+            self.assertEqual(result.output, "")
+
+    def test_silent_mode(self):
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--silent"], input='WIP: title \n')
+            self.assertEqual(stderr.getvalue(), "")
+            self.assertEqual(result.exit_code, 3)
+            self.assertEqual(result.output, "")
+
+    def test_verbosity(self):
+        # We only test -v and -vv, more testing is really not required here
+        # -v
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["-v"], input='WIP: title \n')
+            self.assertEqual(stderr.getvalue(), "1: T2\n1: T5\n3: B6\n")
+            self.assertEqual(result.exit_code, 3)
+            self.assertEqual(result.output, "")
+
+        # -vv
+        expected_output = "1: T2 Title has trailing whitespace\n" + \
+                          "1: T5 Title contains the word 'WIP' (case-insensitive)\n" + \
+                          "3: B6 Body message is missing\n"
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["-vv"], input='WIP: title \n')
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 3)
+            self.assertEqual(result.output, "")
+
+        # -vvvv: not supported -> should print a config error
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["-vvvv"], input='WIP: title \n')
+            self.assertEqual(stderr.getvalue(), "")
+            self.assertEqual(result.exit_code, CLITests.CONFIG_ERROR_CODE)
+            self.assertEqual(result.output, "Config Error: Option 'verbosity' must be set between 0 and 3\n")
 
     @patch('gitlint.cli.GitLinter')
     def test_config_file(self, _git_linter):
@@ -71,7 +106,9 @@ class CLITests(BaseTestCase):
         config_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
         self.assertEqual(result.exit_code, 0)
-        self.assertEqual(result.output, "Using config from {0}\n".format(config_path))
+        expected = self.get_expected('debug_output1', {'config_path': config_path,
+                                                       'extra_path': os.path.abspath(os.getcwd())})
+        self.assertEqual(result.output, expected)
 
     def test_config_file_negative(self):
         # Directory as config file

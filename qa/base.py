@@ -51,3 +51,14 @@ class BaseTestCase(TestCase):
     def get_sample_path(filename=""):
         samples_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
         return os.path.join(samples_dir, filename)
+
+    @staticmethod
+    def get_expected(filename="", variable_dict=None):
+        """ Utility method to read an 'expected' file and return it as a string. Optionally replace template variables
+        specified by variable_dict. """
+        expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
+        expected_path = os.path.join(expected_dir, filename)
+        expected = open(expected_path).read()
+        if variable_dict:
+            expected = expected.format(**variable_dict)
+        return expected

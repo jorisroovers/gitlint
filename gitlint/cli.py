@@ -44,10 +44,7 @@ def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent,
         # First, load default config or config from configfile
         lint_config = load_config_from_path(ctx, config_path)
         # default to default configuration when no config file was loaded
-        if lint_config:
-            if debug:
-                click.echo("Using config from {0}".format(lint_config.config_path))
-        else:
+        if not lint_config:
             lint_config = LintConfig()
 
         # Then process any commandline configuration flags
@@ -67,6 +64,10 @@ def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent,
 
         # Set target
         lint_config.target = target
+
+        if lint_config.debug:
+            click.echo(str(lint_config), nl=True)
+
         return lint_config
     except LintConfigError as e:
         click.echo("Config Error: {0}".format(str(e)))

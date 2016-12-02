@@ -97,13 +97,19 @@ run_integration_tests(){
 }
 
 run_git_check(){
-    echo "Running gitlint..."
+    echo -e "Running gitlint...${RED}"
     gitlint
+    local exit_code=$?
+    echo -ne "$NO_COLOR"
+    return $exit_code
 }
 
 run_lint_check(){
-    echo "Running pylint..."
+    echo -e "Running pylint...${RED}"
     pylint gitlint qa --rcfile=".pylintrc" -r n
+    local exit_code=$?
+    echo -ne "$NO_COLOR"
+    return $exit_code
 }
 
 run_stats(){
@@ -128,14 +134,21 @@ clean(){
 }
 
 run_all(){
+    local exit_code=0
     subtitle "# UNIT TESTS #"
     run_unit_tests
+    exit_code=$((exit_code + $?))
     subtitle "# INTEGRATION TESTS #"
     run_integration_tests
+    exit_code=$((exit_code + $?))
     subtitle "# STYLE CHECKS #"
     run_pep8_check
+    exit_code=$((exit_code + $?))
     run_lint_check
+    exit_code=$((exit_code + $?))
     run_git_check
+    exit_code=$((exit_code + $?))
+    return $exit_code
 }
 
 uninstall_virtualenv(){

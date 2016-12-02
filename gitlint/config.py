@@ -256,6 +256,19 @@ class LintConfig(object):
                self.debug == other.debug and \
                self.config_path == other.config_path  # noqa
 
+    def __str__(self):
+        return_str = "[GENERAL]\n"
+        return_str += "config path: {0}\n".format(self.config_path)
+        return_str += "extra path: {0}\n".format(self.extra_path)
+        return_str += "ignore merge commits: {0}\n".format(self.ignore_merge_commits)
+        return_str += "verbosity: {0}\n".format(self.verbosity)
+        return_str += "[RULES]\n"
+        for rule in self.rules:
+            return_str += "  {0}: {1}\n".format(rule.id, rule.name)
+            for option_name, option_value in rule.options.items():
+                return_str += "     {0}={1}\n".format(option_name, option_value.value)
+        return return_str
+
 
 GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/gitlint")
 

@@ -167,7 +167,7 @@ class LintConfigTests(BaseTestCase):
 
         # Do some assertions on the config
         self.assertEqual(config.verbosity, 1)
-        self.assertTrue(config.debug)
+        self.assertFalse(config.debug)
         self.assertFalse(config.ignore_merge_commits)
 
         # ignored rules

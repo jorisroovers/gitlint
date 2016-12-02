@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.8.0 (In Development) ##
+
+- debug output improvements: Gitlint will now print a lot more information when using ```--debug```
+
 ## v0.7.1 (2016-06-18) ##
 Bugfixes:
 

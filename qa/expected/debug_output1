@@ -1,0 +1,30 @@
+[GENERAL]
+config path: /vagrant/qa/samples/config/gitlintconfig
+extra path: {extra_path}
+ignore merge commits: True
+verbosity: 2
+[RULES]
+  T1: title-max-length
+     line-length=20
+  T2: title-trailing-whitespace
+  T6: title-leading-whitespace
+  T4: title-hard-tab
+  T5: title-must-not-contain-word
+     words=['WIP']
+  T7: title-match-regex
+     regex=.*
+  B1: body-max-line-length
+     line-length=30
+  B5: body-min-length
+     min-length=20
+  B6: body-is-missing
+     ignore-merge-commits=True
+  B3: body-hard-tab
+  B4: body-first-line-empty
+  B7: body-changed-file-mention
+     files=[]
+
+1: T1 Title exceeds max length (42>20)
+1: T5 Title contains the word 'WIP' (case-insensitive)
+2: B4 Second line is not empty
+3: B1 Line exceeds max length (48>30)
