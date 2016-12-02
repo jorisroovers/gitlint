@@ -12,7 +12,7 @@ gitlint --config myconfigfile.ini
 ```
 
 The block below shows a sample ```.gitlint``` file. Details about rule config options can be found on the
-[Rules](rules.md) page, details about general can be found on the
+[Rules](rules.md) page, details about the ```[general]``` section can be found in the
 [General Configuration](configuration.md#general-configuration) section of this page.
 
 ```ini
@@ -24,6 +24,9 @@ verbosity = 2
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
 ignore-merge-commits=true
 
+# Set the extra-path where gitlint will search for user defined rules
+# See http://jorisroovers.github.io/gitlint/user_defined_rules for details
+# extra-path=examples/
 
 [title-max-length]
 line-length=20
@@ -99,10 +102,11 @@ Configuring gitlint happens the following order of precedence:
 The table below outlines configuration options that modify gitlint's overall behavior. These options can be specified
 using commandline flags or in ```general``` section in a ```.gitlint``` configuration file.
 
-Name                 | gitlint version | commandline flag                   | Description
----------------------|-----------------|------------------------------------|-------------------------------------
-silent               | >= 0.1          | ```--silent```                     | Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
-verbosity            | >= 0.1          | ```--verbosity=3```                | Amount of output gitlint will show when printing errors. 
-ignore-merge-commits | >= 0.7.0        |   Not available                    | Whether or not to ignore merge commits.
-ignore               | >= 0.1          | ```--ignore=T1,body-min-length```  | Comma seperated list of rules to ignore (by name or id)
-debug                | >= 0.7.1        |  ```--debug```                     | Enable debugging output 
+Name                 | gitlint version | commandline flag                      | Description
+---------------------|-----------------|---------------------------------------|-------------------------------------
+silent               | >= 0.1          | ```--silent```                        | Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
+verbosity            | >= 0.1          | ```--verbosity=3```                   | Amount of output gitlint will show when printing errors.
+ignore-merge-commits | >= 0.7.0        |   Not available                       | Whether or not to ignore merge commits.
+ignore               | >= 0.1          | ```--ignore=T1,body-min-length```     | Comma seperated list of rules to ignore (by name or id)
+debug                | >= 0.7.1        |  ```--debug```                        | Enable debugging output
+extra-path           | >= 0.8.0        |  ```---extra-path=/home/joe/rules/``` | Path where gitlint looks for [user-defined rules](user_defined_rules.md).

@@ -54,8 +54,7 @@ class LintConfig(object):
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
         self.config_path = config_path
-        self._extra_path = options.DirectoryOption('extra_path', ".",
-                                                   "Path to a directory with extra user-defined rules")
+        self._extra_path = None
         if target:
             self.target = target
         else:
@@ -98,12 +97,17 @@ class LintConfig(object):
 
     @property
     def extra_path(self):
-        return self._extra_path.value
+        return self._extra_path.value if self._extra_path else None
 
     @extra_path.setter
     def extra_path(self, value):
         try:
-            self._extra_path.set(value)
+            if self.extra_path:
+                self._extra_path.set(value)
+            else:
+                self._extra_path = options.DirectoryOption('extra_path', value,
+                                                           "Path to a directory with extra user-defined rules")
+
             rule_classes = user_rules.find_rule_classes(self.extra_path)
 
             # Add the newly found rules to the existing rules

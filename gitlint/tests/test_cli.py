@@ -106,8 +106,7 @@ class CLITests(BaseTestCase):
         config_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
         self.assertEqual(result.exit_code, 0)
-        expected = self.get_expected('debug_output1', {'config_path': config_path,
-                                                       'extra_path': os.path.abspath(os.getcwd())})
+        expected = self.get_expected('debug_output1', {'config_path': config_path})
         self.assertEqual(result.output, expected)
 
     def test_config_file_negative(self):

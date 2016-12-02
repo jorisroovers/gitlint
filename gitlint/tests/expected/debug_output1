@@ -1,6 +1,6 @@
 [GENERAL]
 config path: {config_path}
-extra path: {extra_path}
+extra path: None
 ignore merge commits: False
 verbosity: 1
 [RULES]

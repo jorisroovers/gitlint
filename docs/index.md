@@ -5,17 +5,24 @@ Great for use as a ```commit-msg``` git hook or as part of your gating script in
 
 <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
-Many of the gitlint validations are based on
+!!! note
+    Gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
+    have a look at [fit-commit](https://github.com/m1foley/fit-commit) (Ruby) or
+    [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js).
+
+## Features ##
+ - **Commit message hook**: Auto-trigger validations against new commit message right when you're committing.
+ - **Easily integrated**: Gitlint will validate any git commit message you give it via standard input. Perfect for integration with your own scripts or CI system.
+ - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
-useful throughout the years. Gitlint has sane defaults, but
-[you can also easily customize it to your own liking](configuration.md).
-
-Gitlint supports python versions 2.6, 2.7 and 3.3+.
-If you are looking for an alternative written in a different language, have a look at
-[fit-commit](https://github.com/m1foley/fit-commit) (Ruby) or
-[node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js).
+useful throughout the years.
+ - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
+ - **User-defined Rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules).
+ - **Broad python version support:** Gitlint supports python versions 2.6, 2.7 and 3.3+.
+ - **Production-ready:** Gitlint has very high unit test coverage, integration tests and python code standards (pep8, pylint) are strictly enforced.
+   Gitlint also eats its own dogfood: gitlint commit messages are checked by itself on every commit.
 
 ## Getting Started ##
 ```bash
@@ -44,7 +51,8 @@ $ cat examples/commit-message-2 | gitlint
 3: B2 Line has trailing whitespace: "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
 3: B3 Line contains hard tab characters (\t): "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
 ```
-NOTE: The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
+!!! note
+    The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
 
 For a list of available rules and their configuration options, have a look at the [Rules](rules.md) page.
 
@@ -111,9 +119,11 @@ gitlint install-hook
 gitlint uninstall-hook
 ```
 
-Important: Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg```
-file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. gitlint will also only
-uninstall unmodified commit-msg hooks that were installed by gitlint.
+!!! important
+
+    Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg```
+    file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. gitlint will also only
+    uninstall unmodified commit-msg hooks that were installed by gitlint.
 
 ## Merge commits ##
 As of version 0.7.0, gitlint ignores merge commits by default. The rationale behind this is that in many cases

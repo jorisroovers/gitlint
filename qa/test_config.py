@@ -70,8 +70,7 @@ class ConfigTests(BaseTestCase):
         config_path = self.get_sample_path("config/gitlintconfig")
         output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
 
-        expected = self.get_expected('debug_output1', {'config_path': config_path,
-                                                       'extra_path': self.tmp_git_repo})
+        expected = self.get_expected('debug_output1', {'config_path': config_path})
 
         # TODO(jroovers): test for trailing whitespace -> git automatically strips whitespace when passing
         # taking a commit message via 'git commit -m'

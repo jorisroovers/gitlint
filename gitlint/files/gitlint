@@ -8,7 +8,8 @@
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
 
-# Set the extra path where gitlint will search for user defined rules
+# Set the extra-path where gitlint will search for user defined rules
+# See http://jorisroovers.github.io/gitlint/user_defined_rules for details
 # extra-path=examples/
 
 # [title-max-length]

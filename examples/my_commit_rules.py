@@ -16,8 +16,13 @@ that fits your needs.
 
 
 class BodyMaxLineCount(CommitRule):
+    # A rule MUST have a human friendly name
     name = "body-max-line-count"
+
+    # A rule MUST have an *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "UC1"
+
+    # A rule MAY have an option_spec if its behavior should be configurable.
     options_spec = [IntOption('body-max-line-count', 3, "Maximum body line count")]
 
     def validate(self, commit):
@@ -29,7 +34,11 @@ class SignedOffBy(CommitRule):
     """ This rule will enforce that each commit contains a "Signed-Off-By" line.
     We keep things simple here and just check whether the commit body contains a line that starts with "Signed-Off-By".
     """
+
+    # A rule MUST have a human friendly name
     name = "body-requires-signed-off-by"
+
+    # A rule MUST have an *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "UC2"
 
     def validate(self, commit):
@@ -37,4 +46,4 @@ class SignedOffBy(CommitRule):
             if line.startswith("Signed-Off-By"):
                 return []
 
-        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By Line'")]
+        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By Line'", "", 1)]

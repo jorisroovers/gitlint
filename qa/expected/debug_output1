@@ -1,6 +1,6 @@
 [GENERAL]
 config path: /vagrant/qa/samples/config/gitlintconfig
-extra path: {extra_path}
+extra path: None
 ignore merge commits: True
 verbosity: 2
 [RULES]

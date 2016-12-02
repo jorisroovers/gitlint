@@ -85,6 +85,9 @@ class LintConfigTests(BaseTestCase):
         # extra_path
         config.set_general_option("extra-path", self.get_rule_rules_path())
         self.assertEqual(config.extra_path, self.get_rule_rules_path())
+        # reset value (this is a different code path)
+        config.set_general_option("extra-path", self.SAMPLES_DIR)
+        self.assertEqual(config.extra_path, self.SAMPLES_DIR)
 
     def test_set_general_option_negative(self):
         config = LintConfig()
