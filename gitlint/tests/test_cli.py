@@ -37,7 +37,7 @@ class CLITests(BaseTestCase):
 
         def git_log_side_effect(*args, **_kwargs):
             return_values = {'--pretty=%B': "commit-title\n\ncommit-body", '--pretty=%aN': "test author",
-                             '--pretty=%aE': "test-email@foo.com", '--pretty=%aD': "Mon Feb 29 22:19:39 2016 +0100",
+                             '--pretty=%aE': "test-email@foo.com", '--pretty=%ai': "2016-12-03 15:28:15 01:00",
                              '--pretty=%P': "abc"}
             return return_values[args[1]]
 

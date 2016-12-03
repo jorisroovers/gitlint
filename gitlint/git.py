@@ -1,3 +1,4 @@
+import arrow
 import sh
 # import exceptions separately, this makes it a little easier to mock them out in the unit tests
 from sh import CommandNotFound, ErrorReturnCode
@@ -37,6 +38,10 @@ class GitCommitMessage(object):
     def __repr__(self):
         return self.__str__()  # pragma: no cover
 
+    def __eq__(self, other):
+        return self.original == other.original and self.full == other.full and \
+               self.title == other.title and self.body == other.body  # noqa
+
 
 class GitCommit(object):
     """ Class representing a git commit.
@@ -71,6 +76,11 @@ class GitCommit(object):
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
+
+    def __eq__(self, other):
+        # skip checking the context as context refers back to this obj, this will trigger a cyclic dependency
+        return self.message == other.message and self.author_name == other.author_name and \
+               self.author_email == other.autor_email and self.date == other.date  # noqa
 
 
 class GitContext(object):
@@ -114,7 +124,8 @@ class GitContext(object):
             commit_msg = sh.git.log("-1", "--pretty=%B", **sh_special_args)
             commit_author_name = sh.git.log("-1", "--pretty=%aN", **sh_special_args)
             commit_author_email = sh.git.log("-1", "--pretty=%aE", **sh_special_args)
-            commit_date = sh.git.log("-1", "--pretty=%aD", **sh_special_args)
+            # %aI -> ISO 8601-like format, while %aI is strict ISO 8601, it seems to be less widely supporte
+            commit_date_str = sh.git.log("-1", "--pretty=%ai", **sh_special_args)
             commit_parents = sh.git.log("-1", "--pretty=%P", **sh_special_args).split(" ")
             commit_is_merge_commit = len(commit_parents) > 1
 
@@ -132,6 +143,11 @@ class GitContext(object):
                 error_msg = "An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
             raise GitContextError(error_msg)
 
+        # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
+        # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
+        # http://stackoverflow.com/a/30696682/381010
+        commit_date = arrow.get(str(commit_date_str), "YYYY-MM-DD HH:mm:ss Z").datetime
+
         # Create Git commit object with the retrieved info
         changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]
         commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
@@ -143,3 +159,6 @@ class GitContext(object):
 
         context.commits.append(commit)
         return context
+
+    def __eq__(self, other):
+        return self.commits == other.commits

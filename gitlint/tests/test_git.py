@@ -1,3 +1,5 @@
+import datetime
+import dateutil
 from mock import patch, call
 from sh import ErrorReturnCode, CommandNotFound
 
@@ -10,7 +12,7 @@ class GitTests(BaseTestCase):
     def test_get_latest_commit(self, sh):
         def git_log_side_effect(*args, **_kwargs):
             return_values = {'--pretty=%B': "commit-title\n\ncommit-body", '--pretty=%aN': "test author",
-                             '--pretty=%aE': "test-email@foo.com", '--pretty=%aD': "Mon Feb 29 22:19:39 2016 +0100",
+                             '--pretty=%aE': "test-email@foo.com", '--pretty=%ai': "2016-12-03 15:28:15 01:00",
                              '--pretty=%P': "abc"}
             return return_values[args[1]]
 
@@ -26,7 +28,7 @@ class GitTests(BaseTestCase):
         expected_calls = [call('-1', '--pretty=%B', _cwd='fake/path', _tty_out=False),
                           call('-1', '--pretty=%aN', _cwd='fake/path', _tty_out=False),
                           call('-1', '--pretty=%aE', _cwd='fake/path', _tty_out=False),
-                          call('-1', '--pretty=%aD', _cwd='fake/path', _tty_out=False),
+                          call('-1', '--pretty=%ai', _cwd='fake/path', _tty_out=False),
                           call('-1', '--pretty=%P', _cwd='fake/path', _tty_out=False)]
 
         self.assertListEqual(sh.git.log.mock_calls, expected_calls)
@@ -36,6 +38,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, ["", "commit-body"])
         self.assertEqual(last_commit.author_name, "test author")
         self.assertEqual(last_commit.author_email, "test-email@foo.com")
+        self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
+                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, ["abc"])
         self.assertFalse(last_commit.is_merge_commit)
 
@@ -48,7 +52,7 @@ class GitTests(BaseTestCase):
     def test_get_latest_commit_merge_commit(self, sh):
         def git_log_side_effect(*args, **_kwargs):
             return_values = {'--pretty=%B': "Merge \"foo bar commit\"", '--pretty=%aN': "test author",
-                             '--pretty=%aE': "test-email@foo.com", '--pretty=%aD': "Mon Feb 29 22:19:39 2016 +0100",
+                             '--pretty=%aE': "test-email@foo.com", '--pretty=%ai': "2016-12-03 15:28:15 01:00",
                              '--pretty=%P': "abc def"}
             return return_values[args[1]]
 
@@ -64,7 +68,7 @@ class GitTests(BaseTestCase):
         expected_calls = [call('-1', '--pretty=%B', _cwd='fake/path', _tty_out=False),
                           call('-1', '--pretty=%aN', _cwd='fake/path', _tty_out=False),
                           call('-1', '--pretty=%aE', _cwd='fake/path', _tty_out=False),
-                          call('-1', '--pretty=%aD', _cwd='fake/path', _tty_out=False),
+                          call('-1', '--pretty=%ai', _cwd='fake/path', _tty_out=False),
                           call('-1', '--pretty=%P', _cwd='fake/path', _tty_out=False)]
 
         self.assertListEqual(sh.git.log.mock_calls, expected_calls)
@@ -74,6 +78,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, [])
         self.assertEqual(last_commit.author_name, "test author")
         self.assertEqual(last_commit.author_email, "test-email@foo.com")
+        self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
+                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, ["abc", "def"])
         self.assertTrue(last_commit.is_merge_commit)
 
@@ -134,6 +140,7 @@ class GitTests(BaseTestCase):
         self.assertEqual(gitcontext.commits[-1].message.original, expected_original)
         self.assertEqual(gitcontext.commits[-1].author_name, None)
         self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(gitcontext.commits[-1].date, None)
         self.assertListEqual(gitcontext.commits[-1].parents, [])
         self.assertFalse(gitcontext.commits[-1].is_merge_commit)
         self.assertEqual(len(gitcontext.commits), 1)
@@ -160,6 +167,7 @@ class GitTests(BaseTestCase):
         self.assertEqual(gitcontext.commits[-1].message.original, "")
         self.assertEqual(gitcontext.commits[-1].author_name, None)
         self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(gitcontext.commits[-1].date, None)
         self.assertListEqual(gitcontext.commits[-1].parents, [])
         self.assertFalse(gitcontext.commits[-1].is_merge_commit)
         self.assertEqual(len(gitcontext.commits), 1)
@@ -173,6 +181,7 @@ class GitTests(BaseTestCase):
         self.assertEqual(gitcontext.commits[-1].message.original, "Title\n\nBody 1\n#Comment\nBody 2")
         self.assertEqual(gitcontext.commits[-1].author_name, None)
         self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(gitcontext.commits[-1].date, None)
         self.assertListEqual(gitcontext.commits[-1].parents, [])
         self.assertFalse(gitcontext.commits[-1].is_merge_commit)
         self.assertEqual(len(gitcontext.commits), 1)
@@ -187,6 +196,7 @@ class GitTests(BaseTestCase):
         self.assertEqual(gitcontext.commits[-1].message.original, commit_msg)
         self.assertEqual(gitcontext.commits[-1].author_name, None)
         self.assertEqual(gitcontext.commits[-1].author_email, None)
+        self.assertEqual(gitcontext.commits[-1].date, None)
         self.assertListEqual(gitcontext.commits[-1].parents, [])
         self.assertTrue(gitcontext.commits[-1].is_merge_commit)
         self.assertEqual(len(gitcontext.commits), 1)

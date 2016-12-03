@@ -59,6 +59,7 @@ setup(
     install_requires=[
         'Click==6.6',
         'sh==1.11',
+        'arrow==0.10.0',
         'ordereddict==1.1',
     ],
     extras_require={

@@ -169,7 +169,7 @@ commit.message.title    | string         | Title/subject of the commit message: 
 commit.message.body     | list of string | List of lines in the body of the commit message (i.e. starting from the second line)
 commit.author_name      | string         | Name of the author, result of ```git log --pretty=%aN```
 commit.author_email     | string         | Email of the author, result of ```git log --pretty=%aE```
-commit.date             | string         | TODO: parse to date obj
+commit.date             | datetime       | Python ```datetime``` object representing the time of commit
 commit.context          | object         | Object pointing to the bigger git context that the commit is part of
 commit.context.commits  | list of commit | List of commits in the git context. Note that this might only be the subset of commits that gitlint is acting on, not all commits in the repo.
 
