@@ -3,7 +3,7 @@ Just create an issue or open a pull request and we'll get right on it!
 We maintain a [wishlist on our wiki](https://github.com/jorisroovers/gitlint/wiki/Wishlist),
 but we're obviously open to any suggestions!
 
-### Development ###
+# Development #
 
 There is a Vagrantfile in this repository that can be used for development.
 ```bash
@@ -42,7 +42,7 @@ You can easily run tests against specific python environments by using the follo
 ./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
 ```
 
-### Packaging ###
+# Packaging #
 
 To see the package description in HTML format
 ```
@@ -52,7 +52,7 @@ export LANG=en_US.UTF-8
 python setup.py --long-description | rst2html.py > output.html
 ```
 
-### Documentation ###
+# Documentation #
 Outside the vagrant box (on your host machine):
 ```bash
 mkdocs serve

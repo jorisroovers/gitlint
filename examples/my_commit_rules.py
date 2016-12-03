@@ -23,11 +23,14 @@ class BodyMaxLineCount(CommitRule):
     id = "UC1"
 
     # A rule MAY have an option_spec if its behavior should be configurable.
-    options_spec = [IntOption('body-max-line-count', 3, "Maximum body line count")]
+    options_spec = [IntOption('max-line-count', 3, "Maximum body line count")]
 
     def validate(self, commit):
-        if len(commit.message.body) > self.options['body-max-line-count']:
-            return [RuleViolation(self.id, "Body contains too many lines")]
+        line_count = len(commit.message.body)
+        max_line_count = self.options['max-line-count'].value
+        if line_count > max_line_count:
+            message = "Body contains too many lines ({0} > {1})".format(line_count, max_line_count)
+            return [RuleViolation(self.id, message, line_nr=1)]
 
 
 class SignedOffBy(CommitRule):
@@ -44,6 +47,6 @@ class SignedOffBy(CommitRule):
     def validate(self, commit):
         for line in commit.message.body:
             if line.startswith("Signed-Off-By"):
-                return []
+                return
 
-        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By Line'", "", 1)]
+        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By Line'", line_nr=1)]

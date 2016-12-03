@@ -21,8 +21,8 @@ useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
  - **User-defined Rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules).
  - **Broad python version support:** Gitlint supports python versions 2.6, 2.7 and 3.3+.
- - **Production-ready:** Gitlint has very high unit test coverage, integration tests and python code standards (pep8, pylint) are strictly enforced.
-   Gitlint also eats its own dogfood: gitlint commit messages are checked by itself on every commit.
+ - **Production-ready:** Gitlint checks a lot of boxes you're looking for: high unit test coverage, integration tests,
+   python code standards (pep8, pylint), good documentation, proven track record.
 
 ## Getting Started ##
 ```bash
@@ -80,24 +80,28 @@ The default verbosity is ```-vvv```.
 Other commands and variations:
 
 ```
+$ gitlint --help
 Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --target DIRECTORY  Path of the target git repository. [default: current
-                      working directory]
-  -C, --config PATH   Config file location [default: .gitlint]
-  -c TEXT             Config flags in format <rule>.<option>=<value> (e.g.: -c
-                      T1.line-length=80). Flag can be used multiple times to
-                      set multiple config values.
-  --ignore TEXT       Ignore rules (comma-separated by id or name).
-  -v, --verbose       Verbosity, more v's for more verbose output (e.g.: -v,
-                      -vv, -vvv). [default: -vvv]
-  -s, --silent        Silent mode (no output). Takes precedence over -v, -vv,
-                      -vvv.
-  --version           Show the version and exit.
-  --help              Show this message and exit.
+  --target DIRECTORY          Path of the target git repository. [default:
+                              current working directory]
+  -C, --config PATH           Config file location [default: .gitlint]
+  -c TEXT                     Config flags in format <rule>.<option>=<value>
+                              (e.g.: -c T1.line-length=80). Flag can be used
+                              multiple times to set multiple config values.
+  -e, --extra-path DIRECTORY  Path to a directory with extra user-defined
+                              rules
+  --ignore TEXT               Ignore rules (comma-separated by id or name).
+  -v, --verbose               Verbosity, more v's for more verbose output
+                              (e.g.: -v, -vv, -vvv). [default: -vvv]
+  -s, --silent                Silent mode (no output). Takes precedence over
+                              -v, -vv, -vvv.
+  -d, --debug                 Enable debugging output.
+  --version                   Show the version and exit.
+  --help                      Show this message and exit.
 
 Commands:
   generate-config  Generates a sample gitlint config file.
@@ -122,7 +126,7 @@ gitlint uninstall-hook
 !!! important
 
     Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg```
-    file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. gitlint will also only
+    file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. Gitlint will also only
     uninstall unmodified commit-msg hooks that were installed by gitlint.
 
 ## Merge commits ##
@@ -151,5 +155,4 @@ Exit Code  | Description
 253        | Wrong invocation of the ```gitlint``` command.
 254        | Something went wrong when invoking git.
 255        | Invalid gitlint configuration
-
 
