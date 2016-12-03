@@ -16,7 +16,7 @@ help(){
     echo "  --all-env                Run all tests against all python environments"
     echo "  --install                Install virtualenvs for the --envs specified"
     echo "  --uninstall              Remove virtualenvs for the --envs specified"
-    echo "  --switch                 Switch environments (as per --envs)"
+    echo "  --exec [CMD]             Execute [CMD] in the --envs specified"
     echo "  -s, --stats              Show some project stats"
     echo "  --no-coverage            Don't make a unit test coverage report"
     echo ""
@@ -206,8 +206,10 @@ just_all=0
 just_clean=0
 just_install=0
 just_uninstall=0
+just_exec=0
 include_coverage=1
 envs="default"
+cmd=""
 testargs=""
 
 while [ "$#" -gt 0 ]; do
@@ -221,6 +223,7 @@ while [ "$#" -gt 0 ]; do
         -i|--integration) shift; just_integration_tests=1;;
         -a|--all) shift; just_all=1;;
         -e|--envs) shift; envs="$1"; shift;;
+        --exec) shift; just_exec=1; cmd="$1"; shift;;
         --install) shift; just_install=1;;
         --uninstall) shift; just_uninstall=1;;
         --all-env) shift; envs="all";;
@@ -264,6 +267,9 @@ for environment in $envs; do
     elif [ $just_clean -eq 1 ]; then
         switch_env "$environment"
         clean
+    elif [ $just_exec -eq 1 ]; then
+        switch_env "$environment"
+        eval "$cmd"
     elif [ $just_uninstall -eq 1 ]; then
         assert_specific_env "$environment"
         uninstall_virtualenv "$environment"
