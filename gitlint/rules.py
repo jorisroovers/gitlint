@@ -22,7 +22,8 @@ class Rule(object):
                 self.options[op_spec.name].set(actual_option)
 
     def __eq__(self, other):
-        return self.id == other.id and self.name == other.name
+        return self.id == other.id and self.name == other.name and \
+               self.options == other.options and self.target == other.target  # noqa
 
     def __str__(self):
         return "{0} {1}".format(self.id, self.name)  # pragma: no cover

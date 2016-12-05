@@ -2,6 +2,7 @@ from mock import patch
 
 from gitlint import rules
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
+from gitlint.options import IntOption
 from gitlint.tests.base import BaseTestCase
 
 
@@ -59,16 +60,16 @@ class LintConfigTests(BaseTestCase):
         self.assertTrue(config.ignore_merge_commits)
         self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
-        active_rule_classes = [type(rule) for rule in config.rules]
-        self.assertListEqual(active_rule_classes, config.rule_classes)
+        active_rule_classes = tuple(type(rule) for rule in config.rules)
+        self.assertTupleEqual(active_rule_classes, config.default_rule_classes)
 
         # Check that we can change the general options
         # ignore
         config.set_general_option("ignore", "title-trailing-whitespace, B2")
         expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
-        active_rule_classes = set(type(rule) for rule in config.rules)  # redetermine active rule classes
-        expected_active_rule_classes = set(config.rule_classes) - expected_ignored_rules
-        self.assertSetEqual(active_rule_classes, expected_active_rule_classes)
+        new_active_rule_classes = set(type(rule) for rule in config.rules)  # redetermine active rule classes
+        expected_active_rule_classes = set(config.default_rule_classes) - expected_ignored_rules
+        self.assertSetEqual(new_active_rule_classes, expected_active_rule_classes)
 
         # verbosity
         config.set_general_option("verbosity", 1)
@@ -82,12 +83,27 @@ class LintConfigTests(BaseTestCase):
         config.set_general_option("debug", "true")
         self.assertTrue(config.debug)
 
-        # extra_path
+        # extra_path has its own test: test_extra_path
+
+    def test_extra_path(self):
+        config = LintConfig()
+
         config.set_general_option("extra-path", self.get_rule_rules_path())
         self.assertEqual(config.extra_path, self.get_rule_rules_path())
+        actual_rule = config.get_rule('TUC1')
+        self.assertTrue(actual_rule.user_defined)
+        self.assertEqual(str(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
+        self.assertEqual(actual_rule.id, 'TUC1')
+        self.assertEqual(actual_rule.name, 'my-user-commit-rule')
+        self.assertEqual(actual_rule.target, None)
+        expected_rule_option = IntOption('violation-count', 1, "Number of violations to return")
+        self.assertListEqual(actual_rule.options_spec, [expected_rule_option])
+        self.assertDictEqual(actual_rule.options, {'violation-count': expected_rule_option})
+
         # reset value (this is a different code path)
         config.set_general_option("extra-path", self.SAMPLES_DIR)
         self.assertEqual(config.extra_path, self.SAMPLES_DIR)
+        self.assertIsNone(config.get_rule("TUC1"))
 
     def test_set_general_option_negative(self):
         config = LintConfig()
@@ -172,11 +188,12 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(config.verbosity, 1)
         self.assertFalse(config.debug)
         self.assertFalse(config.ignore_merge_commits)
+        self.assertIsNone(config.extra_path)
 
         # ignored rules
         expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
         active_rule_classes = set(type(rule) for rule in config.rules)
-        self.assertSetEqual(set(config.rule_classes) - expected_ignored_rules, active_rule_classes)
+        self.assertSetEqual(set(config.default_rule_classes) - expected_ignored_rules, active_rule_classes)
 
         self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 20)
         self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 30)

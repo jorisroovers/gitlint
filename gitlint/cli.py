@@ -59,6 +59,7 @@ def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent,
 
         if extra_path:
             lint_config.extra_path = extra_path
+
         if debug:
             lint_config.debug = True
 

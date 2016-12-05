@@ -48,6 +48,11 @@ class BaseTestCase(TestCase):
         return test_filename
 
     @staticmethod
+    def get_example_path(filename=""):
+        examples_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../examples")
+        return os.path.join(examples_dir, filename)
+
+    @staticmethod
     def get_sample_path(filename=""):
         samples_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
         return os.path.join(samples_dir, filename)

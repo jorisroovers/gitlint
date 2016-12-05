@@ -94,20 +94,31 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, CLITests.CONFIG_ERROR_CODE)
             self.assertEqual(result.output, "Config Error: Option 'verbosity' must be set between 0 and 3\n")
 
-    @patch('gitlint.cli.GitLinter')
-    def test_config_file(self, _git_linter):
-        config_path = self.get_sample_path("config/gitlintconfig")
-        result = self.cli.invoke(cli.cli, ["--config", config_path])
-        self.assertEqual(result.exit_code, 0)
-        self.assertEqual(result.output, "")
+    def test_debug(self):
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            config_path = self.get_sample_path("config/gitlintconfig")
+            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"], input="WIP: test")
+            expected = self.get_expected('debug_output1', {'config_path': config_path})
+            self.assertEqual(result.output, expected)
+            self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
+            self.assertEqual(result.exit_code, 2)
 
-    @patch('gitlint.cli.GitLinter')
-    def test_config_file_debug(self, _git_linter):
-        config_path = self.get_sample_path("config/gitlintconfig")
-        result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
-        self.assertEqual(result.exit_code, 0)
-        expected = self.get_expected('debug_output1', {'config_path': config_path})
-        self.assertEqual(result.output, expected)
+    def test_extra_path(self):
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            extra_path = self.get_sample_path("user_rules")
+            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input='Test title\n')
+            expected_output = "1: TUC1 Commit violation 1: \"Content 1\"\n" + \
+                              "3: B6 Body message is missing\n"
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 2)
+
+    def test_config_file(self):
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            config_path = self.get_sample_path("config/gitlintconfig")
+            result = self.cli.invoke(cli.cli, ["--config", config_path], input="WIP: test")
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
+            self.assertEqual(result.exit_code, 2)
 
     def test_config_file_negative(self):
         # Directory as config file
@@ -154,6 +165,42 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = "Error: Invalid value for \"--target\": Directory \"{0}\" is a file.".format(target_path)
         self.assertEqual(result.output.split("\n")[2], expected_msg)
+
+    def test_config_precedence(self):
+        # TODO(jroovers): this test really only test verbosity, we need to do some refactoring to gitlint.cli
+        # to more easily test everything
+        # Test that the config precedence is followed:
+        # 1. commandline convenience flags
+        # 2. commandline -c flags
+        # 3. config file
+        # 4. default config
+        input_text = "WIP\n\nThis is a test message\n"
+        config_path = self.get_sample_path("config/gitlintconfig")
+
+        # 1. commandline convenience flags
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["-vvv", "-c", "general.verbosity=2", "--config", config_path],
+                                     input=input_text)
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
+
+        # 2. commandline -c flags
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path], input=input_text)
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive)\n")
+
+        # 3. config file
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--config", config_path], input=input_text)
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), "1: T5\n")
+
+        # 4. default config
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, input=input_text)
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
 
     @patch('gitlint.config.LintConfigGenerator.generate_config')
     def test_generate_config(self, generate_config):

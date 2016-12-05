@@ -36,7 +36,7 @@ class SignedOffBy(CommitRule):
             if line.startswith("Signed-Off-By"):
                 return
 
-        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By Line'", line_nr=1)]
+        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By' line", line_nr=1)]
 ```
 
 As always, ```--extra-path``` can also be set by adding it under the ```[general]``` section in your ```.gitlint``` file or using

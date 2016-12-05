@@ -29,7 +29,7 @@ class UserRuleTests(BaseTestCase):
         # Do some basic asserts on our user rule
         self.assertEqual(classes[0].id, "TUC1")
         self.assertEqual(classes[0].name, "my-user-commit-rule")
-        expected_option = options.IntOption('violation-count', 0, "Number of violations to return")
+        expected_option = options.IntOption('violation-count', 1, "Number of violations to return")
         self.assertListEqual(classes[0].options_spec, [expected_option])
         self.assertTrue(hasattr(classes[0], "validate"))
 
@@ -37,12 +37,13 @@ class UserRuleTests(BaseTestCase):
         # expected result
         rule_class = classes[0]()
         violations = rule_class.validate("false-commit-object (ignored)")
-        self.assertListEqual(violations, [])
-
-        # Have it return a violation
-        rule_class.options['violation-count'].value = 1
-        violations = rule_class.validate("false-commit-object (ignored)")
         self.assertListEqual(violations, [rules.RuleViolation("TUC1", "Commit violation 1", "Content 1", 1)])
+
+        # Have it return more violations
+        rule_class.options['violation-count'].value = 2
+        violations = rule_class.validate("false-commit-object (ignored)")
+        self.assertListEqual(violations, [rules.RuleViolation("TUC1", "Commit violation 1", "Content 1", 1),
+                                          rules.RuleViolation("TUC1", "Commit violation 2", "Content 2", 2)])
 
     def test_empty_user_classes(self):
         # Test that we don't find rules if we scan a different directory

@@ -49,4 +49,4 @@ class SignedOffBy(CommitRule):
             if line.startswith("Signed-Off-By"):
                 return
 
-        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By Line'", line_nr=1)]
+        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By' line", line_nr=1)]

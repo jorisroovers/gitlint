@@ -31,25 +31,25 @@ class LintConfig(object):
         (such as reading it from file or parsing commandline input).
     """
 
-    # Default list of rule classes
-    rule_classes = [rules.TitleMaxLength,
-                    rules.TitleTrailingWhitespace,
-                    rules.TitleLeadingWhitespace,
-                    rules.TitleTrailingPunctuation,
-                    rules.TitleHardTab,
-                    rules.TitleMustNotContainWord,
-                    rules.TitleRegexMatches,
-                    rules.BodyMaxLineLength,
-                    rules.BodyMinLength,
-                    rules.BodyMissing,
-                    rules.BodyTrailingWhitespace,
-                    rules.BodyHardTab,
-                    rules.BodyFirstLineEmpty,
-                    rules.BodyChangedFileMention]
+    # Default tuple of rule classes (tuple because immutable).
+    default_rule_classes = (rules.TitleMaxLength,
+                            rules.TitleTrailingWhitespace,
+                            rules.TitleLeadingWhitespace,
+                            rules.TitleTrailingPunctuation,
+                            rules.TitleHardTab,
+                            rules.TitleMustNotContainWord,
+                            rules.TitleRegexMatches,
+                            rules.BodyMaxLineLength,
+                            rules.BodyMinLength,
+                            rules.BodyMissing,
+                            rules.BodyTrailingWhitespace,
+                            rules.BodyHardTab,
+                            rules.BodyFirstLineEmpty,
+                            rules.BodyChangedFileMention)
 
     def __init__(self, config_path=None, target=None):
         # Use an ordered dict so that the order in which rules are applied is always the same
-        self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.rule_classes])
+        self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
@@ -108,12 +108,19 @@ class LintConfig(object):
                 self._extra_path = options.DirectoryOption('extra_path', value,
                                                            "Path to a directory with extra user-defined rules")
 
+            # Make sure we unload any previously loaded extra-path rules
+            for rule in self.rules:
+                if hasattr(rule, 'user_defined') and rule.user_defined:
+                    del self._rules[rule.id]
+
+            # Find rules in the new extra-path
             rule_classes = user_rules.find_rule_classes(self.extra_path)
 
             # Add the newly found rules to the existing rules
             for rule_class in rule_classes:
-                self.rule_classes.append(rule_class)
-                self._rules[rule_class.id] = rule_class()
+                rule_obj = rule_class()
+                rule_obj.user_defined = True
+                self._rules[rule_class.id] = rule_obj
 
         except options.RuleOptionError as e:
             raise LintConfigError(str(e))
@@ -123,10 +130,8 @@ class LintConfig(object):
 
     @property
     def rules(self):
+        # Create a new list based on _rules.values() because in python 3, values() is a ValuesView as opposed to a list
         return [rule for rule in self._rules.values()]
-
-    def disable_rule_by_id(self, rule_id):
-        del self._rules[rule_id]
 
     def disable_rule(self, rule_id_or_name):
         if rule_id_or_name == "all":
@@ -134,7 +139,7 @@ class LintConfig(object):
         else:
             rule = self.get_rule(rule_id_or_name)
             if rule:
-                self.disable_rule_by_id(rule.id)
+                del self._rules[rule.id]
 
     def get_rule(self, rule_id_or_name):
         # try finding rule by id
