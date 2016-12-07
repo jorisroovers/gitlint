@@ -1,8 +1,10 @@
+config-path: {config_path}
 [GENERAL]
-config path: {config_path}
-extra path: None
-ignore merge commits: True
+extra-path: None
+ignore-merge-commits: True
 verbosity: 2
+debug: True
+target: {target}
 [RULES]
   T1: title-max-length
      line-length=20

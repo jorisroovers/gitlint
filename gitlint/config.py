@@ -47,18 +47,28 @@ class LintConfig(object):
                             rules.BodyFirstLineEmpty,
                             rules.BodyChangedFileMention)
 
-    def __init__(self, config_path=None, target=None):
+    def __init__(self):
         # Use an ordered dict so that the order in which rules are applied is always the same
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
-        self.config_path = config_path
         self._extra_path = None
-        if target:
-            self.target = target
-        else:
-            self.target = os.path.abspath(os.getcwd())
+        target_description = "Path of the target git repository (default=current working directory)"
+        self._target = options.DirectoryOption('target', os.path.abspath(os.getcwd()), target_description)
+
+        self._config_path = None
+
+    @property
+    def target(self):
+        return self._target.value if self._target else None
+
+    @target.setter
+    def target(self, value):
+        try:
+            return self._target.set(value)
+        except options.RuleOptionError as e:
+            raise LintConfigError(str(e))
 
     @property
     def verbosity(self):
@@ -105,7 +115,7 @@ class LintConfig(object):
             if self.extra_path:
                 self._extra_path.set(value)
             else:
-                self._extra_path = options.DirectoryOption('extra_path', value,
+                self._extra_path = options.DirectoryOption('extra-path', value,
                                                            "Path to a directory with extra user-defined rules")
 
             # Make sure we unload any previously loaded extra-path rules
@@ -208,16 +218,13 @@ class LintConfig(object):
     def set_general_option(self, option_name, option_value):
         if option_name == "ignore":
             self.apply_on_csv_string(option_value, self.disable_rule)
-        elif option_name == "verbosity":
-            self.verbosity = int(option_value)
-        elif option_name == "ignore-merge-commits":
-            self.ignore_merge_commits = option_value
-        elif option_name == "debug":
-            self.debug = option_value
-        elif option_name == "extra-path":
-            self.extra_path = option_value
         else:
-            raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
+            attr_name = option_name.replace("-", "_")
+            # only allow setting general options that exist and don't start with an underscore
+            if not hasattr(self, attr_name) or attr_name[0] == "_":
+                raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
+            else:
+                setattr(self, attr_name, option_value)
 
     @staticmethod
     def apply_on_csv_string(rules_str, func):
@@ -232,10 +239,13 @@ class LintConfig(object):
         """ Loads lint config from a ini-style config file """
         if not os.path.exists(filename):
             raise LintConfigError("Invalid file path: {0}".format(filename))
-        config = LintConfig(config_path=os.path.abspath(filename))
+        config = LintConfig()
+        config._config_path = os.path.abspath(filename)
         try:
             parser = ConfigParser()
             parser.read(filename)
+            # Note: its important to parse the general section first as that might influence the parsing of the
+            # rule-specific sections (e.g. extra rules with extra-path)
             LintConfig._parse_general_section(parser, config)
             LintConfig._parse_rule_sections(parser, config)
         except ConfigParserError as e:
@@ -263,14 +273,17 @@ class LintConfig(object):
                self.extra_path == other.extra_path and \
                self.ignore_merge_commits == other.ignore_merge_commits and \
                self.debug == other.debug and \
-               self.config_path == other.config_path  # noqa
+               self._config_path == other._config_path  # noqa
 
     def __str__(self):
-        return_str = "[GENERAL]\n"
-        return_str += "config path: {0}\n".format(self.config_path)
-        return_str += "extra path: {0}\n".format(self.extra_path)
-        return_str += "ignore merge commits: {0}\n".format(self.ignore_merge_commits)
+        # config-path is not a user exposed variable, so don't print it under the general section
+        return_str = "config-path: {0}\n".format(self._config_path)
+        return_str += "[GENERAL]\n"
+        return_str += "extra-path: {0}\n".format(self.extra_path)
+        return_str += "ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
         return_str += "verbosity: {0}\n".format(self.verbosity)
+        return_str += "debug: {0}\n".format(self.debug)
+        return_str += "target: {0}\n".format(self.target)
         return_str += "[RULES]\n"
         for rule in self.rules:
             return_str += "  {0}: {1}\n".format(rule.id, rule.name)

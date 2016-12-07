@@ -60,13 +60,11 @@ def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent,
         if extra_path:
             lint_config.extra_path = extra_path
 
+        if target:
+            lint_config.target = target
+
         if debug:
-            lint_config.debug = True
-
-        # Set target
-        lint_config.target = target
-
-        if lint_config.debug:
+            lint_config.debug = debug
             click.echo(str(lint_config), nl=True)
 
         return lint_config
@@ -77,7 +75,7 @@ def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent,
 
 @click.group(invoke_without_command=True, epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
-              default=os.getcwd(), help="Path of the target git repository. [default: current working directory]")
+              help="Path of the target git repository. [default: current working directory]")
 @click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
               help="Config file location [default: {0}]".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
@@ -98,6 +96,7 @@ def cli(ctx, target, config, c, extra_path, ignore, verbose, silent, debug):
     # Get the lint config from the commandline parameters and
     # store it in the context (click allows storing an arbitrary object in ctx.obj).
     lint_config = get_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
+
     ctx.obj = lint_config
 
     # If no subcommand is specified, then just lint
@@ -112,6 +111,7 @@ def lint(ctx):
     lint_config = ctx.obj
     try:
         if sys.stdin.isatty():
+            # If target has not been set explicitly before, fallback to the current directory
             gitcontext = GitContext.from_local_repository(lint_config.target)
         else:
             gitcontext = GitContext.from_commit_msg(sys.stdin.read())

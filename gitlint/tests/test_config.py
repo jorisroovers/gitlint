@@ -83,6 +83,10 @@ class LintConfigTests(BaseTestCase):
         config.set_general_option("debug", "true")
         self.assertTrue(config.debug)
 
+        # target
+        config.set_general_option("target", self.SAMPLES_DIR)
+        self.assertEqual(config.target, self.SAMPLES_DIR)
+
         # extra_path has its own test: test_extra_path
 
     def test_extra_path(self):
@@ -111,7 +115,12 @@ class LintConfigTests(BaseTestCase):
         with self.assertRaisesRegex(LintConfigError, "'foo' is not a valid gitlint option"):
             config.set_general_option("foo", "bar")
 
-        # invalid verbosity
+        # try setting _config_path, this is a real attribute of LintConfig, but the code should prevent it from
+        # being set
+        with self.assertRaisesRegex(LintConfigError, "'_config_path' is not a valid gitlint option"):
+            config.set_general_option("_config_path", "bar")
+
+        # invalid verbosity`
         incorrect_values = [-1, "foo"]
         for value in incorrect_values:
             expected_msg = r"Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
@@ -136,8 +145,13 @@ class LintConfigTests(BaseTestCase):
 
         # invalid extra-path
         with self.assertRaisesRegex(LintConfigError,
-                                    r"Option extra_path must be an existing directory \(current value: 'foo/bar'\)"):
+                                    r"Option extra-path must be an existing directory \(current value: 'foo/bar'\)"):
             config.extra_path = "foo/bar"
+
+        # invalid target
+        with self.assertRaisesRegex(LintConfigError,
+                                    r"Option target must be an existing directory \(current value: 'foo/bar'\)"):
+            config.target = "foo/bar"
 
     def test_apply_config_options(self):
         config = LintConfig()

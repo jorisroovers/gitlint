@@ -1,6 +1,6 @@
+import pytest
 from sh import git, gitlint, echo, ErrorReturnCode  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
-import pytest
 
 
 class IntegrationTests(BaseTestCase):
