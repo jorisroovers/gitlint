@@ -66,9 +66,11 @@ class BoolOption(RuleOption):
 class ListOption(RuleOption):
     def set(self, value):
         if isinstance(value, list):
-            self.value = value
+            the_list = value
         else:
-            self.value = [item.strip() for item in str(value).split(",") if item.strip() != ""]
+            the_list = str(value).split(",")
+
+        self.value = [item.strip() for item in the_list if item.strip() != ""]
 
 
 class DirectoryOption(RuleOption):

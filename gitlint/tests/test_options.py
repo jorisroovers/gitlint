@@ -103,9 +103,13 @@ class RuleOptionTests(BaseTestCase):
         option.set("e,f,g,")
         self.assertListEqual(option.value, ["e", "f", "g"])
 
-        # spaces should be trimmed
-        option.set(" abc , def   , ghi \t ")
-        self.assertListEqual(option.value, ["abc", "def", "ghi"])
+        # leading and trailing whitespace should be trimmed, but only deduped within text
+        option.set(" abc , def   , ghi \t  , jkl  mno  ")
+        self.assertListEqual(option.value, ["abc", "def", "ghi", "jkl  mno"])
+
+        # Also strip whitespace within a list
+        option.set(["\t foo", "bar \t ", " test  123 "])
+        self.assertListEqual(option.value, ["foo", "bar", "test  123"])
 
         # conversion to string before split
         option.set(123)

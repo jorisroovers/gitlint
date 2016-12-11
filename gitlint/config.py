@@ -56,7 +56,7 @@ class LintConfig(object):
         self._extra_path = None
         target_description = "Path of the target git repository (default=current working directory)"
         self._target = options.DirectoryOption('target', os.path.abspath(os.getcwd()), target_description)
-
+        self._ignore = options.ListOption('ignore', [], 'List of rule-ids to ignore')
         self._config_path = None
 
     @property
@@ -139,17 +139,22 @@ class LintConfig(object):
             raise e
 
     @property
+    def ignore(self):
+        return self._ignore.value
+
+    @ignore.setter
+    def ignore(self, value):
+        try:
+            if value == "all":
+                value = [rule.id for rule in self.rules]
+            return self._ignore.set(value)
+        except options.RuleOptionError as e:
+            raise LintConfigError(str(e))
+
+    @property
     def rules(self):
         # Create a new list based on _rules.values() because in python 3, values() is a ValuesView as opposed to a list
         return [rule for rule in self._rules.values()]
-
-    def disable_rule(self, rule_id_or_name):
-        if rule_id_or_name == "all":
-            self._rules = OrderedDict()
-        else:
-            rule = self.get_rule(rule_id_or_name)
-            if rule:
-                del self._rules[rule.id]
 
     def get_rule(self, rule_id_or_name):
         # try finding rule by id
@@ -216,23 +221,12 @@ class LintConfig(object):
                     "'{0}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
 
     def set_general_option(self, option_name, option_value):
-        if option_name == "ignore":
-            self.apply_on_csv_string(option_value, self.disable_rule)
+        attr_name = option_name.replace("-", "_")
+        # only allow setting general options that exist and don't start with an underscore
+        if not hasattr(self, attr_name) or attr_name[0] == "_":
+            raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
         else:
-            attr_name = option_name.replace("-", "_")
-            # only allow setting general options that exist and don't start with an underscore
-            if not hasattr(self, attr_name) or attr_name[0] == "_":
-                raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
-            else:
-                setattr(self, attr_name, option_value)
-
-    @staticmethod
-    def apply_on_csv_string(rules_str, func):
-        """ Splits a given string by comma, trims whitespace on the resulting strings and applies a given ```func``` to
-        each item. """
-        splitted = rules_str.split(",")
-        for str in splitted:
-            func(str.strip())
+            setattr(self, attr_name, option_value)
 
     @staticmethod
     def load_from_file(filename):
@@ -273,6 +267,7 @@ class LintConfig(object):
                self.extra_path == other.extra_path and \
                self.ignore_merge_commits == other.ignore_merge_commits and \
                self.debug == other.debug and \
+               self.ignore == other.ignore and \
                self._config_path == other._config_path  # noqa
 
     def __str__(self):
@@ -280,6 +275,7 @@ class LintConfig(object):
         return_str = "config-path: {0}\n".format(self._config_path)
         return_str += "[GENERAL]\n"
         return_str += "extra-path: {0}\n".format(self.extra_path)
+        return_str += "ignore: {0}\n".format(self.ignore)
         return_str += "ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
         return_str += "verbosity: {0}\n".format(self.verbosity)
         return_str += "debug: {0}\n".format(self.debug)

@@ -74,5 +74,4 @@ class ConfigTests(BaseTestCase):
 
         # TODO(jroovers): test for trailing whitespace -> git automatically strips whitespace when passing
         # taking a commit message via 'git commit -m'
-
         self.assertEqual(output, expected)

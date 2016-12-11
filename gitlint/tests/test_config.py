@@ -63,13 +63,13 @@ class LintConfigTests(BaseTestCase):
         active_rule_classes = tuple(type(rule) for rule in config.rules)
         self.assertTupleEqual(active_rule_classes, config.default_rule_classes)
 
-        # Check that we can change the general options
-        # ignore
+        # ignore - set by string
         config.set_general_option("ignore", "title-trailing-whitespace, B2")
-        expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
-        new_active_rule_classes = set(type(rule) for rule in config.rules)  # redetermine active rule classes
-        expected_active_rule_classes = set(config.default_rule_classes) - expected_ignored_rules
-        self.assertSetEqual(new_active_rule_classes, expected_active_rule_classes)
+        self.assertEqual(config.ignore, ["title-trailing-whitespace", "B2"])
+
+        # ignore - set by list
+        config.set_general_option("ignore", ["T1", "B3"])
+        self.assertEqual(config.ignore, ["T1", "B3"])
 
         # verbosity
         config.set_general_option("verbosity", 1)
@@ -203,15 +203,10 @@ class LintConfigTests(BaseTestCase):
         self.assertFalse(config.debug)
         self.assertFalse(config.ignore_merge_commits)
         self.assertIsNone(config.extra_path)
-
-        # ignored rules
-        expected_ignored_rules = set([rules.BodyTrailingWhitespace, rules.TitleTrailingWhitespace])
-        active_rule_classes = set(type(rule) for rule in config.rules)
-        self.assertSetEqual(set(config.default_rule_classes) - expected_ignored_rules, active_rule_classes)
+        self.assertEqual(config.ignore, ["title-trailing-whitespace", "B2"])
 
         self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 20)
         self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 30)
-        self.assertIsNone(config.get_rule('title-trailing-whitespace'))
 
     def test_load_config_from_file_negative(self):
         # bad config file load
@@ -253,6 +248,7 @@ class LintConfigTests(BaseTestCase):
     def test_gitcontext_ignore_all(self):
         config = LintConfig()
         original_rules = config.rules
+        original_rule_ids = [rule.id for rule in original_rules]
 
         # nothing gitlint
         context = self.gitcontext("test\ngitlint\nfoo")
@@ -262,27 +258,29 @@ class LintConfigTests(BaseTestCase):
         # ignore all rules
         context = self.gitcontext("test\ngitlint-ignore: all\nfoo")
         config.apply_config_from_commit(context.commits[-1])
-        self.assertEqual(config.rules, [])
+        self.assertEqual(config.rules, original_rules)  # rules don't get deleted (=check for a regression)
+        self.assertEqual(config.ignore, original_rule_ids)
 
         # ignore all rules, no space
         config = LintConfig()
         context = self.gitcontext("test\ngitlint-ignore:all\nfoo")
         config.apply_config_from_commit(context.commits[-1])
-        self.assertEqual(config.rules, [])
+        self.assertEqual(config.rules, original_rules)  # rules don't get deleted (=check for a regression)
+        self.assertEqual(config.ignore, original_rule_ids)
 
         # ignore all rules, more spacing
         config = LintConfig()
         context = self.gitcontext("test\ngitlint-ignore: \t all\nfoo")
         config.apply_config_from_commit(context.commits[-1])
-        self.assertEqual(config.rules, [])
+        self.assertEqual(config.rules, original_rules)  # rules don't get deleted (=check for a regression)
+        self.assertEqual(config.ignore, original_rule_ids)
 
     def test_gitcontext_ignore_specific(self):
         # ignore specific rules
         config = LintConfig()
         context = self.gitcontext("test\ngitlint-ignore: T1, body-hard-tab")
         config.apply_config_from_commit(context.commits[-1])
-        expected_rules = [rule for rule in config.rules if rule.id not in ["T1", "body-hard-tab"]]
-        self.assertEqual(config.rules, expected_rules)
+        self.assertEqual(config.ignore, ["T1", "body-hard-tab"])
 
 
 class LintConfigGeneratorTests(BaseTestCase):

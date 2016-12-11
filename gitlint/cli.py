@@ -51,7 +51,8 @@ def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent,
         lint_config.apply_config_options(c)
 
         # Finally, overwrite with any convenience commandline flags
-        lint_config.apply_on_csv_string(ignore, lint_config.disable_rule)
+        if ignore:
+            lint_config.ignore = ignore
         if silent:
             lint_config.verbosity = 0
         elif verbose > 0:

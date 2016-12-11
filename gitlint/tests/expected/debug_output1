@@ -1,6 +1,7 @@
 config-path: {config_path}
 [GENERAL]
 extra-path: None
+ignore: ['title-trailing-whitespace', 'B2']
 ignore-merge-commits: False
 verbosity: 1
 debug: True
@@ -8,6 +9,7 @@ target: {target}
 [RULES]
   T1: title-max-length
      line-length=20
+  T2: title-trailing-whitespace
   T6: title-leading-whitespace
   T3: title-trailing-punctuation
   T4: title-hard-tab
@@ -21,6 +23,7 @@ target: {target}
      min-length=20
   B6: body-is-missing
      ignore-merge-commits=True
+  B2: body-trailing-whitespace
   B3: body-hard-tab
   B4: body-first-line-empty
   B7: body-changed-file-mention

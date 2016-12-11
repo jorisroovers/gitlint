@@ -97,6 +97,19 @@ class RuleOptionTests(BaseTestCase):
                                   "This line has a trailing tab.\t", 5)]
         self.assertListEqual(violations, expected)
 
+    def test_lint_ignore(self):
+        lint_config = LintConfig()
+        lint_config.ignore = ["T1", "T3", "T4", "T5", "T6", "B1", "B2"]
+        linter = GitLinter(lint_config)
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample3"))
+        violations = linter.lint(gitcontext.commits[-1])
+
+        expected = [RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
+                    RuleViolation("B3", "Line contains hard tab characters (\\t)",
+                                  "This line has a trailing tab.\t", 5)]
+
+        self.assertListEqual(violations, expected)
+
     def test_lint_merge_commit(self):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample6"))  # Sample 6 is a merge commit
         lintconfig = LintConfig()

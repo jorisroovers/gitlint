@@ -8,19 +8,25 @@ class GitLinter(object):
         self.config = config
         self.display = display.Display(config)
 
+    def ignore_rule(self, rule):
+        return rule.id in self.config.ignore or rule.name in self.config.ignore
+
     @property
     def title_line_rules(self):
         return [rule for rule in self.config.rules if
-                isinstance(rule, gitlint_rules.LineRule) and rule.target == gitlint_rules.CommitMessageTitle]
+                isinstance(rule, gitlint_rules.LineRule) and
+                rule.target == gitlint_rules.CommitMessageTitle and not self.ignore_rule(rule)]
 
     @property
     def body_line_rules(self):
         return [rule for rule in self.config.rules if
-                isinstance(rule, gitlint_rules.LineRule) and rule.target == gitlint_rules.CommitMessageBody]
+                isinstance(rule, gitlint_rules.LineRule) and
+                rule.target == gitlint_rules.CommitMessageBody and not self.ignore_rule(rule)]
 
     @property
     def commit_rules(self):
-        return [rule for rule in self.config.rules if isinstance(rule, gitlint_rules.CommitRule)]
+        return [rule for rule in self.config.rules if isinstance(rule, gitlint_rules.CommitRule) and
+                not self.ignore_rule(rule)]
 
     @staticmethod
     def _apply_line_rules(lines, commit, rules, line_nr_start):
