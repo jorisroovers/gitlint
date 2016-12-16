@@ -5,7 +5,7 @@ import click
 
 import gitlint
 from gitlint.lint import GitLinter
-from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator
+from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
 from gitlint.git import GitContext, GitContextError
 from gitlint import hooks
 
@@ -20,55 +20,42 @@ CONFIG_ERROR_CODE = 255
 click.UsageError.exit_code = USAGE_ERROR_CODE
 
 
-def load_config_from_path(ctx, config_path=None):
-    """ Tries loading the config from the given path. If no path is specified, the default config path
-    is tried, and if no file exists at the that location, None is returned. """
-    config = None
-    try:
-        if config_path:
-            config = LintConfig.load_from_file(config_path)
-        elif os.path.exists(DEFAULT_CONFIG_FILE):
-            config = LintConfig.load_from_file(DEFAULT_CONFIG_FILE)
-
-    except LintConfigError as e:
-        click.echo("Error during config file parsing: {0}".format(str(e)))
-        ctx.exit(CONFIG_ERROR_CODE)
-
-    return config
-
-
-def get_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent, debug):
+def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent, debug):
     """ Creates a LintConfig object based on a set of commandline parameters. """
+    config_builder = LintConfigBuilder()
     try:
         # Config precedence:
         # First, load default config or config from configfile
-        lint_config = load_config_from_path(ctx, config_path)
-        # default to default configuration when no config file was loaded
-        if not lint_config:
-            lint_config = LintConfig()
+        if config_path:
+            config_builder.set_from_config_file(config_path)
+        elif os.path.exists(DEFAULT_CONFIG_FILE):
+            config_builder.set_from_config_file(DEFAULT_CONFIG_FILE)
 
         # Then process any commandline configuration flags
-        lint_config.apply_config_options(c)
+        config_builder.set_config_from_string_list(c)
 
         # Finally, overwrite with any convenience commandline flags
         if ignore:
-            lint_config.ignore = ignore
+            config_builder.set_option('general', 'ignore', ignore)
         if silent:
-            lint_config.verbosity = 0
+            config_builder.set_option('general', 'verbosity', 0)
         elif verbose > 0:
-            lint_config.verbosity = verbose
+            config_builder.set_option('general', 'verbosity', verbose)
 
         if extra_path:
-            lint_config.extra_path = extra_path
+            config_builder.set_option('general', 'extra-path', extra_path)
 
         if target:
-            lint_config.target = target
+            config_builder.set_option('general', 'target', target)
 
         if debug:
-            lint_config.debug = debug
-            click.echo(str(lint_config), nl=True)
+            config_builder.set_option('general', 'debug', debug)
 
-        return lint_config
+        config = config_builder.build()
+        if debug:
+            click.echo(str(config), nl=True)
+
+        return config, config_builder
     except LintConfigError as e:
         click.echo("Config Error: {0}".format(str(e)))
     ctx.exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
@@ -96,9 +83,9 @@ def cli(ctx, target, config, c, extra_path, ignore, verbose, silent, debug):
 
     # Get the lint config from the commandline parameters and
     # store it in the context (click allows storing an arbitrary object in ctx.obj).
-    lint_config = get_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
+    config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
 
-    ctx.obj = lint_config
+    ctx.obj = (config, config_builder)
 
     # If no subcommand is specified, then just lint
     if ctx.invoked_subcommand is None:
@@ -109,7 +96,7 @@ def cli(ctx, target, config, c, extra_path, ignore, verbose, silent, debug):
 @click.pass_context
 def lint(ctx):
     """ Lints a git repository [default command] """
-    lint_config = ctx.obj
+    lint_config = ctx.obj[0]
     try:
         if sys.stdin.isatty():
             # If target has not been set explicitly before, fallback to the current directory
@@ -120,9 +107,11 @@ def lint(ctx):
         click.echo(str(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
+    config_builder = ctx.obj[1]
     last_commit = gitcontext.commits[-1]
     # Apply an additional config that is specified in the last commit message
-    lint_config.apply_config_from_commit(last_commit)
+    config_builder.set_config_from_commit(last_commit)
+    lint_config = config_builder.build(lint_config)
 
     # Let's get linting!
     linter = GitLinter(lint_config)
@@ -137,7 +126,7 @@ def lint(ctx):
 def install_hook(ctx):
     """ Install gitlint as a git commit-msg hook. """
     try:
-        lint_config = ctx.obj
+        lint_config = ctx.obj[0]
         hooks.GitHookInstaller.install_commit_msg_hook(lint_config)
         # declare victory :-)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)
@@ -153,7 +142,7 @@ def install_hook(ctx):
 def uninstall_hook(ctx):
     """ Uninstall gitlint commit-msg hook. """
     try:
-        lint_config = ctx.obj
+        lint_config = ctx.obj[0]
         hooks.GitHookInstaller.uninstall_commit_msg_hook(lint_config)
         # declare victory :-)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)

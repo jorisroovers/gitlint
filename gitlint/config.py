@@ -27,8 +27,7 @@ class LintConfigError(Exception):
 
 class LintConfig(object):
     """ Class representing gitlint configuration.
-        Contains active config as well as number of methods to easily get/set the config
-        (such as reading it from file or parsing commandline input).
+        Contains active config as well as number of methods to easily get/set the config.
     """
 
     # Default tuple of rule classes (tuple because immutable).
@@ -192,34 +191,6 @@ class LintConfig(object):
                 "'{0}' is not a valid value for option '{1}.{2}'. {3}.".format(option_value, rule_name_or_id,
                                                                                option_name, str(e)))
 
-    def apply_config_from_commit(self, commit):
-        """ Given a git commit, applies config specified in the commit message.
-            Supported:
-             - gitlint-ignore: all
-        """
-        for line in commit.message.full.split("\n"):
-            pattern = re.compile(r"^gitlint-ignore:\s*(.*)")
-            matches = pattern.match(line)
-            if matches and len(matches.groups()) == 1:
-                self.set_general_option('ignore', matches.group(1))
-
-    def apply_config_options(self, config_options):
-        """ Given a list of config options of the form "<rule>.<option>=<value>", parses out the correct rule and option
-        and sets the value accordingly in this config object. """
-        for config_option in config_options:
-            try:
-                config_name, option_value = config_option.split("=", 1)
-                if not option_value:
-                    raise ValueError()
-                rule_name, option_name = config_name.split(".", 1)
-                if rule_name == "general":
-                    self.set_general_option(option_name, option_value)
-                else:
-                    self.set_rule_option(rule_name, option_name, option_value)
-            except ValueError:  # raised if the config string is invalid
-                raise LintConfigError(
-                    "'{0}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
-
     def set_general_option(self, option_name, option_value):
         attr_name = option_name.replace("-", "_")
         # only allow setting general options that exist and don't start with an underscore
@@ -227,38 +198,6 @@ class LintConfig(object):
             raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
         else:
             setattr(self, attr_name, option_value)
-
-    @staticmethod
-    def load_from_file(filename):
-        """ Loads lint config from a ini-style config file """
-        if not os.path.exists(filename):
-            raise LintConfigError("Invalid file path: {0}".format(filename))
-        config = LintConfig()
-        config._config_path = os.path.abspath(filename)
-        try:
-            parser = ConfigParser()
-            parser.read(filename)
-            # Note: its important to parse the general section first as that might influence the parsing of the
-            # rule-specific sections (e.g. extra rules with extra-path)
-            LintConfig._parse_general_section(parser, config)
-            LintConfig._parse_rule_sections(parser, config)
-        except ConfigParserError as e:
-            raise LintConfigError(str(e))
-
-        return config
-
-    @staticmethod
-    def _parse_rule_sections(parser, config):
-        sections = [section for section in parser.sections() if section != "general"]
-        for rule_name in sections:
-            for option_name, option_value in parser.items(rule_name):
-                config.set_rule_option(rule_name, option_name, option_value)
-
-    @staticmethod
-    def _parse_general_section(parser, config):
-        if parser.has_section('general'):
-            for option_name, option_value in parser.items('general'):
-                config.set_general_option(option_name, option_value)
 
     def __eq__(self, other):
         return self.rules == other.rules and \
@@ -286,6 +225,79 @@ class LintConfig(object):
             for option_name, option_value in rule.options.items():
                 return_str += "     {0}={1}\n".format(option_name, option_value.value)
         return return_str
+
+
+class LintConfigBuilder(object):
+    """ Factory class that can build gitlint config.
+    This is primarily useful to deal with complex configuration scenarios where configuration can be set and overridden
+    from various sources (typically according to certain precedence rules) before the actual config should be
+    normalized, validated and build. Example usage can be found in gitlint.cli.
+    """
+
+    def __init__(self):
+        self._config_blueprint = {}
+        self._config_path = None
+
+    def set_option(self, section, option_name, option_value):
+        if section not in self._config_blueprint:
+            self._config_blueprint[section] = {}
+        self._config_blueprint[section][option_name] = option_value
+
+    def set_config_from_commit(self, commit):
+        """ Given a git commit, applies config specified in the commit message.
+            Supported:
+             - gitlint-ignore: all
+        """
+        for line in commit.message.full.split("\n"):
+            pattern = re.compile(r"^gitlint-ignore:\s*(.*)")
+            matches = pattern.match(line)
+            if matches and len(matches.groups()) == 1:
+                self.set_option('general', 'ignore', matches.group(1))
+
+    def set_config_from_string_list(self, config_options):
+        """ Given a list of config options of the form "<rule>.<option>=<value>", parses out the correct rule and option
+        and sets the value accordingly in this factory object. """
+        for config_option in config_options:
+            try:
+                config_name, option_value = config_option.split("=", 1)
+                if not option_value:
+                    raise ValueError()
+                rule_name, option_name = config_name.split(".", 1)
+                self.set_option(rule_name, option_name, option_value)
+            except ValueError:  # raised if the config string is invalid
+                raise LintConfigError(
+                    "'{0}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
+
+    def set_from_config_file(self, filename):
+        """ Loads lint config from a ini-style config file """
+        if not os.path.exists(filename):
+            raise LintConfigError("Invalid file path: {0}".format(filename))
+        self._config_path = os.path.abspath(filename)
+        try:
+            parser = ConfigParser()
+            parser.read(filename)
+
+            for section_name in parser.sections():
+                for option_name, option_value in parser.items(section_name):
+                    self.set_option(section_name, option_name, option_value)
+
+        except ConfigParserError as e:
+            raise LintConfigError(str(e))
+
+    def build(self, config=None):
+        """ Build a real LintConfig object by normalizing and validating the options that were previously set on this
+        factory. """
+        if not config:
+            config = LintConfig()
+        config._config_path = self._config_path
+        for section_name, section_dict in self._config_blueprint.items():
+            for option_name, option_value in section_dict.items():
+                if section_name == "general":
+                    config.set_general_option(option_name, option_value)
+                else:
+                    config.set_rule_option(section_name, option_name, option_value)
+
+        return config
 
 
 GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/gitlint")

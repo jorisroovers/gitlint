@@ -10,7 +10,7 @@ from mock import patch
 from gitlint.tests.base import BaseTestCase
 from gitlint.lint import GitLinter
 from gitlint.rules import RuleViolation
-from gitlint.config import LintConfig
+from gitlint.config import LintConfig, LintConfigBuilder
 
 
 class RuleOptionTests(BaseTestCase):
@@ -68,21 +68,22 @@ class RuleOptionTests(BaseTestCase):
         self.assertListEqual(violations, expected)
 
     def test_lint_sample4(self):
-        gitcontext = self.gitcontext(self.get_sample("commit_message/sample4"))
-        lintconfig = LintConfig()
-        lintconfig.apply_config_from_commit(gitcontext.commits[-1])
-        linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1])
+        commit = self.gitcommit(self.get_sample("commit_message/sample4"))
+        config_builder = LintConfigBuilder()
+        config_builder.set_config_from_commit(commit)
+        linter = GitLinter(config_builder.build())
+        violations = linter.lint(commit)
         # expect no violations because sample4 has a 'gitlint: disable line'
         expected = []
         self.assertListEqual(violations, expected)
 
     def test_lint_sample5(self):
-        gitcontext = self.gitcontext(self.get_sample("commit_message/sample5"))
-        lintconfig = LintConfig()
-        lintconfig.apply_config_from_commit(gitcontext.commits[-1])
-        linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1])
+        commit = self.gitcommit(self.get_sample("commit_message/sample5"))
+        config_builder = LintConfigBuilder()
+        config_builder.set_config_from_commit(commit)
+        linter = GitLinter(config_builder.build())
+        violations = linter.lint(commit)
+
         title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
         # expect only certain violations because sample5 has a 'gitlint: T3,'
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
@@ -101,8 +102,7 @@ class RuleOptionTests(BaseTestCase):
         lint_config = LintConfig()
         lint_config.ignore = ["T1", "T3", "T4", "T5", "T6", "B1", "B2"]
         linter = GitLinter(lint_config)
-        gitcontext = self.gitcontext(self.get_sample("commit_message/sample3"))
-        violations = linter.lint(gitcontext.commits[-1])
+        violations = linter.lint(self.gitcommit(self.get_sample("commit_message/sample3")))
 
         expected = [RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
@@ -111,10 +111,10 @@ class RuleOptionTests(BaseTestCase):
         self.assertListEqual(violations, expected)
 
     def test_lint_merge_commit(self):
-        gitcontext = self.gitcontext(self.get_sample("commit_message/sample6"))  # Sample 6 is a merge commit
+        commit = self.gitcommit(self.get_sample("commit_message/sample6"))  # Sample 6 is a merge commit
         lintconfig = LintConfig()
         linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1])
+        violations = linter.lint(commit)
         # Even though there are a number of violations in the commit message, they are ignored because
         # we are dealing with a merge commit
         self.assertListEqual(violations, [])
@@ -122,7 +122,7 @@ class RuleOptionTests(BaseTestCase):
         # Check that we do see violations if we disable 'ignore-merge-commits'
         lintconfig.ignore_merge_commits = False
         linter = GitLinter(lintconfig)
-        violations = linter.lint(gitcontext.commits[-1])
+        violations = linter.lint(commit)
         self.assertTrue(len(violations) > 0)
 
     def test_print_violations(self):

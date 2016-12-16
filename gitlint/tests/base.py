@@ -37,10 +37,16 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def gitcontext(commit_msg_str, changed_files=None):
-        """ Utility method to easily create gitcontext objects based on a given commit msg string and set of
+        """ Utility method to easily create gitcontext objects based on a given commit msg string and an optional set of
         changed files"""
         gitcontext = GitContext.from_commit_msg(commit_msg_str)
         commit = gitcontext.commits[-1]
         if changed_files:
             commit.changed_files = changed_files
         return gitcontext
+
+    @staticmethod
+    def gitcommit(commit_msg_str, changed_files=None):
+        """ Utility method to easily create git commit given a commit msg string and an optional set of changed files"""
+        gitcontext = BaseTestCase.gitcontext(commit_msg_str, changed_files)
+        return gitcontext.commits[-1]
