@@ -76,6 +76,6 @@ class GitLinter(object):
             self.display.e("{0}: {1}".format(v.line_nr, v.rule_id), exact=True)
             self.display.ee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
             if v.content:
-                self.display.eee("{0}: {1} {2}: \"{3}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
+                self.display.eee("{0}: {1} {2}: \"{3}\"".format(v.line_nr, v.rule_id, v.message, v.content.encode('utf-8')), exact=True)
             else:
                 self.display.eee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
