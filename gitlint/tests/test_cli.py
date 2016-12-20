@@ -109,7 +109,7 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules")
             result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input='Test title\n')
-            expected_output = "1: TUC1 Commit violation 1: \"Content 1\"\n" + \
+            expected_output = "1: UC1 Commit violation 1: \"Content 1\"\n" + \
                               "3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 2)

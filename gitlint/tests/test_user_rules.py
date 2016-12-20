@@ -27,7 +27,7 @@ class UserRuleTests(BaseTestCase):
         self.assertIn("my_commit_rules", sys.modules)
 
         # Do some basic asserts on our user rule
-        self.assertEqual(classes[0].id, "TUC1")
+        self.assertEqual(classes[0].id, "UC1")
         self.assertEqual(classes[0].name, "my-user-commit-rule")
         expected_option = options.IntOption('violation-count', 1, "Number of violations to return")
         self.assertListEqual(classes[0].options_spec, [expected_option])
@@ -37,13 +37,13 @@ class UserRuleTests(BaseTestCase):
         # expected result
         rule_class = classes[0]()
         violations = rule_class.validate("false-commit-object (ignored)")
-        self.assertListEqual(violations, [rules.RuleViolation("TUC1", "Commit violation 1", "Content 1", 1)])
+        self.assertListEqual(violations, [rules.RuleViolation("UC1", "Commit violation 1", "Content 1", 1)])
 
         # Have it return more violations
         rule_class.options['violation-count'].value = 2
         violations = rule_class.validate("false-commit-object (ignored)")
-        self.assertListEqual(violations, [rules.RuleViolation("TUC1", "Commit violation 1", "Content 1", 1),
-                                          rules.RuleViolation("TUC1", "Commit violation 2", "Content 2", 2)])
+        self.assertListEqual(violations, [rules.RuleViolation("UC1", "Commit violation 1", "Content 1", 1),
+                                          rules.RuleViolation("UC1", "Commit violation 2", "Content 2", 2)])
 
     def test_empty_user_classes(self):
         # Test that we don't find rules if we scan a different directory
@@ -72,13 +72,128 @@ class UserRuleTests(BaseTestCase):
             find_rule_classes("foo/bar")
 
     def test_assert_valid_rule_class(self):
-        class MyRuleClass(rules.Rule):
-            pass
+        class MyLineRuleClass(rules.LineRule):
+            id = 'UC1'
+            name = 'my-line-rule'
+            target = rules.CommitMessageTitle
 
-        self.assertTrue(assert_valid_rule_class(MyRuleClass))
+            def validate(self):
+                pass
+
+        class MyCommitRuleClass(rules.CommitRule):
+            id = 'UC2'
+            name = 'my-commit-rule'
+
+            def validate(self):
+                pass
+
+        # Just assert that no error is raised
+        self.assertIsNone(assert_valid_rule_class(MyLineRuleClass))
+        self.assertIsNone(assert_valid_rule_class(MyCommitRuleClass))
 
     def test_assert_valid_rule_class_negative(self):
-        class MyNormalClass(object):
+        # general test to make sure that incorrect rules will raise an exception
+        user_rule_path = self.get_sample_path("user_rules/incorrect_linerule")
+        with self.assertRaisesRegex(UserRuleError,
+                                    "User-defined rule class 'MyUserLineRule' must have a 'validate' method"):
+            find_rule_classes(user_rule_path)
+
+    def test_assert_valid_rule_class_negative_parent(self):
+        # rule class must extend from LineRule or CommitRule
+        class MyRuleClass(object):
             pass
 
-        self.assertFalse(assert_valid_rule_class(MyNormalClass))
+        expected_msg = "User-defined rule class 'MyRuleClass' must extend from gitlint.rules.LineRule " + \
+                       "or gitlint.rules.CommitRule"
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+    def test_assert_valid_rule_class_negative_id(self):
+        class MyRuleClass(rules.LineRule):
+            pass
+
+        # Rule class must have an id
+        expected_msg = "User-defined rule class 'MyRuleClass' must have an 'id' attribute"
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+        # Rule ids must be non-empty
+        MyRuleClass.id = ""
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+        # Rule ids must not start with one of the reserved id letters
+        for letter in ["T", "R", "B", "M"]:
+            MyRuleClass.id = letter + "1"
+            expected_msg = "The id '{0}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M"
+            with self.assertRaisesRegex(UserRuleError, expected_msg.format(letter)):
+                assert_valid_rule_class(MyRuleClass)
+
+    def test_assert_valid_rule_class_negative_name(self):
+        class MyRuleClass(rules.LineRule):
+            id = "UC1"
+
+        # Rule class must have an name
+        expected_msg = "User-defined rule class 'MyRuleClass' must have a 'name' attribute"
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+        # Rule names must be non-empty
+        MyRuleClass.name = ""
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+    def test_assert_valid_rule_class_negative_option_spec(self):
+        class MyRuleClass(rules.LineRule):
+            id = "UC1"
+            name = "my-rule-class"
+
+        # if set, option_spec must be a list of gitlint options
+        MyRuleClass.options_spec = "foo"
+        expected_msg = "The options_spec attribute of user-defined rule class 'MyRuleClass' must be a list " + \
+                       "of gitlint.options.RuleOption"
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+        # option_spec is a list, but not of gitlint options
+        MyRuleClass.options_spec = ["foo", 123]  # pylint: disable=bad-option-value,redefined-variable-type
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+    def test_assert_valid_rule_class_negative_validate(self):
+        class MyRuleClass(rules.LineRule):
+            id = "UC1"
+            name = "my-rule-class"
+
+        with self.assertRaisesRegex(UserRuleError,
+                                    "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+            assert_valid_rule_class(MyRuleClass)
+
+        # validate attribute - not a method
+        MyRuleClass.validate = "foo"
+        with self.assertRaisesRegex(UserRuleError,
+                                    "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+            assert_valid_rule_class(MyRuleClass)
+
+    def test_assert_valid_rule_class_negative_target(self):
+        class MyRuleClass(rules.LineRule):
+            id = "UC1"
+            name = "my-rule-class"
+
+            def validate(self):
+                pass
+
+        # no target
+        expected_msg = "The target attribute of the user-defined LineRule class 'MyRuleClass' must be either " + \
+                       "gitlint.rules.CommitMessageTitle or gitlint.rules.CommitMessageBody"
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+        # invalid target
+        MyRuleClass.target = "foo"
+        with self.assertRaisesRegex(UserRuleError, expected_msg):
+            assert_valid_rule_class(MyRuleClass)
+
+        # valid target, no exception should be raised
+        MyRuleClass.target = rules.CommitMessageTitle  # pylint: disable=bad-option-value,redefined-variable-type
+        self.assertIsNone(assert_valid_rule_class(MyRuleClass))

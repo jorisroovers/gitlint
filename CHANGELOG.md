@@ -3,6 +3,12 @@
 ## v0.8.0 (In Development) ##
 
 - Debug output improvements: Gitlint will now print a lot more information when using ```--debug```
+- Various important fixes related to configuration precedence
+- The ```general.target``` option can now also be set via ```-c``` flags or a ```.gitlint``` file
+- Development: pylint compliance for all supported python versions
+- Development: updated dependencies to latest versions
+- Development: various ```run_tests.sh``` improvements
+
 
 ## v0.7.1 (2016-06-18) ##
 Bugfixes:

@@ -7,8 +7,8 @@ from gitlint.options import IntOption, BoolOption, StrOption, ListOption
 class Rule(object):
     """ Class representing gitlint rules. """
     options_spec = []
-    id = []
-    name = ""
+    id = None
+    name = None
     target = None
 
     def __init__(self, opts=None):

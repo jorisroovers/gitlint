@@ -94,10 +94,10 @@ class LintConfigTests(BaseTestCase):
 
         config.set_general_option("extra-path", self.get_rule_rules_path())
         self.assertEqual(config.extra_path, self.get_rule_rules_path())
-        actual_rule = config.get_rule('TUC1')
+        actual_rule = config.get_rule('UC1')
         self.assertTrue(actual_rule.user_defined)
         self.assertEqual(str(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
-        self.assertEqual(actual_rule.id, 'TUC1')
+        self.assertEqual(actual_rule.id, 'UC1')
         self.assertEqual(actual_rule.name, 'my-user-commit-rule')
         self.assertEqual(actual_rule.target, None)
         expected_rule_option = IntOption('violation-count', 1, "Number of violations to return")
@@ -107,7 +107,7 @@ class LintConfigTests(BaseTestCase):
         # reset value (this is a different code path)
         config.set_general_option("extra-path", self.SAMPLES_DIR)
         self.assertEqual(config.extra_path, self.SAMPLES_DIR)
-        self.assertIsNone(config.get_rule("TUC1"))
+        self.assertIsNone(config.get_rule("UC1"))
 
     def test_set_general_option_negative(self):
         config = LintConfig()

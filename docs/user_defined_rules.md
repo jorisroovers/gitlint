@@ -283,7 +283,7 @@ ultimate source of truth, here are some of the requirements that gitlint enforce
   In case of ```LineRule```, ```validate``` must take ```line``` and ```commit``` as first and second parameters.
 - LineRule classes **must** have a ```target``` class attributes that is set to either ```CommitMessageTitle``` or ```CommitMessageBody```.
 - User Rule id's **cannot** start with ```R```, ```T```, ```B``` or ```M``` as these rule ids are reserved for gitlint itself.
-- Rule **should** have a case-insensitive unique id as only one rule can exist with a given id. While gitlint does not enforce this, having multiple rules with
+- Rules **should** have a case-insensitive unique id as only one rule can exist with a given id. While gitlint does not enforce this, having multiple rules with
   the same id might lead to unexpected or undeterministic behavior.
 
 ### extra-path requirements ###
