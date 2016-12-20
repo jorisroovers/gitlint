@@ -287,14 +287,24 @@ class LintConfigBuilder(object):
     def build(self, config=None):
         """ Build a real LintConfig object by normalizing and validating the options that were previously set on this
         factory. """
+
+        # If we are passed a config object, then rebuild that object instead of building a new lintconfig object from
+        # scratch
         if not config:
             config = LintConfig()
+
         config._config_path = self._config_path
+
+        # Set general options first as this might change the behavior or validity of the other options
+        general_section = self._config_blueprint.get('general')
+        if general_section:
+            for option_name, option_value in general_section.items():
+                config.set_general_option(option_name, option_value)
+
         for section_name, section_dict in self._config_blueprint.items():
             for option_name, option_value in section_dict.items():
-                if section_name == "general":
-                    config.set_general_option(option_name, option_value)
-                else:
+                # Skip over the general section, as we've already done that above
+                if section_name != "general":
                     config.set_rule_option(section_name, option_name, option_value)
 
         return config

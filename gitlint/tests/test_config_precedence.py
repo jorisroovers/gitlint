@@ -10,6 +10,7 @@ from mock import patch
 
 from gitlint.tests.base import BaseTestCase
 from gitlint import cli
+from gitlint.config import LintConfigBuilder
 
 
 class LintConfigPrecedenceTests(BaseTestCase):
@@ -75,3 +76,17 @@ class LintConfigPrecedenceTests(BaseTestCase):
             # We still expect the T1 violation with custom config,
             # but no B6 violation as --ignore overwrites -c general.ignore
             self.assertEqual(stderr.getvalue(), "1: T1 Title exceeds max length (14>5): \"This is a test\"\n")
+
+    def test_general_option_after_rule_option(self):
+        # We used to have a bug where we didn't process general options before setting specific options, this would
+        # lead to errors when e.g.: trying to configure a user rule before the rule class was loaded by extra-path
+        # This test is here to test for regressions against this.
+
+        config_builder = LintConfigBuilder()
+        config_builder.set_option('my-user-commit-rule', 'violation-count', 3)
+        user_rules_path = self.get_sample_path("user_rules")
+        config_builder.set_option('general', 'extra-path', user_rules_path)
+        config = config_builder.build()
+
+        self.assertEqual(config.extra_path, user_rules_path)
+        self.assertEqual(config.get_rule_option('my-user-commit-rule', 'violation-count'), 3)
