@@ -4,8 +4,11 @@ from gitlint import display
 
 
 class GitLinter(object):
+    """ Main linter class. This is where rules actually get applied. See the lint() method. """
+
     def __init__(self, config):
         self.config = config
+
         self.display = display.Display(config)
 
     def ignore_rule(self, rule):

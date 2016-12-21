@@ -13,20 +13,22 @@ class GitHookInstallerError(Exception):
 
 
 class GitHookInstaller(object):
+    """ Utility class that provides methods for installing and uninstalling the gitlint commitmsg hook. """
+
     @staticmethod
     def commit_msg_hook_path(lint_config):
         return os.path.abspath(os.path.join(lint_config.target, COMMIT_MSG_HOOK_DST_PATH))
 
     @staticmethod
-    def _assert_git_repo(lint_config):
-        # assert that current directory is a git repository
-        hooks_dir = os.path.abspath(os.path.join(lint_config.target, HOOKS_DIR_PATH))
+    def _assert_git_repo(target):
+        """ Asserts that a given target directory is a git repository """
+        hooks_dir = os.path.abspath(os.path.join(target, HOOKS_DIR_PATH))
         if not os.path.isdir(hooks_dir):
-            raise GitHookInstallerError("{0} is not a git repository.".format(lint_config.target))
+            raise GitHookInstallerError("{0} is not a git repository.".format(target))
 
     @staticmethod
     def install_commit_msg_hook(lint_config):
-        GitHookInstaller._assert_git_repo(lint_config)
+        GitHookInstaller._assert_git_repo(lint_config.target)
         dest_path = GitHookInstaller.commit_msg_hook_path(lint_config)
         if os.path.exists(dest_path):
             raise GitHookInstallerError(
@@ -41,7 +43,7 @@ class GitHookInstaller(object):
 
     @staticmethod
     def uninstall_commit_msg_hook(lint_config):
-        GitHookInstaller._assert_git_repo(lint_config)
+        GitHookInstaller._assert_git_repo(lint_config.target)
         dest_path = GitHookInstaller.commit_msg_hook_path(lint_config)
         if not os.path.exists(dest_path):
             raise GitHookInstallerError("There is no commit-msg hook present in {0}.".format(dest_path))

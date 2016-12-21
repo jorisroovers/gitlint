@@ -7,6 +7,9 @@ from sh import git, rm, touch  # pylint: disable=no-name-in-module
 
 
 class BaseTestCase(TestCase):
+    """ Base class of which all gitlint integration test classes are derived.
+        Provides a number of convenience methods. """
+
     # In case of assert failures, print the full error message
     maxDiff = None
     tmp_git_repo = None

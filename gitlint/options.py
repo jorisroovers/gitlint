@@ -7,6 +7,12 @@ class RuleOptionError(Exception):
 
 
 class RuleOption(object):
+    """ Base class representing a configurable part (i.e. option) of a rule (e.g. the max-length of the title-max-line
+        rule).
+        This class should not be used directly. Instead, use on the derived classes like StrOption, IntOption to set
+        options of a particular type like int, str, etc.
+    """
+
     def __init__(self, name, value, description):
         self.name = name
         self.description = description
@@ -64,6 +70,9 @@ class BoolOption(RuleOption):
 
 
 class ListOption(RuleOption):
+    """ Option that is either a given list or a comma-separated string that can be splitted into a list when being set.
+    """
+
     def set(self, value):
         if isinstance(value, list):
             the_list = value

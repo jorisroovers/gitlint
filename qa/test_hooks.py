@@ -3,6 +3,8 @@ from qa.base import BaseTestCase
 
 
 class HookTests(BaseTestCase):
+    """ Integration tests for gitlint commitmsg hooks"""
+
     VIOLATIONS = ['gitlint: checking commit message...\n',
                   '1: T3 Title has trailing punctuation (.): "WIP: This is a title."\n',
                   '1: T5 Title contains the word \'WIP\' (case-insensitive): "WIP: This is a title."\n',

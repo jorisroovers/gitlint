@@ -3,6 +3,8 @@ from qa.base import BaseTestCase
 
 
 class ConfigTests(BaseTestCase):
+    """ Integration tests for gitlint configuration and configuration precedence. """
+
     def test_ignore_by_code(self):
         self._create_simple_commit("WIP: This is a title.\nContent on the second line")
         output = gitlint("--ignore", "T5,B4", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])

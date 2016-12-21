@@ -60,6 +60,9 @@ class CommitMessageBody(LineRuleTarget):
 
 
 class RuleViolation(object):
+    """ Class representing a violation of a rule. I.e.: When a rule is broken, the rule will instantiate this class
+    to indicate how and where the rule was broken. """
+
     def __init__(self, rule_id, message, content=None, line_nr=None):
         self.rule_id = rule_id
         self.line_nr = line_nr
