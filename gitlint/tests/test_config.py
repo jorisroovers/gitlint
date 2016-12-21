@@ -92,8 +92,8 @@ class LintConfigTests(BaseTestCase):
     def test_extra_path(self):
         config = LintConfig()
 
-        config.set_general_option("extra-path", self.get_rule_rules_path())
-        self.assertEqual(config.extra_path, self.get_rule_rules_path())
+        config.set_general_option("extra-path", self.get_user_rules_path())
+        self.assertEqual(config.extra_path, self.get_user_rules_path())
         actual_rule = config.get_rule('UC1')
         self.assertTrue(actual_rule.user_defined)
         self.assertEqual(str(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
@@ -108,6 +108,18 @@ class LintConfigTests(BaseTestCase):
         config.set_general_option("extra-path", self.SAMPLES_DIR)
         self.assertEqual(config.extra_path, self.SAMPLES_DIR)
         self.assertIsNone(config.get_rule("UC1"))
+
+    def test_extra_path_negative(self):
+        config = LintConfig()
+        # incorrect extra_path
+        with self.assertRaisesRegex(LintConfigError,
+                                    r"Option extra-path must be an existing directory \(current value: 'foo/bar'\)"):
+            config.extra_path = "foo/bar"
+
+        # extra path contains classes with errors
+        with self.assertRaisesRegex(LintConfigError,
+                                    "User-defined rule class 'MyUserLineRule' must have a 'validate' method"):
+            config.extra_path = self.get_sample_path("user_rules/incorrect_linerule")
 
     def test_set_general_option_negative(self):
         config = LintConfig()
@@ -146,10 +158,7 @@ class LintConfigTests(BaseTestCase):
         with self.assertRaisesRegex(LintConfigError, r"Option 'debug' must be either 'true' or 'false'"):
             config.debug = "foobar"
 
-        # invalid extra-path
-        with self.assertRaisesRegex(LintConfigError,
-                                    r"Option extra-path must be an existing directory \(current value: 'foo/bar'\)"):
-            config.extra_path = "foo/bar"
+        # extra-path has its own negative test
 
         # invalid target
         with self.assertRaisesRegex(LintConfigError,

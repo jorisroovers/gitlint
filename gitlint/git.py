@@ -39,8 +39,8 @@ class GitCommitMessage(object):
         return self.__str__()  # pragma: no cover
 
     def __eq__(self, other):
-        return self.original == other.original and self.full == other.full and \
-               self.title == other.title and self.body == other.body  # noqa
+        return isinstance(other, GitCommitMessage) and self.original == other.original and \
+               self.full == other.full and self.title == other.title and self.body == other.body  # noqa
 
 
 class GitCommit(object):
@@ -79,8 +79,10 @@ class GitCommit(object):
 
     def __eq__(self, other):
         # skip checking the context as context refers back to this obj, this will trigger a cyclic dependency
-        return self.message == other.message and self.author_name == other.author_name and \
-               self.author_email == other.autor_email and self.date == other.date  # noqa
+        return isinstance(other, GitCommit) and self.message == other.message and \
+               self.author_name == other.author_name and self.author_email == other.author_email and \
+               self.date == other.date and self.parents == other.parents and \
+               self.is_merge_commit == other.is_merge_commit and self.changed_files == other.changed_files  # noqa
 
 
 class GitContext(object):
@@ -161,4 +163,4 @@ class GitContext(object):
         return context
 
     def __eq__(self, other):
-        return self.commits == other.commits
+        return isinstance(other, GitContext) and self.commits == other.commits

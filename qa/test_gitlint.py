@@ -86,3 +86,10 @@ class IntegrationTests(BaseTestCase):
                    "2: B4 Second line is not empty: \"Content on the second line\"\n"
 
         self.assertEqual(output, expected)
+
+    def test_invalid_user_defined_rules(self):
+        extra_path = self.get_sample_path("user_rules/incorrect_linerule")
+        self._create_simple_commit("WIP: test")
+        output = gitlint("--extra-path", extra_path, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[255])
+        self.assertEqual(output,
+                         "Config Error: User-defined rule class 'MyUserLineRule' must have a 'validate' method\n")

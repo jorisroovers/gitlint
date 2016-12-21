@@ -32,7 +32,7 @@ class BaseTestCase(TestCase):
         return expected
 
     @staticmethod
-    def get_rule_rules_path():
+    def get_user_rules_path():
         return os.path.join(BaseTestCase.SAMPLES_DIR, "user_rules")
 
     @staticmethod

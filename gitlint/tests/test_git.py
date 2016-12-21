@@ -4,7 +4,7 @@ from mock import patch, call
 from sh import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitContextError
+from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError
 
 
 class GitTests(BaseTestCase):
@@ -200,3 +200,30 @@ class GitTests(BaseTestCase):
         self.assertListEqual(gitcontext.commits[-1].parents, [])
         self.assertTrue(gitcontext.commits[-1].is_merge_commit)
         self.assertEqual(len(gitcontext.commits), 1)
+
+    def test_gitcommit_equality(self):
+        # Test simple equality case
+        now = datetime.datetime.utcnow()
+        context1 = GitContext()
+        commit_message1 = GitCommitMessage("test\n\nfoo", "test\n\nfoo", "test", ["", "foo"])
+        commit1 = GitCommit(context1, commit_message1, now, "John Smith", "john.smith@test.com", None, True,
+                            ["foo/bar"])
+        context1.commits = [commit1]
+
+        context2 = GitContext()
+        commit_message2 = GitCommitMessage("test\n\nfoo", "test\n\nfoo", "test", ["", "foo"])
+        commit2 = GitCommit(context2, commit_message2, now, "John Smith", "john.smith@test.com", None, True,
+                            ["foo/bar"])
+        context2.commits = [commit2]
+
+        self.assertEqual(context1, context2)
+        self.assertEqual(commit_message1, commit_message2)
+        self.assertEqual(commit1, commit2)
+
+        # Check that objects are inequal when changing a single attribute
+        for attr in ['message', 'author_name', 'author_email', 'parents', 'is_merge_commit', 'changed_files']:
+            prev_val = getattr(commit1, attr)
+            setattr(commit1, attr, "foo")
+            self.assertNotEqual(commit1, commit2)
+            setattr(commit1, attr, prev_val)
+            self.assertEqual(commit1, commit2)

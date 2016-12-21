@@ -233,7 +233,12 @@ while [ "$#" -gt 0 ]; do
 done
 
 old_virtualenv="$VIRTUAL_ENV" # Store the current virtualenv so we can restore it at the end
-trap exit INT # Exit on interrupt (i.e. ^C)
+
+trap exit_script INT # Exit on interrupt (i.e. ^C)
+exit_script(){
+    echo -e -n $NO_COLOR # make sure we don't have color left on the terminal
+    exit
+}
 
 exit_code=0
 

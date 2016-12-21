@@ -131,11 +131,8 @@ class LintConfig(object):
                 rule_obj.user_defined = True
                 self._rules[rule_class.id] = rule_obj
 
-        except options.RuleOptionError as e:
+        except (options.RuleOptionError, user_rules.UserRuleError) as e:
             raise LintConfigError(str(e))
-        except Exception as e:
-            # TODO(joris.roovers): better error message
-            raise e
 
     @property
     def ignore(self):
@@ -143,12 +140,9 @@ class LintConfig(object):
 
     @ignore.setter
     def ignore(self, value):
-        try:
-            if value == "all":
-                value = [rule.id for rule in self.rules]
-            return self._ignore.set(value)
-        except options.RuleOptionError as e:
-            raise LintConfigError(str(e))
+        if value == "all":
+            value = [rule.id for rule in self.rules]
+        return self._ignore.set(value)
 
     @property
     def rules(self):
@@ -200,7 +194,8 @@ class LintConfig(object):
             setattr(self, attr_name, option_value)
 
     def __eq__(self, other):
-        return self.rules == other.rules and \
+        return isinstance(other, LintConfig) and \
+               self.rules == other.rules and \
                self.verbosity == other.verbosity and \
                self.target == other.target and \
                self.extra_path == other.extra_path and \
