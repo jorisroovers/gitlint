@@ -83,15 +83,16 @@ class BodyRuleTests(BaseTestCase):
         violations = rule.validate(gitcontext.commits[-1])
         self.assertIsNone(violations)
 
-        # assert no error - short but more than one body line
-        gitcontext = self.gitcontext("Title\n\nsecond\nthird\n")
-        violations = rule.validate(gitcontext.commits[-1])
-        self.assertIsNone(violations)
-
         # body is too short
         expected_violation = rules.RuleViolation("B5", "Body message is too short (8<20)", "tooshort", 3)
 
         gitcontext = self.gitcontext("Title\n\ntooshort\n")
+        violations = rule.validate(gitcontext.commits[-1])
+        self.assertListEqual(violations, [expected_violation])
+
+        # assert error - short across multiple lines
+        expected_violation = rules.RuleViolation("B5", "Body message is too short (11<20)", "secondthird", 3)
+        gitcontext = self.gitcontext("Title\n\nsecond\nthird\n")
         violations = rule.validate(gitcontext.commits[-1])
         self.assertListEqual(violations, [expected_violation])
 
@@ -102,6 +103,12 @@ class BodyRuleTests(BaseTestCase):
         gitcontext = self.gitcontext("Title\n\n%s\n" % ("a" * 21))
         violations = rule.validate(gitcontext.commits[-1])
         self.assertListEqual(violations, [expected_violation])
+
+        # Make sure we don't get the error if the body-length is exactly the min-length
+        rule = rules.BodyMinLength({'min-length': 8})
+        gitcontext = self.gitcontext("Title\n\n%s\n" % ("a" * 8))
+        violations = rule.validate(gitcontext.commits[-1])
+        self.assertIsNone(violations)
 
     def test_body_missing(self):
         rule = rules.BodyMissing()

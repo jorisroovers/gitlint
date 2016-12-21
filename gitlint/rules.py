@@ -241,12 +241,11 @@ class BodyMinLength(CommitRule):
 
     def validate(self, commit):
         min_length = self.options['min-length'].value
-        lines = commit.message.body
-        if len(lines) == 2:
-            actual_length = len(lines[1])
-            if lines[0] == "" and actual_length <= min_length:
-                violation_message = "Body message is too short ({0}<{1})".format(actual_length, min_length)
-                return [RuleViolation(self.id, violation_message, lines[1], 3)]
+        body_message_no_newline = "".join([line for line in commit.message.body if line is not None])
+        actual_length = len(body_message_no_newline)
+        if actual_length > 0 and actual_length < min_length:
+            violation_message = "Body message is too short ({0}<{1})".format(actual_length, min_length)
+            return [RuleViolation(self.id, violation_message, body_message_no_newline, 3)]
 
 
 class BodyMissing(CommitRule):

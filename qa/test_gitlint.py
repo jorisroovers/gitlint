@@ -6,7 +6,7 @@ class IntegrationTests(BaseTestCase):
     """ Simple set of integration tests for gitlint """
 
     def test_successful(self):
-        self._create_simple_commit("Simple title\n\nSimple body")
+        self._create_simple_commit("Simple title\n\nSimple body describing the commit")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
         self.assertEqual(output, "")
 

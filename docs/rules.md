@@ -118,7 +118,7 @@ B4    | body-first-line-empty       | >= 0.1          | First line of the body (
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
-B5    | body-min-length             | >= 0.4          | Body length must be at least 20 characters
+B5    | body-min-length             | >= 0.4          | Body length must be at least 20 characters. In versions >= 0.8.0, gitlint will not count newline characters.
 
 ### Options ###
 
