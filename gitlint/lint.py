@@ -1,4 +1,3 @@
-from __future__ import print_function
 from gitlint import rules as gitlint_rules
 from gitlint import display
 
@@ -76,9 +75,10 @@ class GitLinter(object):
     def print_violations(self, violations):
         """ Print a given set of violations to the standard error output """
         for v in violations:
-            self.display.e("{0}: {1}".format(v.line_nr, v.rule_id), exact=True)
-            self.display.ee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
+            self.display.e(u"{0}: {1}".format(v.line_nr, v.rule_id), exact=True)
+            self.display.ee(u"{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
             if v.content:
-                self.display.eee("{0}: {1} {2}: \"{3}\"".format(v.line_nr, v.rule_id, v.message, v.content), exact=True)
+                self.display.eee(u"{0}: {1} {2}: \"{3}\"".format(v.line_nr, v.rule_id, v.message, v.content),
+                                 exact=True)
             else:
-                self.display.eee("{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
+                self.display.eee(u"{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)

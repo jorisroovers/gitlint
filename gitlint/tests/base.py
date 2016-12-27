@@ -1,4 +1,5 @@
 import os
+import sys
 
 from unittest2 import TestCase
 from gitlint.git import GitContext
@@ -30,6 +31,11 @@ class BaseTestCase(TestCase):
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
         expected = open(expected_path).read()
+
+        # only do a unicode decode when using python 2
+        if sys.version_info[0] == 2:
+            expected = expected.decode('utf-8')
+
         if variable_dict:
             expected = expected.format(**variable_dict)
         return expected

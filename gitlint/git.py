@@ -71,7 +71,7 @@ class GitCommit(object):
             self.changed_files = changed_files
 
     def __str__(self):
-        format_str = "Author: %s <%s>\nDate:   %s\n%s"  # pragma: no cover
+        format_str = u"Author: %s <%s>\nDate:   %s\n%s"  # pragma: no cover
         return format_str % (self.author_name, self.author_email, self.date, str(self.message))  # pragma: no cover
 
     def __repr__(self):
@@ -134,15 +134,15 @@ class GitContext(object):
             # changed files in last commit
             changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", **sh_special_args)
         except CommandNotFound:
-            error_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
-                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
+            error_msg = u"'git' command not found. You need to install git to use gitlint on a local repository. " + \
+                        u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
             raise GitContextError(error_msg)
         except ErrorReturnCode as e:  # Something went wrong while executing the git command
             error_msg = e.stderr.strip()
             if b"Not a git repository" in error_msg:
-                error_msg = "{0} is not a git repository.".format(repository_path)
+                error_msg = u"{0} is not a git repository.".format(repository_path)
             else:
-                error_msg = "An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
+                error_msg = u"An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
             raise GitContextError(error_msg)
 
         # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format

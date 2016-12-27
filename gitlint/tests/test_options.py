@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 from gitlint.tests.base import BaseTestCase
@@ -8,14 +9,14 @@ from gitlint.options import IntOption, BoolOption, StrOption, ListOption, Direct
 class RuleOptionTests(BaseTestCase):
     def test_option_equals(self):
         # 2 options are equal if their name, value and description match
-        option1 = IntOption("test-option", 123, "Test Description")
-        option2 = IntOption("test-option", 123, "Test Description")
+        option1 = IntOption("test-option", 123, u"Test Dëscription")
+        option2 = IntOption("test-option", 123, u"Test Dëscription")
         self.assertEqual(option1, option2)
 
         # Not equal: name, description, value are different
-        self.assertNotEqual(option1, IntOption("test-option1", 123, "Test Description"))
-        self.assertNotEqual(option1, IntOption("test-option", 1234, "Test Description"))
-        self.assertNotEqual(option1, IntOption("test-option", 123, "Test Description2"))
+        self.assertNotEqual(option1, IntOption("test-option1", 123, u"Test Dëscription"))
+        self.assertNotEqual(option1, IntOption("test-option", 1234, u"Test Dëscription"))
+        self.assertNotEqual(option1, IntOption("test-option", 123, u"Test Dëscription2"))
 
     def test_int_option(self):
         # normal behavior
@@ -50,14 +51,14 @@ class RuleOptionTests(BaseTestCase):
 
     def test_str_option(self):
         # normal behavior
-        option = StrOption("test-name", "foo", "Test Description")
-        self.assertEqual(option.value, "foo")
+        option = StrOption("test-name", u"föo", "Test Description")
+        self.assertEqual(option.value, u"föo")
         self.assertEqual(option.name, "test-name")
         self.assertEqual(option.description, "Test Description")
 
         # re-set value
-        option.set("foo")
-        self.assertEqual(option.value, "foo")
+        option.set(u"bår")
+        self.assertEqual(option.value, u"bår")
 
         # conversion to str
         option.set(123)
@@ -81,27 +82,27 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, True)
 
         # error on incorrect value
-        incorrect_values = [1, -1, "foo", ["foo"], {'foo': "bar"}]
+        incorrect_values = [1, -1, "foo", u"bår", ["foo"], {'foo': "bar"}]
         for value in incorrect_values:
             with self.assertRaisesRegex(RuleOptionError, "Option 'test-name' must be either 'true' or 'false'"):
                 option.set(value)
 
     def test_list_option(self):
         # normal behavior
-        option = ListOption("test-name", "a,b,c,d", "Test Description")
-        self.assertListEqual(option.value, ["a", "b", "c", "d"])
+        option = ListOption("test-name", u"å,b,c,d", "Test Description")
+        self.assertListEqual(option.value, [u"å", u"b", u"c", u"d"])
 
         # re-set value
-        option.set("1,2,3,4")
-        self.assertListEqual(option.value, ["1", "2", "3", "4"])
+        option.set(u"1,2,3,4")
+        self.assertListEqual(option.value, [u"1", u"2", u"3", u"4"])
 
         # set list
-        option.set(["foo", "bar", "test"])
-        self.assertListEqual(option.value, ["foo", "bar", "test"])
+        option.set([u"foo", u"bår", u"test"])
+        self.assertListEqual(option.value, [u"foo", u"bår", u"test"])
 
         # trailing comma
-        option.set("e,f,g,")
-        self.assertListEqual(option.value, ["e", "f", "g"])
+        option.set(u"ë,f,g,")
+        self.assertListEqual(option.value, [u"ë", u"f", u"g"])
 
         # leading and trailing whitespace should be trimmed, but only deduped within text
         option.set(" abc , def   , ghi \t  , jkl  mno  ")

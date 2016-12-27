@@ -57,7 +57,7 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
 
         return config, config_builder
     except LintConfigError as e:
-        click.echo("Config Error: {0}".format(str(e)))
+        click.echo(u"Config Error: {0}".format(str(e)))
     ctx.exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
 
 
@@ -102,7 +102,11 @@ def lint(ctx):
             # If target has not been set explicitly before, fallback to the current directory
             gitcontext = GitContext.from_local_repository(lint_config.target)
         else:
-            gitcontext = GitContext.from_commit_msg(sys.stdin.read())
+            stdin_str = sys.stdin.read()
+            if sys.version_info[0] == 2:
+                stdin_str = unicode(stdin_str, 'utf-8')  # pylint: disable=undefined-variable
+
+            gitcontext = GitContext.from_commit_msg(stdin_str)
     except GitContextError as e:
         click.echo(str(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
@@ -130,7 +134,7 @@ def install_hook(ctx):
         hooks.GitHookInstaller.install_commit_msg_hook(lint_config)
         # declare victory :-)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)
-        click.echo("Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
+        click.echo(u"Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
         click.echo(str(e), err=True)
@@ -146,7 +150,7 @@ def uninstall_hook(ctx):
         hooks.GitHookInstaller.uninstall_commit_msg_hook(lint_config)
         # declare victory :-)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)
-        click.echo("Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
+        click.echo(u"Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
         click.echo(str(e), err=True)
@@ -161,14 +165,14 @@ def generate_config(ctx):
     path = os.path.abspath(path)
     dir_name = os.path.dirname(path)
     if not os.path.exists(dir_name):
-        click.echo("Error: Directory '{0}' does not exist.".format(dir_name), err=True)
+        click.echo(u"Error: Directory '{0}' does not exist.".format(dir_name), err=True)
         ctx.exit(USAGE_ERROR_CODE)
     elif os.path.exists(path):
-        click.echo("Error: File \"{0}\" already exists.".format(path), err=True)
+        click.echo(u"Error: File \"{0}\" already exists.".format(path), err=True)
         ctx.exit(USAGE_ERROR_CODE)
 
     LintConfigGenerator.generate_config(path)
-    click.echo("Successfully generated {0}".format(path))
+    click.echo(u"Successfully generated {0}".format(path))
     ctx.exit(0)
 
 

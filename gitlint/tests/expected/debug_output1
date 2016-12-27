@@ -1,7 +1,7 @@
 config-path: {config_path}
 [GENERAL]
 extra-path: None
-ignore: ['title-trailing-whitespace', 'B2']
+ignore: title-trailing-whitespace,B2
 ignore-merge-commits: False
 verbosity: 1
 debug: True
@@ -14,7 +14,7 @@ target: {target}
   T3: title-trailing-punctuation
   T4: title-hard-tab
   T5: title-must-not-contain-word
-     words=['WIP']
+     words=WIP
   T7: title-match-regex
      regex=.*
   B1: body-max-line-length
@@ -27,5 +27,5 @@ target: {target}
   B3: body-hard-tab
   B4: body-first-line-empty
   B7: body-changed-file-mention
-     files=[]
+     files=
 

@@ -26,7 +26,7 @@ class Rule(object):
                self.options == other.options and self.target == other.target  # noqa
 
     def __str__(self):
-        return "{0} {1}".format(self.id, self.name)  # pragma: no cover
+        return u"{0} {1}".format(self.id, self.name)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -75,8 +75,8 @@ class RuleViolation(object):
         return equal
 
     def __str__(self):
-        return "{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
-                                              self.content)  # pragma: no cover
+        return u"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
+                                               self.content)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -100,7 +100,7 @@ class TrailingWhiteSpace(LineRule):
     violation_message = "Line has trailing whitespace"
 
     def validate(self, line, _commit):
-        pattern = re.compile(r"\s$")
+        pattern = re.compile(r"\s$", re.UNICODE)
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
 
@@ -121,13 +121,13 @@ class LineMustNotContainWord(LineRule):
     name = "line-must-not-contain"
     id = "R5"
     options_spec = [ListOption('words', [], "Comma separated list of words that should not be found")]
-    violation_message = "Line contains {0}"
+    violation_message = u"Line contains {0}"
 
     def validate(self, line, _commit):
         strings = self.options['words'].value
         violations = []
         for string in strings:
-            regex = re.compile(r"\b%s\b" % string.lower(), re.I)
+            regex = re.compile(r"\b%s\b" % string.lower(), re.IGNORECASE | re.UNICODE)
             match = regex.search(line.lower())
             if match:
                 violations.append(RuleViolation(self.id, self.violation_message.format(string), line))
@@ -140,7 +140,7 @@ class LeadingWhiteSpace(LineRule):
     violation_message = "Line has leading whitespace"
 
     def validate(self, line, _commit):
-        pattern = re.compile(r"^\s")
+        pattern = re.compile(r"^\s", re.UNICODE)
         if pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
 
@@ -169,7 +169,7 @@ class TitleTrailingPunctuation(LineRule):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
             if title.endswith(punctuation_mark):
-                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), title)]
+                return [RuleViolation(self.id, u"Title has trailing punctuation ({0})".format(punctuation_mark), title)]
 
 
 class TitleHardTab(HardTab):
@@ -183,8 +183,8 @@ class TitleMustNotContainWord(LineMustNotContainWord):
     name = "title-must-not-contain-word"
     id = "T5"
     target = CommitMessageTitle
-    options_spec = [ListOption('words', ['WIP'], "Must not contain word")]
-    violation_message = "Title contains the word '{0}' (case-insensitive)"
+    options_spec = [ListOption('words', ["WIP"], "Must not contain word")]
+    violation_message = u"Title contains the word '{0}' (case-insensitive)"
 
 
 class TitleLeadingWhitespace(LeadingWhiteSpace):
@@ -202,9 +202,9 @@ class TitleRegexMatches(LineRule):
 
     def validate(self, title, _commit):
         regex = self.options['regex'].value
-        pattern = re.compile(regex)
+        pattern = re.compile(regex, re.UNICODE)
         if not pattern.search(title):
-            violation_msg = "Title does not match regex ({0})".format(regex)
+            violation_msg = u"Title does not match regex ({0})".format(regex)
             return [RuleViolation(self.id, violation_msg, title)]
 
 
@@ -267,7 +267,7 @@ class BodyMissing(CommitRule):
 class BodyChangedFileMention(CommitRule):
     name = "body-changed-file-mention"
     id = "B7"
-    options_spec = [ListOption('files', [], "Files that need to be mentioned ")]
+    options_spec = [ListOption('files', [], "Files that need to be mentioned")]
 
     def validate(self, commit):
         violations = []
@@ -276,6 +276,6 @@ class BodyChangedFileMention(CommitRule):
             # in the commit msg body
             if needs_mentioned_file in commit.changed_files:
                 if needs_mentioned_file not in " ".join(commit.message.body):
-                    violation_message = "Body does not mention changed file '{0}'".format(needs_mentioned_file)
+                    violation_message = u"Body does not mention changed file '{0}'".format(needs_mentioned_file)
                     violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))
         return violations if violations else None

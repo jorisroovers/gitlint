@@ -160,11 +160,11 @@ class LintConfig(object):
     def _get_option(self, rule_name_or_id, option_name):
         rule = self.get_rule(rule_name_or_id)
         if not rule:
-            raise LintConfigError("No such rule '{0}'".format(rule_name_or_id))
+            raise LintConfigError(u"No such rule '{0}'".format(rule_name_or_id))
 
         option = rule.options.get(option_name)
         if not option:
-            raise LintConfigError("Rule '{0}' has no option '{1}'".format(rule_name_or_id, option_name))
+            raise LintConfigError(u"Rule '{0}' has no option '{1}'".format(rule_name_or_id, option_name))
 
         return option
 
@@ -182,14 +182,14 @@ class LintConfig(object):
             option.set(option_value)
         except options.RuleOptionError as e:
             raise LintConfigError(
-                "'{0}' is not a valid value for option '{1}.{2}'. {3}.".format(option_value, rule_name_or_id,
-                                                                               option_name, str(e)))
+                u"'{0}' is not a valid value for option '{1}.{2}'. {3}.".format(option_value, rule_name_or_id,
+                                                                                option_name, str(e)))
 
     def set_general_option(self, option_name, option_value):
         attr_name = option_name.replace("-", "_")
         # only allow setting general options that exist and don't start with an underscore
         if not hasattr(self, attr_name) or attr_name[0] == "_":
-            raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
+            raise LintConfigError(u"'{0}' is not a valid gitlint option".format(option_name))
         else:
             setattr(self, attr_name, option_value)
 
@@ -206,19 +206,23 @@ class LintConfig(object):
 
     def __str__(self):
         # config-path is not a user exposed variable, so don't print it under the general section
-        return_str = "config-path: {0}\n".format(self._config_path)
-        return_str += "[GENERAL]\n"
-        return_str += "extra-path: {0}\n".format(self.extra_path)
-        return_str += "ignore: {0}\n".format(self.ignore)
-        return_str += "ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
-        return_str += "verbosity: {0}\n".format(self.verbosity)
-        return_str += "debug: {0}\n".format(self.debug)
-        return_str += "target: {0}\n".format(self.target)
-        return_str += "[RULES]\n"
+        return_str = u"config-path: {0}\n".format(self._config_path)
+        return_str += u"[GENERAL]\n"
+        return_str += u"extra-path: {0}\n".format(self.extra_path)
+        return_str += u"ignore: {0}\n".format(",".join(self.ignore))
+        return_str += u"ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
+        return_str += u"verbosity: {0}\n".format(self.verbosity)
+        return_str += u"debug: {0}\n".format(self.debug)
+        return_str += u"target: {0}\n".format(self.target)
+        return_str += u"[RULES]\n"
         for rule in self.rules:
-            return_str += "  {0}: {1}\n".format(rule.id, rule.name)
+            return_str += u"  {0}: {1}\n".format(rule.id, rule.name)
             for option_name, option_value in rule.options.items():
-                return_str += "     {0}={1}\n".format(option_name, option_value.value)
+                if isinstance(option_value.value, list):
+                    option_val_repr = ",".join(option_value.value)
+                else:
+                    option_val_repr = option_value.value
+                return_str += u"     {0}={1}\n".format(option_name, option_val_repr)
         return return_str
 
 
@@ -261,12 +265,12 @@ class LintConfigBuilder(object):
                 self.set_option(rule_name, option_name, option_value)
             except ValueError:  # raised if the config string is invalid
                 raise LintConfigError(
-                    "'{0}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
+                    u"'{0}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
 
     def set_from_config_file(self, filename):
         """ Loads lint config from a ini-style config file """
         if not os.path.exists(filename):
-            raise LintConfigError("Invalid file path: {0}".format(filename))
+            raise LintConfigError(u"Invalid file path: {0}".format(filename))
         self._config_path = os.path.abspath(filename)
         try:
             parser = ConfigParser()

@@ -1,6 +1,12 @@
 from abc import abstractmethod
 import os
 
+# see if we have a unicode function (=python 2), if not, we have python 3: just declare unicode as being str():
+try:
+    unicode("")
+except NameError:
+    unicode = str  # pylint: disable=invalid-name
+
 
 class RuleOptionError(Exception):
     pass
@@ -25,7 +31,7 @@ class RuleOption(object):
         pass  # pragma: no cover
 
     def __str__(self):
-        return "({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover
+        return u"({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -36,7 +42,7 @@ class RuleOption(object):
 
 class StrOption(RuleOption):
     def set(self, value):
-        self.value = str(value)
+        self.value = unicode(value)
 
 
 class IntOption(RuleOption):
@@ -46,9 +52,9 @@ class IntOption(RuleOption):
 
     def _raise_exception(self, value):
         if self.allow_negative:
-            error_msg = "Option '{0}' must be an integer (current value: '{1}')".format(self.name, value)
+            error_msg = u"Option '{0}' must be an integer (current value: '{1}')".format(self.name, value)
         else:
-            error_msg = "Option '{0}' must be a positive integer (current value: '{1}')".format(self.name, value)
+            error_msg = u"Option '{0}' must be a positive integer (current value: '{1}')".format(self.name, value)
         raise RuleOptionError(error_msg)
 
     def set(self, value):
@@ -63,9 +69,9 @@ class IntOption(RuleOption):
 
 class BoolOption(RuleOption):
     def set(self, value):
-        value = str(value).strip().lower()
+        value = unicode(value).strip().lower()
         if value not in ['true', 'false']:
-            raise RuleOptionError("Option '{0}' must be either 'true' or 'false'".format(self.name))
+            raise RuleOptionError(u"Option '{0}' must be either 'true' or 'false'".format(self.name))
         self.value = value == 'true'
 
 
@@ -77,15 +83,15 @@ class ListOption(RuleOption):
         if isinstance(value, list):
             the_list = value
         else:
-            the_list = str(value).split(",")
+            the_list = unicode(value).split(",")
 
-        self.value = [item.strip() for item in the_list if item.strip() != ""]
+        self.value = [unicode(item.strip()) for item in the_list if item.strip() != ""]
 
 
 class DirectoryOption(RuleOption):
     def set(self, value):
-        value = str(value)
+        value = unicode(value)
         if not os.path.isdir(value):
-            msg = "Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
+            msg = u"Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
             raise RuleOptionError(msg)
         self.value = os.path.abspath(value)
