@@ -1,11 +1,20 @@
 import os
 import sys
+import unittest2
 
-from unittest2 import TestCase
 from gitlint.git import GitContext
 
+# unittest2's assertRaisesRegex doesn't do unicode comparison.
+# Let's monkeypatch the str() function to point to unicode() so that it does :)
+# For reference, this is where this patch is required:
+# https://hg.python.org/unittest2/file/tip/unittest2/case.py#l227
+try:
+    unittest2.case.str = unicode
+except NameError:
+    pass  # python 3
 
-class BaseTestCase(TestCase):
+
+class BaseTestCase(unittest2.TestCase):
     """ Base class of which all gitlint unit test classes are derived. Provides a number of convenience methods. """
 
     # In case of assert failures, print the full error message

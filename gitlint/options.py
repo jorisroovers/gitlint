@@ -1,11 +1,7 @@
 from abc import abstractmethod
 import os
 
-# see if we have a unicode function (=python 2), if not, we have python 3: just declare unicode as being str():
-try:
-    unicode("")
-except NameError:
-    unicode = str  # pylint: disable=invalid-name
+from gitlint.utils import ustr
 
 
 class RuleOptionError(Exception):
@@ -42,7 +38,7 @@ class RuleOption(object):
 
 class StrOption(RuleOption):
     def set(self, value):
-        self.value = unicode(value)
+        self.value = ustr(value)
 
 
 class IntOption(RuleOption):
@@ -69,7 +65,7 @@ class IntOption(RuleOption):
 
 class BoolOption(RuleOption):
     def set(self, value):
-        value = unicode(value).strip().lower()
+        value = ustr(value).strip().lower()
         if value not in ['true', 'false']:
             raise RuleOptionError(u"Option '{0}' must be either 'true' or 'false'".format(self.name))
         self.value = value == 'true'
@@ -83,14 +79,14 @@ class ListOption(RuleOption):
         if isinstance(value, list):
             the_list = value
         else:
-            the_list = unicode(value).split(",")
+            the_list = ustr(value).split(",")
 
-        self.value = [unicode(item.strip()) for item in the_list if item.strip() != ""]
+        self.value = [ustr(item.strip()) for item in the_list if item.strip() != ""]
 
 
 class DirectoryOption(RuleOption):
     def set(self, value):
-        value = unicode(value)
+        value = ustr(value)
         if not os.path.isdir(value):
             msg = u"Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
             raise RuleOptionError(msg)

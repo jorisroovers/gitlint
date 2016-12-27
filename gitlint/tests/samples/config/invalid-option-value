@@ -3,7 +3,7 @@ ignore=title-trailing-whitespace,B2
 verbosity = 1
 
 [title-max-length]
-line-length=foo
+line-length=föo
 
 
 [B1]

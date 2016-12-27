@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from mock import patch
 
 from gitlint import rules
@@ -21,7 +23,7 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(rule, expected2)
 
         # get non-existing
-        rule = config.get_rule('foo')
+        rule = config.get_rule(u'föo')
         self.assertIsNone(rule)
 
     def test_set_rule_option(self):
@@ -38,20 +40,20 @@ class LintConfigTests(BaseTestCase):
         config = LintConfig()
 
         # non-existing rule
-        expected_error_msg = "No such rule 'foobar'"
+        expected_error_msg = u"No such rule 'föobar'"
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
-            config.set_rule_option('foobar', 'line-length', 60)
+            config.set_rule_option(u'föobar', u'lïne-length', 60)
 
         # non-existing option
-        expected_error_msg = "Rule 'title-max-length' has no option 'foobar'"
+        expected_error_msg = u"Rule 'title-max-length' has no option 'föobar'"
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
-            config.set_rule_option('title-max-length', 'foobar', 60)
+            config.set_rule_option('title-max-length', u'föobar', 60)
 
         # invalid option value
-        expected_error_msg = "'foo' is not a valid value for option 'title-max-length.line-length'. " + \
-                             r"Option 'line-length' must be a positive integer \(current value: 'foo'\)."
+        expected_error_msg = u"'föo' is not a valid value for option 'title-max-length.line-length'. " + \
+                             u"Option 'line-length' must be a positive integer \(current value: 'föo'\)."
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
-            config.set_rule_option('title-max-length', 'line-length', "foo")
+            config.set_rule_option('title-max-length', 'line-length', u"föo")
 
     def test_set_general_option(self):
         config = LintConfig()
@@ -113,8 +115,8 @@ class LintConfigTests(BaseTestCase):
         config = LintConfig()
         # incorrect extra_path
         with self.assertRaisesRegex(LintConfigError,
-                                    r"Option extra-path must be an existing directory \(current value: 'foo/bar'\)"):
-            config.extra_path = "foo/bar"
+                                    u"Option extra-path must be an existing directory \(current value: 'föo/bar'\)"):
+            config.extra_path = u"föo/bar"
 
         # extra path contains classes with errors
         with self.assertRaisesRegex(LintConfigError,
@@ -124,18 +126,19 @@ class LintConfigTests(BaseTestCase):
     def test_set_general_option_negative(self):
         config = LintConfig()
 
+        # Note that we should't test whether we can set unicode because python just doesn't allow unicode attributes
         with self.assertRaisesRegex(LintConfigError, "'foo' is not a valid gitlint option"):
-            config.set_general_option("foo", "bar")
+            config.set_general_option("foo", u"bår")
 
         # try setting _config_path, this is a real attribute of LintConfig, but the code should prevent it from
         # being set
         with self.assertRaisesRegex(LintConfigError, "'_config_path' is not a valid gitlint option"):
-            config.set_general_option("_config_path", "bar")
+            config.set_general_option("_config_path", u"bår")
 
         # invalid verbosity`
-        incorrect_values = [-1, "foo"]
+        incorrect_values = [-1, u"föo"]
         for value in incorrect_values:
-            expected_msg = r"Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
+            expected_msg = u"Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
             with self.assertRaisesRegex(LintConfigError, expected_msg):
                 config.verbosity = value
 
@@ -145,25 +148,25 @@ class LintConfigTests(BaseTestCase):
                 config.verbosity = value
 
         # invalid ignore_merge_commits
-        incorrect_values = [-1, 4, "foo"]
+        incorrect_values = [-1, 4, u"föo"]
         for value in incorrect_values:
             with self.assertRaisesRegex(LintConfigError,
-                                        r"Option 'ignore-merge-commits' must be either 'true' or 'false'"):
+                                        "Option 'ignore-merge-commits' must be either 'true' or 'false'"):
                 config.ignore_merge_commits = value
 
         # invalid ignore -> not here because ignore is a ListOption which converts everything to a string before
         # splitting which means it it will accept just about everything
 
         # invalid debug
-        with self.assertRaisesRegex(LintConfigError, r"Option 'debug' must be either 'true' or 'false'"):
-            config.debug = "foobar"
+        with self.assertRaisesRegex(LintConfigError, "Option 'debug' must be either 'true' or 'false'"):
+            config.debug = u"föobar"
 
         # extra-path has its own negative test
 
         # invalid target
         with self.assertRaisesRegex(LintConfigError,
-                                    r"Option target must be an existing directory \(current value: 'foo/bar'\)"):
-            config.target = "foo/bar"
+                                    u"Option target must be an existing directory \(current value: 'föo/bar'\)"):
+            config.target = u"föo/bar"
 
     def test_ignore_independent_from_rules(self):
         # Test that the lintconfig rules are not modified when setting config.ignore
@@ -179,5 +182,5 @@ class LintConfigGeneratorTests(BaseTestCase):
     @staticmethod
     @patch('gitlint.config.shutil.copyfile')
     def test_install_commit_msg_hook_negative(copy):
-        LintConfigGenerator.generate_config("foo/bar/test")
-        copy.assert_called_with(GITLINT_CONFIG_TEMPLATE_SRC_PATH, "foo/bar/test")
+        LintConfigGenerator.generate_config(u"föo/bar/test")
+        copy.assert_called_with(GITLINT_CONFIG_TEMPLATE_SRC_PATH, u"föo/bar/test")

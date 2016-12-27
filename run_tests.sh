@@ -56,8 +56,9 @@ run_pep8_check(){
     FLAKE8_IGNORE="H307,H405,H803,H904,H802,H701"
     # exclude settings files and virtualenvs
     FLAKE8_EXCLUDE="*settings.py,*.venv/*.py"
-    echo "Running flake8..."
+    echo -e "Running flake8...${RED}"
     flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa examples
+    echo -ne "$NO_COLOR"
 }
 
 run_unit_tests(){

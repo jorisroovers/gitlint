@@ -16,9 +16,23 @@ except ImportError:  # pragma: no cover
     # python 2.4-2.6
     from ordereddict import OrderedDict  # pragma: no cover
 
+from gitlint.utils import ustr
 from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
 from gitlint import user_rules
+
+
+def handle_option_error(func):
+    """ Decorator that calls given method/function and handles any RuleOptionError gracefully by converting it to a
+    LintConfigError. """
+
+    def wrapped(*args):
+        try:
+            return func(*args)
+        except options.RuleOptionError as e:
+            raise LintConfigError(ustr(e))
+
+    return wrapped
 
 
 class LintConfigError(Exception):
@@ -63,46 +77,38 @@ class LintConfig(object):
         return self._target.value if self._target else None
 
     @target.setter
+    @handle_option_error
     def target(self, value):
-        try:
-            return self._target.set(value)
-        except options.RuleOptionError as e:
-            raise LintConfigError(str(e))
+        return self._target.set(value)
 
     @property
     def verbosity(self):
         return self._verbosity.value
 
     @verbosity.setter
+    @handle_option_error
     def verbosity(self, value):
-        try:
-            self._verbosity.set(value)
-            if self.verbosity < 0 or self.verbosity > 3:
-                raise LintConfigError("Option 'verbosity' must be set between 0 and 3")
-        except options.RuleOptionError as e:
-            raise LintConfigError(str(e))
+        self._verbosity.set(value)
+        if self.verbosity < 0 or self.verbosity > 3:
+            raise LintConfigError("Option 'verbosity' must be set between 0 and 3")
 
     @property
     def ignore_merge_commits(self):
         return self._ignore_merge_commits.value
 
     @ignore_merge_commits.setter
+    @handle_option_error
     def ignore_merge_commits(self, value):
-        try:
-            return self._ignore_merge_commits.set(value)
-        except options.RuleOptionError as e:
-            raise LintConfigError(str(e))
+        return self._ignore_merge_commits.set(value)
 
     @property
     def debug(self):
         return self._debug.value
 
     @debug.setter
+    @handle_option_error
     def debug(self, value):
-        try:
-            return self._debug.set(value)
-        except options.RuleOptionError as e:
-            raise LintConfigError(str(e))
+        return self._debug.set(value)
 
     @property
     def extra_path(self):
@@ -132,7 +138,7 @@ class LintConfig(object):
                 self._rules[rule_class.id] = rule_obj
 
         except (options.RuleOptionError, user_rules.UserRuleError) as e:
-            raise LintConfigError(str(e))
+            raise LintConfigError(ustr(e))
 
     @property
     def ignore(self):
@@ -151,6 +157,7 @@ class LintConfig(object):
 
     def get_rule(self, rule_id_or_name):
         # try finding rule by id
+        rule_id_or_name = ustr(rule_id_or_name)  # convert to unicode first
         rule = self._rules.get(rule_id_or_name)
         # if not found, try finding rule by name
         if not rule:
@@ -158,6 +165,8 @@ class LintConfig(object):
         return rule
 
     def _get_option(self, rule_name_or_id, option_name):
+        rule_name_or_id = ustr(rule_name_or_id)  # convert to unicode first
+        option_name = ustr(option_name)
         rule = self.get_rule(rule_name_or_id)
         if not rule:
             raise LintConfigError(u"No such rule '{0}'".format(rule_name_or_id))
@@ -181,9 +190,8 @@ class LintConfig(object):
         try:
             option.set(option_value)
         except options.RuleOptionError as e:
-            raise LintConfigError(
-                u"'{0}' is not a valid value for option '{1}.{2}'. {3}.".format(option_value, rule_name_or_id,
-                                                                                option_name, str(e)))
+            msg = u"'{0}' is not a valid value for option '{1}.{2}'. {3}."
+            raise LintConfigError(msg.format(option_value, rule_name_or_id, option_name, ustr(e)))
 
     def set_general_option(self, option_name, option_value):
         attr_name = option_name.replace("-", "_")
@@ -278,10 +286,10 @@ class LintConfigBuilder(object):
 
             for section_name in parser.sections():
                 for option_name, option_value in parser.items(section_name):
-                    self.set_option(section_name, option_name, option_value)
+                    self.set_option(section_name, option_name, ustr(option_value))
 
         except ConfigParserError as e:
-            raise LintConfigError(str(e))
+            raise LintConfigError(ustr(e))
 
     def build(self, config=None):
         """ Build a real LintConfig object by normalizing and validating the options that were previously set on this

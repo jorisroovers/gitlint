@@ -14,7 +14,7 @@ target: {target}
   T3: title-trailing-punctuation
   T4: title-hard-tab
   T5: title-must-not-contain-word
-     words=WIP
+     words=WIP,bögus
   T7: title-match-regex
      regex=.*
   B1: body-max-line-length

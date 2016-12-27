@@ -3,7 +3,7 @@ ignore=title-trailing-whitespace,B2
 verbosity = 1
 
 [title-max-length]
-foobar=foo
+föobar=foo
 
 
 [B1]

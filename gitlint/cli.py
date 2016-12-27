@@ -8,6 +8,7 @@ from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
 from gitlint.git import GitContext, GitContextError
 from gitlint import hooks
+from gitlint.utils import ustr
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 
@@ -53,11 +54,11 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
 
         config = config_builder.build()
         if debug:
-            click.echo(str(config), nl=True)
+            click.echo(ustr(config), nl=True)
 
         return config, config_builder
     except LintConfigError as e:
-        click.echo(u"Config Error: {0}".format(str(e)))
+        click.echo(u"Config Error: {0}".format(ustr(e)))
     ctx.exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
 
 
@@ -104,11 +105,10 @@ def lint(ctx):
         else:
             stdin_str = sys.stdin.read()
             if sys.version_info[0] == 2:
-                stdin_str = unicode(stdin_str, 'utf-8')  # pylint: disable=undefined-variable
-
+                stdin_str = unicode(stdin_str, 'utf-8')  # noqa # pylint: disable=undefined-variable
             gitcontext = GitContext.from_commit_msg(stdin_str)
     except GitContextError as e:
-        click.echo(str(e))
+        click.echo(ustr(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
     config_builder = ctx.obj[1]
@@ -137,7 +137,7 @@ def install_hook(ctx):
         click.echo(u"Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
-        click.echo(str(e), err=True)
+        click.echo(ustr(e), err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
 
@@ -153,7 +153,7 @@ def uninstall_hook(ctx):
         click.echo(u"Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
-        click.echo(str(e), err=True)
+        click.echo(ustr(e), err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
 

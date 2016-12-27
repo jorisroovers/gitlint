@@ -2,7 +2,7 @@
 ignore=title-trailing-whitespace,B2
 verbosity = 1
 
-[foobar]
+[föobar]
 line-length=20
 
 

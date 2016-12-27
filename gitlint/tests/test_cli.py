@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 
 try:
@@ -36,33 +38,33 @@ class CLITests(BaseTestCase):
         sys.stdin.isatty.return_value = True
 
         def git_log_side_effect(*args, **_kwargs):
-            return_values = {'--pretty=%B': "commit-title\n\ncommit-body", '--pretty=%aN': "test author",
-                             '--pretty=%aE': "test-email@foo.com", '--pretty=%ai': "2016-12-03 15:28:15 01:00",
-                             '--pretty=%P': "abc"}
+            return_values = {'--pretty=%B': u"commït-title\n\ncommït-body", '--pretty=%aN': u"test åuthor",
+                             '--pretty=%aE': u"test-email@föo.com", '--pretty=%ai': "2016-12-03 15:28:15 01:00",
+                             '--pretty=%P': u"åbc"}
             return return_values[args[1]]
 
         sh.git.log.side_effect = git_log_side_effect
-        sh.git.return_value = "file1.txt\npath/to/file2.txt\n"
+        sh.git.return_value = u"file1.txt\npåth/to/file2.txt\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
-            self.assertEqual(stderr.getvalue(), '3: B5 Body message is too short (11<20): "commit-body"\n')
+            self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
 
     def test_input_stream(self):
-        expected_output = "1: T2 Title has trailing whitespace: \"WIP: title \"\n" + \
-                          "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: title \"\n" + \
-                          "3: B6 Body message is missing\n"
+        expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
+                          u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: tïtle \"\n" + \
+                          u"3: B6 Body message is missing\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, input='WIP: title \n')
+            result = self.cli.invoke(cli.cli, input=u'WIP: tïtle \n')
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
     def test_silent_mode(self):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["--silent"], input='WIP: title \n')
+            result = self.cli.invoke(cli.cli, ["--silent"], input=u"WIP: tïtle \n")
             self.assertEqual(stderr.getvalue(), "")
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
@@ -71,7 +73,7 @@ class CLITests(BaseTestCase):
         # We only test -v and -vv, more testing is really not required here
         # -v
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["-v"], input='WIP: title \n')
+            result = self.cli.invoke(cli.cli, ["-v"], input=u"WIP: tïtle \n")
             self.assertEqual(stderr.getvalue(), "1: T2\n1: T5\n3: B6\n")
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
@@ -82,14 +84,14 @@ class CLITests(BaseTestCase):
                           "3: B6 Body message is missing\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["-vv"], input='WIP: title \n')
+            result = self.cli.invoke(cli.cli, ["-vv"], input=u"WIP: tïtle \n")
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
         # -vvvv: not supported -> should print a config error
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["-vvvv"], input='WIP: title \n')
+            result = self.cli.invoke(cli.cli, ["-vvvv"], input=u'WIP: tïtle \n')
             self.assertEqual(stderr.getvalue(), "")
             self.assertEqual(result.exit_code, CLITests.CONFIG_ERROR_CODE)
             self.assertEqual(result.output, "Config Error: Option 'verbosity' must be set between 0 and 3\n")
@@ -97,7 +99,7 @@ class CLITests(BaseTestCase):
     def test_debug(self):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
-            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"], input="WIP: test")
+            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"], input=u"WIP: tëst")
             expected = self.get_expected('debug_output1', {'config_path': config_path,
                                                            'target': os.path.abspath(os.getcwd())})
 
@@ -108,7 +110,7 @@ class CLITests(BaseTestCase):
     def test_extra_path(self):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules")
-            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input='Test title\n')
+            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
             expected_output = "1: UC1 Commit violation 1: \"Content 1\"\n" + \
                               "3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
@@ -117,7 +119,7 @@ class CLITests(BaseTestCase):
     def test_config_file(self):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
-            result = self.cli.invoke(cli.cli, ["--config", config_path], input="WIP: test")
+            result = self.cli.invoke(cli.cli, ["--config", config_path], input=u"WIP: tëst")
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
             self.assertEqual(result.exit_code, 2)
@@ -126,15 +128,15 @@ class CLITests(BaseTestCase):
         # Directory as config file
         config_path = self.get_sample_path("config")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        expected_string = "Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" is a directory.".format(
+        expected_string = u"Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" is a directory.".format(
             config_path)
         self.assertEqual(result.output.split("\n")[2], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
         # Non existing file
-        config_path = self.get_sample_path("foo")
+        config_path = self.get_sample_path(u"föo")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        expected_string = "Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" does not exist.".format(
+        expected_string = u"Error: Invalid value for \"-C\" / \"--config\": Path \"{0}\" does not exist.".format(
             config_path)
         self.assertEqual(result.output.split("\n")[2], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
@@ -156,33 +158,33 @@ class CLITests(BaseTestCase):
 
     def test_target_negative(self):
         # try setting a non-existing target
-        result = self.cli.invoke(cli.cli, ["--target", "/foo/bar"])
+        result = self.cli.invoke(cli.cli, ["--target", u"/föo/bar"])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = "Error: Invalid value for \"--target\": Directory \"/foo/bar\" does not exist."
+        expected_msg = u"Error: Invalid value for \"--target\": Directory \"/föo/bar\" does not exist."
         self.assertEqual(result.output.split("\n")[2], expected_msg)
 
         # try setting a file as target
         target_path = self.get_sample_path("config/gitlintconfig")
         result = self.cli.invoke(cli.cli, ["--target", target_path])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = "Error: Invalid value for \"--target\": Directory \"{0}\" is a file.".format(target_path)
+        expected_msg = u"Error: Invalid value for \"--target\": Directory \"{0}\" is a file.".format(target_path)
         self.assertEqual(result.output.split("\n")[2], expected_msg)
 
     @patch('gitlint.config.LintConfigGenerator.generate_config')
     def test_generate_config(self, generate_config):
-        result = self.cli.invoke(cli.cli, ["generate-config"], input="testfile\n")
+        result = self.cli.invoke(cli.cli, ["generate-config"], input=u"tëstfile\n")
         self.assertEqual(result.exit_code, 0)
-        expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: testfile\n" + \
-                       "Successfully generated {0}\n".format(os.path.abspath("testfile"))
+        expected_msg = u"Please specify a location for the sample gitlint config file [.gitlint]: tëstfile\n" + \
+                       u"Successfully generated {0}\n".format(os.path.abspath(u"tëstfile"))
         self.assertEqual(result.output, expected_msg)
-        generate_config.assert_called_once_with(os.path.abspath("testfile"))
+        generate_config.assert_called_once_with(os.path.abspath(u"tëstfile"))
 
     def test_generate_config_negative(self):
         # Non-existing directory
-        result = self.cli.invoke(cli.cli, ["generate-config"], input="/foo/bar")
+        result = self.cli.invoke(cli.cli, ["generate-config"], input=u"/föo/bar")
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: /foo/bar\n" + \
-                       "Error: Directory '/foo' does not exist.\n"
+        expected_msg = u"Please specify a location for the sample gitlint config file [.gitlint]: /föo/bar\n" + \
+                       u"Error: Directory '/föo' does not exist.\n"
         self.assertEqual(result.output, expected_msg)
 
         # Existing file
@@ -226,11 +228,11 @@ class CLITests(BaseTestCase):
         expected_config.target = self.SAMPLES_DIR
         install_hook.assert_called_once_with(expected_config)
 
-    @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
+    @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError(u"tëst"))
     def test_install_hook_negative(self, install_hook):
         result = self.cli.invoke(cli.cli, ["install-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
-        self.assertEqual(result.output, "test\n")
+        self.assertEqual(result.output, u"tëst\n")
         expected_config = config.LintConfig()
         expected_config.target = os.path.abspath(os.getcwd())
         install_hook.assert_called_once_with(expected_config)
@@ -246,11 +248,11 @@ class CLITests(BaseTestCase):
         expected_config.target = os.path.abspath(os.getcwd())
         uninstall_hook.assert_called_once_with(expected_config)
 
-    @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError("test"))
+    @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError(u"tëst"))
     def test_uninstall_hook_negative(self, uninstall_hook):
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
-        self.assertEqual(result.output, "test\n")
+        self.assertEqual(result.output, u"tëst\n")
         expected_config = config.LintConfig()
         expected_config.target = os.path.abspath(os.getcwd())
         uninstall_hook.assert_called_once_with(expected_config)
