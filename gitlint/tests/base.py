@@ -1,8 +1,8 @@
 import os
-import sys
 import unittest2
 
 from gitlint.git import GitContext
+from gitlint.utils import ustr
 
 # unittest2's assertRaisesRegex doesn't do unicode comparison.
 # Let's monkeypatch the str() function to point to unicode() so that it does :)
@@ -30,7 +30,7 @@ class BaseTestCase(unittest2.TestCase):
     def get_sample(filename=""):
         """ Read and return the contents of a file in gitlint/tests/samples """
         sample_path = BaseTestCase.get_sample_path(filename)
-        sample = open(sample_path).read()
+        sample = ustr(open(sample_path).read())
         return sample
 
     @staticmethod
@@ -39,11 +39,7 @@ class BaseTestCase(unittest2.TestCase):
         Optionally replace template variables specified by variable_dict. """
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        expected = open(expected_path).read()
-
-        # only do a unicode decode when using python 2
-        if sys.version_info[0] == 2:
-            expected = expected.decode('utf-8')
+        expected = ustr(open(expected_path).read())
 
         if variable_dict:
             expected = expected.format(**variable_dict)

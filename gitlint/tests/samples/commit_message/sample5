@@ -1,7 +1,7 @@
- Commit title containing 'WIP', 	leading and trailing whitespace and longer than 72 characters.
-This line should be empty
-This is the first line is meant to test a line that exceeds the maximum line length of 80 characters.
-This line has a trailing space. 
+ Commit title containing 'WIP', 	leading and tråiling whitespace and longer than 72 characters.
+This line should be ëmpty
+This is the first line is meånt to test a line that exceeds the maximum line length of 80 characters.
+This line has a tråiling space. 
 This line has a trailing tab.	
 # This is a commented  line
 gitlint-ignore: T3, T6, body-max-line-length

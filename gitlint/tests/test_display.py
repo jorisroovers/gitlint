@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 try:
     # python 2.x
     from StringIO import StringIO
@@ -20,21 +22,21 @@ class DisplayTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             # Non exact outputting, should output both v and vv output
             with patch('gitlint.display.stdout', new=StringIO()) as stdout:
-                display.v("test")
-                display.vv("test2")
+                display.v(u"tëst")
+                display.vv(u"tëst2")
                 # vvvv should be ignored regardless
-                display.vvv("test3.1")
-                display.vvv("test3.2", exact=True)
-                self.assertEqual("test\ntest2\n", stdout.getvalue())
+                display.vvv(u"tëst3.1")
+                display.vvv(u"tëst3.2", exact=True)
+                self.assertEqual(u"tëst\ntëst2\n", stdout.getvalue())
 
             # exact outputting, should only output v
             with patch('gitlint.display.stdout', new=StringIO()) as stdout:
-                display.v("test", exact=True)
-                display.vv("test2", exact=True)
+                display.v(u"tëst", exact=True)
+                display.vv(u"tëst2", exact=True)
                 # vvvv should be ignored regardless
-                display.vvv("test3.1")
-                display.vvv("test3.2", exact=True)
-                self.assertEqual("test2\n", stdout.getvalue())
+                display.vvv(u"tëst3.1")
+                display.vvv(u"tëst3.2", exact=True)
+                self.assertEqual(u"tëst2\n", stdout.getvalue())
 
             # standard error should be empty throughtout all of this
             self.assertEqual('', stderr.getvalue())
@@ -46,21 +48,21 @@ class DisplayTests(BaseTestCase):
         with patch('gitlint.display.stdout', new=StringIO()) as stdout:
             # Non exact outputting, should output both v and vv output
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-                display.e("test")
-                display.ee("test2")
+                display.e(u"tëst")
+                display.ee(u"tëst2")
                 # vvvv should be ignored regardless
-                display.eee("test3.1")
-                display.eee("test3.2", exact=True)
-                self.assertEqual("test\ntest2\n", stderr.getvalue())
+                display.eee(u"tëst3.1")
+                display.eee(u"tëst3.2", exact=True)
+                self.assertEqual(u"tëst\ntëst2\n", stderr.getvalue())
 
             # exact outputting, should only output v
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-                display.e("test", exact=True)
-                display.ee("test2", exact=True)
+                display.e(u"tëst", exact=True)
+                display.ee(u"tëst2", exact=True)
                 # vvvv should be ignored regardless
-                display.eee("test3.1")
-                display.eee("test3.2", exact=True)
-                self.assertEqual("test2\n", stderr.getvalue())
+                display.eee(u"tëst3.1")
+                display.eee(u"tëst3.2", exact=True)
+                self.assertEqual(u"tëst2\n", stderr.getvalue())
 
             # standard output should be empty throughtout all of this
             self.assertEqual('', stdout.getvalue())

@@ -13,3 +13,13 @@ def ustr(obj):
             return unicode(obj)  # noqa
     else:
         return str(obj)
+
+
+def sstr(obj):
+    """ Python 2 and 3 utility method that converts an obj to a utf-8 encoded string in python 2
+    and to unicode in python 3.
+    Especially useful for implementing __str__ methods in python 2: http://stackoverflow.com/a/1307210/381010"""
+    if sys.version_info[0] == 2:
+        return unicode(obj).encode('utf-8')
+    else:
+        return unicode(obj)

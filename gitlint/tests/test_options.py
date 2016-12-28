@@ -117,21 +117,21 @@ class RuleOptionTests(BaseTestCase):
         self.assertListEqual(option.value, ["123"])
 
     def test_dir_option(self):
-        option = DirectoryOption("test-directory", ".", "Test Description")
+        option = DirectoryOption("test-directory", ".", u"Test Description")
         self.assertEqual(option.value, os.getcwd())
         self.assertEqual(option.name, "test-directory")
-        self.assertEqual(option.description, "Test Description")
+        self.assertEqual(option.description, u"Test Description")
 
         # re-set value
         option.set(self.SAMPLES_DIR)
         self.assertEqual(option.value, self.SAMPLES_DIR)
 
         # set to non-existing directory
-        expected = r"Option test-directory must be an existing directory \(current value: '/foo/bar'\)"
+        expected = u"Option test-directory must be an existing directory \(current value: '/föo/bar'\)"
         with self.assertRaisesRegex(RuleOptionError, expected):
-            option.set("/foo/bar")
+            option.set(u"/föo/bar")
 
         # set to int
-        expected = r"Option test-directory must be an existing directory \(current value: '1234'\)"
+        expected = u"Option test-directory must be an existing directory \(current value: '1234'\)"
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(1234)

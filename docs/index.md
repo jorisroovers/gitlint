@@ -20,7 +20,7 @@ Great for use as a ```commit-msg``` git hook or as part of your gating script in
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
  - **User-defined Rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules).
- - **Broad python version support:** Gitlint supports python versions 2.6, 2.7 and 3.3+.
+ - **Broad python version support:** Gitlint supports python versions 2.6, 2.7, 3.3+ and PyPy2.
  - **Production-ready:** Gitlint checks a lot of boxes you're looking for: high unit test coverage, integration tests,
    python code standards (pep8, pylint), good documentation, proven track record.
 

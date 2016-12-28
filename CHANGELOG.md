@@ -2,16 +2,20 @@
 
 ## v0.8.0 (In Development) ##
 
-- Debug output improvements: Gitlint will now print a lot more information when using ```--debug```
-- Various important fixes related to configuration precedence
+- Full unicode support: you can now lint messages in any language! This fixes
+  [#16](https://github.com/jorisroovers/gitlint/issues/16) and [#18](https://github.com/jorisroovers/gitlint/pull/18).
+- Pypy2 support!
+- Debug output improvements: Gitlint will now print your active configuration when using ```--debug```
 - The ```general.target``` option can now also be set via ```-c``` flags or a ```.gitlint``` file
 - Bugfixes:
+    - Various important fixes related to configuration precedence
     - [#17: Body MinLength is not working properly](https://github.com/jorisroovers/gitlint/issues/17).
       **Behavior Change**: Gitlint now always applies this rule, even if the body has just a single line of content.
       Also, gitlint now counts the body-length for the entire body, not just the length of the first line.
-- Development: pylint compliance for all supported python versions
-- Development: updated dependencies to latest versions
-- Development: various ```run_tests.sh``` improvements
+- Development: 
+    - Pylint compliance for all supported python versions
+    - Updated dependencies to latest versions
+    - Various ```run_tests.sh``` improvements for developer convenience
 
 
 ## v0.7.1 (2016-06-18) ##

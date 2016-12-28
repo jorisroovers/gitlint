@@ -1,3 +1,3 @@
-Merge: "This is a merge commit with a long title that most definitely exceeds the normal limit of 72 chars"
-This line should be empty
-This is the first line is meant to test a line that exceeds the maximum line length of 80 characters.
+Merge: "This is a merge commit with a long title that most definitely exceeds the normål limit of 72 chars"
+This line should be ëmpty
+This is the first line is meant to test å line that exceeds the maximum line length of 80 characters.

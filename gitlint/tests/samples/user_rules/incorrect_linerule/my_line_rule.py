@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from gitlint.rules import LineRule
 
 
 class MyUserLineRule(LineRule):
     id = "UC2"
-    name = "my-line-rule"
+    name = "my-lïne-rule"
 
     # missing validate method, missing target attribute

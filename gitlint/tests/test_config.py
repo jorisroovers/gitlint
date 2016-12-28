@@ -100,9 +100,9 @@ class LintConfigTests(BaseTestCase):
         self.assertTrue(actual_rule.user_defined)
         self.assertEqual(str(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
         self.assertEqual(actual_rule.id, 'UC1')
-        self.assertEqual(actual_rule.name, 'my-user-commit-rule')
+        self.assertEqual(actual_rule.name, u'my-üser-commit-rule')
         self.assertEqual(actual_rule.target, None)
-        expected_rule_option = IntOption('violation-count', 1, "Number of violations to return")
+        expected_rule_option = IntOption('violation-count', 1, u"Number of violåtions to return")
         self.assertListEqual(actual_rule.options_spec, [expected_rule_option])
         self.assertDictEqual(actual_rule.options, {'violation-count': expected_rule_option})
 

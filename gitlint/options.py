@@ -1,7 +1,7 @@
 from abc import abstractmethod
 import os
 
-from gitlint.utils import ustr
+from gitlint.utils import ustr, sstr
 
 
 class RuleOptionError(Exception):
@@ -16,8 +16,8 @@ class RuleOption(object):
     """
 
     def __init__(self, name, value, description):
-        self.name = name
-        self.description = description
+        self.name = ustr(name)
+        self.description = ustr(description)
         self.value = None
         self.set(value)
 
@@ -27,6 +27,9 @@ class RuleOption(object):
         pass  # pragma: no cover
 
     def __str__(self):
+        return sstr(self)
+
+    def __unicode__(self):
         return u"({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover
 
     def __repr__(self):

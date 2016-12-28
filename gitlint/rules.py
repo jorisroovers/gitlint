@@ -2,6 +2,7 @@ import copy
 import re
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption
+from gitlint.utils import sstr
 
 
 class Rule(object):
@@ -26,6 +27,9 @@ class Rule(object):
                self.options == other.options and self.target == other.target  # noqa
 
     def __str__(self):
+        return sstr(self)
+
+    def __unicode__(self):
         return u"{0} {1}".format(self.id, self.name)  # pragma: no cover
 
     def __repr__(self):
@@ -75,6 +79,9 @@ class RuleViolation(object):
         return equal
 
     def __str__(self):
+        return sstr(self)
+
+    def __unicode__(self):
         return u"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
                                                self.content)  # pragma: no cover
 

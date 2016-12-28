@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 try:
     # python 2.x
     from StringIO import StringIO
@@ -19,14 +21,14 @@ class RuleOptionTests(BaseTestCase):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample1"))
         violations = linter.lint(gitcontext.commits[-1])
         expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
-                                         "Commit title containing 'WIP', as well as trailing punctuation.", 1),
+                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                         "Commit title containing 'WIP', as well as trailing punctuation.", 1),
+                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                            RuleViolation("B1", "Line exceeds max length (135>80)",
                                          "This is the first line of the commit message body and it is meant to test " +
                                          "a line that exceeds the maximum line length of 80 characters.", 3),
-                           RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing space. ", 4),
+                           RuleViolation("B2", "Line has trailing whitespace", u"This line has a tråiling space. ", 4),
                            RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t", 5),
                            RuleViolation("B3", "Line contains hard tab characters (\\t)",
                                          "This line has a trailing tab.\t", 5)]
@@ -38,7 +40,7 @@ class RuleOptionTests(BaseTestCase):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
         violations = linter.lint(gitcontext.commits[-1])
         expected = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                  "Just a title containing WIP", 1),
+                                  u"Just a title contåining WIP", 1),
                     RuleViolation("B6", "Body message is missing", None, 3)]
 
         self.assertListEqual(violations, expected)
@@ -48,7 +50,7 @@ class RuleOptionTests(BaseTestCase):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample3"))
         violations = linter.lint(gitcontext.commits[-1])
 
-        title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
+        title = u" Commit title containing 'WIP', \tleading and tråiling whitespace and longer than 72 characters."
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
                     RuleViolation("T3", "Title has trailing punctuation (.)", title, 1),
                     RuleViolation("T4", "Title contains hard tab characters (\\t)", title, 1),
@@ -56,14 +58,12 @@ class RuleOptionTests(BaseTestCase):
                     RuleViolation("T6", "Title has leading whitespace", title, 1),
                     RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                     RuleViolation("B1", "Line exceeds max length (101>80)",
-                                  "This is the first line is meant to test a line that exceeds the maximum line " +
+                                  u"This is the first line is meånt to test a line that exceeds the maximum line " +
                                   "length of 80 characters.", 3),
-                    RuleViolation("B2", "Line has trailing whitespace",
-                                  "This line has a trailing space. ", 4),
-                    RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t",
-                                  5),
+                    RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing space. ", 4),
+                    RuleViolation("B2", "Line has trailing whitespace", u"This line has a tråiling tab.\t", 5),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
-                                  "This line has a trailing tab.\t", 5)]
+                                  u"This line has a tråiling tab.\t", 5)]
 
         self.assertListEqual(violations, expected)
 
@@ -84,16 +84,14 @@ class RuleOptionTests(BaseTestCase):
         linter = GitLinter(config_builder.build())
         violations = linter.lint(commit)
 
-        title = " Commit title containing 'WIP', \tleading and trailing whitespace and longer than 72 characters."
-        # expect only certain violations because sample5 has a 'gitlint: T3,'
+        title = u" Commit title containing 'WIP', \tleading and tråiling whitespace and longer than 72 characters."
+        # expect only certain violations because sample5 has a 'gitlint-ignore: T3, T6, body-max-line-length'
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
                     RuleViolation("T4", "Title contains hard tab characters (\\t)", title, 1),
                     RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)", title, 1),
-                    RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
-                    RuleViolation("B2", "Line has trailing whitespace",
-                                  "This line has a trailing space. ", 4),
-                    RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t",
-                                  5),
+                    RuleViolation("B4", "Second line is not empty", u"This line should be ëmpty", 2),
+                    RuleViolation("B2", "Line has trailing whitespace", u"This line has a tråiling space. ", 4),
+                    RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t", 5),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
                                   "This line has a trailing tab.\t", 5)]
         self.assertListEqual(violations, expected)
@@ -106,7 +104,7 @@ class RuleOptionTests(BaseTestCase):
 
         expected = [RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
-                                  "This line has a trailing tab.\t", 5)]
+                                  u"This line has a tråiling tab.\t", 5)]
 
         self.assertListEqual(violations, expected)
 
@@ -126,8 +124,8 @@ class RuleOptionTests(BaseTestCase):
         self.assertTrue(len(violations) > 0)
 
     def test_print_violations(self):
-        violations = [RuleViolation("RULE_ID_1", "Error Message 1", "Violating Content 1", 1),
-                      RuleViolation("RULE_ID_2", "Error Message 2", "Violating Content 2", 2)]
+        violations = [RuleViolation("RULE_ID_1", u"Error Messåge 1", "Violating Content 1", 1),
+                      RuleViolation("RULE_ID_2", "Error Message 2", u"Violåting Content 2", 2)]
         linter = GitLinter(LintConfig())
 
         # test output with increasing verbosity
@@ -139,18 +137,18 @@ class RuleOptionTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 1
             linter.print_violations(violations)
-            expected = "1: RULE_ID_1\n2: RULE_ID_2\n"
+            expected = u"1: RULE_ID_1\n2: RULE_ID_2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 2
             linter.print_violations(violations)
-            expected = "1: RULE_ID_1 Error Message 1\n2: RULE_ID_2 Error Message 2\n"
+            expected = u"1: RULE_ID_1 Error Messåge 1\n2: RULE_ID_2 Error Message 2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 3
             linter.print_violations(violations)
-            expected = "1: RULE_ID_1 Error Message 1: \"Violating Content 1\"\n" + \
-                       "2: RULE_ID_2 Error Message 2: \"Violating Content 2\"\n"
+            expected = u"1: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n" + \
+                       u"2: RULE_ID_2 Error Message 2: \"Violåting Content 2\"\n"
             self.assertEqual(expected, stderr.getvalue())
