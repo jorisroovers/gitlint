@@ -1,8 +1,8 @@
 import fnmatch
 import inspect
-import importlib
 import os
 import sys
+import importlib
 
 from gitlint import rules, options
 

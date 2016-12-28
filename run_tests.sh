@@ -11,7 +11,7 @@ help(){
     echo "  -g, --git                Run gitlint checks"
     echo "  -i, --integration        Run integration tests"
     echo "  -a, --all                Run all tests and checks (unit, integration, pep8, git)"
-    echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments (envs: 26,27,33,34,35)."
+    echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments (envs: 26,27,33,34,35,pypy2)."
     echo "                           Also works for integration, pep8 and lint tests."
     echo "  --all-env                Run all tests against all python environments"
     echo "  --install                Install virtualenvs for the --envs specified"
@@ -43,6 +43,12 @@ fatal(){
     MSG="$RED$1$NO_COLOR"
     echo -e $MSG
     exit 1
+}
+
+assert_root(){
+    if [ "$(id -u)" != "0" ]; then
+        fatal "$1"
+    fi
 }
 
 run_pep8_check(){
@@ -164,8 +170,25 @@ uninstall_virtualenv(){
 install_virtualenv(){
     version="$1"
     venv_name=".venv$version"
-    # The binary puts a dot between the first and second char of the version string
+
+    # For regular python: the binary has a dot between the first and second char of the version string
     python_binary="/usr/bin/python${version:0:1}.${version:1:1}"
+
+    # For pypy: custom path + fetch from the web if not installed (=distro agnostic)
+    if [[ $version == *"pypy"* ]]; then
+        python_binary="/opt/pypy2-v5.6.0-linux64/bin/pypy"
+        # download
+        if [ ! -f $python_binary ]; then
+            assert_root "Must be root to install pypy, use sudo"
+            title "### DOWNLOADING PYPY ($pypy_archive) ###"
+            pushd "/opt"
+            pypy_archive="pypy2-v5.6.0-linux64.tar.bz2"
+            wget "https://bitbucket.org/pypy/pypy/downloads/$pypy_archive"
+            title "### EXTRACTING PYPY TARBALL ($pypy_archive) ###"
+            tar xvf $pypy_archive
+            popd
+        fi
+    fi
 
     title "### INSTALLING $venv_name ($python_binary) ###"
     deactivate 2> /dev/null # deactivate any active environment
@@ -174,12 +197,12 @@ install_virtualenv(){
     easy_install -U pip
     pip install -r requirements.txt
     pip install -r test-requirements.txt
-    deactivate
+    deactivate  2> /dev/null
 }
 
 assert_specific_env(){
     if [ -z "$1" ] || [ "$1" == "default" ]; then
-        fatal "ERROR: Please specify one or more valid python environments using --envs: 26,27,33,34,35"
+        fatal "ERROR: Please specify one or more valid python environments using --envs: 26,27,33,34,35,pypy2"
         exit 1
     fi
 }
@@ -245,7 +268,7 @@ exit_code=0
 
 # If the users specified 'all', then just replace $envs with the list of all envs
 if [ "$envs" == "all" ]; then
-    envs="26,27,33,34,35"
+    envs="26,27,33,34,35,pypy2"
 fi
 envs=$(echo "$envs" | tr ',' '\n') # Split the env list on comma so we can loop through it
 

@@ -1,6 +1,6 @@
 import shutil
-import stat
 import os
+import stat
 
 COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/commit-msg")
 COMMIT_MSG_HOOK_DST_PATH = ".git/hooks/commit-msg"
