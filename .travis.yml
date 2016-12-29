@@ -11,6 +11,6 @@ python:
 install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"
-script: "./run_tests.sh && ./run_tests.sh --pep8 && ./run_tests.sh --lint && ./run_tests.sh --git"
+script: "./run_tests.sh && ./run_tests.sh --build &&./run_tests.sh --pep8 && ./run_tests.sh --lint && ./run_tests.sh --git"
 after_success:
   - coveralls

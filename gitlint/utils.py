@@ -7,10 +7,10 @@ def ustr(obj):
     if sys.version_info[0] == 2:
         # If we are getting a string, then do an explicit decode
         # else, just call the unicode method of the object
-        if type(obj) in [str, basestring]:  # noqa
-            return unicode(obj, 'utf-8')  # noqa
+        if type(obj) in [str, basestring]:  # pragma: no cover # noqa
+            return unicode(obj, 'utf-8')  # pragma: no cover # noqa
         else:
-            return unicode(obj)  # noqa
+            return unicode(obj)  # pragma: no cover # noqa
     else:
         return str(obj)
 
@@ -20,6 +20,6 @@ def sstr(obj):
     and to unicode in python 3.
     Especially useful for implementing __str__ methods in python 2: http://stackoverflow.com/a/1307210/381010"""
     if sys.version_info[0] == 2:
-        return unicode(obj).encode('utf-8')
+        return unicode(obj).encode('utf-8')  # pragma: no cover # noqa
     else:
-        return unicode(obj)
+        return obj  # pragma: no cover

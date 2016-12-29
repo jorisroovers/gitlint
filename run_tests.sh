@@ -10,6 +10,7 @@ help(){
     echo "  -l, --lint               Run pylint checks"
     echo "  -g, --git                Run gitlint checks"
     echo "  -i, --integration        Run integration tests"
+    echo "  -b, --build              Run build tests"
     echo "  -a, --all                Run all tests and checks (unit, integration, pep8, git)"
     echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments (envs: 26,27,33,34,35,pypy2)."
     echo "                           Also works for integration, pep8 and lint tests."
@@ -51,6 +52,16 @@ assert_root(){
     fi
 }
 
+# Utility method that prints SUCCESS if a test was succesful, or FAIL together with the test output
+handle_test_result(){
+    RESULT="$1"
+    if [ -z "$RESULT" ]; then
+        echo -e "${GREEN}SUCCESS${NO_COLOR}"
+    else
+        echo -e "${RED}FAIL\n${RESULT}${NO_COLOR}"
+    fi
+}
+
 run_pep8_check(){
     # FLAKE 8
     # H307: like imports should be grouped together
@@ -62,19 +73,22 @@ run_pep8_check(){
     FLAKE8_IGNORE="H307,H405,H803,H904,H802,H701"
     # exclude settings files and virtualenvs
     FLAKE8_EXCLUDE="*settings.py,*.venv/*.py"
-    echo -e "Running flake8...${RED}"
-    flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa examples
-    echo -ne "$NO_COLOR"
+    echo -ne "Running flake8..."
+    RESULT=$(flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa examples)
+    local exit_code=$?
+    handle_test_result "$RESULT"
+    return $exit_code
 }
 
 run_unit_tests(){
     clean
     # py.test -s  => print standard output (i.e. show print statement output)
     #         -rw => print warnings
+    OMIT="*pypy*"
     if [ -n "$testargs" ]; then
-        coverage run -m pytest -rw -s "$testargs"
+        coverage run --omit=$OMIT -m pytest -rw -s "$testargs"
     else
-        coverage run -m pytest -rw -s gitlint
+        coverage run --omit=$OMIT -m pytest -rw -s gitlint
     fi
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
@@ -104,24 +118,64 @@ run_integration_tests(){
 }
 
 run_git_check(){
-    echo -e "Running gitlint...${RED}"
-    gitlint
+    echo -ne "Running gitlint...${RED}"
+    RESULT=$(gitlint 2>&1)
     local exit_code=$?
-    echo -ne "$NO_COLOR"
+    handle_test_result "$RESULT"
     return $exit_code
 }
 
 run_lint_check(){
-    echo -e "Running pylint...${RED}"
-    pylint gitlint qa --rcfile=".pylintrc" -r n
+    echo -ne "Running pylint...${RED}"
+    RESULT=$(pylint gitlint qa --rcfile=".pylintrc" -r n)
     local exit_code=$?
-    echo -ne "$NO_COLOR"
+    handle_test_result "$RESULT"
+    return $exit_code
+}
+
+run_build_test(){
+    clean
+    datestr=$(date +"%Y-%m-%d-%H-%M-%S")
+    temp_dir="/tmp/gitlint-build-test-$datestr"
+
+    # Copy gitlint to a new temp dir
+    echo -n "Copying gitlint to $temp_dir..."
+    mkdir "$temp_dir"
+    rsync -az --exclude ".vagrant" --exclude ".git" --exclude ".venv*" . "$temp_dir"
+    echo -e "${GREEN}DONE${NO_COLOR}"
+
+    # Update the version to include a timestamp
+    echo -n "Writing new version to file..."
+    version_file="$temp_dir/gitlint/__init__.py"
+    version_str="$(cat $version_file)"
+    version_str="${version_str:0:${#version_str}-1}-$datestr\""
+    echo "$version_str" > $version_file
+    echo -e "${GREEN}DONE${NO_COLOR}"
+    # Attempt to build the package
+    echo "Building package ..."
+    pushd "$temp_dir"
+    python setup.py sdist bdist_wheel
+    local exit_code=$?
+    popd
+    # Cleanup :-)
+    rm -rf "$temp_dir"
+
+    # Print success/mno success
+    if [ $exit_code -gt 0 ]; then
+        echo -e "Building package...${RED}FAIL${NO_COLOR}"
+    else
+        echo -e "Building package...${GREEN}SUCCESS${NO_COLOR}"
+    fi
+
     return $exit_code
 }
 
 run_stats(){
+    clean # required for py.test to count properly
     echo "*** Code ***"
     radon raw -s gitlint | tail -n 6
+    echo "*** Docs ***"
+    echo "    Markdown: $(cat docs/*.md | wc -l) lines"
     echo "*** Tests ***"
     nr_unit_tests=$(py.test gitlint/ --collect-only | grep TestCaseFunction | wc -l)
     nr_integration_tests=$(py.test qa/ --collect-only | grep TestCaseFunction | wc -l)
@@ -129,7 +183,7 @@ run_stats(){
     echo "    Integration Tests: ${nr_integration_tests//[[:space:]]/}"
     echo "*** Git ***"
     echo "    Number of commits: $(git rev-list --all --count)"
-    echo "    Number of authors: $(git log --format='%aN' | sort -u  | wc -l)"
+    echo "    Number of authors: $(git log --format='%aN' | sort -u | wc -l | tr -d ' ')"
 }
 
 clean(){
@@ -147,6 +201,9 @@ run_all(){
     exit_code=$((exit_code + $?))
     subtitle "# INTEGRATION TESTS #"
     run_integration_tests
+    exit_code=$((exit_code + $?))
+    subtitle "# BUILD TEST #"
+    run_build_test
     exit_code=$((exit_code + $?))
     subtitle "# STYLE CHECKS #"
     run_pep8_check
@@ -225,6 +282,7 @@ just_pep8=0
 just_lint=0
 just_git=0
 just_integration_tests=0
+just_build_tests=0
 just_stats=0
 just_all=0
 just_clean=0
@@ -243,6 +301,7 @@ while [ "$#" -gt 0 ]; do
         -p|--pep8) shift; just_pep8=1;;
         -l|--lint) shift; just_lint=1;;
         -g|--git) shift; just_git=1;;
+        -b|--build) shift; just_build_tests=1;;
         -s|--stats) shift; just_stats=1;;
         -i|--integration) shift; just_integration_tests=1;;
         -a|--all) shift; just_all=1;;
@@ -284,6 +343,9 @@ for environment in $envs; do
     elif [ $just_integration_tests -eq 1 ]; then
         switch_env "$environment"
         run_integration_tests
+    elif [ $just_build_tests -eq 1 ]; then
+        switch_env "$environment"
+        run_build_test
     elif [ $just_git -eq 1 ]; then
         switch_env "$environment"
         run_git_check
