@@ -171,8 +171,7 @@ done
     One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
     This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
     lint a large set of commits. For reference, at the time of writing, linting gitlint's entire commit log
-    (~160 commits) this way took about 40 seconds on a 2015 Macbook Pro. Linting the entire commit log of git
-    itself (~45,500 commits) took 2hr and 50 mins.
+    (~160 commits) this way took about 12 seconds on a 2015 Macbook Pro.
 
 
 ## Merge commits ##

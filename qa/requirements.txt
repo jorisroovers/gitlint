@@ -1,1 +1,4 @@
+unittest2==1.1.0 # support for python 2.6
 sh==1.11
+pytest==3.0.4
+gitlint # no version as you want to test the currently installed version
