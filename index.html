@@ -3,31 +3,28 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Linting for your git commit messages">
   
-  <title>Gitlint</title>
-  
-
   <link rel="shortcut icon" href="./img/favicon.ico">
-
-  
+  <title>Home - Gitlint</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="./css/theme.css" type="text/css" />
   <link rel="stylesheet" href="./css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="./css/highlight.css">
-
   
   <script>
     // Current page data
-    var mkdocs_page_name = "None";
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = "/";
   </script>
   
   <script src="./js/jquery-2.1.1.min.js"></script>
   <script src="./js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="./js/highlight.pack.js"></script>
-  <script src="./js/theme.js"></script> 
-
+  <script type="text/javascript" src="./js/highlight.pack.js"></script> 
   
 </head>
 
@@ -47,7 +44,7 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        <ul class="current">
+	<ul class="current">
           
             <li>
     <li class="toctree-l1 current">
@@ -57,9 +54,13 @@
             
                 <li class="toctree-l3"><a href="#intro">Intro</a></li>
                 
+                    <li><a class="toctree-l4" href="#features">Features</a></li>
+                
                     <li><a class="toctree-l4" href="#getting-started">Getting Started</a></li>
                 
                     <li><a class="toctree-l4" href="#using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</a></li>
+                
+                    <li><a class="toctree-l4" href="#using-gitlint-in-a-cicd-script">Using gitlint in a CI/CD script</a></li>
                 
                     <li><a class="toctree-l4" href="#merge-commits">Merge commits</a></li>
                 
@@ -73,6 +74,13 @@
           
             <li>
     <li class="toctree-l1 ">
+        <a class="" href="configuration/">Configuration</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
         <a class="" href="rules/">Rules</a>
         
     </li>
@@ -80,7 +88,7 @@
           
             <li>
     <li class="toctree-l1 ">
-        <a class="" href="configuration/">Configuration</a>
+        <a class="" href="user_defined_rules/">User Defined Rules</a>
         
     </li>
 <li>
@@ -117,9 +125,8 @@
     <li>Home</li>
     <li class="wy-breadcrumbs-aside">
       
-        
-          <a href="https://github.com/jorisroovers/gitlint" class="icon icon-github"> Edit on GitHub</a>
-        
+        <a href="https://github.com/jorisroovers/gitlint/edit/master/docs/index.md"
+          class="icon icon-github"> Edit on GitHub</a>
       
     </li>
   </ul>
@@ -133,16 +140,29 @@
 <p>Great for use as a <code>commit-msg</code> git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).</p>
 <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
-<p>Many of the gitlint validations are based on
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
+have a look at <a href="https://github.com/m1foley/fit-commit">fit-commit</a> (Ruby) or
+<a href="https://github.com/clns/node-commit-msg">node-commit-msg</a> (Node.js).</p>
+</div>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>Commit message hook</strong>: <a href="#using-gitlint-as-a-commit-msg-hook">Auto-trigger validations against new commit message right when you're committing</a>.</li>
+<li><strong>Easily integrated</strong>: Gitlint will validate any git commit message you give it via standard input.
+   Perfect for <a href="#using-gitlint-in-a-cicd-script">integration with your own scripts or CI system</a>.</li>
+<li><strong>Sane defaults:</strong> Many of gitlint's validations are based on
 <a href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">well-known</a>,
 <a href="http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/">community</a>,
 <a href="http://chris.beams.io/posts/git-commit/">standards</a>, others are based on checks that we've found
-useful throughout the years. Gitlint has sane defaults, but
-<a href="configuration/">you can also easily customize it to your own liking</a>.</p>
-<p>Gitlint supports python versions 2.6, 2.7 and 3.3+.
-If you are looking for an alternative written in a different language, have a look at
-<a href="https://github.com/m1foley/fit-commit">fit-commit</a> (Ruby) or
-<a href="https://github.com/clns/node-commit-msg">node-commit-msg</a> (Node.js).</p>
+useful throughout the years.</li>
+<li><strong>Easily configurable:</strong> Gitlint has sane defaults, but <a href="configuration/">you can also easily customize it to your own liking</a>.</li>
+<li><strong>User-defined Rules:</strong> Want to do more then what gitlint offers out of the box? Write your own <a href="user_defined_rules/">user defined rules</a>.</li>
+<li><strong>Broad python version support:</strong> Gitlint supports python versions 2.6, 2.7, 3.3+ and PyPy2.</li>
+<li><strong>Full unicode support:</strong> Lint your Russian, Chinese or Emoji commit messages with ease!</li>
+<li><strong>Production-ready:</strong> Gitlint checks a lot of the boxes you're looking for: high unit test coverage, integration tests,
+   python code standards (pep8, pylint), good documentation, proven track record.</li>
+</ul>
 <h2 id="getting-started">Getting Started</h2>
 <pre><code class="bash"># Install gitlint
 pip install gitlint
@@ -169,7 +189,10 @@ gitlint install-hook
 3: B3 Line contains hard tab characters (\t): &quot;Lines typically need to have     a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. &quot;
 </code></pre>
 
-<p>NOTE: The returned exit code equals the number of errors found. <a href=".#exit-codes">Some exit codes are special</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The returned exit code equals the number of errors found. <a href=".#exit-codes">Some exit codes are special</a>.</p>
+</div>
 <p>For a list of available rules and their configuration options, have a look at the <a href="rules/">Rules</a> page.</p>
 <p>The <a href="configuration/">Configuration</a> page explains how you can modify gitlint's runtime behavior via command-line
 flags, a <code>.gitlint</code> configuration file or on a per commit basis.</p>
@@ -191,24 +214,28 @@ $ cat examples/commit-message-2 | gitlint -vvv
 
 <p>The default verbosity is <code>-vvv</code>.</p>
 <p>Other commands and variations:</p>
-<pre><code>Usage: gitlint [OPTIONS] COMMAND [ARGS]...
+<pre><code>$ gitlint --help
+Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --target DIRECTORY  Path of the target git repository. [default: current
-                      working directory]
-  -C, --config PATH   Config file location [default: .gitlint]
-  -c TEXT             Config flags in format &lt;rule&gt;.&lt;option&gt;=&lt;value&gt; (e.g.: -c
-                      T1.line-length=80). Flag can be used multiple times to
-                      set multiple config values.
-  --ignore TEXT       Ignore rules (comma-separated by id or name).
-  -v, --verbose       Verbosity, more v's for more verbose output (e.g.: -v,
-                      -vv, -vvv). [default: -vvv]
-  -s, --silent        Silent mode (no output). Takes precedence over -v, -vv,
-                      -vvv.
-  --version           Show the version and exit.
-  --help              Show this message and exit.
+  --target DIRECTORY          Path of the target git repository. [default:
+                              current working directory]
+  -C, --config PATH           Config file location [default: .gitlint]
+  -c TEXT                     Config flags in format &lt;rule&gt;.&lt;option&gt;=&lt;value&gt;
+                              (e.g.: -c T1.line-length=80). Flag can be used
+                              multiple times to set multiple config values.
+  -e, --extra-path DIRECTORY  Path to a directory with extra user-defined
+                              rules
+  --ignore TEXT               Ignore rules (comma-separated by id or name).
+  -v, --verbose               Verbosity, more v's for more verbose output
+                              (e.g.: -v, -vv, -vvv). [default: -vvv]
+  -s, --silent                Silent mode (no output). Takes precedence over
+                              -v, -vv, -vvv.
+  -d, --debug                 Enable debugging output.
+  --version                   Show the version and exit.
+  --help                      Show this message and exit.
 
 Commands:
   generate-config  Generates a sample gitlint config file.
@@ -220,6 +247,7 @@ Commands:
 </code></pre>
 
 <h2 id="using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</h2>
+<p><em>Introduced in gitlint v0.4.0</em></p>
 <p>You can also install gitlint as a git <code>commit-msg</code> hook so that gitlint checks your commit messages automatically
 after each commit.</p>
 <pre><code class="bash">gitlint install-hook
@@ -227,11 +255,51 @@ after each commit.</p>
 gitlint uninstall-hook
 </code></pre>
 
-<p>Important: Gitlint cannot work together with an existing hook. If you already have a <code>.git/hooks/commit-msg</code>
-file in your local repository, gitlint will refuse to install the <code>commit-msg</code> hook. gitlint will also only
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Gitlint cannot work together with an existing hook. If you already have a <code>.git/hooks/commit-msg</code>
+file in your local repository, gitlint will refuse to install the <code>commit-msg</code> hook. Gitlint will also only
 uninstall unmodified commit-msg hooks that were installed by gitlint.</p>
+</div>
+<h2 id="using-gitlint-in-a-cicd-script">Using gitlint in a CI/CD script</h2>
+<p>By default, when just running <code>gitlint</code> without additional parameters, gitlint lint the last commit in the current
+git repository.</p>
+<p>This makes it easy to add gitlint to a check script that is run in a CI environment. In fact, this is exactly what we
+do ourselves: on every commit,
+<a href="https://github.com/jorisroovers/gitlint/blob/v0.7.1/run_tests.sh#L62-L65">we run gitlint as part of our travisCI tests</a>.
+This will cause the build to fail when we submit a bad commit message.</p>
+<p>Gitlint will also lint any commit message that you feed it via stdin like so:</p>
+<pre><code class="bash"># lint the last commit message
+git log -1 --pretty=%B | gitlint
+# lint a specific commit: 62c0519
+git log -1 --pretty=%B 62c0519 | gitlint
+</code></pre>
+
+<p>For now, it's required that you specify <code>--pretty=%B</code> (=only print the log message, not the metadata),
+future versions of gitlint might fix this.</p>
+<h3 id="linting-a-range-of-commits">Linting a range of commits</h3>
+<p>While gitlint does not yet support linting a range or set of commits at once, it's actually quite easy to do this using
+a simple bash script that pipes the commit messages one by one into gitlint.</p>
+<pre><code class="bash">#!/bin/bash
+
+for commit in $(git rev-list master); do
+    commit_msg=$(git log -1 --pretty=%B $commit)
+    echo &quot;$commit&quot;
+    echo &quot;$commit_msg&quot; | gitlint
+    echo &quot;--------&quot;
+done
+</code></pre>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
+This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
+lint a large set of commits. For reference, at the time of writing, linting gitlint's entire commit log
+(~160 commits) this way took about 12 seconds on a 2015 Macbook Pro.</p>
+</div>
 <h2 id="merge-commits">Merge commits</h2>
-<p>As of version 0.7.0, gitlint ignores merge commits by default. The rationale behind this is that in many cases
+<p><em>Introduced in gitlint v0.7.0</em></p>
+<p>Gitlint ignores merge commits by default. The rationale behind this is that in many cases
 merge commits are not created by users themselves but by tools such as github,
 <a href="https://code.google.com/p/gerrit/">gerrit</a> and others. These tools often generate merge commit messages that
 violate gitlint's set of rules and it's not always convenient or desired to change those.</p>
@@ -275,7 +343,7 @@ to 252.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="rules/" class="btn btn-neutral float-right" title="Rules"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="configuration/" class="btn btn-neutral float-right" title="Configuration">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -295,25 +363,26 @@ to 252.</p>
       </div>
 
     </section>
-
+    
   </div>
 
-<div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
       
-        <span style="margin-left: 15px"><a href="rules/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="configuration/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
+    <script src="./js/theme.js"></script>
 
 </body>
 </html>
 
 <!--
-MkDocs version : 0.14.0
-Build Date UTC : 2016-06-18 12:02:58.916919
+MkDocs version : 0.16.0
+Build Date UTC : 2016-12-30 19:15:30
 -->
