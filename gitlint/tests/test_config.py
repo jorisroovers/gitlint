@@ -6,6 +6,7 @@ from gitlint import rules
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
 from gitlint.options import IntOption
 from gitlint.tests.base import BaseTestCase
+from gitlint.utils import ustr
 
 
 class LintConfigTests(BaseTestCase):
@@ -98,7 +99,7 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(config.extra_path, self.get_user_rules_path())
         actual_rule = config.get_rule('UC1')
         self.assertTrue(actual_rule.user_defined)
-        self.assertEqual(str(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
+        self.assertEqual(ustr(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
         self.assertEqual(actual_rule.id, 'UC1')
         self.assertEqual(actual_rule.name, u'my-üser-commit-rule')
         self.assertEqual(actual_rule.target, None)

@@ -122,6 +122,7 @@ run_git_check(){
     RESULT=$(gitlint 2>&1)
     local exit_code=$?
     handle_test_result "$RESULT"
+    # FUTURE: check if we use str() function: egrep -nriI "( |\(|\[)+str\(" gitlint | egrep -v "\w*#(.*)"
     return $exit_code
 }
 

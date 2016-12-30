@@ -1,4 +1,6 @@
-from sh import git, gitlint, echo, ErrorReturnCode  # pylint: disable=no-name-in-module
+# -*- coding: utf-8 -*-
+
+from sh import git, gitlint, echo, ErrorReturnCode, DEFAULT_ENCODING  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
 
@@ -6,26 +8,26 @@ class IntegrationTests(BaseTestCase):
     """ Simple set of integration tests for gitlint """
 
     def test_successful(self):
-        self._create_simple_commit("Simple title\n\nSimple body describing the commit")
+        self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
         self.assertEqual(output, "")
 
     def test_successful_merge_commit(self):
         # Create branch on master
-        self._create_simple_commit("Commit on master\n\nSimple body")
+        self._create_simple_commit(u"Cömmit on master\n\nSimple bödy")
 
         # Create test branch, add a commit and determine the commit hash
         git("checkout", "-b", "test-branch", _cwd=self.tmp_git_repo)
         git("checkout", "test-branch", _cwd=self.tmp_git_repo)
-        commit_title = "Commit on test-branch with a pretty long title that will cause issues when merging"
-        self._create_simple_commit("{0}\n\nSimple body".format(commit_title))
+        commit_title = u"Commit on test-brånch with a pretty long title that will cause issues when merging"
+        self._create_simple_commit(u"{0}\n\nSïmple body".format(commit_title))
         hash = git("rev-parse", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
 
         # Checkout master and merge the commit
         # We explicitly set the title of the merge commit to the title of the previous commit as this or similar
         # behavior is what many tools do that handle merges (like github, gerrit, etc).
         git("checkout", "master", _cwd=self.tmp_git_repo)
-        git("merge", "--no-ff", "-m", "Merge '{0}'".format(commit_title), hash, _cwd=self.tmp_git_repo)
+        git("merge", "--no-ff", "-m", u"Merge '{0}'".format(commit_title), hash, _cwd=self.tmp_git_repo)
 
         # Run gitlint and assert output is empty
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
@@ -33,15 +35,17 @@ class IntegrationTests(BaseTestCase):
 
         # Assert that we do see the error if we disable the ignore-merge-commits option
         output = gitlint("-c", "general.ignore-merge-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
-        self.assertEqual(output, "1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
+        self.assertEqual(output.exit_code, 1)
+        self.assertEqual(output, u"1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
 
     def test_errors(self):
-        commit_msg = "WIP: This is a title.\nContent on the second line"
+        commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
         self._create_simple_commit(commit_msg)
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
-        expected = "1: T3 Title has trailing punctuation (.): \"WIP: This is a title.\"\n" + \
-                   "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is a title.\"\n" + \
-                   "2: B4 Second line is not empty: \"Content on the second line\"\n"
+
+        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
+                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
+                   u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
         self.assertEqual(output, expected)
 
     def test_pipe_input(self):
@@ -50,46 +54,14 @@ class IntegrationTests(BaseTestCase):
         # Note that this does work as expected in the test_errors testcase.
         # To work around this we raise and catch an exception
         try:
-            gitlint(echo("WIP: Pipe test."), _tty_in=False)
+            gitlint(echo(u"WIP: Pïpe test."), _tty_in=False)
         except ErrorReturnCode as e:
             # StdErr is returned as bytes -> decode to unicode string
             # http://stackoverflow.com/questions/606191/convert-bytes-to-a-python-string
-            error_msg = e.stderr.decode("utf-8")
+            error_msg = e.stderr.decode(DEFAULT_ENCODING)
 
-        expected = "1: T3 Title has trailing punctuation (.): \"WIP: Pipe test.\"\n" + \
-                   "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pipe test.\"\n" + \
+        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Pïpe test.\"\n" + \
+                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pïpe test.\"\n" + \
                    "3: B6 Body message is missing\n"
 
         self.assertEqual(error_msg, expected)
-
-    def test_user_defined_rules(self):
-        extra_path = self.get_example_path()
-        commit_msg = "WIP: Thi$ is a title\nContent on the second line"
-        self._create_simple_commit(commit_msg)
-        output = gitlint("--extra-path", extra_path, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Thi$ is a title\"\n" + \
-                   "1: UC2 Body does not contain a 'Signed-Off-By' line\n" + \
-                   "1: UL1 Title contains the special character '$': \"WIP: Thi$ is a title\"\n" + \
-                   "2: B4 Second line is not empty: \"Content on the second line\"\n"
-        self.assertEqual(output, expected)
-
-    def test_user_defined_rules_with_config(self):
-        extra_path = self.get_example_path()
-        commit_msg = "WIP: Thi$ is a title\nContent on the second line"
-        self._create_simple_commit(commit_msg)
-        output = gitlint("--extra-path", extra_path, "-c", "body-max-line-count.max-line-count=1",
-                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Thi$ is a title\"\n" + \
-                   "1: UC1 Body contains too many lines (2 > 1)\n" + \
-                   "1: UC2 Body does not contain a 'Signed-Off-By' line\n" + \
-                   "1: UL1 Title contains the special character '$': \"WIP: Thi$ is a title\"\n" + \
-                   "2: B4 Second line is not empty: \"Content on the second line\"\n"
-
-        self.assertEqual(output, expected)
-
-    def test_invalid_user_defined_rules(self):
-        extra_path = self.get_sample_path("user_rules/incorrect_linerule")
-        self._create_simple_commit("WIP: test")
-        output = gitlint("--extra-path", extra_path, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[255])
-        self.assertEqual(output,
-                         "Config Error: User-defined rule class 'MyUserLineRule' must have a 'validate' method\n")

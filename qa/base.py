@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import os
+import sys
 from datetime import datetime
 from uuid import uuid4
 
 from unittest2 import TestCase
-from sh import git, rm, touch  # pylint: disable=no-name-in-module
+from sh import git, rm, touch, DEFAULT_ENCODING  # pylint: disable=no-name-in-module
 
 
 class BaseTestCase(TestCase):
@@ -23,6 +26,11 @@ class BaseTestCase(TestCase):
         git("config", "user.name", "gitlint-test-user", _cwd=cls.tmp_git_repo)
         git("config", "user.email", "gitlint@test.com", _cwd=cls.tmp_git_repo)
 
+        # Git does not by default print unicode paths, fix that by setting core.quotePath to false
+        # http://stackoverflow.com/questions/34549040/git-not-displaying-unicode-file-names
+        # ftp://www.kernel.org/pub/software/scm/git/docs/git-config.html
+        git("config", "core.quotePath", "false", _cwd=cls.tmp_git_repo)
+
     @classmethod
     def tearDownClass(cls):
         """ Cleans up the temporary git repository """
@@ -40,7 +48,7 @@ class BaseTestCase(TestCase):
         if env:
             environment.update(env)
 
-        test_filename = "test-file-" + str(uuid4())
+        test_filename = u"test-fïle-" + str(uuid4())
         touch(test_filename, _cwd=self.tmp_git_repo)
         git("add", test_filename, _cwd=self.tmp_git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
@@ -67,6 +75,9 @@ class BaseTestCase(TestCase):
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
         expected = open(expected_path).read()
+        if sys.version_info[0] == 2:  # decode string if python2
+            expected = unicode(expected, DEFAULT_ENCODING)  # noqa # pylint: disable=undefined-variable
+
         if variable_dict:
             expected = expected.format(**variable_dict)
         return expected

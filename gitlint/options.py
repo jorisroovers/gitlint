@@ -27,7 +27,7 @@ class RuleOption(object):
         pass  # pragma: no cover
 
     def __str__(self):
-        return sstr(self)
+        return sstr(self)  # pragma: no cover
 
     def __unicode__(self):
         return u"({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover

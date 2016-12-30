@@ -3,6 +3,8 @@ import sh
 # import exceptions separately, this makes it a little easier to mock them out in the unit tests
 from sh import CommandNotFound, ErrorReturnCode
 
+from gitlint.utils import ustr, sstr
+
 
 class GitContextError(Exception):
     """ Exception indicating there is an issue with the git context """
@@ -32,8 +34,11 @@ class GitCommitMessage(object):
         body = lines[1:] if len(lines) > 1 else []
         return GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.full  # pragma: no cover
+
+    def __str__(self):
+        return sstr(self)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -70,9 +75,12 @@ class GitCommit(object):
         else:
             self.changed_files = changed_files
 
-    def __str__(self):
+    def __unicode__(self):
         format_str = u"Author: %s <%s>\nDate:   %s\n%s"  # pragma: no cover
-        return format_str % (self.author_name, self.author_email, self.date, str(self.message))  # pragma: no cover
+        return format_str % (self.author_name, self.author_email, self.date, ustr(self.message))  # pragma: no cover
+
+    def __str__(self):
+        return sstr(self)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -148,7 +156,7 @@ class GitContext(object):
         # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
         # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
         # http://stackoverflow.com/a/30696682/381010
-        commit_date = arrow.get(str(commit_date_str), "YYYY-MM-DD HH:mm:ss Z").datetime
+        commit_date = arrow.get(ustr(commit_date_str), "YYYY-MM-DD HH:mm:ss Z").datetime
 
         # Create Git commit object with the retrieved info
         changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]

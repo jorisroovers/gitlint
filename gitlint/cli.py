@@ -103,9 +103,7 @@ def lint(ctx):
             # If target has not been set explicitly before, fallback to the current directory
             gitcontext = GitContext.from_local_repository(lint_config.target)
         else:
-            stdin_str = sys.stdin.read()
-            if sys.version_info[0] == 2:
-                stdin_str = unicode(stdin_str, 'utf-8')  # noqa # pylint: disable=undefined-variable
+            stdin_str = ustr(sys.stdin.read())
             gitcontext = GitContext.from_commit_msg(stdin_str)
     except GitContextError as e:
         click.echo(ustr(e))
