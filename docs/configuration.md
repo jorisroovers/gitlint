@@ -90,7 +90,7 @@ gitlint-ignore: all
 specific rules to be ignored as follows: ```gitlint-ignore: T1, body-hard-tab```.
 
 # Configuration precedence #
-Configuring gitlint happens the following order of precedence:
+gitlint configuration is applied in the following order of precedence:
 
 1. Commit specific config (e.g.: ```gitlint-ignore: all``` in the commit message) 
 2. Commandline convenience flags (e.g.:  ```-vv```, ```--silent```, ```--ignore```)
@@ -109,4 +109,5 @@ verbosity            | 3             | >= 0.1           | ```--verbosity=3```   
 ignore-merge-commits | true          | >= 0.7.0         |   Not available                       | Whether or not to ignore merge commits.
 ignore               | [] (=empty)   | >= 0.1           | ```--ignore=T1,body-min-length```     | Comma seperated list of rules to ignore (by name or id)
 debug                | false         | >= 0.7.1         |  ```--debug```                        | Enable debugging output
+target               | (empty)       | >= 0.8.0         |  ```---target=/home/joe/myrepo/   ``` | Target git repository gitlint should be linting against.
 extra-path           | (empty)       | >= 0.8.0         |  ```---extra-path=/home/joe/rules/``` | Path where gitlint looks for [user-defined rules](user_defined_rules.md).

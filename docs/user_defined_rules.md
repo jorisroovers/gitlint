@@ -1,5 +1,5 @@
 # User Defined Rules
-*New in gitlint 0.8.0*
+_Introduced in gitlint v0.8.0_
 
 Gitlint supports the concept of user-defined rules: the ability for users
 to write your own custom rules that are executed when gitlint is.

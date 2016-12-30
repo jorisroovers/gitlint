@@ -11,17 +11,19 @@ Great for use as a ```commit-msg``` git hook or as part of your gating script in
     [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js).
 
 ## Features ##
- - **Commit message hook**: Auto-trigger validations against new commit message right when you're committing.
- - **Easily integrated**: Gitlint will validate any git commit message you give it via standard input. Perfect for integration with your own scripts or CI system.
+ - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook).
+ - **Easily integrated**: Gitlint will validate any git commit message you give it via standard input.
+   Perfect for [integration with your own scripts or CI system](#using-gitlint-in-a-cicd-script).
  - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
- - **User-defined Rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules).
+ - **User-defined Rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
  - **Broad python version support:** Gitlint supports python versions 2.6, 2.7, 3.3+ and PyPy2.
- - **Production-ready:** Gitlint checks a lot of boxes you're looking for: high unit test coverage, integration tests,
+ - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
+ - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: high unit test coverage, integration tests,
    python code standards (pep8, pylint), good documentation, proven track record.
 
 ## Getting Started ##
@@ -114,6 +116,8 @@ Commands:
 
 
 ## Using gitlint as a commit-msg hook ##
+_Introduced in gitlint v0.4.0_
+
 You can also install gitlint as a git ```commit-msg``` hook so that gitlint checks your commit messages automatically
 after each commit.
 
@@ -129,8 +133,52 @@ gitlint uninstall-hook
     file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. Gitlint will also only
     uninstall unmodified commit-msg hooks that were installed by gitlint.
 
+## Using gitlint in a CI/CD script ##
+By default, when just running ```gitlint``` without additional parameters, gitlint lint the last commit in the current
+git repository.
+
+This makes it easy to add gitlint to a check script that is run in a CI environment. In fact, this is exactly what we
+do ourselves: on every commit,
+[we run gitlint as part of our travisCI tests](https://github.com/jorisroovers/gitlint/blob/v0.7.1/run_tests.sh#L62-L65).
+This will cause the build to fail when we submit a bad commit message.
+
+Gitlint will also lint any commit message that you feed it via stdin like so:
+```bash
+# lint the last commit message
+git log -1 --pretty=%B | gitlint
+# lint a specific commit: 62c0519
+git log -1 --pretty=%B 62c0519 | gitlint
+```
+For now, it's required that you specify ```--pretty=%B``` (=only print the log message, not the metadata),
+future versions of gitlint might fix this.
+
+### Linting a range of commits ###
+
+While gitlint does not yet support linting a range or set of commits at once, it's actually quite easy to do this using
+a simple bash script that pipes the commit messages one by one into gitlint.
+
+```bash
+#!/bin/bash
+
+for commit in $(git rev-list master); do
+    commit_msg=$(git log -1 --pretty=%B $commit)
+    echo "$commit"
+    echo "$commit_msg" | gitlint
+    echo "--------"
+done
+```
+!!! note
+    One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
+    This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
+    lint a large set of commits. For reference, at the time of writing, linting gitlint's entire commit log
+    (~160 commits) this way took about 40 seconds on a 2015 Macbook Pro. Linting the entire commit log of git
+    itself (~45,500 commits) took 2hr and 50 mins.
+
+
 ## Merge commits ##
-As of version 0.7.0, gitlint ignores merge commits by default. The rationale behind this is that in many cases
+_Introduced in gitlint v0.7.0_
+
+Gitlint ignores merge commits by default. The rationale behind this is that in many cases
 merge commits are not created by users themselves but by tools such as github,
 [gerrit](https://code.google.com/p/gerrit/) and others. These tools often generate merge commit messages that
 violate gitlint's set of rules and it's not always convenient or desired to change those.

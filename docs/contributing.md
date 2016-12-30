@@ -25,22 +25,26 @@ To run tests:
 ./run_test.sh gitlint/tests/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
 ./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
+./run_tests.sh --build               # Run build tests (=build python package)
 ./run_tests.sh --pep8                # pep8 checks
 ./run_tests.sh --stats               # print some code stats
 ./run_tests.sh --git                 # inception: run gitlint against itself
+./run_tests.sh --lint                # run pylint checks
 ./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
-./run_tests.sh --lint                # run pylint checks (only supported on python 2.7)
 ```
 
-The ```Vagrantfile``` comes with ```virtualenv```s for python 2.6, 2.7, 3.3, 3.4 and 3.5.
+The ```Vagrantfile``` comes with ```virtualenv```s for python 2.6, 2.7, 3.3, 3.4, 3.5 and pypy2.
 You can easily run tests against specific python environments by using the following commands *inside* of the Vagrant VM:
 ```
 ./run_tests.sh --envs 26               # Run the unit tests against Python 2.6
-./run_tests.sh --envs 27,33            # Run the unit tests against Python 2.7 and Python 3.3
+./run_tests.sh --envs 27,33,pypy2      # Run the unit tests against Python 2.7, Python 3.3 and Pypy2
 ./run_tests.sh --envs 27,33 --pep8     # Run pep8 checks against Python 2.7 and Python 3.3 (also works for ```--git```, ```--integration```, ```--pep8```, ```--stats``` and ```--lint```).
 ./run_tests.sh --envs all --all        # Run all tests against all environments
 ./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
 ```
+
+!!! important
+    Gitlint commits and pull requests are gated on all of our tests and checks.
 
 # Packaging #
 

@@ -1,4 +1,4 @@
-# gitlint #
+# gitlint: [jorisroovers.github.io/gitlint](http://jorisroovers.github.io/gitlint/) #
 
 [![Build Status](https://travis-ci.org/jorisroovers/gitlint.svg?branch=master)]
 (https://travis-ci.org/jorisroovers/gitlint)

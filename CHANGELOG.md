@@ -1,9 +1,16 @@
 # Changelog #
 
-## v0.8.0 (In Development) ##
+## v0.8.0 (2016-12-30) ##
+
+The 0.8.0 release is a significant release that has been in the works for a long time. Special thanks to
+[Claymore](https://github.com/Claymore), [gernd](https://github.com/gernd) and
+[ZhangYaxu](https://github.com/ZhangYaxu) for submitting bug reports and pull requests.
 
 - Full unicode support: you can now lint messages in any language! This fixes
   [#16](https://github.com/jorisroovers/gitlint/issues/16) and [#18](https://github.com/jorisroovers/gitlint/pull/18).
+- User-defined rules: you can now
+  [define your own custom rules](http://jorisroovers.github.io/gitlint/user_defined_rules/)
+  if you want to extend gitlint's functionality.
 - Pypy2 support!
 - Debug output improvements: Gitlint will now print your active configuration when using ```--debug```
 - The ```general.target``` option can now also be set via ```-c``` flags or a ```.gitlint``` file
@@ -12,11 +19,11 @@
     - [#17: Body MinLength is not working properly](https://github.com/jorisroovers/gitlint/issues/17).
       **Behavior Change**: Gitlint now always applies this rule, even if the body has just a single line of content.
       Also, gitlint now counts the body-length for the entire body, not just the length of the first line.
+- Various documentation improvements
 - Development: 
     - Pylint compliance for all supported python versions
     - Updated dependencies to latest versions
     - Various ```run_tests.sh``` improvements for developer convenience
-
 
 ## v0.7.1 (2016-06-18) ##
 Bugfixes:
