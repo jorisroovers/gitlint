@@ -12,14 +12,14 @@ from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError
 class GitTests(BaseTestCase):
     @patch('gitlint.git.sh')
     def test_get_latest_commit(self, sh):
-        def git_log_side_effect(*args, **_kwargs):
-            return_values = {'--pretty=%B': u"cömmit-title\n\ncömmit-body", '--pretty=%aN': u"test åuthor",
-                             '--pretty=%aE': u"test-emåil@foo.com", '--pretty=%ai': u"2016-12-03 15:28:15 01:00",
-                             '--pretty=%P': u"åbc"}
-            return return_values[args[1]]
+        sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
+        def git_log_side_effect(*_args, **_kwargs):
+            return (u"test åuthor,test-emåil@foo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                    u"cömmit-title\n\ncömmit-body")
+
+        sh.git.side_effect = [sample_sha, u"file1.txt\npåth/to/file2.txt\n"]
         sh.git.log.side_effect = git_log_side_effect
-        sh.git.return_value = u"file1.txt\npåth/to/file2.txt\n"
 
         context = GitContext.from_local_repository(u"fake/påth")
         expected_sh_special_args = {
@@ -27,13 +27,12 @@ class GitTests(BaseTestCase):
             '_cwd': u"fake/påth"
         }
         # assert that commit info was read using git command
-        expected_calls = [call('-1', '--pretty=%B', _cwd=u"fake/påth", _tty_out=False),
-                          call('-1', '--pretty=%aN', _cwd=u"fake/påth", _tty_out=False),
-                          call('-1', '--pretty=%aE', _cwd=u"fake/påth", _tty_out=False),
-                          call('-1', '--pretty=%ai', _cwd=u"fake/påth", _tty_out=False),
-                          call('-1', '--pretty=%P', _cwd=u"fake/påth", _tty_out=False)]
-
-        self.assertListEqual(sh.git.log.mock_calls, expected_calls)
+        expected_calls = [
+            call("rev-list", "--max-count=1", "HEAD", **expected_sh_special_args),
+            call.log(sample_sha, "-1", "--pretty=%aN,%aE,%ai,%P%n%B", _cwd=u"fake/påth", _tty_out=False),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **expected_sh_special_args)
+        ]
+        self.assertListEqual(sh.git.mock_calls, expected_calls)
 
         last_commit = context.commits[-1]
         self.assertEqual(last_commit.message.title, u"cömmit-title")
@@ -44,22 +43,18 @@ class GitTests(BaseTestCase):
                                                              tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, [u"åbc"])
         self.assertFalse(last_commit.is_merge_commit)
-
-        # assert that changed files are read using git command
-        sh.git.assert_called_once_with('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD',
-                                       **expected_sh_special_args)
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_merge_commit(self, sh):
-        def git_log_side_effect(*args, **_kwargs):
-            return_values = {'--pretty=%B': u"Merge \"foo bår commit\"", '--pretty=%aN': u"test åuthor",
-                             '--pretty=%aE': u"test-emåil@foo.com", '--pretty=%ai': u"2016-12-03 15:28:15 01:00",
-                             '--pretty=%P': u"åbc def"}
-            return return_values[args[1]]
+        sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
+        def git_log_side_effect(*_args, **_kwargs):
+            return (u"test åuthor,test-emåil@foo.com,2016-12-03 15:28:15 01:00,åbc def\n"
+                    u"Merge \"foo bår commit\"")
+
+        sh.git.side_effect = [sample_sha, u"file1.txt\npåth/to/file2.txt\n"]
         sh.git.log.side_effect = git_log_side_effect
-        sh.git.return_value = u"file1.txt\npåth/to/file2.txt\n"
 
         context = GitContext.from_local_repository(u"fåke/path")
         expected_sh_special_args = {
@@ -67,13 +62,13 @@ class GitTests(BaseTestCase):
             '_cwd': u"fåke/path"
         }
         # assert that commit info was read using git command
-        expected_calls = [call('-1', '--pretty=%B', _cwd=u"fåke/path", _tty_out=False),
-                          call('-1', '--pretty=%aN', _cwd=u"fåke/path", _tty_out=False),
-                          call('-1', '--pretty=%aE', _cwd=u"fåke/path", _tty_out=False),
-                          call('-1', '--pretty=%ai', _cwd=u"fåke/path", _tty_out=False),
-                          call('-1', '--pretty=%P', _cwd=u"fåke/path", _tty_out=False)]
+        expected_calls = [
+            call("rev-list", "--max-count=1", "HEAD", **expected_sh_special_args),
+            call.log(sample_sha, "-1", "--pretty=%aN,%aE,%ai,%P%n%B", _cwd=u"fåke/path", _tty_out=False),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **expected_sh_special_args)
+        ]
 
-        self.assertListEqual(sh.git.log.mock_calls, expected_calls)
+        self.assertEqual(sh.git.mock_calls, expected_calls)
 
         last_commit = context.commits[-1]
         self.assertEqual(last_commit.message.title, u"Merge \"foo bår commit\"")
@@ -84,45 +79,42 @@ class GitTests(BaseTestCase):
                                                              tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, [u"åbc", "def"])
         self.assertTrue(last_commit.is_merge_commit)
-
-        # assert that changed files are read using git command
-        sh.git.assert_called_once_with('diff-tree', '--no-commit-id', '--name-only', '-r', 'HEAD',
-                                       **expected_sh_special_args)
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_command_not_found(self, sh):
-        sh.git.log.side_effect = CommandNotFound("git")
+        sh.git.side_effect = CommandNotFound("git")
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
         with self.assertRaisesRegex(GitContextError, expected_msg):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command
-        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False, _cwd=u"fåke/path")
+        sh.git.assert_called_once_with("rev-list", "--max-count=1", "HEAD", _tty_out=False, _cwd=u"fåke/path")
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_git_error(self, sh):
         # Current directory not a git repo
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
-        sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
+        sh.git.side_effect = ErrorReturnCode("git rev-list --max-count=1 HEAD", b"", err)
 
         with self.assertRaisesRegex(GitContextError, u"fåke/path is not a git repository."):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command
-        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False, _cwd=u"fåke/path")
-
-        sh.git.log.reset_mock()
+        sh.git.assert_called_once_with("rev-list", "--max-count=1", "HEAD",
+                                       _tty_out=False, _cwd=u"fåke/path")
+        sh.git.reset_mock()
         err = b"fatal: Random git error"
-        sh.git.log.side_effect = ErrorReturnCode("git log -1 --pretty=%B", b"", err)
+        sh.git.side_effect = ErrorReturnCode("git rev-list --max-count=1 HEAD", b"", err)
 
-        expected_msg = u"An error occurred while executing 'git log -1 --pretty=%B': {0}".format(err)
+        expected_msg = u"An error occurred while executing 'git rev-list --max-count=1 HEAD': {0}".format(err)
         with self.assertRaisesRegex(GitContextError, expected_msg):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command
-        sh.git.log.assert_called_once_with('-1', '--pretty=%B', _tty_out=False, _cwd=u"fåke/path")
+        sh.git.assert_called_once_with("rev-list", "--max-count=1", "HEAD",
+                                       _tty_out=False, _cwd=u"fåke/path")
 
     def test_from_commit_msg_full(self):
         gitcontext = GitContext.from_commit_msg(self.get_sample("commit_message/sample1"))

@@ -54,26 +54,18 @@ class GitCommit(object):
         In the context of gitlint, only the git context and commit message are required.
     """
 
-    def __init__(self, context, message, date=None, author_name=None, author_email=None, parents=None,
+    def __init__(self, context, message, sha=None, date=None, author_name=None, author_email=None, parents=None,
                  is_merge_commit=False, changed_files=None):
         self.context = context
         self.message = message
+        self.sha = sha
+        self.date = date
         self.author_name = author_name
         self.author_email = author_email
-        self.date = date
-
         # parent commit hashes
-        if not parents:
-            self.parents = []
-        else:
-            self.parents = parents
-
+        self.parents = parents or []
         self.is_merge_commit = is_merge_commit
-
-        if not changed_files:
-            self.changed_files = []
-        else:
-            self.changed_files = changed_files
+        self.changed_files = changed_files or []
 
     def __unicode__(self):
         format_str = u"Author: %s <%s>\nDate:   %s\n%s"  # pragma: no cover
@@ -88,7 +80,8 @@ class GitCommit(object):
     def __eq__(self, other):
         # skip checking the context as context refers back to this obj, this will trigger a cyclic dependency
         return isinstance(other, GitCommit) and self.message == other.message and \
-               self.author_name == other.author_name and self.author_email == other.author_email and \
+               self.sha == other.sha and self.author_name == other.author_name and \
+               self.author_email == other.author_email and \
                self.date == other.date and self.parents == other.parents and \
                self.is_merge_commit == other.is_merge_commit and self.changed_files == other.changed_files  # noqa
 
@@ -117,10 +110,12 @@ class GitContext(object):
         return context
 
     @staticmethod
-    def from_local_repository(repository_path):
+    def from_local_repository(repository_path, refspec="HEAD"):
         """ Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
+        :param refspec: The commit(s) to retrieve
         """
+
         context = GitContext()
         try:
             # Special arguments passed to sh: http://amoffat.github.io/sh/special_arguments.html
@@ -129,22 +124,44 @@ class GitContext(object):
                 '_cwd': repository_path
             }
 
-            # Get info from the local git repository
-            # https://git-scm.com/docs/pretty-formats
-            commit_msg = sh.git.log("-1", "--pretty=%B", **sh_special_args)
-            commit_author_name = sh.git.log("-1", "--pretty=%aN", **sh_special_args)
-            commit_author_email = sh.git.log("-1", "--pretty=%aE", **sh_special_args)
-            # %aI -> ISO 8601-like format, while %aI is strict ISO 8601, it seems to be less widely supporte
-            commit_date_str = sh.git.log("-1", "--pretty=%ai", **sh_special_args)
-            commit_parents = sh.git.log("-1", "--pretty=%P", **sh_special_args).split(" ")
-            commit_is_merge_commit = len(commit_parents) > 1
+            sha_list = sh.git("rev-list",
+                              # If refspec contains a dot it is a range
+                              # eg HEAD^.., upstream/master...HEAD
+                              '--max-count={0}'.format(-1 if "." in refspec else 1),
+                              refspec, **sh_special_args).split()
 
-            # changed files in last commit
-            changed_files_str = sh.git("diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD", **sh_special_args)
+            for sha in sha_list:
+                # Get info from the local git repository: https://git-scm.com/docs/pretty-formats
+                raw_commit = sh.git.log(sha, "-1", "--pretty=%aN,%aE,%ai,%P%n%B",
+                                        **sh_special_args).split("\n")
+
+                (name, email, date, parents), commit_msg = raw_commit[0].split(","), "\n".join(raw_commit[1:])
+
+                commit_parents = parents.split(" ")
+                commit_is_merge_commit = len(commit_parents) > 1
+
+                # changed files in last commit
+                changed_files = sh.git("diff-tree", "--no-commit-id", "--name-only",
+                                       "-r", sha, **sh_special_args).split()
+
+                # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
+                # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
+                # http://stackoverflow.com/a/30696682/381010
+                commit_date = arrow.get(ustr(date), "YYYY-MM-DD HH:mm:ss Z").datetime
+
+                # Create Git commit object with the retrieved info
+                commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
+                commit = GitCommit(context, commit_msg_obj, sha=sha, author_name=name,
+                                   author_email=email, date=commit_date, changed_files=changed_files,
+                                   parents=commit_parents, is_merge_commit=commit_is_merge_commit)
+
+                context.commits.append(commit)
+
         except CommandNotFound:
-            error_msg = u"'git' command not found. You need to install git to use gitlint on a local repository. " + \
-                        u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
-            raise GitContextError(error_msg)
+            raise GitContextError(
+                u"'git' command not found. You need to install git to use gitlint on a local repository. "
+                u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
+            )
         except ErrorReturnCode as e:  # Something went wrong while executing the git command
             error_msg = e.stderr.strip()
             if b"Not a git repository" in error_msg:
@@ -153,21 +170,6 @@ class GitContext(object):
                 error_msg = u"An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
             raise GitContextError(error_msg)
 
-        # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
-        # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
-        # http://stackoverflow.com/a/30696682/381010
-        commit_date = arrow.get(ustr(commit_date_str), "YYYY-MM-DD HH:mm:ss Z").datetime
-
-        # Create Git commit object with the retrieved info
-        changed_files = [changed_file for changed_file in changed_files_str.strip().split("\n")]
-        commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
-        commit = GitCommit(context, commit_msg_obj, author_name=commit_author_name, author_email=commit_author_email,
-                           date=commit_date, changed_files=changed_files, parents=commit_parents,
-                           is_merge_commit=commit_is_merge_commit)
-
-        # Create GitContext info with the commit object and return
-
-        context.commits.append(commit)
         return context
 
     def __eq__(self, other):

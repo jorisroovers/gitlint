@@ -70,6 +70,7 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
+@click.option('--commits', default="HEAD", help="The range of commits to lint. [default: HEAD]")
 @click.option('-e', '--extra-path', help="Path to a directory with extra user-defined rules",
               type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True))
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
@@ -79,14 +80,14 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
 @click.option('-d', '--debug', help="Enable debugging output.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
-def cli(ctx, target, config, c, extra_path, ignore, verbose, silent, debug):
+def cli(ctx, target, config, c, commits, extra_path, ignore, verbose, silent, debug):
     """ Git lint tool, checks your git commit messages for styling issues """
 
     # Get the lint config from the commandline parameters and
     # store it in the context (click allows storing an arbitrary object in ctx.obj).
     config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
 
-    ctx.obj = (config, config_builder)
+    ctx.obj = (config, config_builder, commits)
 
     # If no subcommand is specified, then just lint
     if ctx.invoked_subcommand is None:
@@ -101,7 +102,7 @@ def lint(ctx):
     try:
         if sys.stdin.isatty():
             # If target has not been set explicitly before, fallback to the current directory
-            gitcontext = GitContext.from_local_repository(lint_config.target)
+            gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
         else:
             stdin_str = ustr(sys.stdin.read())
             gitcontext = GitContext.from_commit_msg(stdin_str)
@@ -117,8 +118,21 @@ def lint(ctx):
 
     # Let's get linting!
     linter = GitLinter(lint_config)
-    violations = linter.lint(last_commit)
-    linter.print_violations(violations)
+    number_of_commits = len(gitcontext.commits)
+    first_violation = True
+
+    for commit in gitcontext.commits:
+        violations = linter.lint(commit)
+        if violations:
+            # Display the commit hash & new lines intelligently
+            if number_of_commits > 1 and commit.sha:
+                click.echo(u"{0}Commit {1}:".format(
+                    "\n" if not first_violation or commit is last_commit else "",
+                    commit.sha[:10]
+                ))
+            linter.print_violations(violations)
+            first_violation = False
+
     exit_code = min(MAX_VIOLATION_ERROR_CODE, len(violations))
     ctx.exit(exit_code)
 
