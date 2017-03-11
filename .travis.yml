@@ -13,7 +13,7 @@ matrix:
       os: linux
     - python: "3.5"
       os: linux
-      # Skip lint tests for python 3.6
+      # Skip lint tests for python 3.6 (see https://github.com/PyCQA/pylint/issues/1072)
     - python: "3.6"
       os: linux
       script:

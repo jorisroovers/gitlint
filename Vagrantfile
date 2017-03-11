@@ -7,7 +7,7 @@ INSTALL_DEPS=<<EOF
 cd /vagrant
 sudo add-apt-repository -y ppa:fkrull/deadsnakes
 sudo apt-get update
-sudo apt-get install -y python2.6-dev python2.7-dev python3.3-dev python3.4-dev python3.5-dev
+sudo apt-get install -y python2.6-dev python2.7-dev python3.3-dev python3.4-dev python3.5-dev python3.6-dev
 sudo apt-get install -y python-virtualenv git ipython python3-pip silversearcher-ag
 sudo pip3 install virtualenv
 
