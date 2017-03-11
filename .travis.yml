@@ -1,16 +1,39 @@
-os:
-  - linux
 language: python
-python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "pypy"
+matrix:
+  allow_failures:
+    - os: osx
+  include:
+    - python: "2.6"
+      os: linux
+    - python: "2.7"
+      os: linux
+    - python: "3.3"
+      os: linux
+    - python: "3.4"
+      os: linux
+    - python: "3.5"
+      os: linux
+      # Skip lint tests for python 3.6
+    - python: "3.6"
+      os: linux
+      script:
+       - "./run_tests.sh"
+       - "./run_tests.sh --build"
+       - "./run_tests.sh --pep8"
+       - "./run_tests.sh --git"
+    - python: "pypy"
+      os: linux
+    - python: "2.7"
+      os: osx
+      script: "pip --version"
 install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"
-script: "./run_tests.sh && ./run_tests.sh --build &&./run_tests.sh --pep8 && ./run_tests.sh --lint && ./run_tests.sh --git"
+script:
+ - "./run_tests.sh"
+ - "./run_tests.sh --build"
+ - "./run_tests.sh --pep8"
+ - "./run_tests.sh --lint"
+ - "./run_tests.sh --git"
 after_success:
   - coveralls
