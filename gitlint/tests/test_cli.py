@@ -37,14 +37,12 @@ class CLITests(BaseTestCase):
     def test_lint(self, sys, sh):
         sys.stdin.isatty.return_value = True
 
-        def git_log_side_effect(*args, **_kwargs):
-            return_values = {'--pretty=%B': u"commït-title\n\ncommït-body", '--pretty=%aN': u"test åuthor",
-                             '--pretty=%aE': u"test-email@föo.com", '--pretty=%ai': "2016-12-03 15:28:15 01:00",
-                             '--pretty=%P': u"åbc"}
-            return return_values[args[1]]
+        def git_log_side_effect(*_args, **_kwargs):
+            return (u"test åuthor,test-email@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                    u"commït-title\n\ncommït-body")
 
         sh.git.log.side_effect = git_log_side_effect
-        sh.git.return_value = u"file1.txt\npåth/to/file2.txt\n"
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360", u"file1.txt\npåth/to/file2.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
@@ -200,7 +198,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.cli.sys')
     def test_git_error(self, sys, sh):
         sys.stdin.isatty.return_value = True
-        sh.git.log.side_effect = CommandNotFound("git")
+        sh.git.side_effect = CommandNotFound("git")
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
