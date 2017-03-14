@@ -82,7 +82,6 @@ The default verbosity is ```-vvv```.
 Other commands and variations:
 
 ```
-$ gitlint --help
 Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
@@ -94,6 +93,7 @@ Options:
   -c TEXT                     Config flags in format <rule>.<option>=<value>
                               (e.g.: -c T1.line-length=80). Flag can be used
                               multiple times to set multiple config values.
+  --commits TEXT              The range of commits to lint. [default: HEAD]
   -e, --extra-path DIRECTORY  Path to a directory with extra user-defined
                               rules
   --ignore TEXT               Ignore rules (comma-separated by id or name).
@@ -152,10 +152,27 @@ git log -1 --pretty=%B 62c0519 | gitlint
 For now, it's required that you specify ```--pretty=%B``` (=only print the log message, not the metadata),
 future versions of gitlint might fix this.
 
-### Linting a range of commits ###
+## Linting a range of commits ##
+_Introduced in gitlint v0.8.1_
 
-While gitlint does not yet support linting a range or set of commits at once, it's actually quite easy to do this using
-a simple bash script that pipes the commit messages one by one into gitlint.
+Gitlint allows users to commit a number of commits at once like so:
+
+```bash
+# Lint a specific commit range:
+gitlint --commits 019cf40...d6bc75a
+# You can also use git's special references:
+gitlint --commits origin..HEAD
+# Or specify a single specific commit:
+gitlint --commits 6f29bf81a8322a04071bb794666e48c443a90360
+```
+
+The ```--commits``` flag takes a **single** refspec argument or commit range. Basically, any range that is understood
+by [git rev-list](https://git-scm.com/docs/git-rev-list) as a single argument will work.
+
+Prior to v0.8.1 gitlint didn't support this feature. However, older versions of gitlint can still lint a range or set
+of commits at once by creating a simple bash script that pipes the commit messages one by one into gitlint. This
+approach can still be used with newer versions of gitlint in case ```--commits``` doesn't provide the flexibility you
+are looking for.
 
 ```bash
 #!/bin/bash
@@ -167,11 +184,11 @@ for commit in $(git rev-list master); do
     echo "--------"
 done
 ```
+
 !!! note
     One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
     This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
-    lint a large set of commits. For reference, at the time of writing, linting gitlint's entire commit log
-    (~160 commits) this way took about 12 seconds on a 2015 Macbook Pro.
+    lint a large set of commits. Always use ```--commits``` if you can to avoid this performance penalty.
 
 
 ## Merge commits ##
