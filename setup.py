@@ -6,7 +6,10 @@ import os
 # There is an issue with building python packages in a shared vagrant directory because of how setuptools works
 # in python < 2.7.9. We solve this by deleting the filesystem hardlinking capability during build.
 # See: http://stackoverflow.com/a/22147112/381010
-del os.link
+try:
+    del os.link
+except:
+    pass # Not all OSes (e.g. windows) support os.link
 
 description = "Git commit message linter written in python, checks your commit messages for style."
 long_description = """
@@ -61,13 +64,15 @@ setup(
     ],
     install_requires=[
         'Click==6.6',
-        'sh==1.11',
         'arrow==0.10.0',
         'ordereddict==1.1',
     ],
     extras_require={
         ':python_version == "2.6"': [
             'importlib==1.0.3',
+        ],
+        ':sys_platform != "win32"': [
+            'sh==1.11',
         ],
     },
     keywords='gitlint git lint',

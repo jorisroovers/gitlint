@@ -1,7 +1,23 @@
+# pylint: disable=bad-option-value,wrong-import-position
+# We need to disable the import position checks because of the windows check that we need to do below
 import os
+import platform
 import sys
 
 import click
+
+# Error codes
+MAX_VIOLATION_ERROR_CODE = 252  # noqa
+USAGE_ERROR_CODE = 253  # noqa
+GIT_CONTEXT_ERROR_CODE = 254  # noqa
+CONFIG_ERROR_CODE = 255  # noqa
+
+# We need to make sure we're not on Windows before importing other gitlint modules, as some of these modules use sh
+# which will raise an exception when imported on Windows.
+if "windows" in platform.system().lower():  # noqa
+    click.echo("Gitlint currently does not support Windows. Check out "  # noqa
+               "https://github.com/jorisroovers/gitlint/issues/20 for details.", err=True)  # noqa
+    exit(USAGE_ERROR_CODE)  # noqa
 
 import gitlint
 from gitlint.lint import GitLinter
@@ -12,11 +28,6 @@ from gitlint.utils import ustr
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 
-# Error codes
-MAX_VIOLATION_ERROR_CODE = 252
-USAGE_ERROR_CODE = 253
-GIT_CONTEXT_ERROR_CODE = 254
-CONFIG_ERROR_CODE = 255
 # Since we use the return code to denote the amount of errors, we need to change the default click usage error code
 click.UsageError.exit_code = USAGE_ERROR_CODE
 
