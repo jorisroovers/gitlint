@@ -202,6 +202,16 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
+    @patch('gitlint.git.sh')
+    @patch('gitlint.cli.sys')
+    def test_no_commits_in_range(self, sys, sh):
+        sys.stdin.isatty.return_value = True
+        sh.git.side_effect = lambda *_args, **_kwargs: ""
+        result = self.cli.invoke(cli.cli, ["--commits", "master...HEAD"])
+        expected = u'No commits in range "master...HEAD".\n'
+        self.assertEqual(result.output, expected)
+        self.assertEqual(result.exit_code, 0)
+
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
     def test_install_hook(self, install_hook):
         result = self.cli.invoke(cli.cli, ["install-hook"])

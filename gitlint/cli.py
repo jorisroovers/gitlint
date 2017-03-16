@@ -121,6 +121,12 @@ def lint(ctx):
         click.echo(ustr(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
+    number_of_commits = len(gitcontext.commits)
+
+    if number_of_commits == 0:
+        click.echo(u'No commits in range "{0}".'.format(ctx.obj[2]))
+        ctx.exit(0)
+
     config_builder = ctx.obj[1]
     last_commit = gitcontext.commits[-1]
     # Apply an additional config that is specified in the last commit message
@@ -129,7 +135,6 @@ def lint(ctx):
 
     # Let's get linting!
     linter = GitLinter(lint_config)
-    number_of_commits = len(gitcontext.commits)
     first_violation = True
 
     for commit in gitcontext.commits:
