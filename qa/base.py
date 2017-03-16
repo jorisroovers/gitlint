@@ -31,6 +31,10 @@ class BaseTestCase(TestCase):
         # ftp://www.kernel.org/pub/software/scm/git/docs/git-config.html
         git("config", "core.quotePath", "false", _cwd=cls.tmp_git_repo)
 
+        # Git on mac doesn't like unicode characters by default, so we need to set this option
+        # http://stackoverflow.com/questions/5581857/git-and-the-umlaut-problem-on-mac-os-x
+        git("config", "core.precomposeunicode", "true", _cwd=cls.tmp_git_repo)
+
     @classmethod
     def tearDownClass(cls):
         """ Cleans up the temporary git repository """

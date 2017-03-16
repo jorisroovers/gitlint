@@ -143,6 +143,10 @@ run_lint_check(){
 
 run_build_test(){
     clean
+    echo -n "Making sure wheel is installed..."
+    pip install "$(grep --color=never wheel requirements.txt)" > /dev/null
+    echo -e "${GREEN}DONE${NO_COLOR}"
+
     datestr=$(date +"%Y-%m-%d-%H-%M-%S")
     temp_dir="/tmp/gitlint-build-test-$datestr"
 
@@ -204,16 +208,16 @@ clean(){
 
 run_all(){
     local exit_code=0
-    subtitle "# UNIT TESTS #"
+    subtitle "# UNIT TESTS ($(python --version 2>&1), $(which python)) #"
     run_unit_tests
     exit_code=$((exit_code + $?))
-    subtitle "# INTEGRATION TESTS #"
+    subtitle "# INTEGRATION TESTS ($(python --version 2>&1), $(which python)) #"
     run_integration_tests
     exit_code=$((exit_code + $?))
-    subtitle "# BUILD TEST #"
+    subtitle "# BUILD TEST ($(python --version 2>&1), $(which python)) #"
     run_build_test
     exit_code=$((exit_code + $?))
-    subtitle "# STYLE CHECKS #"
+    subtitle "# STYLE CHECKS ($(python --version 2>&1), $(which python)) #"
     run_pep8_check
     exit_code=$((exit_code + $?))
     run_lint_check
