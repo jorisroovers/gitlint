@@ -123,6 +123,10 @@ def lint(ctx):
 
     number_of_commits = len(gitcontext.commits)
 
+    # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
+    # where users are using --commits in a check job to check the commit messages inside a CI job. By returning 0, we
+    # ensure that these jobs don't fail if for whatever reason the specified commit range is empty.
+
     if number_of_commits == 0:
         click.echo(u'No commits in range "{0}".'.format(ctx.obj[2]))
         ctx.exit(0)

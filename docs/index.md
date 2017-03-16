@@ -153,7 +153,8 @@ For now, it's required that you specify ```--pretty=%B``` (=only print the log m
 future versions of gitlint might fix this.
 
 ## Linting a range of commits ##
-_Introduced in gitlint v0.8.1_
+_Experimental support introduced in gitlint v0.8.1, known issues:_
+_[#23](https://github.com/jorisroovers/gitlint/pull/23), [#24](https://github.com/jorisroovers/gitlint/pull/24)_
 
 Gitlint allows users to commit a number of commits at once like so:
 

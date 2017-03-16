@@ -1,5 +1,20 @@
 # Changelog #
 
+## v0.8.1 (2017-03-16) ##
+
+The 0.8.1 release brings minor tweaks and some experimental features. Special thanks to
+[tommyip](https://github.com/tommyip) for his contributions.
+
+- Experimental: Linting a range of commits.
+  [Documentation](http://jorisroovers.github.io/gitlint/#linting-a-range-of-commits).
+  Known Caveats: [#23](https://github.com/jorisroovers/gitlint/issues/23),
+  [#24](https://github.com/jorisroovers/gitlint/issues/24).
+  Closes [#14](https://github.com/jorisroovers/gitlint/issues/14). Thanks to [tommyip](https://github.com/tommyip)
+  for implementing this!
+- Experimental: Python 3.6 support
+- Improved Windows error messaging: gitlint will now show a more descriptive error message when ran on windows.
+  See [#20](https://github.com/jorisroovers/gitlint/issues/20) for details on the lack of Windows support.
+
 ## v0.8.0 (2016-12-30) ##
 
 The 0.8.0 release is a significant release that has been in the works for a long time. Special thanks to
