@@ -38,7 +38,7 @@ class IntegrationTests(BaseTestCase):
         self.assertEqual(output.exit_code, 1)
         self.assertEqual(output, u"1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
 
-    def test_errors(self):
+    def test_violations(self):
         commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
         self._create_simple_commit(commit_msg)
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])

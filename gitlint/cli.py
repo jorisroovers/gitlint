@@ -146,7 +146,7 @@ def lint(ctx):
         if violations:
             # Display the commit hash & new lines intelligently
             if number_of_commits > 1 and commit.sha:
-                click.echo(u"{0}Commit {1}:".format(
+                linter.display.e(u"{0}Commit {1}:".format(
                     "\n" if not first_violation or commit is last_commit else "",
                     commit.sha[:10]
                 ))

@@ -49,6 +49,35 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
 
+    @patch('gitlint.git.sh')
+    @patch('gitlint.cli.sys')
+    def test_lint_multiple_commits(self, sys, sh):
+        sys.stdin.isatty.return_value = True
+
+        sh.git.log.side_effect = [u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                                  u"commït-title1\n\ncommït-body1",
+                                  u"test åuthor2,test-email3@föo.com,2016-12-04 15:28:15 01:00,åbc\n"
+                                  u"commït-title2\n\ncommït-body2",
+                                  u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
+                                  u"commït-title3\n\ncommït-body3", ]
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +
+                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
+                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+                              u"file1.txt\npåth/to/file2.txt\n",
+                              u"file4.txt\npåth/to/file5.txt\n",
+                              u"file6.txt\npåth/to/file7.txt\n"]
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli)
+            expected = (u"Commit 6f29bf81a8:\n"
+                        u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
+                        u"Commit 25053ccec5:\n"
+                        u'3: B5 Body message is too short (12<20): "commït-body2"\n\n'
+                        u"Commit 4da2656b0d:\n"
+                        u'3: B5 Body message is too short (12<20): "commït-body3"\n')
+            self.assertEqual(stderr.getvalue(), expected)
+            self.assertEqual(result.exit_code, 1)
+
     def test_input_stream(self):
         expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
                           u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: tïtle \"\n" + \

@@ -72,6 +72,12 @@ class BaseTestCase(TestCase):
         samples_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
         return os.path.join(samples_dir, filename)
 
+    def get_last_commit_short_hash(self):
+        return git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
+
+    def get_last_commit_hash(self):
+        return git("rev-parse", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
+
     @staticmethod
     def get_expected(filename="", variable_dict=None):
         """ Utility method to read an 'expected' file and return it as a string. Optionally replace template variables
