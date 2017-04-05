@@ -1,8 +1,7 @@
 # User Defined Rules
 _Introduced in gitlint v0.8.0_
 
-Gitlint supports the concept of user-defined rules: the ability for users
-to write your own custom rules that are executed when gitlint is.
+Gitlint supports the concept of user-defined rules: the ability for users to write their own custom rules in python.
 
 In a nutshell, use ```--extra-path /home/joe/myextensions``` to point gitlint to a ```myextensions``` directory where it will search
 for python files containing gitlint rule classes.
@@ -155,7 +154,7 @@ Options are not unique to ```LineRule```s, they can also be used by ```CommitRul
 [Options](user_defined_rules.md#options) section below.
 
 
-### The commit object ###
+## The commit object ##
 Both ```CommitRule```s and ```LineRule```s take a ```commit``` object in their ```validate(...)``` methods.
 The table below outlines the various attributes of that commit object that can be used during validation.
 
@@ -170,6 +169,9 @@ commit.message.body     | list of string | List of lines in the body of the comm
 commit.author_name      | string         | Name of the author, result of ```git log --pretty=%aN```
 commit.author_email     | string         | Email of the author, result of ```git log --pretty=%aE```
 commit.date             | datetime       | Python ```datetime``` object representing the time of commit
+commit.is_merge_commit  | boolean        | Boolean indicating whether the commit is a merge commit or not.
+commit.parents          | list of string | List of parent commit ```sha```s (only for merge commits).
+commit.changed_files    | list of string | List of files changed in the commit (relative paths).
 commit.context          | object         | Object pointing to the bigger git context that the commit is part of
 commit.context.commits  | list of commit | List of commits in the git context. Note that this might only be the subset of commits that gitlint is acting on, not all commits in the repo.
 
@@ -279,8 +281,8 @@ ultimate source of truth, here are some of the requirements that gitlint enforce
 - Rules **must** extend from  ```LineRule``` or ```CommitRule```
 - Rule classes **must** have ```id``` and ```name``` string attributes. The ```options_spec``` is optional,
   but if set, it **must** be a list of gitlint Options.
-- Rule classes **must** have a ```validate``` method. In case of a ```CommitRule```, ```validate```  *must* take a single ```commit``` parameter.
-  In case of ```LineRule```, ```validate``` must take ```line``` and ```commit``` as first and second parameters.
+- Rule classes **must** have a ```validate``` method. In case of a ```CommitRule```, ```validate```  **must** take a single ```commit``` parameter.
+  In case of ```LineRule```, ```validate``` **must** take ```line``` and ```commit``` as first and second parameters.
 - LineRule classes **must** have a ```target``` class attributes that is set to either ```CommitMessageTitle``` or ```CommitMessageBody```.
 - User Rule id's **cannot** start with ```R```, ```T```, ```B``` or ```M``` as these rule ids are reserved for gitlint itself.
 - Rules **should** have a case-insensitive unique id as only one rule can exist with a given id. While gitlint does not enforce this, having multiple rules with
