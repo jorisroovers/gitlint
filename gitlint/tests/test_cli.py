@@ -76,7 +76,7 @@ class CLITests(BaseTestCase):
                         u"Commit 4da2656b0d:\n"
                         u'3: B5 Body message is too short (12<20): "commït-body3"\n')
             self.assertEqual(stderr.getvalue(), expected)
-            self.assertEqual(result.exit_code, 1)
+            self.assertEqual(result.exit_code, 3)
 
     def test_input_stream(self):
         expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \

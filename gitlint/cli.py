@@ -141,8 +141,10 @@ def lint(ctx):
     linter = GitLinter(lint_config)
     first_violation = True
 
+    exit_code = 0
     for commit in gitcontext.commits:
         violations = linter.lint(commit)
+        exit_code += len(violations)
         if violations:
             # Display the commit hash & new lines intelligently
             if number_of_commits > 1 and commit.sha:
@@ -153,7 +155,7 @@ def lint(ctx):
             linter.print_violations(violations)
             first_violation = False
 
-    exit_code = min(MAX_VIOLATION_ERROR_CODE, len(violations))
+    exit_code = min(MAX_VIOLATION_ERROR_CODE, exit_code)
     ctx.exit(exit_code)
 
 

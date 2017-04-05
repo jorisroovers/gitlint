@@ -29,7 +29,7 @@ class CommitsTests(BaseTestCase):
         self._create_simple_commit(u"Sïmple title3.\n")
         commit_sha2 = self.get_last_commit_hash()[:10]
         output = gitlint("--commits", "test-branch-commits-violations-base...test-branch-commits-violations",
-                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
         expected = (u"Commit {0}:\n".format(commit_sha2) +
                     u"1: T3 Title has trailing punctuation (.): \"Sïmple title3.\"\n" +
                     u"3: B6 Body message is missing\n"
@@ -38,7 +38,7 @@ class CommitsTests(BaseTestCase):
                     u"1: T3 Title has trailing punctuation (.): \"Sïmple title2.\"\n"
                     u"3: B6 Body message is missing\n")
 
-        self.assertEqual(output.exit_code, 2)
+        self.assertEqual(output.exit_code, 4)
         self.assertEqual(output, expected)
 
     def test_single_commit(self):
