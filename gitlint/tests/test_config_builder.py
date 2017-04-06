@@ -6,6 +6,31 @@ from gitlint.config import LintConfig, LintConfigBuilder, LintConfigError
 
 
 class LintConfigBuilderTests(BaseTestCase):
+    def test_set_option(self):
+        config_builder = LintConfigBuilder()
+        config = config_builder.build()
+
+        # assert some defaults
+        self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 72)
+        self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 80)
+        self.assertListEqual(config.get_rule_option('title-must-not-contain-word', 'words'), ["WIP"])
+        self.assertEqual(config.verbosity, 3)
+
+        # Make some changes and check blueprint
+        config_builder.set_option('title-max-length', 'line-length', 100)
+        config_builder.set_option('general', 'verbosity', 2)
+        config_builder.set_option('title-must-not-contain-word', 'words', ["foo", "bar"])
+        expected_blueprint = {'title-must-not-contain-word': {'words': ['foo', 'bar']},
+                              'title-max-length': {'line-length': 100}, 'general': {'verbosity': 2}}
+        self.assertDictEqual(config_builder._config_blueprint, expected_blueprint)
+
+        # Build config and verify that the changes have occurred and no other changes
+        config = config_builder.build()
+        self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 100)
+        self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 80)  # should be unchanged
+        self.assertListEqual(config.get_rule_option('title-must-not-contain-word', 'words'), ["foo", "bar"])
+        self.assertEqual(config.verbosity, 2)
+
     def test_set_from_commit_ignore_all(self):
         config = LintConfig()
         original_rules = config.rules
@@ -107,11 +132,6 @@ class LintConfigBuilderTests(BaseTestCase):
 
     def test_set_config_from_string_list(self):
         config = LintConfig()
-        # assert some defaults
-        self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 72)
-        self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 80)
-        self.assertListEqual(config.get_rule_option('title-must-not-contain-word', 'words'), ["WIP"])
-        self.assertEqual(config.verbosity, 3)
 
         # change and assert changes
         config_builder = LintConfigBuilder()
@@ -160,8 +180,24 @@ class LintConfigBuilderTests(BaseTestCase):
         lint_config = config_builder.build()
         self.assertEqual(lint_config.verbosity, 3)
 
-        # check that existing config changes when we rebuild it
+        # check that existing config gets overwritten when we pass it to a configbuilder with different options
         existing_lintconfig = LintConfig()
         existing_lintconfig.verbosity = 2
         lint_config = config_builder.build(existing_lintconfig)
         self.assertEqual(lint_config.verbosity, 3)
+        self.assertEqual(existing_lintconfig.verbosity, 3)
+
+    def test_clone(self):
+        config_builder = LintConfigBuilder()
+        config_builder.set_option('general', 'verbosity', 2)
+        config_builder.set_option('title-max-length', 'line-length', 100)
+        expected = {'title-max-length': {'line-length': 100}, 'general': {'verbosity': 2}}
+        self.assertDictEqual(config_builder._config_blueprint, expected)
+
+        # Clone and verify that the blueprint is the same as the original
+        cloned_builder = config_builder.clone()
+        self.assertDictEqual(cloned_builder._config_blueprint, expected)
+
+        # Modify the original and make sure we're not modifying the clone (i.e. check that the copy is a deep copy)
+        config_builder.set_option('title-max-length', 'line-length', 120)
+        self.assertDictEqual(cloned_builder._config_blueprint, expected)

@@ -122,28 +122,30 @@ def lint(ctx):
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
     number_of_commits = len(gitcontext.commits)
-
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
     # where users are using --commits in a check job to check the commit messages inside a CI job. By returning 0, we
     # ensure that these jobs don't fail if for whatever reason the specified commit range is empty.
-
     if number_of_commits == 0:
         click.echo(u'No commits in range "{0}".'.format(ctx.obj[2]))
         ctx.exit(0)
 
-    config_builder = ctx.obj[1]
+    general_config_builder = ctx.obj[1]
     last_commit = gitcontext.commits[-1]
-    # Apply an additional config that is specified in the last commit message
-    config_builder.set_config_from_commit(last_commit)
-    lint_config = config_builder.build(lint_config)
 
     # Let's get linting!
-    linter = GitLinter(lint_config)
     first_violation = True
-
     exit_code = 0
     for commit in gitcontext.commits:
+
+        # Build a config_builder and linter taking into account the commit specific config (if any)
+        config_builder = general_config_builder.clone()
+        config_builder.set_config_from_commit(commit)
+        lint_config = config_builder.build(lint_config)
+        linter = GitLinter(lint_config)
+
+        # Actually do the linting
         violations = linter.lint(commit)
+        # exit code equals the total number of violations in all commits
         exit_code += len(violations)
         if violations:
             # Display the commit hash & new lines intelligently
@@ -155,6 +157,8 @@ def lint(ctx):
             linter.print_violations(violations)
             first_violation = False
 
+    # cap actual max exit code because bash doesn't like exit codes larger than 255:
+    # http://tldp.org/LDP/abs/html/exitcodes.html
     exit_code = min(MAX_VIOLATION_ERROR_CODE, exit_code)
     ctx.exit(exit_code)
 

@@ -7,7 +7,7 @@ from qa.base import BaseTestCase
 class ConfigTests(BaseTestCase):
     """ Integration tests for gitlint configuration and configuration precedence. """
 
-    def test_ignore_by_code(self):
+    def test_ignore_by_id(self):
         self._create_simple_commit(u"WIP: Thïs is a title.\nContënt on the second line")
         output = gitlint("--ignore", "T5,B4", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
         expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Thïs is a title.\"\n"

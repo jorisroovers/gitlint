@@ -29,12 +29,14 @@ class CLITests(BaseTestCase):
         self.cli = CliRunner()
 
     def test_version(self):
+        """ Test for --version option """
         result = self.cli.invoke(cli.cli, ["--version"])
         self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
 
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
     def test_lint(self, sys, sh):
+        """ Test for basic simple linting functionality """
         sys.stdin.isatty.return_value = True
 
         def git_log_side_effect(*_args, **_kwargs):
@@ -52,6 +54,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
     def test_lint_multiple_commits(self, sys, sh):
+        """ Test for --commits option """
         sys.stdin.isatty.return_value = True
 
         sh.git.log.side_effect = [u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
@@ -78,7 +81,38 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
 
+    @patch('gitlint.git.sh')
+    @patch('gitlint.cli.sys')
+    def test_lint_multiple_commits_config(self, sys, sh):
+        """ Test for --commits option where some of the commits have gitlint config in the commit message """
+        sys.stdin.isatty.return_value = True
+
+        # Note that the second commit title has a trailing period that is being ignored by gitlint-ignore: T3
+        sh.git.log.side_effect = [u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                                  u"commït-title1\n\ncommït-body1",
+                                  u"test åuthor2,test-email3@föo.com,2016-12-04 15:28:15 01:00,åbc\n"
+                                  u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
+                                  u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
+                                  u"commït-title3\n\ncommït-body3", ]
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +
+                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
+                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+                              u"file1.txt\npåth/to/file2.txt\n",
+                              u"file4.txt\npåth/to/file5.txt\n",
+                              u"file6.txt\npåth/to/file7.txt\n"]
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli)
+            # We expect that the second commit has no failures because of 'gitlint-ignore: T3' in its commit msg body
+            expected = (u"Commit 6f29bf81a8:\n"
+                        u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
+                        u"Commit 4da2656b0d:\n"
+                        u'3: B5 Body message is too short (12<20): "commït-body3"\n')
+            self.assertEqual(stderr.getvalue(), expected)
+            self.assertEqual(result.exit_code, 2)
+
     def test_input_stream(self):
+        """ Test for linting when a message is passed via stdin """
         expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
                           u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: tïtle \"\n" + \
                           u"3: B6 Body message is missing\n"
@@ -90,6 +124,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.output, "")
 
     def test_silent_mode(self):
+        """ Test for --silent option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--silent"], input=u"WIP: tïtle \n")
             self.assertEqual(stderr.getvalue(), "")
@@ -97,6 +132,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.output, "")
 
     def test_verbosity(self):
+        """ Test for --verbosity option """
         # We only test -v and -vv, more testing is really not required here
         # -v
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -124,6 +160,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.output, "Config Error: Option 'verbosity' must be set between 0 and 3\n")
 
     def test_debug(self):
+        """ Test for --debug option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
             result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"], input=u"WIP: tëst")
@@ -135,6 +172,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 2)
 
     def test_extra_path(self):
+        """ Test for --extra-path flag """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules")
             result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
@@ -144,6 +182,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 2)
 
     def test_config_file(self):
+        """ Test for --config option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
             result = self.cli.invoke(cli.cli, ["--config", config_path], input=u"WIP: tëst")
@@ -152,6 +191,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 2)
 
     def test_config_file_negative(self):
+        """ Negative test for --config option """
         # Directory as config file
         config_path = self.get_sample_path("config")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
@@ -175,6 +215,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.cli.sys')
     def test_target(self, sys):
+        """ Test for the --target option """
         sys.stdin.isatty.return_value = True
         result = self.cli.invoke(cli.cli, ["--target", "/tmp"])
         # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
@@ -184,6 +225,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.output, "%s is not a git repository.\n" % expected_path)
 
     def test_target_negative(self):
+        """ Negative test for the --target option """
         # try setting a non-existing target
         result = self.cli.invoke(cli.cli, ["--target", u"/föo/bar"])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
@@ -199,6 +241,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.config.LintConfigGenerator.generate_config')
     def test_generate_config(self, generate_config):
+        """ Test for the generate-config subcommand """
         result = self.cli.invoke(cli.cli, ["generate-config"], input=u"tëstfile\n")
         self.assertEqual(result.exit_code, 0)
         expected_msg = u"Please specify a location for the sample gitlint config file [.gitlint]: tëstfile\n" + \
@@ -207,6 +250,7 @@ class CLITests(BaseTestCase):
         generate_config.assert_called_once_with(os.path.abspath(u"tëstfile"))
 
     def test_generate_config_negative(self):
+        """ Negative test for the generate-config subcommand """
         # Non-existing directory
         result = self.cli.invoke(cli.cli, ["generate-config"], input=u"/föo/bar")
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
@@ -226,6 +270,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
     def test_git_error(self, sys, sh):
+        """ Tests that the cli handles git errors properly """
         sys.stdin.isatty.return_value = True
         sh.git.side_effect = CommandNotFound("git")
         result = self.cli.invoke(cli.cli)
@@ -234,6 +279,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
     def test_no_commits_in_range(self, sys, sh):
+        """ Test for --commits with the specified range being empty. """
         sys.stdin.isatty.return_value = True
         sh.git.side_effect = lambda *_args, **_kwargs: ""
         result = self.cli.invoke(cli.cli, ["--commits", "master...HEAD"])
@@ -243,6 +289,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
     def test_install_hook(self, install_hook):
+        """ Test for install-hook subcommand """
         result = self.cli.invoke(cli.cli, ["install-hook"])
         expected_path = os.path.join(os.getcwd(), hooks.COMMIT_MSG_HOOK_DST_PATH)
         expected = "Successfully installed gitlint commit-msg hook in {0}\n".format(expected_path)
@@ -254,6 +301,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
     def test_install_hook_target(self, install_hook):
+        """  Test for install-hook subcommand with a specific --target option specified """
         # Specified target
         result = self.cli.invoke(cli.cli, ["--target", self.SAMPLES_DIR, "install-hook"])
         expected_path = os.path.realpath(os.path.join(self.SAMPLES_DIR, hooks.COMMIT_MSG_HOOK_DST_PATH))
@@ -267,6 +315,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError(u"tëst"))
     def test_install_hook_negative(self, install_hook):
+        """ Negative test for install-hook subcommand """
         result = self.cli.invoke(cli.cli, ["install-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, u"tëst\n")
@@ -276,6 +325,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
     def test_uninstall_hook(self, uninstall_hook):
+        """ Test for uninstall-hook subcommand """
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         expected_path = os.path.realpath(os.path.join(os.getcwd(), hooks.COMMIT_MSG_HOOK_DST_PATH))
         expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_path)
@@ -287,6 +337,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError(u"tëst"))
     def test_uninstall_hook_negative(self, uninstall_hook):
+        """ Negative test for uninstall-hook subcommand """
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, u"tëst\n")

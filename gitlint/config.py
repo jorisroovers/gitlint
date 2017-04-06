@@ -5,6 +5,7 @@ except ImportError:  # pragma: no cover
     # python 3.x
     from configparser import ConfigParser, Error as ConfigParserError  # pragma: no cover, pylint: disable=import-error
 
+import copy
 import re
 import os
 import shutil
@@ -255,7 +256,7 @@ class LintConfigBuilder(object):
             Supported:
              - gitlint-ignore: all
         """
-        for line in commit.message.full.split("\n"):
+        for line in commit.message.body:
             pattern = re.compile(r"^gitlint-ignore:\s*(.*)")
             matches = pattern.match(line)
             if matches and len(matches.groups()) == 1:
@@ -315,6 +316,13 @@ class LintConfigBuilder(object):
                     config.set_rule_option(section_name, option_name, option_value)
 
         return config
+
+    def clone(self):
+        """ Creates an exact copy of a LintConfigBuilder.  """
+        builder = LintConfigBuilder()
+        builder._config_blueprint = copy.deepcopy(self._config_blueprint)
+        builder._config_path = self._config_path
+        return builder
 
 
 GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/gitlint")
