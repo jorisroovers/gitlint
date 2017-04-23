@@ -68,7 +68,7 @@ class LintConfig(object):
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
         self._extra_path = None
         target_description = "Path of the target git repository (default=current working directory)"
-        self._target = options.DirectoryOption('target', os.path.abspath(os.getcwd()), target_description)
+        self._target = options.PathOption('target', os.path.abspath(os.getcwd()), target_description)
         self._ignore = options.ListOption('ignore', [], 'List of rule-ids to ignore')
         self._config_path = None
 
@@ -120,8 +120,11 @@ class LintConfig(object):
             if self.extra_path:
                 self._extra_path.set(value)
             else:
-                self._extra_path = options.DirectoryOption('extra-path', value,
-                                                           "Path to a directory with extra user-defined rules")
+                self._extra_path = options.PathOption(
+                    'extra-path', value,
+                    "Path to a directory or module with extra user-defined rules",
+                    type='both'
+                )
 
             # Make sure we unload any previously loaded extra-path rules
             for rule in self.rules:

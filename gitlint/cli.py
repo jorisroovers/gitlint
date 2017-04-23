@@ -82,8 +82,8 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
 @click.option('--commits', default="HEAD", help="The range of commits to lint. [default: HEAD]")
-@click.option('-e', '--extra-path', help="Path to a directory with extra user-defined rules",
-              type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True))
+@click.option('-e', '--extra-path', help="Path to a directory or python module with extra user-defined rules",
+              type=click.Path(exists=True, resolve_path=True, readable=True))
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )

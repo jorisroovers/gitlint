@@ -87,10 +87,28 @@ class ListOption(RuleOption):
         self.value = [ustr(item.strip()) for item in the_list if item.strip() != ""]
 
 
-class DirectoryOption(RuleOption):
+class PathOption(RuleOption):
+    """ Option that accepts either a directory or both a directory and a file. """
+
+    def __init__(self, name, value, description, type='dir'):
+        self.type = type
+        super(PathOption, self).__init__(name, value, description)
+
     def set(self, value):
         value = ustr(value)
-        if not os.path.isdir(value):
-            msg = u"Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
-            raise RuleOptionError(msg)
+
+        error_msg = u""
+
+        if self.type == 'dir':
+            if not os.path.isdir(value):
+                error_msg = u"Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
+
+        elif self.type == 'both':
+            if not os.path.isdir(value) and not os.path.isfile(value):
+                error_msg = (u"Option {0} must be either an existing directory or file "
+                             u"(current value: '{1}')").format(self.name, value)
+
+        if error_msg:
+            raise RuleOptionError(error_msg)
+
         self.value = os.path.abspath(value)

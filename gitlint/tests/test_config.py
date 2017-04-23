@@ -114,9 +114,9 @@ class LintConfigTests(BaseTestCase):
 
     def test_extra_path_negative(self):
         config = LintConfig()
+        regex = u"Option extra-path must be either an existing directory or file \(current value: 'föo/bar'\)"
         # incorrect extra_path
-        with self.assertRaisesRegex(LintConfigError,
-                                    u"Option extra-path must be an existing directory \(current value: 'föo/bar'\)"):
+        with self.assertRaisesRegex(LintConfigError, regex):
             config.extra_path = u"föo/bar"
 
         # extra path contains classes with errors

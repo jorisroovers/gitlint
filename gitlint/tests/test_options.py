@@ -3,7 +3,7 @@ import os
 
 from gitlint.tests.base import BaseTestCase
 
-from gitlint.options import IntOption, BoolOption, StrOption, ListOption, DirectoryOption, RuleOptionError
+from gitlint.options import IntOption, BoolOption, StrOption, ListOption, PathOption, RuleOptionError
 
 
 class RuleOptionTests(BaseTestCase):
@@ -117,7 +117,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertListEqual(option.value, ["123"])
 
     def test_dir_option(self):
-        option = DirectoryOption("test-directory", ".", u"Test Description")
+        option = PathOption("test-directory", ".", u"Test Description")
         self.assertEqual(option.value, os.getcwd())
         self.assertEqual(option.name, "test-directory")
         self.assertEqual(option.description, u"Test Description")

@@ -5,7 +5,8 @@ Gitlint supports the concept of user-defined rules: the ability for users
 to write your own custom rules that are executed when gitlint is.
 
 In a nutshell, use ```--extra-path /home/joe/myextensions``` to point gitlint to a ```myextensions``` directory where it will search
-for python files containing gitlint rule classes.
+for python files containing gitlint rule classes. You can also specify a single python module, ie
+```--extra-path /home/joe/my_rules.py```.
 
 ```bash
 cat examples/commit-message-1 | gitlint --extra-path examples/
@@ -257,7 +258,7 @@ StrOption       | Strings
 IntOption       | Integers. ```IntOption``` takes an optional ```allow_negative``` parameter if you want to allow negative integers.
 BoolOption      | Booleans. Valid values: true, false. Case-insensitive.
 ListOption      | List of strings. Comma separated.
-DirectoryOption | Directory Paths. Must be an existing directory on the current host.
+PathOption      | Directory or file path. Takes an optional ```type``` parameter for specifying path type (```dir``` \| ```both```).
 
 !!! note
     Gitlint currently does not support options for all possible types (e.g. float, filepath, list of int, etc).
@@ -287,8 +288,7 @@ ultimate source of truth, here are some of the requirements that gitlint enforce
   the same id might lead to unexpected or undeterministic behavior.
 
 ### extra-path requirements ###
-- The ```extra-path``` option must point to a **directory**, not a file. However, the ```extra-path``` directory does
-  **not** need to be a proper python package, i.e. it doesn't require an ```__init__.py``` file.
+- If  ```extra-path``` is a directory, it does **not** need to be a proper python package, i.e. it doesn't require an ```__init__.py``` file.
 - Python files containing user-defined rules must have a ```.py``` extension. Files with a different extension will be ignored.
 - The ```extra-path``` will be searched non-recursively, i.e. all rule classes must be present at the top level ```extra-path``` directory.
 - User rule classes must be defined in the modules that are part of ```extra-path```, rules that are imported from outside the ```extra-path``` will be ignored.
