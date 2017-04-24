@@ -211,7 +211,7 @@ class TitleRegexMatches(LineRule):
         regex = self.options['regex'].value
         pattern = re.compile(regex, re.UNICODE)
         if not pattern.search(title):
-            violation_msg = u"Title does not match regex ({0})".format(regex)
+            violation_msg = u"Title '{0}' does not match regex /{1}/".format(title, regex)
             return [RuleViolation(self.id, violation_msg, title)]
 
 

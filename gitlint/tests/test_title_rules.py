@@ -150,5 +150,6 @@ class TitleRuleTests(BaseTestCase):
         # assert violation when no matching regex
         rule = TitleRegexMatches({'regex': u"^UÅ[0-9]*"})
         violations = rule.validate(commit.message.title, commit)
-        expected_violation = RuleViolation("T7", u"Title does not match regex (^UÅ[0-9]*)", u"US1234: åbc")
+        expected_violation = RuleViolation("T7", u"Title 'US1234: åbc' does not match regex /^UÅ[0-9]*/",
+                                           u"US1234: åbc")
         self.assertListEqual(violations, [expected_violation])
