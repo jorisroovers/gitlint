@@ -1,5 +1,6 @@
 # pylint: disable=bad-option-value,wrong-import-position
 # We need to disable the import position checks because of the windows check that we need to do below
+import logging
 import os
 import platform
 import sys
@@ -30,6 +31,19 @@ DEFAULT_CONFIG_FILE = ".gitlint"
 
 # Since we use the return code to denote the amount of errors, we need to change the default click usage error code
 click.UsageError.exit_code = USAGE_ERROR_CODE
+
+LOG = logging.getLogger(__name__)
+
+
+def setup_logging():
+    """ Setup gitlint logging """
+    root_log = logging.getLogger("gitlint")
+    root_log.propagate = False  # Don't propagate to child loggers, the gitlint root logger handles everything
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(levelname)s: %(name)s %(message)s')
+    handler.setFormatter(formatter)
+    root_log.addHandler(handler)
+    root_log.setLevel(logging.ERROR)
 
 
 def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent, debug):
@@ -94,6 +108,9 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
 def cli(ctx, target, config, c, commits, extra_path, ignore, verbose, silent, debug):
     """ Git lint tool, checks your git commit messages for styling issues """
 
+    if debug:
+        logging.getLogger("gitlint").setLevel(logging.DEBUG)
+
     # Get the lint config from the commandline parameters and
     # store it in the context (click allows storing an arbitrary object in ctx.obj).
     config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
@@ -136,7 +153,6 @@ def lint(ctx):
     first_violation = True
     exit_code = 0
     for commit in gitcontext.commits:
-
         # Build a config_builder and linter taking into account the commit specific config (if any)
         config_builder = general_config_builder.clone()
         config_builder.set_config_from_commit(commit)
@@ -160,6 +176,7 @@ def lint(ctx):
     # cap actual max exit code because bash doesn't like exit codes larger than 255:
     # http://tldp.org/LDP/abs/html/exitcodes.html
     exit_code = min(MAX_VIOLATION_ERROR_CODE, exit_code)
+    LOG.debug("Exit Code = %s", exit_code)
     ctx.exit(exit_code)
 
 
@@ -214,5 +231,7 @@ def generate_config(ctx):
     ctx.exit(0)
 
 
+# Let's Party!
+setup_logging()
 if __name__ == "__main__":
     cli()  # pragma: no cover, # pylint: disable=no-value-for-parameter

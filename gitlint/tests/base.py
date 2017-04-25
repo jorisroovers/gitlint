@@ -1,3 +1,4 @@
+import logging
 import os
 import unittest2
 
@@ -21,6 +22,13 @@ class BaseTestCase(unittest2.TestCase):
     maxDiff = None
 
     SAMPLES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
+
+    def setUp(self):
+        self.logcapture = LogCapture()
+        # Make sure that the format used by our test logger is the same as used by gitlint itself
+        formatter = logging.getLogger('gitlint').handlers[0].formatter
+        self.logcapture.setFormatter(formatter)
+        logging.getLogger('gitlint').handlers = [self.logcapture]
 
     @staticmethod
     def get_sample_path(filename=""):
@@ -64,3 +72,18 @@ class BaseTestCase(unittest2.TestCase):
         """ Utility method to easily create git commit given a commit msg string and an optional set of changed files"""
         gitcontext = BaseTestCase.gitcontext(commit_msg_str, changed_files)
         return gitcontext.commits[-1]
+
+    def assert_logged(self, lines):
+        """ Asserts that a certain list of messages has been logged """
+        self.assertListEqual(self.logcapture.messages, lines)
+
+
+class LogCapture(logging.Handler):
+    """ Mock logging handler used to capture any log messages during tests."""
+
+    def __init__(self, *args, **kwargs):
+        logging.Handler.__init__(self, *args, **kwargs)
+        self.messages = []
+
+    def emit(self, record):
+        self.messages.append(self.format(record))

@@ -29,8 +29,10 @@ target: {target}
   B7: body-changed-file-mention
      files=
 
+DEBUG: gitlint.lint Linting commit {commit_sha}
 1: T1 Title exceeds max length (42>20)
 1: T5 Title contains the word 'WIP' (case-insensitive)
 1: T5 Title contains the word 'thåt' (case-insensitive)
 2: B4 Second line is not empty
 3: B1 Line exceeds max length (48>30)
+DEBUG: gitlint.cli Exit Code = 5

@@ -26,6 +26,7 @@ class CLITests(BaseTestCase):
     CONFIG_ERROR_CODE = 255
 
     def setUp(self):
+        super(CLITests, self).setUp()
         self.cli = CliRunner()
 
     def test_version(self):
@@ -50,6 +51,11 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli)
             self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
+
+        # Make sure gitlint captured the correct logs
+        expected_logs = ["DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360",
+                         "DEBUG: gitlint.cli Exit Code = 1"]
+        self.assert_logged(expected_logs)
 
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
@@ -80,6 +86,13 @@ class CLITests(BaseTestCase):
                         u'3: B5 Body message is too short (12<20): "commït-body3"\n')
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
+
+            # Make sure gitlint captured the correct logs
+            expected_logs = ['DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360',
+                             'DEBUG: gitlint.lint Linting commit 25053ccec5e28e1bb8f7551fdbb5ab213ada2401',
+                             'DEBUG: gitlint.lint Linting commit 4da2656b0dadc76c7ee3fd0243a96cb64007f125',
+                             'DEBUG: gitlint.cli Exit Code = 3']
+            self.assert_logged(expected_logs)
 
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
@@ -170,6 +183,11 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.output, expected)
             self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
             self.assertEqual(result.exit_code, 2)
+
+        # Make sure gitlint captured the correct logs
+        expected_logs = ['DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]',
+                         'DEBUG: gitlint.cli Exit Code = 2']
+        self.assert_logged(expected_logs)
 
     def test_extra_path(self):
         """ Test for --extra-path flag """

@@ -69,9 +69,10 @@ class ConfigTests(BaseTestCase):
         commit_msg = u"WIP: Thïs is a title thåt is a bit longer.\nContent on the second line\n" + \
                      "This line of the body is here because we need it"
         self._create_simple_commit(commit_msg)
+        commit_sha = self.get_last_commit_hash()
         config_path = self.get_sample_path("config/gitlintconfig")
         output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
 
-        expected = self.get_expected('debug_output1', {'config_path': config_path, 'target': self.tmp_git_repo})
-
+        expected = self.get_expected('debug_output1', {'config_path': config_path, 'target': self.tmp_git_repo,
+                                                       'commit_sha': commit_sha})
         self.assertEqual(output, expected)

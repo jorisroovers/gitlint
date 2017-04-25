@@ -1,5 +1,9 @@
+import logging
 from gitlint import rules as gitlint_rules
 from gitlint import display
+
+LOG = logging.getLogger(__name__)
+logging.basicConfig()
 
 
 class GitLinter(object):
@@ -57,7 +61,7 @@ class GitLinter(object):
 
     def lint(self, commit):
         """ Lint the last commit in a given git context by applying all title, body and general rules. """
-
+        LOG.debug("Linting commit %s", commit.sha or "[SHA UNKNOWN]")
         # Skip linting if this is merge commit and if the config is set to ignore those
         if commit.is_merge_commit and self.config.ignore_merge_commits:
             return []
