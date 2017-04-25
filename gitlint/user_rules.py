@@ -15,16 +15,28 @@ class UserRuleError(Exception):
 
 def find_rule_classes(extra_path):
     """
-    Searches a given directory for rule classes. This is done by finding all python modules in the given directory,
-    adding them to the python path, importing them and then finding any Rule classes in those modules.
+    Searches a given directory or python module for rule classes. This is done by
+    adding the directory path to the python path, importing the modules and then finding
+    any Rule class in those modules.
 
-    :param extra_path: absolute directory path to search for rule classes
-    :return: The list of rule classes that are found in the given directory.
+    :param extra_path: absolute directory or file path to search for rule classes
+    :return: The list of rule classes that are found in the given directory or module
     """
 
-    # Find all python files in the given path
+    files = []
     modules = []
-    for filename in os.listdir(extra_path):
+
+    if os.path.isfile(extra_path):
+        files = [os.path.basename(extra_path)]
+        directory = os.path.dirname(extra_path)
+    elif os.path.isdir(extra_path):
+        files = os.listdir(extra_path)
+        directory = extra_path
+    else:
+        raise OSError('No such file or directory')
+
+    # Filter out files that are not python modules
+    for filename in files:
         if fnmatch.fnmatch(filename, '*.py'):
             modules.append(os.path.splitext(filename)[0])
 
@@ -32,8 +44,8 @@ def find_rule_classes(extra_path):
     if len(modules) == 0:
         return []
 
-    # Append the extra_path to the python path so that we can import the newly found rule modules
-    sys.path.append(extra_path)
+    # Append the extra rules path to python path so that we can import them
+    sys.path.append(directory)
 
     # Find all the rule classes in the found python files
     rule_classes = []

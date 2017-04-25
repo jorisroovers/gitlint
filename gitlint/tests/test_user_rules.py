@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 
 from gitlint.tests.base import BaseTestCase
@@ -47,6 +48,16 @@ class UserRuleTests(BaseTestCase):
         violations = rule_class.validate("false-commit-object (ignored)")
         self.assertListEqual(violations, [rules.RuleViolation("UC1", u"Commit violåtion 1", u"Contënt 1", 1),
                                           rules.RuleViolation("UC1", u"Commit violåtion 2", u"Contënt 2", 2)])
+
+    def test_extra_path_specified_by_file(self):
+        # Test that find_rule_classes can handle an extra path given as a file name instead of a directory
+        user_rule_path = self.get_sample_path("user_rules")
+        user_rule_module = os.path.join(user_rule_path, "my_commit_rules.py")
+        classes = find_rule_classes(user_rule_module)
+
+        rule_class = classes[0]()
+        violations = rule_class.validate("false-commit-object (ignored)")
+        self.assertListEqual(violations, [rules.RuleViolation("UC1", u"Commit violåtion 1", u"Contënt 1", 1)])
 
     def test_empty_user_classes(self):
         # Test that we don't find rules if we scan a different directory
