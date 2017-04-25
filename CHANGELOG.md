@@ -1,5 +1,18 @@
 # Changelog #
 
+## v0.8.1 (2017-04-25) ##
+
+The 0.8.2 release brings minor improvements, bugfixes and some under-the-hood changes. Special thanks to 
+[tommyip](https://github.com/tommyip) for his contributions.
+- ```--extra-path``` now also accepts a file path (in the past only directory paths where accepted).
+Thanks to [tommyip](https://github.com/tommyip) for implementing this!
+- gitlint will now show more information when using the ```--debug``` flag. This is initial work and will continue to
+be improved upon in later releases.
+- Bugfixes:
+    - [#24: --commits doesn't take commit specific config into account](https://github.com/jorisroovers/gitlint/issues/24)
+    - [#27: --commits returns the wrong exit code](https://github.com/jorisroovers/gitlint/issues/27)
+- Development: better unit and integration test coverage for ```--commits```
+
 ## v0.8.1 (2017-03-16) ##
 
 The 0.8.1 release brings minor tweaks and some experimental features. Special thanks to

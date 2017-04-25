@@ -260,7 +260,7 @@ StrOption       | Strings
 IntOption       | Integers. ```IntOption``` takes an optional ```allow_negative``` parameter if you want to allow negative integers.
 BoolOption      | Booleans. Valid values: true, false. Case-insensitive.
 ListOption      | List of strings. Comma separated.
-PathOption      | Directory or file path. Takes an optional ```type``` parameter for specifying path type (```dir``` \| ```both```).
+PathOption      | Directory or file path. Takes an optional ```type``` parameter for specifying path type (```file```, ```dir``` (=default) or ```both```).
 
 !!! note
     Gitlint currently does not support options for all possible types (e.g. float, filepath, list of int, etc).

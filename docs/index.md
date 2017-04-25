@@ -81,29 +81,29 @@ The default verbosity is ```-vvv```.
 
 Other commands and variations:
 
-```
+```no-highlight
 Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --target DIRECTORY          Path of the target git repository. [default:
-                              current working directory]
-  -C, --config PATH           Config file location [default: .gitlint]
-  -c TEXT                     Config flags in format <rule>.<option>=<value>
-                              (e.g.: -c T1.line-length=80). Flag can be used
-                              multiple times to set multiple config values.
-  --commits TEXT              The range of commits to lint. [default: HEAD]
-  -e, --extra-path DIRECTORY  Path to a directory with extra user-defined
-                              rules
-  --ignore TEXT               Ignore rules (comma-separated by id or name).
-  -v, --verbose               Verbosity, more v's for more verbose output
-                              (e.g.: -v, -vv, -vvv). [default: -vvv]
-  -s, --silent                Silent mode (no output). Takes precedence over
-                              -v, -vv, -vvv.
-  -d, --debug                 Enable debugging output.
-  --version                   Show the version and exit.
-  --help                      Show this message and exit.
+  --target DIRECTORY     Path of the target git repository. [default: current
+                         working directory]
+  -C, --config PATH      Config file location [default: .gitlint]
+  -c TEXT                Config flags in format <rule>.<option>=<value> (e.g.:
+                         -c T1.line-length=80). Flag can be used multiple
+                         times to set multiple config values.
+  --commits TEXT         The range of commits to lint. [default: HEAD]
+  -e, --extra-path PATH  Path to a directory or python module with extra user-
+                         defined rules
+  --ignore TEXT          Ignore rules (comma-separated by id or name).
+  -v, --verbose          Verbosity, more v's for more verbose output (e.g.:
+                         -v, -vv, -vvv). [default: -vvv]
+  -s, --silent           Silent mode (no output). Takes precedence over -v,
+                         -vv, -vvv.
+  -d, --debug            Enable debugging output.
+  --version              Show the version and exit.
+  --help                 Show this message and exit.
 
 Commands:
   generate-config  Generates a sample gitlint config file.
@@ -154,7 +154,7 @@ future versions of gitlint might fix this.
 
 ## Linting a range of commits ##
 _Experimental support introduced in gitlint v0.8.1, known issues:_
-_[#23](https://github.com/jorisroovers/gitlint/pull/23), [#24](https://github.com/jorisroovers/gitlint/pull/24)_
+_[#23](https://github.com/jorisroovers/gitlint/pull/23)_
 
 Gitlint allows users to commit a number of commits at once like so:
 

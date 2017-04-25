@@ -3,7 +3,7 @@ import os
 import unittest2
 
 from gitlint.git import GitContext
-from gitlint.utils import ustr
+from gitlint.utils import ustr, LOG_FORMAT
 
 # unittest2's assertRaisesRegex doesn't do unicode comparison.
 # Let's monkeypatch the str() function to point to unicode() so that it does :)
@@ -25,14 +25,16 @@ class BaseTestCase(unittest2.TestCase):
 
     def setUp(self):
         self.logcapture = LogCapture()
-        # Make sure that the format used by our test logger is the same as used by gitlint itself
-        formatter = logging.getLogger('gitlint').handlers[0].formatter
-        self.logcapture.setFormatter(formatter)
+        self.logcapture.setFormatter(logging.Formatter(LOG_FORMAT))
         logging.getLogger('gitlint').handlers = [self.logcapture]
 
     @staticmethod
     def get_sample_path(filename=""):
-        return os.path.join(BaseTestCase.SAMPLES_DIR, filename)
+        # Don't join up empty files names because this will add a trailing slash
+        if filename == "":
+            return ustr(BaseTestCase.SAMPLES_DIR)
+
+        return ustr(os.path.join(BaseTestCase.SAMPLES_DIR, filename))
 
     @staticmethod
     def get_sample(filename=""):

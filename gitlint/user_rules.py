@@ -33,7 +33,7 @@ def find_rule_classes(extra_path):
         files = os.listdir(extra_path)
         directory = extra_path
     else:
-        raise OSError('No such file or directory')
+        raise UserRuleError(u"Invalid extra-path: {0}".format(extra_path))
 
     # Filter out files that are not python modules
     for filename in files:

@@ -116,22 +116,51 @@ class RuleOptionTests(BaseTestCase):
         option.set(123)
         self.assertListEqual(option.value, ["123"])
 
-    def test_dir_option(self):
-        option = PathOption("test-directory", ".", u"Test Description")
+    def test_path_option(self):
+        option = PathOption("test-directory", ".", u"Test Description", type=u"dir")
         self.assertEqual(option.value, os.getcwd())
         self.assertEqual(option.name, "test-directory")
         self.assertEqual(option.description, u"Test Description")
+        self.assertEqual(option.type, u"dir")
 
         # re-set value
         option.set(self.SAMPLES_DIR)
         self.assertEqual(option.value, self.SAMPLES_DIR)
+
+        # set to int
+        expected = u"Option test-directory must be an existing directory \(current value: '1234'\)"
+        with self.assertRaisesRegex(RuleOptionError, expected):
+            option.set(1234)
 
         # set to non-existing directory
         expected = u"Option test-directory must be an existing directory \(current value: '/föo/bar'\)"
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(u"/föo/bar")
 
-        # set to int
-        expected = u"Option test-directory must be an existing directory \(current value: '1234'\)"
+        # set to a file, should raise exception since option.type = dir
+        sample_path = self.get_sample_path("commit_message/sample1")
+        expected = u"Option test-directory must be an existing directory \(current value: '{0}'\)".format(sample_path)
         with self.assertRaisesRegex(RuleOptionError, expected):
-            option.set(1234)
+            option.set(sample_path)
+
+        # set option.type = file, file should now be accepted, directories not
+        option.type = u"file"
+        option.set(sample_path)
+        self.assertEqual(option.value, sample_path)
+        expected = u"Option test-directory must be an existing file \(current value: '{0}'\)".format(
+            self.get_sample_path())
+        with self.assertRaisesRegex(RuleOptionError, expected):
+            option.set(self.get_sample_path())
+
+        # set option.type = both, files and directories should now be accepted
+        option.type = u"both"
+        option.set(sample_path)
+        self.assertEqual(option.value, sample_path)
+        option.set(self.get_sample_path())
+        self.assertEqual(option.value, self.get_sample_path())
+
+        # Expect exception if path type is invalid
+        option.type = u'föo'
+        expected = u"Option test-directory type must be one of: 'file', 'dir', 'both' \(current: 'föo'\)"
+        with self.assertRaisesRegex(RuleOptionError, expected):
+            option.set("haha")

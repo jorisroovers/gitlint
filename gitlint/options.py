@@ -90,7 +90,7 @@ class ListOption(RuleOption):
 class PathOption(RuleOption):
     """ Option that accepts either a directory or both a directory and a file. """
 
-    def __init__(self, name, value, description, type='dir'):
+    def __init__(self, name, value, description, type=u"dir"):
         self.type = type
         super(PathOption, self).__init__(name, value, description)
 
@@ -102,11 +102,16 @@ class PathOption(RuleOption):
         if self.type == 'dir':
             if not os.path.isdir(value):
                 error_msg = u"Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
-
+        elif self.type == 'file':
+            if not os.path.isfile(value):
+                error_msg = u"Option {0} must be an existing file (current value: '{1}')".format(self.name, value)
         elif self.type == 'both':
             if not os.path.isdir(value) and not os.path.isfile(value):
                 error_msg = (u"Option {0} must be either an existing directory or file "
                              u"(current value: '{1}')").format(self.name, value)
+        else:
+            error_msg = u"Option {0} type must be one of: 'file', 'dir', 'both' (current: '{1}')".format(self.name,
+                                                                                                         self.type)
 
         if error_msg:
             raise RuleOptionError(error_msg)

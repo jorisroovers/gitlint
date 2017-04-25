@@ -4,6 +4,7 @@ import sys
 from locale import getpreferredencoding
 
 DEFAULT_ENCODING = getpreferredencoding() or "UTF-8"
+LOG_FORMAT = '%(levelname)s: %(name)s %(message)s'
 
 
 def ustr(obj):

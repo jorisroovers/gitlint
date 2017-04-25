@@ -79,10 +79,7 @@ class UserRuleTests(BaseTestCase):
             find_rule_classes(user_rule_path)
 
     def test_find_rule_classes_nonexisting_path(self):
-        # When searching an non-existing path, we expect an OSError. That's fine because this case will be caught by
-        # the CLI (you cannot specify a non-existing directory). What we do here is just assert that we indeed
-        # get an OSError (so we guard against regressions).
-        with self.assertRaisesRegex(OSError, "No such file or directory"):
+        with self.assertRaisesRegex(UserRuleError, u"Invalid extra-path: föo/bar"):
             find_rule_classes(u"föo/bar")
 
     def test_assert_valid_rule_class(self):

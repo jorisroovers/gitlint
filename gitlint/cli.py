@@ -25,7 +25,7 @@ from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
 from gitlint.git import GitContext, GitContextError
 from gitlint import hooks
-from gitlint.utils import ustr
+from gitlint.utils import ustr, LOG_FORMAT
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 
@@ -40,7 +40,7 @@ def setup_logging():
     root_log = logging.getLogger("gitlint")
     root_log.propagate = False  # Don't propagate to child loggers, the gitlint root logger handles everything
     handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(levelname)s: %(name)s %(message)s')
+    formatter = logging.Formatter(LOG_FORMAT)
     handler.setFormatter(formatter)
     root_log.addHandler(handler)
     root_log.setLevel(logging.ERROR)

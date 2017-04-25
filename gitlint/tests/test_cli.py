@@ -191,8 +191,18 @@ class CLITests(BaseTestCase):
 
     def test_extra_path(self):
         """ Test for --extra-path flag """
+        # Test extra-path pointing to a directory
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules")
+            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
+            expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
+                              "3: B6 Body message is missing\n"
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 2)
+
+        # Test extra-path pointing to a file
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            extra_path = self.get_sample_path("user_rules/my_commit_rules.py")
             result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
             expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
                               "3: B6 Body message is missing\n"
