@@ -77,6 +77,8 @@
                 
                     <li><a class="toctree-l4" href="#line-and-commit-rules">Line and Commit Rules</a></li>
                 
+                    <li><a class="toctree-l4" href="#the-commit-object">The commit object</a></li>
+                
                     <li><a class="toctree-l4" href="#violations">Violations</a></li>
                 
                     <li><a class="toctree-l4" href="#options">Options</a></li>
@@ -133,10 +135,10 @@
               
                 <h1 id="user-defined-rules">User Defined Rules</h1>
 <p><em>Introduced in gitlint v0.8.0</em></p>
-<p>Gitlint supports the concept of user-defined rules: the ability for users
-to write your own custom rules that are executed when gitlint is.</p>
+<p>Gitlint supports the concept of user-defined rules: the ability for users to write their own custom rules in python.</p>
 <p>In a nutshell, use <code>--extra-path /home/joe/myextensions</code> to point gitlint to a <code>myextensions</code> directory where it will search
-for python files containing gitlint rule classes.</p>
+for python files containing gitlint rule classes. You can also specify a single python module, ie
+<code>--extra-path /home/joe/my_rules.py</code>.</p>
 <pre><code class="bash">cat examples/commit-message-1 | gitlint --extra-path examples/
 1: UC2 Body does not contain a 'Signed-Off-By Line' # Example output of a user-defined Signed-Off-By rule
 # other violations were removed for brevity
@@ -268,7 +270,7 @@ the <code>commit</code> object of which the line is part of as second.</li>
 <p>In addition, you probably also noticed the extra <code>options_spec</code> class attribute which allows you to make your rules configurable.
 Options are not unique to <code>LineRule</code>s, they can also be used by <code>CommitRule</code>s and are further explained in the
 <a href="./#options">Options</a> section below.</p>
-<h3 id="the-commit-object">The commit object</h3>
+<h2 id="the-commit-object">The commit object</h2>
 <p>Both <code>CommitRule</code>s and <code>LineRule</code>s take a <code>commit</code> object in their <code>validate(...)</code> methods.
 The table below outlines the various attributes of that commit object that can be used during validation.</p>
 <table>
@@ -319,6 +321,21 @@ The table below outlines the various attributes of that commit object that can b
 <td>commit.date</td>
 <td>datetime</td>
 <td>Python <code>datetime</code> object representing the time of commit</td>
+</tr>
+<tr>
+<td>commit.is_merge_commit</td>
+<td>boolean</td>
+<td>Boolean indicating whether the commit is a merge commit or not.</td>
+</tr>
+<tr>
+<td>commit.parents</td>
+<td>list of string</td>
+<td>List of parent commit <code>sha</code>s (only for merge commits).</td>
+</tr>
+<tr>
+<td>commit.changed_files</td>
+<td>list of string</td>
+<td>List of files changed in the commit (relative paths).</td>
 </tr>
 <tr>
 <td>commit.context</td>
@@ -446,8 +463,8 @@ body-max-line-count=1
 <td>List of strings. Comma separated.</td>
 </tr>
 <tr>
-<td>DirectoryOption</td>
-<td>Directory Paths. Must be an existing directory on the current host.</td>
+<td>PathOption</td>
+<td>Directory or file path. Takes an optional <code>type</code> parameter for specifying path type (<code>file</code>, <code>dir</code> (=default) or <code>both</code>).</td>
 </tr>
 </tbody>
 </table>
@@ -468,8 +485,8 @@ ultimate source of truth, here are some of the requirements that gitlint enforce
 <li>Rules <strong>must</strong> extend from  <code>LineRule</code> or <code>CommitRule</code></li>
 <li>Rule classes <strong>must</strong> have <code>id</code> and <code>name</code> string attributes. The <code>options_spec</code> is optional,
   but if set, it <strong>must</strong> be a list of gitlint Options.</li>
-<li>Rule classes <strong>must</strong> have a <code>validate</code> method. In case of a <code>CommitRule</code>, <code>validate</code>  <em>must</em> take a single <code>commit</code> parameter.
-  In case of <code>LineRule</code>, <code>validate</code> must take <code>line</code> and <code>commit</code> as first and second parameters.</li>
+<li>Rule classes <strong>must</strong> have a <code>validate</code> method. In case of a <code>CommitRule</code>, <code>validate</code>  <strong>must</strong> take a single <code>commit</code> parameter.
+  In case of <code>LineRule</code>, <code>validate</code> <strong>must</strong> take <code>line</code> and <code>commit</code> as first and second parameters.</li>
 <li>LineRule classes <strong>must</strong> have a <code>target</code> class attributes that is set to either <code>CommitMessageTitle</code> or <code>CommitMessageBody</code>.</li>
 <li>User Rule id's <strong>cannot</strong> start with <code>R</code>, <code>T</code>, <code>B</code> or <code>M</code> as these rule ids are reserved for gitlint itself.</li>
 <li>Rules <strong>should</strong> have a case-insensitive unique id as only one rule can exist with a given id. While gitlint does not enforce this, having multiple rules with
@@ -477,8 +494,7 @@ ultimate source of truth, here are some of the requirements that gitlint enforce
 </ul>
 <h3 id="extra-path-requirements">extra-path requirements</h3>
 <ul>
-<li>The <code>extra-path</code> option must point to a <strong>directory</strong>, not a file. However, the <code>extra-path</code> directory does
-  <strong>not</strong> need to be a proper python package, i.e. it doesn't require an <code>__init__.py</code> file.</li>
+<li>If  <code>extra-path</code> is a directory, it does <strong>not</strong> need to be a proper python package, i.e. it doesn't require an <code>__init__.py</code> file.</li>
 <li>Python files containing user-defined rules must have a <code>.py</code> extension. Files with a different extension will be ignored.</li>
 <li>The <code>extra-path</code> will be searched non-recursively, i.e. all rule classes must be present at the top level <code>extra-path</code> directory.</li>
 <li>User rule classes must be defined in the modules that are part of <code>extra-path</code>, rules that are imported from outside the <code>extra-path</code> will be ignored.</li>
