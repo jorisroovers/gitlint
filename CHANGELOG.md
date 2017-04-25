@@ -1,6 +1,6 @@
 # Changelog #
 
-## v0.8.1 (2017-04-25) ##
+## v0.8.2 (2017-04-25) ##
 
 The 0.8.2 release brings minor improvements, bugfixes and some under-the-hood changes. Special thanks to 
 [tommyip](https://github.com/tommyip) for his contributions.
