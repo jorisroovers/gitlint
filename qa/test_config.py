@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from sh import gitlint  # pylint: disable=no-name-in-module
+import platform
+import sys
+
+import arrow
+
+from sh import gitlint, git  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
 
@@ -73,6 +78,15 @@ class ConfigTests(BaseTestCase):
         config_path = self.get_sample_path("config/gitlintconfig")
         output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
 
-        expected = self.get_expected('debug_output1', {'config_path': config_path, 'target': self.tmp_git_repo,
-                                                       'commit_sha': commit_sha})
+        expected_date = git("log", "-1", "--pretty=%ai", _cwd=self.tmp_git_repo)
+        expected_date = arrow.get(str(expected_date), "YYYY-MM-DD HH:mm:ss Z").datetime
+        expected_gitlint_version = gitlint("--version").replace("gitlint, version ", "").replace("\n", "")
+        expected_git_version = git("--version").replace("\n", "")
+
+        expected = self.get_expected('debug_output1', {'platform': platform.platform(), 'python_version': sys.version,
+                                                       'git_version': expected_git_version,
+                                                       'gitlint_version': expected_gitlint_version,
+                                                       'config_path': config_path, 'target': self.tmp_git_repo,
+                                                       'commit_sha': commit_sha, 'commit_date': expected_date})
+
         self.assertEqual(output, expected)

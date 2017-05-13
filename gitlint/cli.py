@@ -23,7 +23,7 @@ if "windows" in platform.system().lower():  # noqa
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
-from gitlint.git import GitContext, GitContextError
+from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.utils import ustr, LOG_FORMAT
 
@@ -44,6 +44,13 @@ def setup_logging():
     handler.setFormatter(formatter)
     root_log.addHandler(handler)
     root_log.setLevel(logging.ERROR)
+
+
+def log_system_info():
+    LOG.debug("Platform: %s", platform.platform())
+    LOG.debug("Python version: %s", sys.version)
+    LOG.debug("Git version: %s", git_version())
+    LOG.debug("Gitlint version: %s", gitlint.__version__)
 
 
 def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent, debug):
@@ -78,8 +85,6 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
             config_builder.set_option('general', 'debug', debug)
 
         config = config_builder.build()
-        if debug:
-            click.echo(ustr(config), nl=True)
 
         return config, config_builder
     except LintConfigError as e:
@@ -111,9 +116,13 @@ def cli(ctx, target, config, c, commits, extra_path, ignore, verbose, silent, de
     if debug:
         logging.getLogger("gitlint").setLevel(logging.DEBUG)
 
+    log_system_info()
+
     # Get the lint config from the commandline parameters and
     # store it in the context (click allows storing an arbitrary object in ctx.obj).
     config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
+
+    LOG.debug(u"Configuration\n%s", ustr(config))
 
     ctx.obj = (config, config_builder, commits)
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import platform
 
 try:
     # python 2.x
@@ -29,6 +30,14 @@ class CLITests(BaseTestCase):
         super(CLITests, self).setUp()
         self.cli = CliRunner()
 
+        # Patch gitlint.cli.git_version() so that we don't have to patch it separately in every test
+        self.git_version_path = patch('gitlint.cli.git_version')
+        cli.git_version = self.git_version_path.start()
+        cli.git_version.return_value = "git version 1.2.3"
+
+    def tearDown(self):
+        self.git_version_path.stop()
+
     def test_version(self):
         """ Test for --version option """
         result = self.cli.invoke(cli.cli, ["--version"])
@@ -51,11 +60,6 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli)
             self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
-
-        # Make sure gitlint captured the correct logs
-        expected_logs = ["DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360",
-                         "DEBUG: gitlint.cli Exit Code = 1"]
-        self.assert_logged(expected_logs)
 
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
@@ -86,13 +90,6 @@ class CLITests(BaseTestCase):
                         u'3: B5 Body message is too short (12<20): "commït-body3"\n')
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
-
-            # Make sure gitlint captured the correct logs
-            expected_logs = ['DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360',
-                             'DEBUG: gitlint.lint Linting commit 25053ccec5e28e1bb8f7551fdbb5ab213ada2401',
-                             'DEBUG: gitlint.lint Linting commit 4da2656b0dadc76c7ee3fd0243a96cb64007f125',
-                             'DEBUG: gitlint.cli Exit Code = 3']
-            self.assert_logged(expected_logs)
 
     @patch('gitlint.git.sh')
     @patch('gitlint.cli.sys')
@@ -172,22 +169,56 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, CLITests.CONFIG_ERROR_CODE)
             self.assertEqual(result.output, "Config Error: Option 'verbosity' must be set between 0 and 3\n")
 
-    def test_debug(self):
+    @patch('gitlint.git.sh')
+    @patch('gitlint.cli.sys')
+    def test_debug(self, sys, sh):
         """ Test for --debug option """
+
+        sys.stdin.isatty.return_value = True
+
+        sh.git.log.side_effect = [u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,abc\n"
+                                  u"commït-title1\n\ncommït-body1",
+                                  u"test åuthor2,test-email2@föo.com,2016-12-04 15:28:15 01:00,abc\n"
+                                  u"commït-title2.\n\ncommït-body2",
+                                  u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,abc\n"
+                                  u"föo\nbar"]
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n"
+                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
+                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+                              u"file1.txt\npåth/to/file2.txt\n",
+                              u"file4.txt\npåth/to/file5.txt\n",
+                              u"file6.txt\npåth/to/file7.txt\n"]
+
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
-            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"], input=u"WIP: tëst")
-            expected = self.get_expected('debug_output1', {'config_path': config_path,
-                                                           'target': os.path.abspath(os.getcwd())})
+            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
 
-            self.assertEqual(result.output, expected)
-            self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
-            self.assertEqual(result.exit_code, 2)
+            expected = "Commit 6f29bf81a8:\n3: B5\n\n" + \
+                       "Commit 25053ccec5:\n1: T3\n3: B5\n\n" + \
+                       "Commit 4da2656b0d:\n2: B4\n3: B5\n3: B6\n"
 
-        # Make sure gitlint captured the correct logs
-        expected_logs = ['DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]',
-                         'DEBUG: gitlint.cli Exit Code = 2']
-        self.assert_logged(expected_logs)
+            self.assertEqual(stderr.getvalue(), expected)
+            self.assertEqual(result.exit_code, 6)
+
+            # Make sure gitlint captured the correct logs
+            expected_logs = [u"DEBUG: gitlint.cli Platform: {0}".format(platform.platform()),
+                             u"DEBUG: gitlint.cli Python version: {0}".format(sys.version),
+                             u"DEBUG: gitlint.cli Git version: git version 1.2.3",
+                             u"DEBUG: gitlint.cli Gitlint version: {0}".format(__version__),
+                             self.get_expected('debug_configuration_output1', {'config_path': config_path,
+                                                                               'target': os.path.abspath(os.getcwd())}),
+                             u"DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360",
+                             u"DEBUG: gitlint.lint Commit Object\nAuthor: test åuthor1 <test-email1@föo.com>\n" +
+                             u"Date:   2016-12-03 15:28:15+01:00\ncommït-title1\n\ncommït-body1",
+                             u"DEBUG: gitlint.lint Linting commit 25053ccec5e28e1bb8f7551fdbb5ab213ada2401",
+                             u"DEBUG: gitlint.lint Commit Object\nAuthor: test åuthor2 <test-email2@föo.com>\n" +
+                             u"Date:   2016-12-04 15:28:15+01:00\ncommït-title2.\n\ncommït-body2",
+                             u"DEBUG: gitlint.lint Linting commit 4da2656b0dadc76c7ee3fd0243a96cb64007f125",
+                             u"DEBUG: gitlint.lint Commit Object\nAuthor: test åuthor3 <test-email3@föo.com>\n" +
+                             u"Date:   2016-12-05 15:28:15+01:00\nföo\nbar",
+                             u"DEBUG: gitlint.cli Exit Code = 6"]
+
+            self.assert_logged(expected_logs)
 
     def test_extra_path(self):
         """ Test for --extra-path flag """

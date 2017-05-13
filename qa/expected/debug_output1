@@ -1,3 +1,8 @@
+DEBUG: gitlint.cli Platform: {platform}
+DEBUG: gitlint.cli Python version: {python_version}
+DEBUG: gitlint.cli Git version: {git_version}
+DEBUG: gitlint.cli Gitlint version: {gitlint_version}
+DEBUG: gitlint.cli Configuration
 config-path: {config_path}
 [GENERAL]
 extra-path: None
@@ -30,6 +35,13 @@ target: {target}
      files=
 
 DEBUG: gitlint.lint Linting commit {commit_sha}
+DEBUG: gitlint.lint Commit Object
+Author: gitlint-test-user <gitlint@test.com>
+Date:   {commit_date}
+WIP: Thïs is a title thåt is a bit longer.
+Content on the second line
+This line of the body is here because we need it
+
 1: T1 Title exceeds max length (42>20)
 1: T5 Title contains the word 'WIP' (case-insensitive)
 1: T5 Title contains the word 'thåt' (case-insensitive)

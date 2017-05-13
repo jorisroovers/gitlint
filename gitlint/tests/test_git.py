@@ -6,7 +6,7 @@ from mock import patch, call
 from sh import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError
+from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError, GitNotInstalledError
 
 
 class GitTests(BaseTestCase):
@@ -86,7 +86,7 @@ class GitTests(BaseTestCase):
         sh.git.side_effect = CommandNotFound("git")
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
-        with self.assertRaisesRegex(GitContextError, expected_msg):
+        with self.assertRaisesRegex(GitNotInstalledError, expected_msg):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command

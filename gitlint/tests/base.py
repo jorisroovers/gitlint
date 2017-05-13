@@ -26,6 +26,7 @@ class BaseTestCase(unittest2.TestCase):
     def setUp(self):
         self.logcapture = LogCapture()
         self.logcapture.setFormatter(logging.Formatter(LOG_FORMAT))
+        logging.getLogger('gitlint').setLevel(logging.DEBUG)
         logging.getLogger('gitlint').handlers = [self.logcapture]
 
     @staticmethod
@@ -88,4 +89,4 @@ class LogCapture(logging.Handler):
         self.messages = []
 
     def emit(self, record):
-        self.messages.append(self.format(record))
+        self.messages.append(ustr(self.format(record)))

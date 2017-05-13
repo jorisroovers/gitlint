@@ -11,6 +11,26 @@ class GitContextError(Exception):
     pass
 
 
+class GitNotInstalledError(GitContextError):
+    def __init__(self):
+        super(GitNotInstalledError, self).__init__(
+            u"'git' command not found. You need to install git to use gitlint on a local repository. " +
+            u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git.")
+
+
+def git_version():
+    """ Determine the git version installed on this host by calling git --version"""
+    try:
+        version = ustr(sh.git("--version")).replace(u"\n", u"")
+    except CommandNotFound:
+        raise GitNotInstalledError()
+    except ErrorReturnCode as e:  # Something went wrong while executing the git command
+        error_msg = e.stderr.strip()
+        error_msg = u"An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
+        raise GitContextError(error_msg)
+    return version
+
+
 class GitCommitMessage(object):
     """ Class representing a git commit message. A commit message consists of the following:
       - original: The actual commit message as returned by `git log`
@@ -38,7 +58,7 @@ class GitCommitMessage(object):
         return self.full  # pragma: no cover
 
     def __str__(self):
-        return sstr(self)  # pragma: no cover
+        return sstr(self.__unicode__())  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -72,7 +92,7 @@ class GitCommit(object):
         return format_str % (self.author_name, self.author_email, self.date, ustr(self.message))  # pragma: no cover
 
     def __str__(self):
-        return sstr(self)  # pragma: no cover
+        return sstr(self.__unicode__())  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -158,10 +178,7 @@ class GitContext(object):
                 context.commits.append(commit)
 
         except CommandNotFound:
-            raise GitContextError(
-                u"'git' command not found. You need to install git to use gitlint on a local repository. "
-                u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
-            )
+            raise GitNotInstalledError()
         except ErrorReturnCode as e:  # Something went wrong while executing the git command
             error_msg = e.stderr.strip()
             if b"Not a git repository" in error_msg:

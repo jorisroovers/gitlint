@@ -1,3 +1,4 @@
+DEBUG: gitlint.cli Configuration
 config-path: {config_path}
 [GENERAL]
 extra-path: None
@@ -28,4 +29,3 @@ target: {target}
   B4: body-first-line-empty
   B7: body-changed-file-mention
      files=
-
