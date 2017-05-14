@@ -62,6 +62,12 @@ ignore-merge-commits=false
 # By specifying this rule, developers can only change the file when they explicitly reference
 # it in the commit message.
 files=gitlint/rules.py,README.md
+
+# [author-valid-email]
+# python like regex (https://docs.python.org/2/library/re.html) that the
+# commit author email address should be matched to
+# For example, use the following regex if you only want to allow email addresses from foo.com
+# regex = "[^@]+@foo.com"
 ```
 
 # Commandline config #

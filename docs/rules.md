@@ -21,6 +21,8 @@ B4    | body-first-line-empty       | >= 0.1          | First line of the body (
 B5    | body-min-length             | >= 0.4          | Body length must be at least 20 characters
 B6    | body-is-missing             | >= 0.4          | Body message must be specified
 B7    | body-changed-file-mention   | >= 0.4          | Body must contain references to certain files if those files are changed in the last commit
+M1    | author-valid-email          | >= 0.8.3        | Author email address must be a valid email address
+
 
 
 ## T1: title-max-length ##
@@ -155,3 +157,27 @@ B7    | body-changed-file-mention   | >= 0.4          | Body must contain refere
 Name                  | gitlint version | Default      | Description
 ----------------------|-----------------|--------------|----------------------------------
 files                 | >= 0.4          | (empty)      |  Comma-separated list of files that need to an explicit mention in the commit message in case they are changed.
+
+
+
+## M1: author-valid-email   ##
+
+ID    | Name                        | gitlint version | Description
+------|-----------------------------|-----------------|-------------------------------------------
+M1    |  author-valid-email         | >= 0.8.3        | Author email address must be a valid email address
+
+!!! note
+    Email addresses are [notoriously hard to validate and the official email valid spec is often too loose for any real world application](http://stackoverflow.com/a/201378/381010).
+    Gitlint by default takes a pragmatic approach and requires users to enter email addresses that contain a name, domain and tld and has no spaces.
+
+
+
+### Options ###
+
+Name                  | gitlint version   | Default                      | Description
+----------------------|-------------------|------------------------------|----------------------------------
+regex                 | >= 0.8.3          | ```[^@ ]+@[^@ ]+\.[^@ ]+```  |  Regex the commit author email address is matched against
+
+
+!!! note
+    An often recurring use-case is to only allow email addresses from a certain domain. The following regular expression achieves this: ```[^@]+@foo.com```

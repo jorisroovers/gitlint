@@ -59,7 +59,8 @@ class LintConfig(object):
                             rules.BodyTrailingWhitespace,
                             rules.BodyHardTab,
                             rules.BodyFirstLineEmpty,
-                            rules.BodyChangedFileMention)
+                            rules.BodyChangedFileMention,
+                            rules.AuthorValidEmail)
 
     def __init__(self):
         # Use an ordered dict so that the order in which rules are applied is always the same

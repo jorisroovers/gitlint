@@ -74,17 +74,20 @@ class GitLinter(object):
         violations.extend(self._apply_line_rules(commit.message.body, commit, self.body_line_rules, 2))
         violations.extend(self._apply_commit_rules(self.commit_rules, commit))
 
-        # sort violations by line number
-        violations.sort(key=lambda v: (v.line_nr, v.rule_id))  # sort violations by line number and rule_id
+        # Sort violations by line number and rule_id. If there's no line nr specified (=common certain commit rules),
+        # we replace None with -1 so that it always get's placed first. Note that we need this to do this to support
+        # python 3, as None is not allowed in a list that is being sorted.
+        violations.sort(key=lambda v: (-1 if v.line_nr is None else v.line_nr, v.rule_id))
         return violations
 
     def print_violations(self, violations):
         """ Print a given set of violations to the standard error output """
         for v in violations:
-            self.display.e(u"{0}: {1}".format(v.line_nr, v.rule_id), exact=True)
-            self.display.ee(u"{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
+            line_nr = v.line_nr if v.line_nr else "-"
+            self.display.e(u"{0}: {1}".format(line_nr, v.rule_id), exact=True)
+            self.display.ee(u"{0}: {1} {2}".format(line_nr, v.rule_id, v.message), exact=True)
             if v.content:
-                self.display.eee(u"{0}: {1} {2}: \"{3}\"".format(v.line_nr, v.rule_id, v.message, v.content),
+                self.display.eee(u"{0}: {1} {2}: \"{3}\"".format(line_nr, v.rule_id, v.message, v.content),
                                  exact=True)
             else:
-                self.display.eee(u"{0}: {1} {2}".format(v.line_nr, v.rule_id, v.message), exact=True)
+                self.display.eee(u"{0}: {1} {2}".format(line_nr, v.rule_id, v.message), exact=True)

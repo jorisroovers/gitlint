@@ -96,6 +96,19 @@ class RuleOptionTests(BaseTestCase):
                                   "This line has a trailing tab.\t", 5)]
         self.assertListEqual(violations, expected)
 
+    def test_lint_meta(self):
+        """ Lint sample2 but also add some metadata to the commit so we that get's linted as well """
+        linter = GitLinter(LintConfig())
+        gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
+        gitcontext.commits[0].author_email = u"foo bår"
+        violations = linter.lint(gitcontext.commits[-1])
+        expected = [RuleViolation("M1", "Author email for commit is invalid", u"foo bår", None),
+                    RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
+                                  u"Just a title contåining WIP", 1),
+                    RuleViolation("B6", "Body message is missing", None, 3)]
+
+        self.assertListEqual(violations, expected)
+
     def test_lint_ignore(self):
         lint_config = LintConfig()
         lint_config.ignore = ["T1", "T3", "T4", "T5", "T6", "B1", "B2"]
@@ -124,7 +137,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertTrue(len(violations) > 0)
 
     def test_print_violations(self):
-        violations = [RuleViolation("RULE_ID_1", u"Error Messåge 1", "Violating Content 1", 1),
+        violations = [RuleViolation("RULE_ID_1", u"Error Messåge 1", "Violating Content 1", None),
                       RuleViolation("RULE_ID_2", "Error Message 2", u"Violåting Content 2", 2)]
         linter = GitLinter(LintConfig())
 
@@ -137,18 +150,18 @@ class RuleOptionTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 1
             linter.print_violations(violations)
-            expected = u"1: RULE_ID_1\n2: RULE_ID_2\n"
+            expected = u"-: RULE_ID_1\n2: RULE_ID_2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 2
             linter.print_violations(violations)
-            expected = u"1: RULE_ID_1 Error Messåge 1\n2: RULE_ID_2 Error Message 2\n"
+            expected = u"-: RULE_ID_1 Error Messåge 1\n2: RULE_ID_2 Error Message 2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 3
             linter.print_violations(violations)
-            expected = u"1: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n" + \
+            expected = u"-: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n" + \
                        u"2: RULE_ID_2 Error Message 2: \"Violåting Content 2\"\n"
             self.assertEqual(expected, stderr.getvalue())

@@ -5,7 +5,7 @@ import sys
 from datetime import datetime
 from uuid import uuid4
 
-from unittest import TestCase
+from unittest2 import TestCase
 from sh import git, rm, touch, DEFAULT_ENCODING  # pylint: disable=no-name-in-module
 
 

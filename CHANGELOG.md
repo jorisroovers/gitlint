@@ -1,5 +1,11 @@
 # Changelog #
 
+## v0.8.3 (In Progress) ##
+
+- New Rule: ```author-valid-email``` enforces a valid author email address. Details can be found in the
+  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/).
+- Debug output improvements
+
 ## v0.8.2 (2017-04-25) ##
 
 The 0.8.2 release brings minor improvements, bugfixes and some under-the-hood changes. Special thanks to 

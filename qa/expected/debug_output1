@@ -33,6 +33,8 @@ target: {target}
   B4: body-first-line-empty
   B7: body-changed-file-mention
      files=
+  M1: author-valid-email
+     regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.lint Linting commit {commit_sha}
 DEBUG: gitlint.lint Commit Object
