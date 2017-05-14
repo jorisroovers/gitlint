@@ -292,17 +292,12 @@ class AuthorValidEmail(CommitRule):
     name = "author-valid-email"
     id = "M1"
     options_spec = [StrOption('regex', "[^@ ]+@[^@ ]+\.[^@ ]+", "Regex that author email address should match")]
-    email_regex = None
-
-    # Note that unicode is allowed in email addresses
-    # See http://stackoverflow.com/questions/3844431/are-email-addresses-allowed-to-contain-non-alphanumeric-characters
 
     def validate(self, commit):
+        # Note that unicode is allowed in email addresses
+        # See http://stackoverflow.com/questions/3844431
+        # /are-email-addresses-allowed-to-contain-non-alphanumeric-characters
+        email_regex = re.compile(self.options['regex'].value, re.UNICODE)
 
-        # Only compile the regex the first time so that we don't need to re-compile it if we are linting
-        # multiple commits at once
-        if not self.email_regex:
-            self.email_regex = re.compile(self.options['regex'].value, re.UNICODE)
-
-        if commit.author_email and not self.email_regex.match(commit.author_email):
+        if commit.author_email and not email_regex.match(commit.author_email):
             return [RuleViolation(self.id, "Author email for commit is invalid", commit.author_email)]
