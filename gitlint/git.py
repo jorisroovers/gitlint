@@ -148,7 +148,7 @@ class GitContext(object):
         return context
 
     @staticmethod
-    def from_local_repository(repository_path, refspec="HEAD"):
+    def from_local_repository(repository_path, refspec=None):
         """ Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
         :param refspec: The commit(s) to retrieve
@@ -162,11 +162,13 @@ class GitContext(object):
                 '_cwd': repository_path
             }
 
-            sha_list = sh.git("rev-list",
-                              # If refspec contains a dot it is a range
-                              # eg HEAD^.., upstream/master...HEAD
-                              '--max-count={0}'.format(-1 if "." in refspec else 1),
-                              refspec, **sh_special_args).split()
+            if refspec is None:
+                # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
+                # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into
+                # problems with e.g. merge commits. Easiest solution is just taking the SHA from `git log -1`.
+                sha_list = [sh.git.log("-1", "--pretty=%H", **sh_special_args).replace("\n", "")]
+            else:
+                sha_list = sh.git("rev-list", refspec, **sh_special_args).split()
 
             for sha in sha_list:
                 # Get info from the local git repository: https://git-scm.com/docs/pretty-formats

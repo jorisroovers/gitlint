@@ -1,9 +1,15 @@
 # Changelog #
 
-## v0.8.3 (In Progress) ##
+## v0.9.0 (In Progress) ##
 
 - New Rule: ```author-valid-email``` enforces a valid author email address. Details can be found in the
   [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/).
+- **Breaking change**: The ```--commits``` commandline flag now strictly follows the refspec format as interpreted
+  by the [```git rev-list <refspec>```](https://git-scm.com/docs/git-rev-list) command. This means
+  that linting a single commit using ```gitlint --commits <SHA>``` won't work anymore. Instead, for single commits,
+  users now need to specificy ```gitlint --commits <SHA>^...<SHA>```. On the upside, this change also means
+  that gitlint will now understand all refspec formatters, including ```gitlint --commits HEAD``` to lint all commits
+  in the repository.
 - Debug output improvements
 
 ## v0.8.2 (2017-04-25) ##
