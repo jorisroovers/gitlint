@@ -2,7 +2,7 @@
 
 import datetime
 import dateutil
-from mock import patch, call
+from mock import patch, call, PropertyMock
 from sh import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
@@ -231,3 +231,17 @@ class GitTests(BaseTestCase):
             self.assertNotEqual(commit1, commit2)
             setattr(commit1, attr, prev_val)
             self.assertEqual(commit1, commit2)
+
+    @patch('gitlint.git.sh')
+    def test_custom_commitchar(self, sh):
+        sh.git.config.return_value = ';'
+        from gitlint.git import GitCommitMessage  # pylint: disable=redefined-outer-name,reimported
+
+        with patch.object(GitCommitMessage, 'COMMENT_CHAR', new_callable=PropertyMock) as commit_char_mock:
+            commit_char_mock.return_value = ';'
+            message = GitCommitMessage.from_full_message(u"Tïtle\n\nBödy 1\n;Cömment\nBody 2")
+
+        self.assertEqual(message.title, u"Tïtle")
+        self.assertEqual(message.body, ["", u"Bödy 1", "Body 2"])
+        self.assertEqual(message.full, u"Tïtle\n\nBödy 1\nBody 2")
+        self.assertEqual(message.original, u"Tïtle\n\nBödy 1\n;Cömment\nBody 2")
