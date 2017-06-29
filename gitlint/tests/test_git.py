@@ -126,7 +126,12 @@ class GitTests(BaseTestCase):
                          u"This line has a tråiling space. ",
                          "This line has a trailing tab.\t"]
         expected_full = expected_title + "\n" + "\n".join(expected_body)
-        expected_original = expected_full + u"\n# This is a cömmented  line\n"
+        expected_original = expected_full + (
+            u"\n# This is a cömmented  line\n"
+            u"# ------------------------ >8 ------------------------\n"
+            u"# Anything after this line should be cleaned up\n"
+            u"# this line appears on `git commit -v` command"
+        )
 
         commit = gitcontext.commits[-1]
         self.assertEqual(commit.message.title, expected_title)
