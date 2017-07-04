@@ -130,7 +130,13 @@ class GitTests(BaseTestCase):
             u"\n# This is a cömmented  line\n"
             u"# ------------------------ >8 ------------------------\n"
             u"# Anything after this line should be cleaned up\n"
-            u"# this line appears on `git commit -v` command"
+            u"# this line appears on `git commit -v` command\n"
+            u"diff --git a/gitlint/tests/samples/commit_message/sample1 "
+            u"b/gitlint/tests/samples/commit_message/sample1\n"
+            u"index 82dbe7f..ae71a14 100644\n"
+            u"--- a/gitlint/tests/samples/commit_message/sample1\n"
+            u"+++ b/gitlint/tests/samples/commit_message/sample1\n"
+            u"@@ -1 +1 @@\n"
         )
 
         commit = gitcontext.commits[-1]

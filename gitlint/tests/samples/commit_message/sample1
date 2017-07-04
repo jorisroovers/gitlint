@@ -7,3 +7,8 @@ This line has a trailing tab.
 # ------------------------ >8 ------------------------
 # Anything after this line should be cleaned up
 # this line appears on `git commit -v` command
+diff --git a/gitlint/tests/samples/commit_message/sample1 b/gitlint/tests/samples/commit_message/sample1
+index 82dbe7f..ae71a14 100644
+--- a/gitlint/tests/samples/commit_message/sample1
++++ b/gitlint/tests/samples/commit_message/sample1
+@@ -1 +1 @@
