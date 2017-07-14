@@ -73,15 +73,15 @@ class CLITests(BaseTestCase):
                                   u"commït-title2\n\ncommït-body2",
                                   u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
                                   u"commït-title3\n\ncommït-body3", ]
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
                               "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              u"file1.txt\npåth/to/file2.txt\n",
+                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
                               u"file4.txt\npåth/to/file5.txt\n",
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli)
+            result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
             expected = (u"Commit 6f29bf81a8:\n"
                         u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
                         u"Commit 25053ccec5:\n"
@@ -104,15 +104,15 @@ class CLITests(BaseTestCase):
                                   u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
                                   u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
                                   u"commït-title3\n\ncommït-body3", ]
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
                               "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              u"file1.txt\npåth/to/file2.txt\n",
+                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
                               u"file4.txt\npåth/to/file5.txt\n",
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli)
+            result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
             # We expect that the second commit has no failures because of 'gitlint-ignore: T3' in its commit msg body
             expected = (u"Commit 6f29bf81a8:\n"
                         u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
@@ -182,16 +182,17 @@ class CLITests(BaseTestCase):
                                   u"commït-title2.\n\ncommït-body2",
                                   u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,abc\n"
                                   u"föo\nbar"]
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n"
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n"  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
                               "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              u"file1.txt\npåth/to/file2.txt\n",
+                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
                               u"file4.txt\npåth/to/file5.txt\n",
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
-            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
+            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug", "--commits",
+                                               "foo...bar"])
 
             expected = "Commit 6f29bf81a8:\n3: B5\n\n" + \
                        "Commit 25053ccec5:\n1: T3\n3: B5\n\n" + \
@@ -331,7 +332,7 @@ class CLITests(BaseTestCase):
     def test_git_error(self, sys, sh):
         """ Tests that the cli handles git errors properly """
         sys.stdin.isatty.return_value = True
-        sh.git.side_effect = CommandNotFound("git")
+        sh.git.log.side_effect = CommandNotFound("git")
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 

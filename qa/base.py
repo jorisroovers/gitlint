@@ -20,29 +20,39 @@ class BaseTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         """ Sets up the integration tests by creating a new temporary git repository """
-        cls.tmp_git_repo = os.path.realpath("/tmp/gitlint-test-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
-        git("init", cls.tmp_git_repo)
+        cls._tmp_git_repos = [cls.create_tmp_git_repo()]
+        cls.tmp_git_repo = cls._tmp_git_repos[0]
+
+    @classmethod
+    def tearDownClass(cls):
+        """ Cleans up the temporary git repositories """
+        for repo in cls._tmp_git_repos:
+            rm("-rf", repo)
+
+    @classmethod
+    def create_tmp_git_repo(cls):
+        """ Creates a temporary git repository and returns its directory path """
+        tmp_git_repo = os.path.realpath("/tmp/gitlint-test-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
+        git("init", tmp_git_repo)
         # configuring name and email is required in every git repot
-        git("config", "user.name", "gitlint-test-user", _cwd=cls.tmp_git_repo)
-        git("config", "user.email", "gitlint@test.com", _cwd=cls.tmp_git_repo)
+        git("config", "user.name", "gitlint-test-user", _cwd=tmp_git_repo)
+        git("config", "user.email", "gitlint@test.com", _cwd=tmp_git_repo)
 
         # Git does not by default print unicode paths, fix that by setting core.quotePath to false
         # http://stackoverflow.com/questions/34549040/git-not-displaying-unicode-file-names
         # ftp://www.kernel.org/pub/software/scm/git/docs/git-config.html
-        git("config", "core.quotePath", "false", _cwd=cls.tmp_git_repo)
+        git("config", "core.quotePath", "false", _cwd=tmp_git_repo)
 
         # Git on mac doesn't like unicode characters by default, so we need to set this option
         # http://stackoverflow.com/questions/5581857/git-and-the-umlaut-problem-on-mac-os-x
-        git("config", "core.precomposeunicode", "true", _cwd=cls.tmp_git_repo)
+        git("config", "core.precomposeunicode", "true", _cwd=tmp_git_repo)
+        return tmp_git_repo
 
-    @classmethod
-    def tearDownClass(cls):
-        """ Cleans up the temporary git repository """
-        rm("-rf", cls.tmp_git_repo)
-
-    def _create_simple_commit(self, message, out=None, ok_code=None, env=None):
+    def _create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None):
         """ Creates a simple commit with an empty test file.
             :param message: Commit message for the commit. """
+
+        git_repo = self.tmp_git_repo if git_repo is None else git_repo
 
         # Let's make sure that we copy the environment in which this python code was executed as environment
         # variables can influence how git runs.
@@ -53,13 +63,13 @@ class BaseTestCase(TestCase):
             environment.update(env)
 
         test_filename = u"test-fïle-" + str(uuid4())
-        touch(test_filename, _cwd=self.tmp_git_repo)
-        git("add", test_filename, _cwd=self.tmp_git_repo)
+        touch(test_filename, _cwd=git_repo)
+        git("add", test_filename, _cwd=git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
         if not ok_code:
             ok_code = [0]
 
-        git("commit", "-m", message, _cwd=self.tmp_git_repo, _tty_in=True, _out=out, _ok_code=ok_code, _env=environment)
+        git("commit", "-m", message, _cwd=git_repo, _tty_in=True, _out=out, _ok_code=ok_code, _env=environment)
         return test_filename
 
     @staticmethod
@@ -72,11 +82,13 @@ class BaseTestCase(TestCase):
         samples_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
         return os.path.join(samples_dir, filename)
 
-    def get_last_commit_short_hash(self):
-        return git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
+    def get_last_commit_short_hash(self, git_repo=None):
+        git_repo = self.tmp_git_repo if git_repo is None else git_repo
+        return git("rev-parse", "--short", "HEAD", _cwd=git_repo, _tty_in=True).replace("\n", "")
 
-    def get_last_commit_hash(self):
-        return git("rev-parse", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
+    def get_last_commit_hash(self, git_repo=None):
+        git_repo = self.tmp_git_repo if git_repo is None else git_repo
+        return git("rev-parse", "HEAD", _cwd=git_repo, _tty_in=True).replace("\n", "")
 
     @staticmethod
     def get_expected(filename="", variable_dict=None):
