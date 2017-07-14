@@ -4,3 +4,11 @@ This is the first line of the commit message body and it is meant to test a line
 This line has a tråiling space. 
 This line has a trailing tab.	
 # This is a cömmented  line
+# ------------------------ >8 ------------------------
+# Anything after this line should be cleaned up
+# this line appears on `git commit -v` command
+diff --git a/gitlint/tests/samples/commit_message/sample1 b/gitlint/tests/samples/commit_message/sample1
+index 82dbe7f..ae71a14 100644
+--- a/gitlint/tests/samples/commit_message/sample1
++++ b/gitlint/tests/samples/commit_message/sample1
+@@ -1 +1 @@

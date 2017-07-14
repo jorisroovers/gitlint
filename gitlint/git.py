@@ -31,6 +31,17 @@ def git_version():
     return version
 
 
+def git_commentchar():
+    """ Shortcut for retrieving comment char from git config
+    """
+    try:
+        commentchar = ustr(sh.git.config('--get', 'core.commentchar')).replace(u"\n", u"")
+    except sh.ErrorReturnCode_1:  # pylint: disable=no-member
+        # exception means that default commentchar used
+        commentchar = '#'
+    return commentchar
+
+
 class GitCommitMessage(object):
     """ Class representing a git commit message. A commit message consists of the following:
       - original: The actual commit message as returned by `git log`
@@ -38,6 +49,8 @@ class GitCommitMessage(object):
       - title: the first line of full
       - body: all lines following the title
     """
+    COMMENT_CHAR = git_commentchar()
+    CUTLINE = '{0} ------------------------ >8 ------------------------'.format(COMMENT_CHAR)
 
     def __init__(self, original=None, full=None, title=None, body=None):
         self.original = original
@@ -48,7 +61,12 @@ class GitCommitMessage(object):
     @staticmethod
     def from_full_message(commit_msg_str):
         """  Parses a full git commit message by parsing a given string into the different parts of a commit message """
-        lines = [line for line in commit_msg_str.splitlines() if not line.startswith("#")]
+        all_lines = commit_msg_str.splitlines()
+        try:
+            cutline_index = all_lines.index(GitCommitMessage.CUTLINE)
+        except ValueError:
+            cutline_index = None
+        lines = [line for line in all_lines[:cutline_index] if not line.startswith(GitCommitMessage.COMMENT_CHAR)]
         full = "\n".join(lines)
         title = lines[0] if len(lines) > 0 else ""
         body = lines[1:] if len(lines) > 1 else []

@@ -2,7 +2,7 @@
 
 import datetime
 import dateutil
-from mock import patch, call
+from mock import patch, call, PropertyMock
 from sh import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
@@ -126,7 +126,18 @@ class GitTests(BaseTestCase):
                          u"This line has a tråiling space. ",
                          "This line has a trailing tab.\t"]
         expected_full = expected_title + "\n" + "\n".join(expected_body)
-        expected_original = expected_full + u"\n# This is a cömmented  line\n"
+        expected_original = expected_full + (
+            u"\n# This is a cömmented  line\n"
+            u"# ------------------------ >8 ------------------------\n"
+            u"# Anything after this line should be cleaned up\n"
+            u"# this line appears on `git commit -v` command\n"
+            u"diff --git a/gitlint/tests/samples/commit_message/sample1 "
+            u"b/gitlint/tests/samples/commit_message/sample1\n"
+            u"index 82dbe7f..ae71a14 100644\n"
+            u"--- a/gitlint/tests/samples/commit_message/sample1\n"
+            u"+++ b/gitlint/tests/samples/commit_message/sample1\n"
+            u"@@ -1 +1 @@\n"
+        )
 
         commit = gitcontext.commits[-1]
         self.assertEqual(commit.message.title, expected_title)
@@ -226,3 +237,17 @@ class GitTests(BaseTestCase):
             self.assertNotEqual(commit1, commit2)
             setattr(commit1, attr, prev_val)
             self.assertEqual(commit1, commit2)
+
+    @patch('gitlint.git.sh')
+    def test_custom_commitchar(self, sh):
+        sh.git.config.return_value = ';'
+        from gitlint.git import GitCommitMessage  # pylint: disable=redefined-outer-name,reimported
+
+        with patch.object(GitCommitMessage, 'COMMENT_CHAR', new_callable=PropertyMock) as commit_char_mock:
+            commit_char_mock.return_value = ';'
+            message = GitCommitMessage.from_full_message(u"Tïtle\n\nBödy 1\n;Cömment\nBody 2")
+
+        self.assertEqual(message.title, u"Tïtle")
+        self.assertEqual(message.body, ["", u"Bödy 1", "Body 2"])
+        self.assertEqual(message.full, u"Tïtle\n\nBödy 1\nBody 2")
+        self.assertEqual(message.original, u"Tïtle\n\nBödy 1\n;Cömment\nBody 2")
