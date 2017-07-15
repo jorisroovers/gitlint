@@ -49,12 +49,10 @@ class CLITests(BaseTestCase):
         """ Test for basic simple linting functionality """
         sys.stdin.isatty.return_value = True
 
-        def git_log_side_effect(*_args, **_kwargs):
-            return (u"test åuthor,test-email@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
-                    u"commït-title\n\ncommït-body")
-
-        sh.git.log.side_effect = git_log_side_effect
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360", u"file1.txt\npåth/to/file2.txt\n"]
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360",
+                              u"test åuthor,test-email@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                              u"commït-title\n\ncommït-body",
+                              u"file1.txt\npåth/to/file2.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
@@ -67,17 +65,18 @@ class CLITests(BaseTestCase):
         """ Test for --commits option """
         sys.stdin.isatty.return_value = True
 
-        sh.git.log.side_effect = [u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
-                                  u"commït-title1\n\ncommït-body1",
-                                  u"test åuthor2,test-email3@föo.com,2016-12-04 15:28:15 01:00,åbc\n"
-                                  u"commït-title2\n\ncommït-body2",
-                                  u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
-                                  u"commït-title3\n\ncommït-body3", ]
         sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
                               "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+                              # git log --pretty <FORMAT> <SHA>
+                              u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01 :00,åbc\n"
+                              u"commït-title1\n\ncommït-body1",
                               u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
+                              u"test åuthor2,test-email3@föo.com,2016-12-04 15:28:15 01:00,åbc\n"
+                              u"commït-title2\n\ncommït-body2",
                               u"file4.txt\npåth/to/file5.txt\n",
+                              u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
+                              u"commït-title3\n\ncommït-body3",
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -98,17 +97,18 @@ class CLITests(BaseTestCase):
         sys.stdin.isatty.return_value = True
 
         # Note that the second commit title has a trailing period that is being ignored by gitlint-ignore: T3
-        sh.git.log.side_effect = [u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
-                                  u"commït-title1\n\ncommït-body1",
-                                  u"test åuthor2,test-email3@föo.com,2016-12-04 15:28:15 01:00,åbc\n"
-                                  u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
-                                  u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
-                                  u"commït-title3\n\ncommït-body3", ]
         sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
                               "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+                              # git log --pretty <FORMAT> <SHA>
+                              u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                              u"commït-title1\n\ncommït-body1",
                               u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
+                              u"test åuthor2,test-email3@föo.com,2016-12-04 15:28:15 01:00,åbc\n"
+                              u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
                               u"file4.txt\npåth/to/file5.txt\n",
+                              u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,åbc\n"
+                              u"commït-title3\n\ncommït-body3",
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -176,17 +176,17 @@ class CLITests(BaseTestCase):
 
         sys.stdin.isatty.return_value = True
 
-        sh.git.log.side_effect = [u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,abc\n"
-                                  u"commït-title1\n\ncommït-body1",
-                                  u"test åuthor2,test-email2@föo.com,2016-12-04 15:28:15 01:00,abc\n"
-                                  u"commït-title2.\n\ncommït-body2",
-                                  u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,abc\n"
-                                  u"föo\nbar"]
         sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n"  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
                               "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
+                              u"test åuthor1,test-email1@föo.com,2016-12-03 15:28:15 01:00,abc\n"
+                              u"commït-title1\n\ncommït-body1",
+                              u"file1.txt\npåth/to/file2.txt\n",
+                              u"test åuthor2,test-email2@föo.com,2016-12-04 15:28:15 01:00,abc\n"
+                              u"commït-title2.\n\ncommït-body2",
                               u"file4.txt\npåth/to/file5.txt\n",
+                              u"test åuthor3,test-email3@föo.com,2016-12-05 15:28:15 01:00,abc\n"
+                              u"föo\nbar",
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -332,7 +332,7 @@ class CLITests(BaseTestCase):
     def test_git_error(self, sys, sh):
         """ Tests that the cli handles git errors properly """
         sys.stdin.isatty.return_value = True
-        sh.git.log.side_effect = CommandNotFound("git")
+        sh.git.side_effect = CommandNotFound("git")
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 

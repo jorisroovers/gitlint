@@ -113,22 +113,27 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
 def cli(ctx, target, config, c, commits, extra_path, ignore, verbose, silent, debug):
     """ Git lint tool, checks your git commit messages for styling issues """
 
-    if debug:
-        logging.getLogger("gitlint").setLevel(logging.DEBUG)
+    try:
+        if debug:
+            logging.getLogger("gitlint").setLevel(logging.DEBUG)
 
-    log_system_info()
+        log_system_info()
 
-    # Get the lint config from the commandline parameters and
-    # store it in the context (click allows storing an arbitrary object in ctx.obj).
-    config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
+        # Get the lint config from the commandline parameters and
+        # store it in the context (click allows storing an arbitrary object in ctx.obj).
+        config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
 
-    LOG.debug(u"Configuration\n%s", ustr(config))
+        LOG.debug(u"Configuration\n%s", ustr(config))
 
-    ctx.obj = (config, config_builder, commits)
+        ctx.obj = (config, config_builder, commits)
 
-    # If no subcommand is specified, then just lint
-    if ctx.invoked_subcommand is None:
-        ctx.invoke(lint)
+        # If no subcommand is specified, then just lint
+        if ctx.invoked_subcommand is None:
+            ctx.invoke(lint)
+
+    except GitContextError as e:
+        click.echo(ustr(e))
+        ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
 
 @cli.command("lint")
@@ -136,16 +141,13 @@ def cli(ctx, target, config, c, commits, extra_path, ignore, verbose, silent, de
 def lint(ctx):
     """ Lints a git repository [default command] """
     lint_config = ctx.obj[0]
-    try:
-        if sys.stdin.isatty():
-            # If target has not been set explicitly before, fallback to the current directory
-            gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
-        else:
-            stdin_str = ustr(sys.stdin.read())
-            gitcontext = GitContext.from_commit_msg(stdin_str)
-    except GitContextError as e:
-        click.echo(ustr(e))
-        ctx.exit(GIT_CONTEXT_ERROR_CODE)
+
+    if sys.stdin.isatty():
+        # If target has not been set explicitly before, fallback to the current directory
+        gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
+    else:
+        stdin_str = ustr(sys.stdin.read())
+        gitcontext = GitContext.from_commit_msg(stdin_str)
 
     number_of_commits = len(gitcontext.commits)
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
