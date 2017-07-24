@@ -64,9 +64,13 @@ class GitLinter(object):
         """ Lint the last commit in a given git context by applying all title, body and general rules. """
         LOG.debug("Linting commit %s", commit.sha or "[SHA UNKNOWN]")
         LOG.debug("Commit Object\n" + ustr(commit))
-        # Skip linting if this is merge commit and if the config is set to ignore those
-        if commit.is_merge_commit and self.config.ignore_merge_commits:
-            return []
+
+        # Skip linting if this is a special commit type that is configured to be ignored
+        ignore_commit_types = ["merge", "squash", "fixup"]
+        for commit_type in ignore_commit_types:
+            if getattr(commit, "is_{0}_commit".format(commit_type)) and \
+               getattr(self.config, "ignore_{0}_commits".format(commit_type)):
+                return []
 
         violations = []
         # determine violations by applying all rules

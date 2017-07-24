@@ -15,7 +15,8 @@ from gitlint.rules import RuleViolation
 from gitlint.config import LintConfig, LintConfigBuilder
 
 
-class RuleOptionTests(BaseTestCase):
+class LintTests(BaseTestCase):
+
     def test_lint_sample1(self):
         linter = GitLinter(LintConfig())
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample1"))
@@ -121,20 +122,21 @@ class RuleOptionTests(BaseTestCase):
 
         self.assertListEqual(violations, expected)
 
-    def test_lint_merge_commit(self):
-        commit = self.gitcommit(self.get_sample("commit_message/sample6"))  # Sample 6 is a merge commit
-        lintconfig = LintConfig()
-        linter = GitLinter(lintconfig)
-        violations = linter.lint(commit)
-        # Even though there are a number of violations in the commit message, they are ignored because
-        # we are dealing with a merge commit
-        self.assertListEqual(violations, [])
+    def test_lint_special_commit(self):
+        for commit_type in ["merge", "squash", "fixup"]:
+            commit = self.gitcommit(self.get_sample("commit_message/{0}".format(commit_type)))
+            lintconfig = LintConfig()
+            linter = GitLinter(lintconfig)
+            violations = linter.lint(commit)
+            # Even though there are a number of violations in the commit message, they are ignored because
+            # we are dealing with a merge commit
+            self.assertListEqual(violations, [])
 
-        # Check that we do see violations if we disable 'ignore-merge-commits'
-        lintconfig.ignore_merge_commits = False
-        linter = GitLinter(lintconfig)
-        violations = linter.lint(commit)
-        self.assertTrue(len(violations) > 0)
+            # Check that we do see violations if we disable 'ignore-merge-commits'
+            setattr(lintconfig, "ignore_{0}_commits".format(commit_type), False)
+            linter = GitLinter(lintconfig)
+            violations = linter.lint(commit)
+            self.assertTrue(len(violations) > 0)
 
     def test_print_violations(self):
         violations = [RuleViolation("RULE_ID_1", u"Error Messåge 1", "Violating Content 1", None),

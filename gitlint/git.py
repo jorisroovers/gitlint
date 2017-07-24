@@ -106,8 +106,9 @@ class GitCommit(object):
         In the context of gitlint, only the git context and commit message are required.
     """
 
-    def __init__(self, context, message, sha=None, date=None, author_name=None, author_email=None, parents=None,
-                 is_merge_commit=False, changed_files=None):
+    def __init__(self, context, message, sha=None, date=None, author_name=None,  # pylint: disable=too-many-arguments
+                 author_email=None, parents=None, is_merge_commit=None, is_fixup_commit=None,
+                 is_squash_commit=None, changed_files=None):
         self.context = context
         self.message = message
         self.sha = sha
@@ -116,8 +117,12 @@ class GitCommit(object):
         self.author_email = author_email
         # parent commit hashes
         self.parents = parents or []
-        self.is_merge_commit = is_merge_commit
         self.changed_files = changed_files or []
+
+        # If it's not explicitely specified, we consider a commit a merge commit if its title starts with "Merge"
+        self.is_merge_commit = message.title.startswith(u"Merge") if is_merge_commit is None else is_merge_commit
+        self.is_fixup_commit = message.title.startswith(u"fixup!") if is_fixup_commit is None else is_fixup_commit
+        self.is_squash_commit = message.title.startswith(u"squash!") if is_squash_commit is None else is_squash_commit
 
     def __unicode__(self):
         format_str = u"Author: %s <%s>\nDate:   %s\n%s"  # pragma: no cover
@@ -135,7 +140,8 @@ class GitCommit(object):
                self.sha == other.sha and self.author_name == other.author_name and \
                self.author_email == other.author_email and \
                self.date == other.date and self.parents == other.parents and \
-               self.is_merge_commit == other.is_merge_commit and self.changed_files == other.changed_files  # noqa
+               self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit and \
+               self.is_squash_commit == other.is_squash_commit and self.changed_files == other.changed_files  # noqa
 
 
 class GitContext(object):
@@ -154,9 +160,7 @@ class GitContext(object):
         context = GitContext()
         commit_msg_obj = GitCommitMessage.from_full_message(commit_msg_str)
 
-        # For now, we consider a commit a merge commit if its title starts with "Merge"
-        is_merge_commit = commit_msg_obj.title.startswith("Merge")
-        commit = GitCommit(context, commit_msg_obj, is_merge_commit=is_merge_commit)
+        commit = GitCommit(context, commit_msg_obj)
 
         context.commits.append(commit)
         return context
@@ -199,6 +203,7 @@ class GitContext(object):
 
             # Create Git commit object with the retrieved info
             commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
+
             commit = GitCommit(context, commit_msg_obj, sha=sha, author_name=name,
                                author_email=email, date=commit_date, changed_files=changed_files,
                                parents=commit_parents, is_merge_commit=commit_is_merge_commit)

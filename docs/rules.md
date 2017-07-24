@@ -21,7 +21,7 @@ B4    | body-first-line-empty       | >= 0.1          | First line of the body (
 B5    | body-min-length             | >= 0.4          | Body length must be at least 20 characters
 B6    | body-is-missing             | >= 0.4          | Body message must be specified
 B7    | body-changed-file-mention   | >= 0.4          | Body must contain references to certain files if those files are changed in the last commit
-M1    | author-valid-email          | >= 0.8.3        | Author email address must be a valid email address
+M1    | author-valid-email          | >= 0.9          | Author email address must be a valid email address
 
 
 

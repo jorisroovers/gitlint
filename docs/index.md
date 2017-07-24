@@ -192,18 +192,27 @@ done
     lint a large set of commits. Always use ```--commits``` if you can to avoid this performance penalty.
 
 
-## Merge commits ##
-_Introduced in gitlint v0.7.0_
+## Merge, fixup and squash commits ##
+_Introduced in gitlint v0.7.0 (merge commits) and gilint v0.9.0 (fixup, squash)_
 
-Gitlint ignores merge commits by default. The rationale behind this is that in many cases
-merge commits are not created by users themselves but by tools such as github,
+**Gitlint ignores merge, fixup and squash commits by default.**
+
+For merge commits, the rationale for ignoring them is
+that in many cases merge commits are not created by users themselves but by tools such as github,
 [gerrit](https://code.google.com/p/gerrit/) and others. These tools often generate merge commit messages that
-violate gitlint's set of rules and it's not always convenient or desired to change those.
+violate gitlint's set of rules (a common example is *"Merge:"* being auto-prepended  which can trigger a
+[title-max-length](rules.md#t1-title-max-length) violation)
+and it's not always convenient or desired to change those.
 
-In case you *do* want to lint merge commit messages, you can disable this behavior by setting the
-general ```ignore-merge-commits``` option to ```false```
+For [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) and [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits, the rationale is that these are temporary
+commits that will be squashed into a different commit, and hence the commit messages for these commits are very
+short-lived and not intended to make it into the final commit history. In addition, by prepending *"fixup!"* or
+*"squash!"* to your commit message, certain gitlint rules might be violated
+(e.g. [title-max-length](rules.md#t1-title-max-length)) which is often undesirable.
+
+In case you *do* want to lint these commit messages, you can disable this behavior by setting the
+general ```ignore-merge-commits```, ```ignore-fixup-commits``` or ```ignore-squash-commits``` option to ```false```
 [using one of the various ways to configure gitlint](configuration.md).
-
 
 ## Exit codes ##
 Gitlint uses the exit code as a simple way to indicate the number of violations found.

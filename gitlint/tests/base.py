@@ -29,6 +29,11 @@ class BaseTestCase(unittest2.TestCase):
         logging.getLogger('gitlint').setLevel(logging.DEBUG)
         logging.getLogger('gitlint').handlers = [self.logcapture]
 
+        # Make sure we don't propagate anything to child loggers, we need to do this explicitely here
+        # because if you run a specific test file like test_lint.py, we won't be calling the setupLogging() method
+        # in gitlint.cli that normally takes care of this
+        logging.getLogger('gitlint').propagate = False
+
     @staticmethod
     def get_sample_path(filename=""):
         # Don't join up empty files names because this will add a trailing slash
@@ -71,10 +76,13 @@ class BaseTestCase(unittest2.TestCase):
         return gitcontext
 
     @staticmethod
-    def gitcommit(commit_msg_str, changed_files=None):
+    def gitcommit(commit_msg_str, changed_files=None, **kwargs):
         """ Utility method to easily create git commit given a commit msg string and an optional set of changed files"""
         gitcontext = BaseTestCase.gitcontext(commit_msg_str, changed_files)
-        return gitcontext.commits[-1]
+        commit = gitcontext.commits[-1]
+        for attr, value in kwargs.items():
+            setattr(commit, attr, value)
+        return commit
 
     def assert_logged(self, lines):
         """ Asserts that a certain list of messages has been logged """

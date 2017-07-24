@@ -67,6 +67,8 @@ class LintConfig(object):
         self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
         self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
+        self._ignore_fixup_commits = options.BoolOption('ignore-fixup-commits', True, "Ignore fixup commits")
+        self._ignore_squash_commits = options.BoolOption('ignore-squash-commits', True, "Ignore squash commits")
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
         self._extra_path = None
         target_description = "Path of the target git repository (default=current working directory)"
@@ -102,6 +104,24 @@ class LintConfig(object):
     @handle_option_error
     def ignore_merge_commits(self, value):
         return self._ignore_merge_commits.set(value)
+
+    @property
+    def ignore_fixup_commits(self):
+        return self._ignore_fixup_commits.value
+
+    @ignore_fixup_commits.setter
+    @handle_option_error
+    def ignore_fixup_commits(self, value):
+        return self._ignore_fixup_commits.set(value)
+
+    @property
+    def ignore_squash_commits(self):
+        return self._ignore_squash_commits.value
+
+    @ignore_squash_commits.setter
+    @handle_option_error
+    def ignore_squash_commits(self, value):
+        return self._ignore_squash_commits.set(value)
 
     @property
     def debug(self):
@@ -213,6 +233,8 @@ class LintConfig(object):
                self.target == other.target and \
                self.extra_path == other.extra_path and \
                self.ignore_merge_commits == other.ignore_merge_commits and \
+               self.ignore_fixup_commits == other.ignore_fixup_commits and \
+               self.ignore_squash_commits == other.ignore_squash_commits and \
                self.debug == other.debug and \
                self.ignore == other.ignore and \
                self._config_path == other._config_path  # noqa
@@ -224,6 +246,8 @@ class LintConfig(object):
         return_str += u"extra-path: {0}\n".format(self.extra_path)
         return_str += u"ignore: {0}\n".format(",".join(self.ignore))
         return_str += u"ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
+        return_str += u"ignore-fixup-commits: {0}\n".format(self.ignore_fixup_commits)
+        return_str += u"ignore-squash-commits: {0}\n".format(self.ignore_squash_commits)
         return_str += u"verbosity: {0}\n".format(self.verbosity)
         return_str += u"debug: {0}\n".format(self.debug)
         return_str += u"target: {0}\n".format(self.target)

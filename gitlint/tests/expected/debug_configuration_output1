@@ -4,6 +4,8 @@ config-path: {config_path}
 extra-path: None
 ignore: title-trailing-whitespace,B2
 ignore-merge-commits: False
+ignore-fixup-commits: True
+ignore-squash-commits: True
 verbosity: 1
 debug: True
 target: {target}
