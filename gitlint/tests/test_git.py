@@ -20,7 +20,7 @@ class GitTests(BaseTestCase):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
         sh.git.side_effect = [sample_sha,
-                              u"test åuthor,test-emåil@foo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
                               u"cömmit-title\n\ncömmit-body",
                               u"file1.txt\npåth/to/file2.txt\n"]
 
@@ -28,7 +28,7 @@ class GitTests(BaseTestCase):
         # assert that commit info was read using git command
         expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
-            call("log", sample_sha, "-1", "--pretty=%aN,%aE,%ai,%P%n%B", **self.expected_sh_special_args),
+            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
         ]
         self.assertListEqual(sh.git.mock_calls, expected_calls)
@@ -49,7 +49,7 @@ class GitTests(BaseTestCase):
         sample_sha = "myspecialref"
 
         sh.git.side_effect = [sample_sha,
-                              u"test åuthor,test-emåil@foo.com,2016-12-03 15:28:15 01:00,åbc\n"
+                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
                               u"cömmit-title\n\ncömmit-body",
                               u"file1.txt\npåth/to/file2.txt\n"]
 
@@ -57,7 +57,7 @@ class GitTests(BaseTestCase):
         # assert that commit info was read using git command
         expected_calls = [
             call("rev-list", sample_sha, **self.expected_sh_special_args),
-            call("log", sample_sha, "-1", "--pretty=%aN,%aE,%ai,%P%n%B", **self.expected_sh_special_args),
+            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
         ]
         self.assertListEqual(sh.git.mock_calls, expected_calls)
@@ -78,7 +78,7 @@ class GitTests(BaseTestCase):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
         sh.git.side_effect = [sample_sha,
-                              u"test åuthor,test-emåil@foo.com,2016-12-03 15:28:15 01:00,åbc def\n"
+                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc def\n"
                               u"Merge \"foo bår commit\"",
                               u"file1.txt\npåth/to/file2.txt\n"]
 
@@ -86,7 +86,7 @@ class GitTests(BaseTestCase):
         # assert that commit info was read using git command
         expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
-            call("log", sample_sha, "-1", "--pretty=%aN,%aE,%ai,%P%n%B", **self.expected_sh_special_args),
+            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
         ]
 
