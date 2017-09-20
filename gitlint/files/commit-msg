@@ -26,7 +26,7 @@ fi
 
 run_gitlint(){
    echo "gitlint: checking commit message..."
-   cat "$1" | python -m gitlint.cli
+   python -m gitlint.cli --msg-filename "$1"
    gitlint_exit_code=$?
 }
 

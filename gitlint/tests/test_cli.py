@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import contextlib
 import os
 import sys
 import platform
+import shutil
+import tempfile
 
 try:
     # python 2.x
@@ -20,6 +23,15 @@ from gitlint import cli
 from gitlint import hooks
 from gitlint import __version__
 from gitlint import config
+
+
+@contextlib.contextmanager
+def tempdir():
+    tmpdir = tempfile.mkdtemp()
+    try:
+        yield tmpdir
+    finally:
+        shutil.rmtree(tmpdir)
 
 
 class CLITests(BaseTestCase):
@@ -130,6 +142,21 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
+
+    def test_from_filename(self):
+        expected_output = u"3: B6 Body message is missing\n"
+
+        with tempdir() as tmpdir:
+            msg_filename = os.path.join(tmpdir, 'msg')
+            with open(msg_filename, 'w') as f:
+                f.write('Commit title\n')
+
+            with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+                args = ['--msg-filename', msg_filename]
+                result = self.cli.invoke(cli.cli, args)
+                self.assertEqual(stderr.getvalue(), expected_output)
+                self.assertEqual(result.exit_code, 1)
+                self.assertEqual(result.output, '')
 
     @patch('gitlint.cli.stdin_has_data', return_value=True)
     def test_silent_mode(self, _):
