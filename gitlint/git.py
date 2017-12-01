@@ -181,9 +181,10 @@ class GitContext(object):
 
         for sha in sha_list:
             # Get info from the local git repository: https://git-scm.com/docs/pretty-formats
-            raw_commit = _git("log", sha, "-1", "--pretty=%aN,%aE,%ai,%P%n%B", _cwd=repository_path).split("\n")
+            long_format = "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B"
+            raw_commit = _git("log", sha, "-1", long_format, _cwd=repository_path).split("\n")
 
-            (name, email, date, parents), commit_msg = raw_commit[0].split(","), "\n".join(raw_commit[1:])
+            (name, email, date, parents), commit_msg = raw_commit[0].split('\x00'), "\n".join(raw_commit[1:])
 
             commit_parents = parents.split(" ")
             commit_is_merge_commit = len(commit_parents) > 1
