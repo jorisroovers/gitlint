@@ -1,9 +1,24 @@
-We'd love for you to [contribute to gitlint](https://github.com/jorisroovers/gitlint).
-Just create an issue or open a pull request. Sometimes it takes a while for me to get back to you
-(this is a hobby project), but rest assured that we read your message and appreciate your interest!
+We'd love for you to contribute to gitlint. Thanks for your interest!
+Sometimes it takes a while for [me](https://github.com/jorisroovers) to
+get back to you (this is a hobby project), but rest assured that we read your message and appreciate your interest!
 We maintain a [wishlist on our wiki](https://github.com/jorisroovers/gitlint/wiki/Wishlist),
 but we're obviously open to any suggestions!
 
+# Guidelines
+
+When contributing code, please consider all the parts that are typically required:
+
+- [Unit tests](https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests) (automatically
+  [enforced by Travis](https://travis-ci.org/jorisroovers/gitlint)). Please consider writing
+  new ones for your functionality, not only updating existing ones to make the build pass.
+- [Integration tests](https://github.com/jorisroovers/gitlint/tree/master/qa) (also automatically
+  [enforced by Travis](https://travis-ci.org/jorisroovers/gitlint)). Again, please consider writing new ones
+  for your functionality, not only updating existing ones to make the build pass.
+- [Documentation](https://github.com/jorisroovers/gitlint/tree/master/docs)
+
+Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
+can make it as part of a release. If you can already include them as part of your PR, it's a huge timesaver for us
+and it's likely that your PR will be merged and released a lot sooner. Thanks!
 # Development #
 
 There is a Vagrantfile in this repository that can be used for development.

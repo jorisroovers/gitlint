@@ -9,28 +9,51 @@ matrix:
       os: linux
     - python: "3.3"
       os: linux
+      script:
+      # Skip integration tests in Travis for Python 3.3, need to look into this
+      # Error example: https://travis-ci.org/jorisroovers/gitlint/jobs/310861373
+        - "./run_tests.sh"
+        - "./run_tests.sh --build"
+        - "./run_tests.sh --pep8"
+        - "./run_tests.sh --lint"
+        - "./run_tests.sh --git"
     - python: "3.4"
       os: linux
+      script:
+      # Skip integration tests in Travis for Python 3.4, need to look into this
+      # Error example: https://travis-ci.org/jorisroovers/gitlint/jobs/310861374
+        - "./run_tests.sh"
+        - "./run_tests.sh --build"
+        - "./run_tests.sh --pep8"
+        - "./run_tests.sh --lint"
+        - "./run_tests.sh --git"
     - python: "3.5"
       os: linux
-      # Skip lint tests for python 3.6 (see https://github.com/PyCQA/pylint/issues/1072)
+      script:
+      # Skip integration tests in Travis for Python 3.5, need to look into this
+      # Error example: https://travis-ci.org/jorisroovers/gitlint/jobs/310861375
+        - "./run_tests.sh"
+        - "./run_tests.sh --build"
+        - "./run_tests.sh --pep8"
+        - "./run_tests.sh --lint"
+        - "./run_tests.sh --git"
     - python: "3.6"
       os: linux
       script:
-       - "./run_tests.sh"
-       - "./run_tests.sh --build"
-       - "./run_tests.sh --pep8"
-       - "./run_tests.sh --git"
+      # Skip lint tests for python 3.6 (see https://github.com/PyCQA/pylint/issues/1072)
+        - "./run_tests.sh"
+        - "./run_tests.sh --integration"
+        - "./run_tests.sh --build"
+        - "./run_tests.sh --pep8"
+        - "./run_tests.sh --git"
     - python: "pypy"
       os: linux
-    - python: "2.7"
-      os: osx
-      script: "pip --version"
 install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"
 script:
  - "./run_tests.sh"
+ - "./run_tests.sh --integration"
  - "./run_tests.sh --build"
  - "./run_tests.sh --pep8"
  - "./run_tests.sh --lint"

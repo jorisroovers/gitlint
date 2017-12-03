@@ -1,7 +1,8 @@
 # Intro #
 Gitlint is a git commit message linter written in python: it checks your commit messages for style.
 
-Great for use as a ```commit-msg``` git hook or as part of your gating script in a CI/CD pipeline (e.g. jenkins).
+Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or as part of your gating script in a
+[CI pipeline (e.g. Jenkins)](index.md#using-gitlint-in-a-ci-environment).
 
 <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
@@ -13,7 +14,7 @@ Great for use as a ```commit-msg``` git hook or as part of your gating script in
 ## Features ##
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook).
  - **Easily integrated**: Gitlint will validate any git commit message you give it via standard input.
-   Perfect for [integration with your own scripts or CI system](#using-gitlint-in-a-cicd-script).
+   Perfect for [integration with your own scripts or CI system](#using-gitlint-in-a-ci-environment).
  - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
@@ -82,6 +83,7 @@ The default verbosity is ```-vvv```.
 Other commands and variations:
 
 ```no-highlight
+$ gitlint --help
 Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
@@ -133,24 +135,30 @@ gitlint uninstall-hook
     file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. Gitlint will also only
     uninstall unmodified commit-msg hooks that were installed by gitlint.
 
-## Using gitlint in a CI/CD script ##
+## Using gitlint in a CI environment ##
 By default, when just running ```gitlint``` without additional parameters, gitlint lint the last commit in the current
 git repository.
 
-This makes it easy to add gitlint to a check script that is run in a CI environment. In fact, this is exactly what we
-do ourselves: on every commit,
+This makes it easy to add gitlint to a check script that is run in a CI environment (Jenkins, TravisCI, pre-commit,
+CircleCI, etc).
+In fact, this is exactly what we do ourselves: on every commit,
 [we run gitlint as part of our travisCI tests](https://github.com/jorisroovers/gitlint/blob/v0.7.1/run_tests.sh#L62-L65).
 This will cause the build to fail when we submit a bad commit message.
 
-Gitlint will also lint any commit message that you feed it via stdin like so:
+
+!!! note
+    Versions prior to gitlint 0.9.0 required a TTY to be attached to STDIN for this to work, this is no longer required
+    now.
+
+Alternatively, gitlint will also lint any commit message that you feed it via stdin like so:
 ```bash
 # lint the last commit message
 git log -1 --pretty=%B | gitlint
 # lint a specific commit: 62c0519
 git log -1 --pretty=%B 62c0519 | gitlint
 ```
-For now, it's required that you specify ```--pretty=%B``` (=only print the log message, not the metadata),
-future versions of gitlint might fix this.
+Note that gitlint requires that you specify ```--pretty=%B``` (=only print the log message, not the metadata),
+future versions of gitlint might fix this and not require the ```--pretty``` argument.
 
 ## Linting a range of commits ##
 _Experimental support introduced in gitlint v0.8.1, known issues:_

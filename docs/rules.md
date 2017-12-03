@@ -176,7 +176,7 @@ M1    |  author-valid-email         | >= 0.8.3        | Author email address mus
 
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
-regex                 | >= 0.8.3          | ```[^@ ]+@[^@ ]+\.[^@ ]+```  |  Regex the commit author email address is matched against
+regex                 | >= 0.9.0          | ```[^@ ]+@[^@ ]+\.[^@ ]+```  |  Regex the commit author email address is matched against
 
 
 !!! note

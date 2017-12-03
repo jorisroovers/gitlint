@@ -1,21 +1,38 @@
 # Changelog #
 
-## v0.9.0 (In Progress) ##
+## v0.9.0 (2017-12-03) ##
+The 0.9.0 release adds a new default ```author-valid-email``` rule, important bugfixes and special case handling.
+Special thanks to [joshholl](https://github.com/joshholl), [ron8mcr](https://github.com/ron8mcr),
+[omarkohl](https://github.com/omarkohl), [domo141](https://github.com/domo141), [nud](https://github.com/nud)
+and [AlexMooney](https://github.com/AlexMooney) for their contributions.
 
 - New Rule: ```author-valid-email``` enforces a valid author email address. Details can be found in the
-  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/).
+  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/#m1-author-valid-email).
 - **Breaking change**: The ```--commits``` commandline flag now strictly follows the refspec format as interpreted
   by the [```git rev-list <refspec>```](https://git-scm.com/docs/git-rev-list) command. This means
   that linting a single commit using ```gitlint --commits <SHA>``` won't work anymore. Instead, for single commits,
   users now need to specificy ```gitlint --commits <SHA>^...<SHA>```. On the upside, this change also means
   that gitlint will now understand all refspec formatters, including ```gitlint --commits HEAD``` to lint all commits
-  in the repository.
+  in the repository. This fixes [#23](https://github.com/jorisroovers/gitlint/issues/40).
+- **Breaking change**: Gitlint now always falls back on trying to read a git message from a local git repository, only
+  reading a commit message from STDIN if one is passed. Before, gitlint only read from the local git repository when
+  a TTY was present. This is likely the expected and desired behavior for anyone running gitlint in a CI environment.
+  This fixes [#40](https://github.com/jorisroovers/gitlint/issues/40) and
+  [#42](https://github.com/jorisroovers/gitlint/issues/42).
+- **Behavior Change**: Gitlint will now by default
+  [ignore squash and fixup commits](http://jorisroovers.github.io/gitlint/#merge-fixup-and-squash-commits)
+  (fix for [#33: fixup messages should not trigger a gitlint violation](https://github.com/jorisroovers/gitlint/issues/33))
+- Support for custom comment characters ([#34](https://github.com/jorisroovers/gitlint/issues/34))
+- Support for [```git commit --cleanup=scissors```](https://git-scm.com/docs/git-commit#git-commit---cleanupltmodegt)
+  ([#34](https://github.com/jorisroovers/gitlint/issues/34))
+- Bugfix: [#37: Prevent Commas in text fields from breaking git log printing](https://github.com/jorisroovers/gitlint/issues/37)
 - Debug output improvements
 
 ## v0.8.2 (2017-04-25) ##
 
-The 0.8.2 release brings minor improvements, bugfixes and some under-the-hood changes. Special thanks to 
+The 0.8.2 release brings minor improvements, bugfixes and some under-the-hood changes. Special thanks to
 [tommyip](https://github.com/tommyip) for his contributions.
+
 - ```--extra-path``` now also accepts a file path (in the past only directory paths where accepted).
 Thanks to [tommyip](https://github.com/tommyip) for implementing this!
 - gitlint will now show more information when using the ```--debug``` flag. This is initial work and will continue to
