@@ -61,6 +61,9 @@ class LintConfigTests(BaseTestCase):
 
         # Check that default general options are correct
         self.assertTrue(config.ignore_merge_commits)
+        self.assertTrue(config.ignore_fixup_commits)
+        self.assertTrue(config.ignore_squash_commits)
+
         self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
         active_rule_classes = tuple(type(rule) for rule in config.rules)
@@ -81,6 +84,14 @@ class LintConfigTests(BaseTestCase):
         # ignore_merge_commit
         config.set_general_option("ignore-merge-commits", "false")
         self.assertFalse(config.ignore_merge_commits)
+
+        # ignore_fixup_commit
+        config.set_general_option("ignore-fixup-commits", "false")
+        self.assertFalse(config.ignore_fixup_commits)
+
+        # ignore_squash_commit
+        config.set_general_option("ignore-squash-commits", "false")
+        self.assertFalse(config.ignore_squash_commits)
 
         # debug
         config.set_general_option("debug", "true")
@@ -148,12 +159,15 @@ class LintConfigTests(BaseTestCase):
             with self.assertRaisesRegex(LintConfigError, "Option 'verbosity' must be set between 0 and 3"):
                 config.verbosity = value
 
-        # invalid ignore_merge_commits
+        # invalid ignore_xxx_commits
+        ignore_attributes = ['ignore_merge_commits', 'ignore_fixup_commits', 'ignore_squash_commits']
         incorrect_values = [-1, 4, u"föo"]
-        for value in incorrect_values:
-            with self.assertRaisesRegex(LintConfigError,
-                                        "Option 'ignore-merge-commits' must be either 'true' or 'false'"):
-                config.ignore_merge_commits = value
+        for attribute in ignore_attributes:
+            for value in incorrect_values:
+                option_name = attribute.replace("_", "-")
+                with self.assertRaisesRegex(LintConfigError,
+                                            "Option '{0}' must be either 'true' or 'false'".format(option_name)):
+                    setattr(config, attribute, value)
 
         # invalid ignore -> not here because ignore is a ListOption which converts everything to a string before
         # splitting which means it it will accept just about everything

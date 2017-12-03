@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from sh import git, gitlint, echo  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
@@ -23,7 +24,7 @@ class IntegrationTests(BaseTestCase):
         git("checkout", "test-branch", _cwd=self.tmp_git_repo)
         commit_title = u"Commit on test-brånch with a pretty long title that will cause issues when merging"
         self._create_simple_commit(u"{0}\n\nSïmple body".format(commit_title))
-        hash = git("rev-parse", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
+        hash = self.get_last_commit_hash()
 
         # Checkout master and merge the commit
         # We explicitly set the title of the merge commit to the title of the previous commit as this or similar
@@ -39,6 +40,69 @@ class IntegrationTests(BaseTestCase):
         output = gitlint("-c", "general.ignore-merge-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
         self.assertEqual(output.exit_code, 1)
         self.assertEqual(output, u"1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
+
+    def test_fixup_commit(self):
+        # Create a normal commit and assert that it has a violation
+        test_filename = self._create_simple_commit(u"Cömmit on WIP master\n\nSimple bödy that is long enough")
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
+        expected = u"1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
+        self.assertEqual(output, expected)
+
+        # Make a small modification to the commit and commit it using fixup commit
+        with open(os.path.join(self.tmp_git_repo, test_filename), "a") as fh:
+            # Wanted to write a unicode string, but that's obnoxious if you want to do it across Python 2 and 3.
+            # https://stackoverflow.com/questions/22392377/
+            # error-writing-a-file-with-file-write-in-python-unicodeencodeerror
+            # So just keeping it simple - ASCII will here
+            fh.write("Appending some stuff\n")
+
+        git("add", test_filename, _cwd=self.tmp_git_repo)
+
+        git("commit", "--fixup", self.get_last_commit_hash(), _cwd=self.tmp_git_repo)
+
+        # Assert that gitlint does not show an error for the fixup commit
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
+        # No need to check exit code, the command above throws an exception on > 0 exit codes
+        self.assertEqual(output, "")
+
+        # Make sure that if we set the ignore-fixup-commits option to false that we do still see the violations
+        output = gitlint("-c", "general.ignore-fixup-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+        expected = u"1: T5 Title contains the word 'WIP' (case-insensitive): \"fixup! Cömmit on WIP master\"\n" + \
+            u"3: B6 Body message is missing\n"
+
+        self.assertEqual(output, expected)
+
+    def test_squash_commit(self):
+        # Create a normal commit and assert that it has a violation
+        test_filename = self._create_simple_commit(u"Cömmit on WIP master\n\nSimple bödy that is long enough")
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
+        expected = u"1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
+        self.assertEqual(output, expected)
+
+        # Make a small modification to the commit and commit it using squash commit
+        with open(os.path.join(self.tmp_git_repo, test_filename), "a") as fh:
+            # Wanted to write a unicode string, but that's obnoxious if you want to do it across Python 2 and 3.
+            # https://stackoverflow.com/questions/22392377/
+            # error-writing-a-file-with-file-write-in-python-unicodeencodeerror
+            # So just keeping it simple - ASCII will here
+            fh.write("Appending some stuff\n")
+
+        git("add", test_filename, _cwd=self.tmp_git_repo)
+
+        git("commit", "--squash", self.get_last_commit_hash(), "-m", u"Töo short body", _cwd=self.tmp_git_repo)
+
+        # Assert that gitlint does not show an error for the fixup commit
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
+        # No need to check exit code, the command above throws an exception on > 0 exit codes
+        self.assertEqual(output, "")
+
+        # Make sure that if we set the ignore-squash-commits option to false that we do still see the violations
+        output = gitlint("-c", "general.ignore-squash-commits=false",
+                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+        expected = u"1: T5 Title contains the word 'WIP' (case-insensitive): \"squash! Cömmit on WIP master\"\n" + \
+            u"3: B5 Body message is too short (14<20): \"Töo short body\"\n"
+
+        self.assertEqual(output, expected)
 
     def test_violations(self):
         # Test for STDIN with and without a TTY attached

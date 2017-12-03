@@ -8,6 +8,8 @@ config-path: {config_path}
 extra-path: None
 ignore: title-trailing-punctuation,B2
 ignore-merge-commits: True
+ignore-fixup-commits: True
+ignore-squash-commits: True
 verbosity: 2
 debug: True
 target: {target}

@@ -1,5 +1,6 @@
 We'd love for you to [contribute to gitlint](https://github.com/jorisroovers/gitlint).
-Just create an issue or open a pull request and we'll get right on it!
+Just create an issue or open a pull request. Sometimes it takes a while for me to get back to you
+(this is a hobby project), but rest assured that we read your message and appreciate your interest!
 We maintain a [wishlist on our wiki](https://github.com/jorisroovers/gitlint/wiki/Wishlist),
 but we're obviously open to any suggestions!
 
