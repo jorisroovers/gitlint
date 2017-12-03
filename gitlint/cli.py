@@ -3,6 +3,7 @@
 import logging
 import os
 import platform
+import select
 import sys
 
 import click
@@ -92,6 +93,19 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
     ctx.exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
 
 
+def stdin_has_data():
+    """ Helper function that indicates whether the stdin has data incoming or not """
+    # This code was taken from:
+    # https://stackoverflow.com/questions/3762881/how-do-i-check-if-stdin-has-some-data
+
+    # Caveat, this probably doesn't work on Windows because the code is dependent on the unix SELECT syscall.
+    # Details: https://docs.python.org/2/library/select.html#select.select
+    # This isn't a real problem now, because gitlint as a whole doesn't support Windows (see #20).
+    # If we ever do, we probably want to fall back to the old detection mechanism of reading from the local git repo
+    # in case there's no TTY connected to STDIN.
+    return select.select([sys.stdin, ], [], [], 0.0)[0]
+
+
 @click.group(invoke_without_command=True, epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               help="Path of the target git repository. [default: current working directory]")
@@ -142,12 +156,12 @@ def lint(ctx):
     """ Lints a git repository [default command] """
     lint_config = ctx.obj[0]
 
-    if sys.stdin.isatty():
-        # If target has not been set explicitly before, fallback to the current directory
-        gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
-    else:
+    # If we get data via stdin, then let's consider that our commit message, otherwise parse it from the local git repo.
+    if stdin_has_data():
         stdin_str = ustr(sys.stdin.read())
         gitcontext = GitContext.from_commit_msg(stdin_str)
+    else:
+        gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
 
     number_of_commits = len(gitcontext.commits)
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one

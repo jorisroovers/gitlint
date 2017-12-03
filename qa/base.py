@@ -48,7 +48,7 @@ class BaseTestCase(TestCase):
         git("config", "core.precomposeunicode", "true", _cwd=tmp_git_repo)
         return tmp_git_repo
 
-    def _create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None):
+    def _create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):
         """ Creates a simple commit with an empty test file.
             :param message: Commit message for the commit. """
 
@@ -69,7 +69,8 @@ class BaseTestCase(TestCase):
         if not ok_code:
             ok_code = [0]
 
-        git("commit", "-m", message, _cwd=git_repo, _tty_in=True, _out=out, _ok_code=ok_code, _env=environment)
+        git("commit", "-m", message, _cwd=git_repo, _err_to_out=True, _out=out, _tty_in=tty_in,
+            _ok_code=ok_code, _env=environment)
         return test_filename
 
     @staticmethod
@@ -84,11 +85,11 @@ class BaseTestCase(TestCase):
 
     def get_last_commit_short_hash(self, git_repo=None):
         git_repo = self.tmp_git_repo if git_repo is None else git_repo
-        return git("rev-parse", "--short", "HEAD", _cwd=git_repo, _tty_in=True).replace("\n", "")
+        return git("rev-parse", "--short", "HEAD", _cwd=git_repo, _err_to_out=True).replace("\n", "")
 
     def get_last_commit_hash(self, git_repo=None):
         git_repo = self.tmp_git_repo if git_repo is None else git_repo
-        return git("rev-parse", "HEAD", _cwd=git_repo, _tty_in=True).replace("\n", "")
+        return git("rev-parse", "HEAD", _cwd=git_repo, _err_to_out=True).replace("\n", "")
 
     @staticmethod
     def get_expected(filename="", variable_dict=None):

@@ -51,7 +51,7 @@ class HookTests(BaseTestCase):
     def test_commit_hook_continue(self):
         self.responses = ["y"]
         test_filename = self._create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
-                                                   out=self._interact)
+                                                   out=self._interact, tty_in=True)
 
         # Determine short commit-msg hash, needed to determine expected output
         short_hash = git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
@@ -69,7 +69,7 @@ class HookTests(BaseTestCase):
     def test_commit_hook_abort(self):
         self.responses = ["n"]
         test_filename = self._create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
-                                                   out=self._interact, ok_code=1)
+                                                   out=self._interact, ok_code=1, tty_in=True)
         git("rm", "-f", test_filename, _cwd=self.tmp_git_repo)
 
         # Determine short commit-msg hash, needed to determine expected output
@@ -90,7 +90,7 @@ class HookTests(BaseTestCase):
         self.responses = ["e", "y"]
         env = {"EDITOR": ":"}
         test_filename = self._create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
-                                                   out=self._interact, env=env, ok_code=1)
+                                                   out=self._interact, env=env, ok_code=1, tty_in=True)
         git("rm", "-f", test_filename, _cwd=self.tmp_git_repo)
 
         short_hash = git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")

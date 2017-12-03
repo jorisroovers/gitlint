@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import platform
 
 try:
@@ -43,12 +44,10 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--version"])
         self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
 
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
     @patch('gitlint.git.sh')
-    @patch('gitlint.cli.sys')
-    def test_lint(self, sys, sh):
+    def test_lint(self, sh, _):
         """ Test for basic simple linting functionality """
-        sys.stdin.isatty.return_value = True
-
         sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360",
                               u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
                               u"commït-title\n\ncommït-body",
@@ -59,11 +58,10 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
 
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
     @patch('gitlint.git.sh')
-    @patch('gitlint.cli.sys')
-    def test_lint_multiple_commits(self, sys, sh):
+    def test_lint_multiple_commits(self, sh, _):
         """ Test for --commits option """
-        sys.stdin.isatty.return_value = True
 
         sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
@@ -90,11 +88,10 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
 
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
     @patch('gitlint.git.sh')
-    @patch('gitlint.cli.sys')
-    def test_lint_multiple_commits_config(self, sys, sh):
+    def test_lint_multiple_commits_config(self, sh, _):
         """ Test for --commits option where some of the commits have gitlint config in the commit message """
-        sys.stdin.isatty.return_value = True
 
         # Note that the second commit title has a trailing period that is being ignored by gitlint-ignore: T3
         sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
@@ -121,7 +118,8 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 2)
 
-    def test_input_stream(self):
+    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    def test_input_stream(self, _):
         """ Test for linting when a message is passed via stdin """
         expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
                           u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: tïtle \"\n" + \
@@ -133,7 +131,8 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
-    def test_silent_mode(self):
+    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    def test_silent_mode(self, _):
         """ Test for --silent option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--silent"], input=u"WIP: tïtle \n")
@@ -141,7 +140,8 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
-    def test_verbosity(self):
+    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    def test_verbosity(self, _):
         """ Test for --verbosity option """
         # We only test -v and -vv, more testing is really not required here
         # -v
@@ -169,12 +169,10 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, CLITests.CONFIG_ERROR_CODE)
             self.assertEqual(result.output, "Config Error: Option 'verbosity' must be set between 0 and 3\n")
 
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
     @patch('gitlint.git.sh')
-    @patch('gitlint.cli.sys')
-    def test_debug(self, sys, sh):
+    def test_debug(self, sh, _):
         """ Test for --debug option """
-
-        sys.stdin.isatty.return_value = True
 
         sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n"  # git rev-list <SHA>
                               "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
@@ -221,7 +219,8 @@ class CLITests(BaseTestCase):
 
             self.assert_logged(expected_logs)
 
-    def test_extra_path(self):
+    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    def test_extra_path(self, _):
         """ Test for --extra-path flag """
         # Test extra-path pointing to a directory
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -241,7 +240,8 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 2)
 
-    def test_config_file(self):
+    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    def test_config_file(self, _):
         """ Test for --config option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
@@ -273,10 +273,9 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
-    @patch('gitlint.cli.sys')
-    def test_target(self, sys):
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    def test_target(self, _):
         """ Test for the --target option """
-        sys.stdin.isatty.return_value = True
         result = self.cli.invoke(cli.cli, ["--target", "/tmp"])
         # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
         # into account).
@@ -327,20 +326,18 @@ class CLITests(BaseTestCase):
                        "Error: File \"{0}\" already exists.\n".format(sample_path)
         self.assertEqual(result.output, expected_msg)
 
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
     @patch('gitlint.git.sh')
-    @patch('gitlint.cli.sys')
-    def test_git_error(self, sys, sh):
+    def test_git_error(self, sh, _):
         """ Tests that the cli handles git errors properly """
-        sys.stdin.isatty.return_value = True
         sh.git.side_effect = CommandNotFound("git")
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
     @patch('gitlint.git.sh')
-    @patch('gitlint.cli.sys')
-    def test_no_commits_in_range(self, sys, sh):
+    def test_no_commits_in_range(self, sh, _):
         """ Test for --commits with the specified range being empty. """
-        sys.stdin.isatty.return_value = True
         sh.git.side_effect = lambda *_args, **_kwargs: ""
         result = self.cli.invoke(cli.cli, ["--commits", "master...HEAD"])
         expected = u'No commits in range "master...HEAD".\n'

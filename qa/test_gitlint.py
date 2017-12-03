@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from sh import git, gitlint, echo, ErrorReturnCode, DEFAULT_ENCODING  # pylint: disable=no-name-in-module
+from sh import git, gitlint, echo  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
 
@@ -8,9 +8,11 @@ class IntegrationTests(BaseTestCase):
     """ Simple set of integration tests for gitlint """
 
     def test_successful(self):
-        self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
-        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
-        self.assertEqual(output, "")
+        # Test for STDIN with and without a TTY attached
+        for has_tty in [True, False]:
+            self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
+            output = gitlint(_cwd=self.tmp_git_repo, _tty_in=has_tty, _err_to_out=True)
+            self.assertEqual(output, "")
 
     def test_successful_merge_commit(self):
         # Create branch on master
@@ -39,29 +41,27 @@ class IntegrationTests(BaseTestCase):
         self.assertEqual(output, u"1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
 
     def test_violations(self):
-        commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
-        self._create_simple_commit(commit_msg)
-        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
+        # Test for STDIN with and without a TTY attached
+        for has_tty in [True, False]:
+            commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
+            self._create_simple_commit(commit_msg)
+            # We need to set _err_to_out explicitly for sh to merge stdout and stderr output in case there's
+            # no TTY attached to STDIN
+            # http://amoffat.github.io/sh/sections/special_arguments.html?highlight=_tty_in#err-to-out
+            output = gitlint(_cwd=self.tmp_git_repo, _tty_in=has_tty, _err_to_out=True, _ok_code=[3])
 
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
-                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
-                   u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
-        self.assertEqual(output, expected)
+            expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
+                       u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
+                       u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
+            self.assertEqual(output, expected)
 
     def test_pipe_input(self):
-        error_msg = None
-        # For some odd reason, sh doesn't return the error output when piping something into gitlint.
-        # Note that this does work as expected in the test_errors testcase.
-        # To work around this we raise and catch an exception
-        try:
-            gitlint(echo(u"WIP: Pïpe test."), _tty_in=False)
-        except ErrorReturnCode as e:
-            # StdErr is returned as bytes -> decode to unicode string
-            # http://stackoverflow.com/questions/606191/convert-bytes-to-a-python-string
-            error_msg = e.stderr.decode(DEFAULT_ENCODING)
+        # NOTE: There is no use in testing this with _tty_in=True, because if you pipe something into a command
+        # there never is a TTY connected to stdin (per definition).
+        output = gitlint(echo(u"WIP: Pïpe test."), _tty_in=False, _err_to_out=True, _ok_code=[3])
 
         expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Pïpe test.\"\n" + \
                    u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pïpe test.\"\n" + \
-                   "3: B6 Body message is missing\n"
+                   u"3: B6 Body message is missing\n"
 
-        self.assertEqual(error_msg, expected)
+        self.assertEqual(output, expected)
