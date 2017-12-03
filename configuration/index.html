@@ -149,51 +149,69 @@
 <a href="../rules/">Rules</a> page, details about the <code>[general]</code> section can be found in the
 <a href="./#general-configuration">General Configuration</a> section of this page.</p>
 <pre><code class="ini"># All these sections are optional, edit this file as you like.
-[general]
-ignore=title-trailing-punctuation, T3
+# [general]
+# Ignore certain rules, you can reference them by their id or by their full name
+# ignore=title-trailing-punctuation, T3
+
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
-verbosity = 2
+# verbosity = 2
+
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
-ignore-merge-commits=true
+# ignore-merge-commits=true
+
+# By default gitlint will ignore fixup commits. Set to 'false' to disable.
+# ignore-fixup-commits=true
+
+# By default gitlint will ignore squash commits. Set to 'false' to disable.
+# ignore-squash-commits=true
+
+# Enable debug mode (prints more output). Disabled by default.
+# debug=true
 
 # Set the extra-path where gitlint will search for user defined rules
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
 # extra-path=examples/
 
-[title-max-length]
-line-length=20
+# [title-max-length]
+# line-length=80
 
-[title-must-not-contain-word]
+# [title-must-not-contain-word]
 # Comma-separated list of words that should not occur in the title. Matching is case
 # insensitive. It's fine if the keyword occurs as part of a larger word (so &quot;WIPING&quot;
 # will not cause a violation, but &quot;WIP: my title&quot; will.
-words=wip,title
+# words=wip
 
-[title-match-regex]
+# [title-match-regex]
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit-msg title must be matched to.
 # Note that the regex can contradict with other rules if not used correctly
 # (e.g. title-must-not-contain-word).
-regex=^US[0-9]*
+# regex=^US[0-9]*
 
-[B1]
+# [B1]
 # B1 = body-max-line-length
-line-length=30
+# line-length=120
 
-[body-min-length]
-min-length=5
+# [body-min-length]
+# min-length=5
 
-[body-is-missing]
+# [body-is-missing]
 # Whether to ignore this rule on merge commits (which typically only have a title)
 # default = True
-ignore-merge-commits=false
+# ignore-merge-commits=false
 
-[body-changed-file-mention]
+# [body-changed-file-mention]
 # List of files that need to be explicitly mentioned in the body when they are changed
 # This is useful for when developers often erroneously edit certain files or git submodules.
 # By specifying this rule, developers can only change the file when they explicitly reference
 # it in the commit message.
-files=gitlint/rules.py,README.md
+# files=gitlint/rules.py,README.md
+
+# [author-valid-email]
+# python like regex (https://docs.python.org/2/library/re.html) that the
+# commit author email address should be matched to
+# For example, use the following regex if you only want to allow email addresses from foo.com
+# regex = &quot;[^@]+@foo.com&quot;
 </code></pre>
 
 <h1 id="commandline-config">Commandline config</h1>
@@ -201,7 +219,7 @@ files=gitlint/rules.py,README.md
 <pre><code>$ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
 </code></pre>
 
-<p>The generic config flag format is <code>-c &lt;rule&gt;.&lt;option&gt;=&lt;value&gt;</code> and supports all the same rules and options which 
+<p>The generic config flag format is <code>-c &lt;rule&gt;.&lt;option&gt;=&lt;value&gt;</code> and supports all the same rules and options which
 you can also use in a <code>.gitlint</code> config file.</p>
 <h1 id="commit-specific-config">Commit specific config</h1>
 <p>You can also disable gitlint for specific commit messages by adding <code>gitlint-ignore: all</code> to the commit
@@ -217,7 +235,7 @@ specific rules to be ignored as follows: <code>gitlint-ignore: T1, body-hard-tab
 <h1 id="configuration-precedence">Configuration precedence</h1>
 <p>gitlint configuration is applied in the following order of precedence:</p>
 <ol>
-<li>Commit specific config (e.g.: <code>gitlint-ignore: all</code> in the commit message) </li>
+<li>Commit specific config (e.g.: <code>gitlint-ignore: all</code> in the commit message)</li>
 <li>Commandline convenience flags (e.g.:  <code>-vv</code>, <code>--silent</code>, <code>--ignore</code>)</li>
 <li>Commandline configuration flags (e.g.: <code>-c title-max-length=123</code>)</li>
 <li>Configuration file (local <code>.gitlint</code> file, or file specified using <code>-C</code>/<code>--config</code>)</li>
@@ -257,6 +275,20 @@ using commandline flags or in <code>general</code> section in a <code>.gitlint</
 <td>&gt;= 0.7.0</td>
 <td>Not available</td>
 <td>Whether or not to ignore merge commits.</td>
+</tr>
+<tr>
+<td>ignore-fixup-commits</td>
+<td>true</td>
+<td>&gt;= 0.9.0</td>
+<td>Not available</td>
+<td>Whether or not to ignore <a href="https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt">fixup</a> commits.</td>
+</tr>
+<tr>
+<td>ignore-squash-commits</td>
+<td>true</td>
+<td>&gt;= 0.9.0</td>
+<td>Not available</td>
+<td>Whether or not to ignore <a href="https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt">squash</a> commits.</td>
 </tr>
 <tr>
 <td>ignore</td>

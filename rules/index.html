@@ -96,6 +96,8 @@
                 
                     <li><a class="toctree-l4" href="#b7-body-changed-file-mention">B7: body-changed-file-mention</a></li>
                 
+                    <li><a class="toctree-l4" href="#m1-author-valid-email">M1: author-valid-email</a></li>
+                
             
             </ul>
         
@@ -249,6 +251,12 @@ The rest of this page contains details on the available configuration options fo
 <td>body-changed-file-mention</td>
 <td>&gt;= 0.4</td>
 <td>Body must contain references to certain files if those files are changed in the last commit</td>
+</tr>
+<tr>
+<td>M1</td>
+<td>author-valid-email</td>
+<td>&gt;= 0.9</td>
+<td>Author email address must be a valid email address</td>
 </tr>
 </tbody>
 </table>
@@ -651,6 +659,53 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
+<h2 id="m1-author-valid-email">M1: author-valid-email</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1</td>
+<td>author-valid-email</td>
+<td>&gt;= 0.8.3</td>
+<td>Author email address must be a valid email address</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Email addresses are <a href="http://stackoverflow.com/a/201378/381010">notoriously hard to validate and the official email valid spec is often too loose for any real world application</a>.
+Gitlint by default takes a pragmatic approach and requires users to enter email addresses that contain a name, domain and tld and has no spaces.</p>
+</div>
+<h3 id="options_7">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regex</td>
+<td>&gt;= 0.9.0</td>
+<td><code>[^@ ]+@[^@ ]+\.[^@ ]+</code></td>
+<td>Regex the commit author email address is matched against</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An often recurring use-case is to only allow email addresses from a certain domain. The following regular expression achieves this: <code>[^@]+@foo.com</code></p>
+</div>
               
             </div>
           </div>
