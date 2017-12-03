@@ -16,7 +16,7 @@ class CommitsTests(BaseTestCase):
         self._create_simple_commit(u"Sïmple title2\n\nSimple bödy describing the commit2")
         self._create_simple_commit(u"Sïmple title3\n\nSimple bödy describing the commit3")
         output = gitlint("--commits", "test-branch-commits-base...test-branch-commits",
-                         _cwd=self.tmp_git_repo, _tty_in=True)
+                         _cwd=self.tmp_git_repo, _err_to_out=True)
         self.assertEqual(output, "")
 
     def test_violations(self):
@@ -30,7 +30,7 @@ class CommitsTests(BaseTestCase):
         self._create_simple_commit(u"Sïmple title3.\n")
         commit_sha2 = self.get_last_commit_hash()[:10]
         output = gitlint("--commits", "test-branch-commits-violations-base...test-branch-commits-violations",
-                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
+                         _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[4])
         expected = (u"Commit {0}:\n".format(commit_sha2) +
                     u"1: T3 Title has trailing punctuation (.): \"Sïmple title3.\"\n" +
                     u"3: B6 Body message is missing\n"
@@ -48,7 +48,7 @@ class CommitsTests(BaseTestCase):
         commit_sha = self.get_last_commit_hash()
         refspec = "{0}^...{0}".format(commit_sha)
         self._create_simple_commit(u"Sïmple title3.\n")
-        output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+        output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[2])
         expected = (u"1: T3 Title has trailing punctuation (.): \"Sïmple title2.\"\n" +
                     u"3: B6 Body message is missing\n")
         self.assertEqual(output.exit_code, 2)
@@ -60,8 +60,8 @@ class CommitsTests(BaseTestCase):
         self._create_simple_commit(u"Sïmple title.\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
         self._create_simple_commit(u"Sïmple title", git_repo=tmp_git_repo)
         self._create_simple_commit(u"WIP: Sïmple title\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
-        output = gitlint("--commits", "HEAD", _cwd=tmp_git_repo, _tty_in=True, _ok_code=[3])
-        revlist = git("rev-list", "HEAD", _tty_in=True, _cwd=tmp_git_repo).split()
+        output = gitlint("--commits", "HEAD", _cwd=tmp_git_repo, _err_to_out=True, _ok_code=[3])
+        revlist = git("rev-list", "HEAD", _err_to_out=True, _cwd=tmp_git_repo).split()
 
         expected = (
             u"Commit {0}:\n".format(revlist[0][:10]) +

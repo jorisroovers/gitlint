@@ -28,7 +28,7 @@ argument-rgx=[a-z_][a-z0-9_]{1,30}$
 method-rgx=([a-z_][a-z0-9_]{2,50}|setUp|tearDown)$
 
 # Allow 'id' as variable name everywhere
-good-names=id,c
+good-names=id,c,_
 
 bad-names=__author__
 

@@ -19,7 +19,8 @@ class LintConfigPrecedenceTests(BaseTestCase):
     def setUp(self):
         self.cli = CliRunner()
 
-    def test_config_precedence(self):
+    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    def test_config_precedence(self, _):
         # TODO(jroovers): this test really only test verbosity, we need to do some refactoring to gitlint.cli
         # to more easily test everything
         # Test that the config precedence is followed:
@@ -55,7 +56,8 @@ class LintConfigPrecedenceTests(BaseTestCase):
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
 
-    def test_ignore_precedence(self):
+    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    def test_ignore_precedence(self, _):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             # --ignore takes precedence over -c general.ignore
             result = self.cli.invoke(cli.cli, ["-c", "general.ignore=T5", "--ignore", "B6"],
