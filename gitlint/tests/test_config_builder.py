@@ -103,7 +103,6 @@ class LintConfigBuilderTests(BaseTestCase):
         config_builder = LintConfigBuilder()
         config_builder.set_from_config_file(path)
         expected_error_msg = u"No such rule 'föobar'"
-        config_builder.set_from_config_file(path)
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config_builder.build()
 
