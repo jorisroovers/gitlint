@@ -345,6 +345,9 @@ class GitTests(BaseTestCase):
         git.return_value.__unicode__ = lambda _: u"ä"
         self.assertEqual(git_commentchar(), u"ä")
 
+        git.return_value = ';\n'
+        self.assertEqual(git_commentchar(), ';')
+
     def test_commit_msg_custom_commentchar(self):
         with patch.object(GitCommitMessage, 'COMMENT_CHAR', new_callable=PropertyMock) as comment_char_mock:
             comment_char_mock.return_value = u"ä"
