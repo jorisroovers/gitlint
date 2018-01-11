@@ -2,7 +2,12 @@
 
 import os
 
-from mock import patch, ANY, mock_open
+try:
+    # python 2.x
+    from mock import patch, ANY, mock_open
+except ImportError:
+    # python 3.x
+    from unittest.mock import patch, ANY, mock_open  # pylint: disable=no-name-in-module, import-error
 
 from gitlint.tests.base import BaseTestCase
 from gitlint.config import LintConfig

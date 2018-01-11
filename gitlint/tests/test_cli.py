@@ -12,7 +12,14 @@ except ImportError:
     from io import StringIO
 
 from click.testing import CliRunner
-from mock import patch
+
+try:
+    # python 2.x
+    from mock import patch
+except ImportError:
+    # python 3.x
+    from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
+
 from sh import CommandNotFound
 
 from gitlint.tests.base import BaseTestCase

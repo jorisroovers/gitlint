@@ -1,6 +1,12 @@
 import logging
 import os
-import unittest2
+
+try:
+    # python 2.x
+    import unittest2 as unittest
+except ImportError:
+    # python 3.x
+    import unittest
 
 from gitlint.git import GitContext
 from gitlint.utils import ustr, LOG_FORMAT
@@ -10,12 +16,13 @@ from gitlint.utils import ustr, LOG_FORMAT
 # For reference, this is where this patch is required:
 # https://hg.python.org/unittest2/file/tip/unittest2/case.py#l227
 try:
-    unittest2.case.str = unicode
-except NameError:
-    pass  # python 3
+    # python 2.x
+    unittest.case.str = unicode
+except (AttributeError, NameError):
+    pass  # python 3.x
 
 
-class BaseTestCase(unittest2.TestCase):
+class BaseTestCase(unittest.TestCase):
     """ Base class of which all gitlint unit test classes are derived. Provides a number of convenience methods. """
 
     # In case of assert failures, print the full error message

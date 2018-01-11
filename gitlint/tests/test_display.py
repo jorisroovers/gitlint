@@ -7,7 +7,13 @@ except ImportError:
     # python 3.x
     from io import StringIO
 
-from mock import patch
+
+try:
+    # python 2.x
+    from mock import patch
+except ImportError:
+    # python 3.x
+    from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
 
 from gitlint.display import Display
 from gitlint.config import LintConfig

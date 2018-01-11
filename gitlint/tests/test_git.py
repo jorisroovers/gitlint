@@ -2,7 +2,14 @@
 
 import datetime
 import dateutil
-from mock import patch, call, PropertyMock
+
+try:
+    # python 2.x
+    from mock import patch, call, PropertyMock
+except ImportError:
+    # python 3.x
+    from unittest.mock import patch, call, PropertyMock  # pylint: disable=no-name-in-module, import-error
+
 from sh import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
