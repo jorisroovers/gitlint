@@ -53,7 +53,8 @@ class BaseTestCase(unittest.TestCase):
     def get_sample(filename=""):
         """ Read and return the contents of a file in gitlint/tests/samples """
         sample_path = BaseTestCase.get_sample_path(filename)
-        sample = ustr(open(sample_path).read())
+        with open(sample_path) as content:
+            sample = ustr(content.read())
         return sample
 
     @staticmethod
@@ -62,7 +63,8 @@ class BaseTestCase(unittest.TestCase):
         Optionally replace template variables specified by variable_dict. """
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        expected = ustr(open(expected_path).read())
+        with open(expected_path) as content:
+            expected = ustr(content.read())
 
         if variable_dict:
             expected = expected.format(**variable_dict)
