@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import re
 
 from gitlint.tests.base import BaseTestCase
 
@@ -139,7 +140,8 @@ class RuleOptionTests(BaseTestCase):
 
         # set to a file, should raise exception since option.type = dir
         sample_path = self.get_sample_path("commit_message/sample1")
-        expected = u"Option test-directory must be an existing directory \(current value: '{0}'\)".format(sample_path)
+        expected = u"Option test-directory must be an existing directory \(current value: '{0}'\)".format(
+            re.escape(sample_path))
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(sample_path)
 
@@ -148,7 +150,7 @@ class RuleOptionTests(BaseTestCase):
         option.set(sample_path)
         self.assertEqual(option.value, sample_path)
         expected = u"Option test-directory must be an existing file \(current value: '{0}'\)".format(
-            self.get_sample_path())
+            re.escape(self.get_sample_path()))
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(self.get_sample_path())
 
