@@ -64,12 +64,12 @@ setup(
     ],
     install_requires=[
         'Click==6.6',
-        'arrow==0.10.0',
-        'ordereddict==1.1',
+        'arrow==0.10.0'
     ],
     extras_require={
-        ':python_version == "2.6"': [
+        ':python_version < "2.7"': [
             'importlib==1.0.3',
+            'ordereddict==1.1',
         ],
         ':sys_platform != "win32"': [
             'sh==1.11',

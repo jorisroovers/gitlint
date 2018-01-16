@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 
 from gitlint.tests.base import BaseTestCase
 
@@ -87,7 +88,8 @@ class LintConfigBuilderTests(BaseTestCase):
 
         # bad config file load
         foo_path = self.get_sample_path(u"föo")
-        with self.assertRaisesRegex(LintConfigError, u"Invalid file path: {0}".format(foo_path)):
+        expected_error_msg = u"Invalid file path: {0}".format(re.escape(foo_path))
+        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config_builder.set_from_config_file(foo_path)
 
         # error during file parsing
@@ -101,7 +103,6 @@ class LintConfigBuilderTests(BaseTestCase):
         config_builder = LintConfigBuilder()
         config_builder.set_from_config_file(path)
         expected_error_msg = u"No such rule 'föobar'"
-        config_builder.set_from_config_file(path)
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config_builder.build()
 
