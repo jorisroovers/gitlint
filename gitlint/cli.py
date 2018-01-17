@@ -172,10 +172,8 @@ def lint(ctx):
         ctx.exit(0)
 
     general_config_builder = ctx.obj[1]
-    last_commit = gitcontext.commits[-1]
 
     # Let's get linting!
-    first_violation = True
     exit_code = 0
     for commit in gitcontext.commits:
         # Build a config_builder and linter taking into account the commit specific config (if any)
@@ -189,14 +187,7 @@ def lint(ctx):
         # exit code equals the total number of violations in all commits
         exit_code += len(violations)
         if violations:
-            # Display the commit hash & new lines intelligently
-            if number_of_commits > 1 and commit.sha:
-                linter.display.e(u"{0}Commit {1}:".format(
-                    "\n" if not first_violation or commit is last_commit else "",
-                    commit.sha[:10]
-                ))
-            linter.print_violations(violations)
-            first_violation = False
+            linter.print_violations(commit.sha if commit else None, violations)
 
     # cap actual max exit code because bash doesn't like exit codes larger than 255:
     # http://tldp.org/LDP/abs/html/exitcodes.html

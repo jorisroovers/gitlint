@@ -62,7 +62,8 @@ class CLITests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
-            self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
+            self.assertEqual(stderr.getvalue(),
+                             u'Commit 6f29bf81a8: 3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
 
     @patch('gitlint.cli.stdin_has_data', return_value=False)
@@ -86,12 +87,9 @@ class CLITests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
-            expected = (u"Commit 6f29bf81a8:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
-                        u"Commit 25053ccec5:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body2"\n\n'
-                        u"Commit 4da2656b0d:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body3"\n')
+            expected = (u'Commit 6f29bf81a8: 3: B5 Body message is too short (12<20): "commït-body1"\n'
+                        u'Commit 25053ccec5: 3: B5 Body message is too short (12<20): "commït-body2"\n'
+                        u'Commit 4da2656b0d: 3: B5 Body message is too short (12<20): "commït-body3"\n')
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
 
@@ -118,10 +116,8 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
             # We expect that the second commit has no failures because of 'gitlint-ignore: T3' in its commit msg body
-            expected = (u"Commit 6f29bf81a8:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
-                        u"Commit 4da2656b0d:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body3"\n')
+            expected = (u'Commit 6f29bf81a8: 3: B5 Body message is too short (12<20): "commït-body1"\n'
+                        u'Commit 4da2656b0d: 3: B5 Body message is too short (12<20): "commït-body3"\n')
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 2)
 
@@ -199,9 +195,12 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug", "--commits",
                                                "foo...bar"])
 
-            expected = "Commit 6f29bf81a8:\n3: B5\n\n" + \
-                       "Commit 25053ccec5:\n1: T3\n3: B5\n\n" + \
-                       "Commit 4da2656b0d:\n2: B4\n3: B5\n3: B6\n"
+            expected = ("Commit 6f29bf81a8: 3: B5\n"
+                        "Commit 25053ccec5: 1: T3\n"
+                        "Commit 25053ccec5: 3: B5\n"
+                        "Commit 4da2656b0d: 2: B4\n"
+                        "Commit 4da2656b0d: 3: B5\n"
+                        "Commit 4da2656b0d: 3: B6\n")
 
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 6)
