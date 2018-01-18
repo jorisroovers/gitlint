@@ -88,11 +88,11 @@ class GitLinter(object):
         """ Print a given set of violations to the standard error output """
         commit = "Commit {0}: ".format(commit_sha[:10]) if commit_sha else ""
         for v in violations:
-            line_nr = v.line_nr if v.line_nr else "-"
-            self.display.e(u"{0}{1}: {2}".format(commit, line_nr, v.rule_id), exact=True)
-            self.display.ee(u"{0}{1}: {2} {3}".format(commit, line_nr, v.rule_id, v.message), exact=True)
+            line_nr = "line {}: ".format(v.line_nr) if v.line_nr else ""
+            self.display.e(u"{0}{1}{2}".format(commit, line_nr, v.rule_id), exact=True)
+            self.display.ee(u"{0}{1}{2} {3}".format(commit, line_nr, v.rule_id, v.message), exact=True)
             if v.content:
-                self.display.eee(u"{0}{1}: {2} {3}: \"{4}\"".format(commit, line_nr, v.rule_id, v.message, v.content),
+                self.display.eee(u"{0}{1}{2} {3}: \"{4}\"".format(commit, line_nr, v.rule_id, v.message, v.content),
                                  exact=True)
             else:
-                self.display.eee(u"{0}{1}: {2} {3}".format(commit, line_nr, v.rule_id, v.message), exact=True)
+                self.display.eee(u"{0}{1}{2} {3}".format(commit, line_nr, v.rule_id, v.message), exact=True)

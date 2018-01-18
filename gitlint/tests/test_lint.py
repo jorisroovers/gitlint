@@ -157,18 +157,18 @@ class LintTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 1
             linter.print_violations("1234", violations)
-            expected = u"Commit 1234: -: RULE_ID_1\nCommit 1234: 2: RULE_ID_2\n"
+            expected = u"Commit 1234: RULE_ID_1\nCommit 1234: line 2: RULE_ID_2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 2
             linter.print_violations("1234", violations)
-            expected = u"Commit 1234: -: RULE_ID_1 Error Messåge 1\nCommit 1234: 2: RULE_ID_2 Error Message 2\n"
+            expected = u"Commit 1234: RULE_ID_1 Error Messåge 1\nCommit 1234: line 2: RULE_ID_2 Error Message 2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 3
             linter.print_violations("1234", violations)
-            expected = (u"Commit 1234: -: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n"
-                        u"Commit 1234: 2: RULE_ID_2 Error Message 2: \"Violåting Content 2\"\n")
+            expected = (u"Commit 1234: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n"
+                        u"Commit 1234: line 2: RULE_ID_2 Error Message 2: \"Violåting Content 2\"\n")
             self.assertEqual(expected, stderr.getvalue())

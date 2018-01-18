@@ -42,25 +42,27 @@ class LintConfigPrecedenceTests(BaseTestCase):
             result = self.cli.invoke(cli.cli, ["-vvv", "-c", "general.verbosity=2", "--config", config_path],
                                      input=input_text)
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
+            self.assertEqual(stderr.getvalue(),
+                             "line 1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
 
         # 2. commandline -c flags
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path], input=input_text)
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive)\n")
+            self.assertEqual(stderr.getvalue(), "line 1: T5 Title contains the word 'WIP' (case-insensitive)\n")
 
         # 3. config file
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--config", config_path], input=input_text)
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5\n")
+            self.assertEqual(stderr.getvalue(), "line 1: T5\n")
 
         # 4. default config
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, input=input_text)
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
+            self.assertEqual(stderr.getvalue(),
+                             "line 1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
 
     @patch('gitlint.cli.stdin_has_data', return_value=True)
     def test_ignore_precedence(self, _):
@@ -72,7 +74,7 @@ class LintConfigPrecedenceTests(BaseTestCase):
             self.assertEqual(result.exit_code, 1)
             # We still expect the T5 violation, but no B6 violation as --ignore overwrites -c general.ignore
             self.assertEqual(stderr.getvalue(),
-                             u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is å test\"\n")
+                             u"line 1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is å test\"\n")
 
         # test that we can also still configure a rule that is first ignored but then not
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -85,7 +87,7 @@ class LintConfigPrecedenceTests(BaseTestCase):
 
             # We still expect the T1 violation with custom config,
             # but no B6 violation as --ignore overwrites -c general.ignore
-            self.assertEqual(stderr.getvalue(), u"1: T1 Title exceeds max length (14>5): \"This is å test\"\n")
+            self.assertEqual(stderr.getvalue(), u"line 1: T1 Title exceeds max length (14>5): \"This is å test\"\n")
 
     def test_general_option_after_rule_option(self):
         # We used to have a bug where we didn't process general options before setting specific options, this would

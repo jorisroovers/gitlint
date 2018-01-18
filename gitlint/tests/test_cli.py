@@ -63,7 +63,7 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
             self.assertEqual(stderr.getvalue(),
-                             u'Commit 6f29bf81a8: 3: B5 Body message is too short (11<20): "commït-body"\n')
+                             u'Commit 6f29bf81a8: line 3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
 
     @patch('gitlint.cli.stdin_has_data', return_value=False)
@@ -87,9 +87,9 @@ class CLITests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
-            expected = (u'Commit 6f29bf81a8: 3: B5 Body message is too short (12<20): "commït-body1"\n'
-                        u'Commit 25053ccec5: 3: B5 Body message is too short (12<20): "commït-body2"\n'
-                        u'Commit 4da2656b0d: 3: B5 Body message is too short (12<20): "commït-body3"\n')
+            expected = (u'Commit 6f29bf81a8: line 3: B5 Body message is too short (12<20): "commït-body1"\n'
+                        u'Commit 25053ccec5: line 3: B5 Body message is too short (12<20): "commït-body2"\n'
+                        u'Commit 4da2656b0d: line 3: B5 Body message is too short (12<20): "commït-body3"\n')
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
 
@@ -116,17 +116,17 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
             # We expect that the second commit has no failures because of 'gitlint-ignore: T3' in its commit msg body
-            expected = (u'Commit 6f29bf81a8: 3: B5 Body message is too short (12<20): "commït-body1"\n'
-                        u'Commit 4da2656b0d: 3: B5 Body message is too short (12<20): "commït-body3"\n')
+            expected = (u'Commit 6f29bf81a8: line 3: B5 Body message is too short (12<20): "commït-body1"\n'
+                        u'Commit 4da2656b0d: line 3: B5 Body message is too short (12<20): "commït-body3"\n')
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 2)
 
     @patch('gitlint.cli.stdin_has_data', return_value=True)
     def test_input_stream(self, _):
         """ Test for linting when a message is passed via stdin """
-        expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
-                          u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: tïtle \"\n" + \
-                          u"3: B6 Body message is missing\n"
+        expected_output = u"line 1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
+                          u"line 1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: tïtle \"\n" + \
+                          u"line 3: B6 Body message is missing\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, input=u'WIP: tïtle \n')
@@ -150,14 +150,14 @@ class CLITests(BaseTestCase):
         # -v
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-v"], input=u"WIP: tïtle \n")
-            self.assertEqual(stderr.getvalue(), "1: T2\n1: T5\n3: B6\n")
+            self.assertEqual(stderr.getvalue(), "line 1: T2\nline 1: T5\nline 3: B6\n")
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
         # -vv
-        expected_output = "1: T2 Title has trailing whitespace\n" + \
-                          "1: T5 Title contains the word 'WIP' (case-insensitive)\n" + \
-                          "3: B6 Body message is missing\n"
+        expected_output = "line 1: T2 Title has trailing whitespace\n" + \
+                          "line 1: T5 Title contains the word 'WIP' (case-insensitive)\n" + \
+                          "line 3: B6 Body message is missing\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-vv"], input=u"WIP: tïtle \n")
@@ -195,12 +195,12 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug", "--commits",
                                                "foo...bar"])
 
-            expected = ("Commit 6f29bf81a8: 3: B5\n"
-                        "Commit 25053ccec5: 1: T3\n"
-                        "Commit 25053ccec5: 3: B5\n"
-                        "Commit 4da2656b0d: 2: B4\n"
-                        "Commit 4da2656b0d: 3: B5\n"
-                        "Commit 4da2656b0d: 3: B6\n")
+            expected = ("Commit 6f29bf81a8: line 3: B5\n"
+                        "Commit 25053ccec5: line 1: T3\n"
+                        "Commit 25053ccec5: line 3: B5\n"
+                        "Commit 4da2656b0d: line 2: B4\n"
+                        "Commit 4da2656b0d: line 3: B5\n"
+                        "Commit 4da2656b0d: line 3: B6\n")
 
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 6)
@@ -232,8 +232,8 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules")
             result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
-            expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
-                              "3: B6 Body message is missing\n"
+            expected_output = u"line 1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
+                              "line 3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 2)
 
@@ -241,8 +241,8 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules/my_commit_rules.py")
             result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
-            expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
-                              "3: B6 Body message is missing\n"
+            expected_output = u"line 1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
+                              "line 3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 2)
 
@@ -253,7 +253,7 @@ class CLITests(BaseTestCase):
             config_path = self.get_sample_path("config/gitlintconfig")
             result = self.cli.invoke(cli.cli, ["--config", config_path], input=u"WIP: tëst")
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
+            self.assertEqual(stderr.getvalue(), "line 1: T5\nline 3: B6\n")
             self.assertEqual(result.exit_code, 2)
 
     def test_config_file_negative(self):
