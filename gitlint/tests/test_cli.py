@@ -283,6 +283,7 @@ class CLITests(BaseTestCase):
     @patch('gitlint.cli.stdin_has_data', return_value=False)
     def test_target(self, _):
         """ Test for the --target option """
+        os.environ["LANGUAGE"] = "C"
         result = self.cli.invoke(cli.cli, ["--target", "/tmp"])
         # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
         # into account).
