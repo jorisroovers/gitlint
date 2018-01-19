@@ -51,7 +51,7 @@ def git_commentchar():
     """ Shortcut for retrieving comment char from git config """
     commentchar = _git("config", "--get", "core.commentchar", _ok_code=[1])
     # git will return an exit code of 1 if it can't find a config value, in this case we fall-back to # as commentchar
-    if commentchar.exit_code == 1:  # pylint: disable=no-member
+    if hasattr(commentchar, 'exit_code') and commentchar.exit_code == 1:  # pylint: disable=no-member
         commentchar = "#"
     return ustr(commentchar).replace(u"\n", u"")
 
