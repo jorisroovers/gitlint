@@ -122,14 +122,15 @@ def stdin_has_data():
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
 @click.option('-d', '--debug', help="Enable debugging output.", is_flag=True)
+@click.option('-l', '--loglevel', help="Set log level.", type=click.Choice(['error','warning','debug','info']))
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
-def cli(ctx, target, config, c, commits, extra_path, ignore, verbose, silent, debug):
+def cli(ctx, target, config, c, commits, extra_path, ignore, verbose, silent, debug, loglevel):
     """ Git lint tool, checks your git commit messages for styling issues """
 
     try:
-        if debug:
-            logging.getLogger("gitlint").setLevel(logging.DEBUG)
+        if loglevel:
+            logging.getLogger("gitlint").setLevel(loglevel.upper())
 
         log_system_info()
 
