@@ -81,14 +81,14 @@ class RuleViolation(object):
         return equal
 
     def __str__(self):
-        return sstr(self)  # pragma: no cover
+        return self.__unicode__()  # pragma: no cover
 
     def __unicode__(self):
         return u"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
                                                self.content)  # pragma: no cover
 
     def __repr__(self):
-        return self.__str__()  # pragma: no cover
+        return self.__unicode__()  # pragma: no cover
 
 
 class MaxLineLength(LineRule):

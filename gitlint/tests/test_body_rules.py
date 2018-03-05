@@ -178,3 +178,20 @@ class BodyRuleTests(BaseTestCase):
         violations = rule.validate(commit)
         expected_violation_2 = rules.RuleViolation("B7", "Body does not mention changed file 'bar.txt'", None, 4)
         self.assertEqual([expected_violation_2, expected_violation], violations)
+
+    def test_skip_body_checks_regex(self):
+
+        # Skip body checks, if regex matches
+        rule = rules.BodyMinLength()
+        rules.BodyMinLength({'ignore-body-checks-regex': 'Release\s([a-z\-])*\s(\d+\.)?(\d+\.)?(\*|\d+)'})
+        commit = self.gitcommit(u"Release foo-bar-baz 0.12.3")
+        violations = rule.validate(commit)
+        self.assertIsNone(violations)
+
+        # Skip body checks, if regex matches
+        rule = rules.BodyFirstLineEmpty()
+        rules.BodyMinLength({'ignore-body-checks-regex': 'Release\s([a-z\-])*\s(\d+\.)?(\d+\.)?(\*|\d+)'})
+        commit = self.gitcommit(u"Release foo-bar-baz 0.12.3")
+        violations = rule.validate(commit)
+        self.assertIsNone(violations)
+
