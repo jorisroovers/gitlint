@@ -1,0 +1,5 @@
+-   id: gitlint
+    name: gitlint
+    language: python
+    entry: gitlint --msg-filename
+    stages: [commit-msg]

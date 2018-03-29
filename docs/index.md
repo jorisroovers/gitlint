@@ -135,6 +135,19 @@ gitlint uninstall-hook
     file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. Gitlint will also only
     uninstall unmodified commit-msg hooks that were installed by gitlint.
 
+## Using gitlint through [pre-commit](https://pre-commit.com)
+
+`gitlint` can be configured as a plugin for the `pre-commit` git hooks
+framework.  Simply add the configuration to your `.pre-commit-config.yaml`:
+
+```yaml
+-   repo: https://github.com/jorisroovers/gitlint
+    rev:  # Fill in a tag / sha here
+    hooks:
+    -   id: gitlint
+```
+
+
 ## Using gitlint in a CI environment ##
 By default, when just running ```gitlint``` without additional parameters, gitlint lint the last commit in the current
 git repository.
