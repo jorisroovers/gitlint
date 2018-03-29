@@ -44,6 +44,7 @@ target: {target}
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
+DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.
 DEBUG: gitlint.lint Linting commit {commit_sha}
 DEBUG: gitlint.lint Commit Object
 Author: gitlint-test-user <gitlint@test.com>

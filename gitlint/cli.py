@@ -4,9 +4,8 @@ import copy
 import logging
 import os
 import platform
-import select
+import stat
 import sys
-
 import click
 
 # Error codes
@@ -94,17 +93,36 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
     ctx.exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
 
 
-def stdin_has_data():
-    """ Helper function that indicates whether the stdin has data incoming or not """
-    # This code was taken from:
-    # https://stackoverflow.com/questions/3762881/how-do-i-check-if-stdin-has-some-data
+def get_stdin_data():
+    """ Helper function that returns data send to stdin or False if nothing is send """
+    # STDIN can only be 3 different types of things ("modes")
+    #  1. An interactive terminal device (i.e. a TTY -> sys.stdin.isatty() or stat.S_ISCHR)
+    #  2. A (named) pipe (stat.S_ISFIFO)
+    #  3. A regular file (stat.S_ISREG)
+    # Technically, STDIN can also be other device type like a named unix socket (stat.S_ISSOCK), but we don't
+    # support that in gitlint (at least not today).
+    #
+    # Now, the behavior that we want is the following:
+    # If someone sends something directly to gitlint via a pipe or a regular file, read it. If not, read from the
+    # local repository.
+    # Note that we don't care about whether STDIN is a TTY or not, we only care whether data is via a pipe or regular
+    # file.
+    # However, in case STDIN is not a TTY, it HAS to be one of the 2 other things (pipe or regular file), even if
+    # no-one is actually sending anything to gitlint over them. In this case, we still want to read from the local
+    # repository.
+    # To support this use-case (which is common in CI runners such as Jenkins and Gitlab), we need to actually attempt
+    # to read from STDIN in case it's a pipe or regular file. In case that fails, then we'll fall back to reading
+    # from the local repo.
 
-    # Caveat, this probably doesn't work on Windows because the code is dependent on the unix SELECT syscall.
-    # Details: https://docs.python.org/2/library/select.html#select.select
-    # This isn't a real problem now, because gitlint as a whole doesn't support Windows (see #20).
-    # If we ever do, we probably want to fall back to the old detection mechanism of reading from the local git repo
-    # in case there's no TTY connected to STDIN.
-    return select.select([sys.stdin, ], [], [], 0.0)[0]
+    mode = os.fstat(sys.stdin.fileno()).st_mode
+    stdin_is_pipe_or_file = stat.S_ISFIFO(mode) or stat.S_ISREG(mode)
+    if stdin_is_pipe_or_file:
+        input_data = sys.stdin.read()
+        # Only return the input data if there's actually something passed
+        # i.e. don't consider empty piped data
+        if len(input_data) != 0:
+            return ustr(input_data)
+    return False
 
 
 @click.group(invoke_without_command=True, epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
@@ -162,13 +180,20 @@ def lint(ctx):
     lint_config = ctx.obj[0]
     msg_filename = ctx.obj[3]
 
-    # If we get data via stdin, then let's consider that our commit message, otherwise parse it from the local git repo.
+    # Let's determine where our input data is coming from:
+    # Order of precedence:
+    # 1. Any data specified via --msg-filename
+    # 2. Any data sent to stdin
+    # 3. Fallback to reading from local repository
+    stdin_input = get_stdin_data()
     if msg_filename:
+        LOG.debug("Attempting to read from --msg-filename.")
         gitcontext = GitContext.from_commit_msg(ustr(msg_filename.read()))
-    elif stdin_has_data():
-        stdin_str = ustr(sys.stdin.read())
-        gitcontext = GitContext.from_commit_msg(stdin_str)
+    elif stdin_input:
+        LOG.debug("No --msg-filename flag. Attempting to read from stdin.")
+        gitcontext = GitContext.from_commit_msg(stdin_input)
     else:
+        LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
         gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
 
     number_of_commits = len(gitcontext.commits)

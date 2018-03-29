@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
 import os
-from sh import git, gitlint, echo  # pylint: disable=no-name-in-module
+from sh import git, gitlint  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
 
@@ -10,10 +9,9 @@ class IntegrationTests(BaseTestCase):
 
     def test_successful(self):
         # Test for STDIN with and without a TTY attached
-        for has_tty in [True, False]:
-            self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
-            output = gitlint(_cwd=self.tmp_git_repo, _tty_in=has_tty, _err_to_out=True)
-            self.assertEqual(output, "")
+        self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _err_to_out=True)
+        self.assertEqual(output, "")
 
     def test_successful_merge_commit(self):
         # Create branch on master
@@ -105,40 +103,38 @@ class IntegrationTests(BaseTestCase):
         self.assertEqual(output, expected)
 
     def test_violations(self):
-        # Test for STDIN with and without a TTY attached
-        for has_tty in [True, False]:
-            commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
-            self._create_simple_commit(commit_msg)
-            # We need to set _err_to_out explicitly for sh to merge stdout and stderr output in case there's
-            # no TTY attached to STDIN
-            # http://amoffat.github.io/sh/sections/special_arguments.html?highlight=_tty_in#err-to-out
-            output = gitlint(_cwd=self.tmp_git_repo, _tty_in=has_tty, _err_to_out=True, _ok_code=[3])
+        commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
+        self._create_simple_commit(commit_msg)
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
 
-            expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
-                       u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
-                       u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
-            self.assertEqual(output, expected)
+        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
+            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
+            u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
+        self.assertEqual(output, expected)
 
-    def test_pipe_input(self):
-        # NOTE: There is no use in testing this with _tty_in=True, because if you pipe something into a command
-        # there never is a TTY connected to stdin (per definition).
-        output = gitlint(echo(u"WIP: Pïpe test."), _tty_in=False, _err_to_out=True, _ok_code=[3])
+    def test_msg_filename(self):
+        tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename test.")
 
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Pïpe test.\"\n" + \
-                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pïpe test.\"\n" + \
-                   u"3: B6 Body message is missing\n"
+        output = gitlint("--msg-filename", tmp_commit_msg_file, _tty_in=True, _ok_code=[3])
+
+        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: msg-fïlename test.\"\n" + \
+            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: msg-fïlename test.\"\n" + \
+            u"3: B6 Body message is missing\n"
 
         self.assertEqual(output, expected)
 
-    def test_from_file(self):
-        tmp_commit_msg_file = os.path.realpath("/tmp/commitmsg-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
-        with open(tmp_commit_msg_file, "w") as f:
-            f.write("WIP: msg-fïlename test.")
+    def test_msg_filename_no_tty(self):
+        """ Make sure --msg-filename option also works with no TTY attached """
+        tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename NO TTY test.")
 
-        output = gitlint("--msg-filename", tmp_commit_msg_file, _tty_in=False, _err_to_out=True, _ok_code=[3])
+        # We need to set _err_to_out explicitly for sh to merge stdout and stderr output in case there's
+        # no TTY attached to STDIN
+        # http://amoffat.github.io/sh/sections/special_arguments.html?highlight=_tty_in#err-to-out
+        output = gitlint("--msg-filename", tmp_commit_msg_file, _in=self.mock_stdin(),
+                         _tty_in=False, _err_to_out=True, _ok_code=[3])
 
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: msg-fïlename test.\"\n" + \
-                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: msg-fïlename test.\"\n" + \
+        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: msg-fïlename NO TTY test.\"\n" + \
+                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: msg-fïlename NO TTY test.\"\n" + \
                    u"3: B6 Body message is missing\n"
 
         self.assertEqual(output, expected)

@@ -63,7 +63,7 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--version"])
         self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
     def test_lint(self, sh, _):
         """ Test for basic simple linting functionality """
@@ -77,7 +77,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
     def test_lint_multiple_commits(self, sh, _):
         """ Test for --commits option """
@@ -107,7 +107,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
     def test_lint_multiple_commits_config(self, sh, _):
         """ Test for --commits option where some of the commits have gitlint config in the commit message """
@@ -138,7 +138,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 3)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
     def test_lint_multiple_commits_configuration_rules(self, sh, _):
         """ Test for --commits option where where we have configured gitlint to ignore certain rules for certain commits
@@ -175,7 +175,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 2)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    @patch('gitlint.cli.get_stdin_data', return_value=u'WIP: tïtle \n')
     def test_input_stream(self, _):
         """ Test for linting when a message is passed via stdin """
         expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
@@ -183,12 +183,13 @@ class CLITests(BaseTestCase):
                           u"3: B6 Body message is missing\n"
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, input=u'WIP: tïtle \n')
+            result = self.cli.invoke(cli.cli)
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
-    def test_from_filename(self):
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
+    def test_msg_filename(self, _):
         expected_output = u"3: B6 Body message is missing\n"
 
         with tempdir() as tmpdir:
@@ -197,28 +198,27 @@ class CLITests(BaseTestCase):
                 f.write("Commït title\n")
 
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-                args = ["--msg-filename", msg_filename]
-                result = self.cli.invoke(cli.cli, args)
+                result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename])
                 self.assertEqual(stderr.getvalue(), expected_output)
                 self.assertEqual(result.exit_code, 1)
                 self.assertEqual(result.output, "")
 
-    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: tïtle \n")
     def test_silent_mode(self, _):
         """ Test for --silent option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["--silent"], input=u"WIP: tïtle \n")
+            result = self.cli.invoke(cli.cli, ["--silent"])
             self.assertEqual(stderr.getvalue(), "")
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
-    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: tïtle \n")
     def test_verbosity(self, _):
         """ Test for --verbosity option """
         # We only test -v and -vv, more testing is really not required here
         # -v
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["-v"], input=u"WIP: tïtle \n")
+            result = self.cli.invoke(cli.cli, ["-v"])
             self.assertEqual(stderr.getvalue(), "1: T2\n1: T5\n3: B6\n")
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
@@ -241,7 +241,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, CLITests.CONFIG_ERROR_CODE)
             self.assertEqual(result.output, "Config Error: Option 'verbosity' must be set between 0 and 3\n")
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
     def test_debug(self, sh, _):
         """ Test for --debug option """
@@ -278,6 +278,8 @@ class CLITests(BaseTestCase):
                              u"DEBUG: gitlint.cli Gitlint version: {0}".format(__version__),
                              self.get_expected('debug_configuration_output1', {'config_path': config_path,
                                                                                'target': os.path.abspath(os.getcwd())}),
+                             u"DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. " +
+                             u"Attempting to read from the local repo.",
                              u"DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360",
                              u"DEBUG: gitlint.lint Commit Object\nAuthor: test åuthor1 <test-email1@föo.com>\n" +
                              u"Date:   2016-12-03 15:28:15+01:00\ncommït-title1\n\ncommït-body1",
@@ -291,13 +293,13 @@ class CLITests(BaseTestCase):
 
             self.assert_logged(expected_logs)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    @patch('gitlint.cli.get_stdin_data', return_value=u"Test tïtle\n")
     def test_extra_path(self, _):
         """ Test for --extra-path flag """
         # Test extra-path pointing to a directory
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules")
-            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
+            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"])
             expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
                               "3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
@@ -312,12 +314,12 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 2)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: tëst")
     def test_config_file(self, _):
         """ Test for --config option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path("config/gitlintconfig")
-            result = self.cli.invoke(cli.cli, ["--config", config_path], input=u"WIP: tëst")
+            result = self.cli.invoke(cli.cli, ["--config", config_path])
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
             self.assertEqual(result.exit_code, 2)
@@ -345,7 +347,7 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     def test_target(self, _):
         """ Test for the --target option """
         os.environ["LANGUAGE"] = "C"
@@ -399,7 +401,7 @@ class CLITests(BaseTestCase):
                        "Error: File \"{0}\" already exists.\n".format(sample_path)
         self.assertEqual(result.output, expected_msg)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
     def test_git_error(self, sh, _):
         """ Tests that the cli handles git errors properly """
@@ -407,7 +409,7 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
-    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
     def test_no_commits_in_range(self, sh, _):
         """ Test for --commits with the specified range being empty. """

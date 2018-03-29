@@ -14,30 +14,30 @@ class ConfigTests(BaseTestCase):
 
     def test_ignore_by_id(self):
         self._create_simple_commit(u"WIP: Thïs is a title.\nContënt on the second line")
-        output = gitlint("--ignore", "T5,B4", _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[1])
+        output = gitlint("--ignore", "T5,B4", _tty_in=True, _cwd=self.tmp_git_repo, _ok_code=[1])
         expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Thïs is a title.\"\n"
         self.assertEqual(output, expected)
 
     def test_ignore_by_name(self):
         self._create_simple_commit(u"WIP: Thïs is a title.\nContënt on the second line")
         output = gitlint("--ignore", "title-must-not-contain-word,body-first-line-empty",
-                         _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[1])
+                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
         expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Thïs is a title.\"\n"
         self.assertEqual(output, expected)
 
     def test_verbosity(self):
         self._create_simple_commit(u"WIP: Thïs is a title.\nContënt on the second line")
-        output = gitlint("-v", _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[3])
+        output = gitlint("-v", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
         expected = u"1: T3\n1: T5\n2: B4\n"
         self.assertEqual(output, expected)
 
-        output = gitlint("-vv", _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[3])
+        output = gitlint("-vv", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
         expected = u"1: T3 Title has trailing punctuation (.)\n" + \
                    u"1: T5 Title contains the word 'WIP' (case-insensitive)\n" + \
                    u"2: B4 Second line is not empty\n"
         self.assertEqual(output, expected)
 
-        output = gitlint("-vvv", _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[3])
+        output = gitlint("-vvv", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
         expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Thïs is a title.\"\n" + \
                    u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Thïs is a title.\"\n" + \
                    u"2: B4 Second line is not empty: \"Contënt on the second line\"\n"
@@ -49,7 +49,7 @@ class ConfigTests(BaseTestCase):
 
     def test_set_rule_option(self):
         self._create_simple_commit(u"This ïs a title.")
-        output = gitlint("-c", "title-max-length.line-length=5", _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[3])
+        output = gitlint("-c", "title-max-length.line-length=5", _tty_in=True, _cwd=self.tmp_git_repo, _ok_code=[3])
         expected = u"1: T1 Title exceeds max length (16>5): \"This ïs a title.\"\n" + \
                    u"1: T3 Title has trailing punctuation (.): \"This ïs a title.\"\n" + \
                    "3: B6 Body message is missing\n"
@@ -60,7 +60,7 @@ class ConfigTests(BaseTestCase):
                      "This line of the body is here because we need it"
         self._create_simple_commit(commit_msg)
         config_path = self.get_sample_path("config/gitlintconfig")
-        output = gitlint("--config", config_path, _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[5])
+        output = gitlint("--config", config_path, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
 
         expected = "1: T1 Title exceeds max length (42>20)\n" + \
                    "1: T5 Title contains the word 'WIP' (case-insensitive)\n" + \
@@ -76,7 +76,7 @@ class ConfigTests(BaseTestCase):
         self._create_simple_commit(commit_msg)
         commit_sha = self.get_last_commit_hash()
         config_path = self.get_sample_path("config/gitlintconfig")
-        output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _err_to_out=True, _ok_code=[5])
+        output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
 
         expected_date = git("log", "-1", "--pretty=%ai", _cwd=self.tmp_git_repo)
         expected_date = arrow.get(str(expected_date), "YYYY-MM-DD HH:mm:ss Z").datetime

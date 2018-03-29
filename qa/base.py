@@ -1,12 +1,27 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable
 
 import os
 import sys
+import tempfile
 from datetime import datetime
 from uuid import uuid4
 
 from unittest2 import TestCase
 from sh import git, rm, touch, DEFAULT_ENCODING  # pylint: disable=no-name-in-module
+
+
+def ustr(obj):
+    """ Python 2 and 3 utility method that converts an obj to unicode in python 2 and to a str object in python 3"""
+    if sys.version_info[0] == 2:
+        # If we are getting a string, then do an explicit decode
+        # else, just call the unicode method of the object
+        if type(obj) in [str, basestring]:  # pragma: no cover # noqa # pylint: disable=unidiomatic-typecheck
+            return unicode(obj, DEFAULT_ENCODING)  # pragma: no cover # noqa
+        else:
+            return unicode(obj)  # pragma: no cover # noqa
+    else:
+        return str(obj)
 
 
 class BaseTestCase(TestCase):
@@ -16,6 +31,13 @@ class BaseTestCase(TestCase):
     # In case of assert failures, print the full error message
     maxDiff = None
     tmp_git_repo = None
+
+    def setUp(self):
+        self.tmpfiles = []
+
+    def tearDown(self):
+        for tmpfile in self.tmpfiles:
+            os.remove(tmpfile)
 
     @classmethod
     def setUpClass(cls):
@@ -73,6 +95,15 @@ class BaseTestCase(TestCase):
             _ok_code=ok_code, _env=environment)
         return test_filename
 
+    def create_tmpfile(self, content):
+        """ Utility method to create temp files. These are cleaned at the end of the test """
+        # Not using a context manager to avoid unneccessary identation in test code
+        tmpfile, tmpfilepath = tempfile.mkstemp()
+        self.tmpfiles.append(tmpfilepath)
+        with os.fdopen(tmpfile, "w") as f:
+            f.write(content)
+        return tmpfilepath
+
     @staticmethod
     def get_example_path(filename=""):
         examples_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../examples")
@@ -104,3 +135,11 @@ class BaseTestCase(TestCase):
         if variable_dict:
             expected = expected.format(**variable_dict)
         return expected
+
+    @staticmethod
+    def mock_stdin():
+        """ Convenience method to create a Mock stdin object to deal with https://github.com/amoffat/sh/issues/427 """
+        class MockInput(object):
+            def read(self, _size):  # pylint: disable=no-self-use
+                return
+        return MockInput()

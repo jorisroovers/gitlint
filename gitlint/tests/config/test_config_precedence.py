@@ -25,7 +25,7 @@ class LintConfigPrecedenceTests(BaseTestCase):
     def setUp(self):
         self.cli = CliRunner()
 
-    @patch('gitlint.cli.stdin_has_data', return_value=True)
+    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP\n\nThis is å test message\n")
     def test_config_precedence(self, _):
         # TODO(jroovers): this test really only test verbosity, we need to do some refactoring to gitlint.cli
         # to more easily test everything
@@ -34,40 +34,37 @@ class LintConfigPrecedenceTests(BaseTestCase):
         # 2. commandline -c flags
         # 3. config file
         # 4. default config
-        input_text = u"WIP\n\nThis is å test message\n"
         config_path = self.get_sample_path("config/gitlintconfig")
 
         # 1. commandline convenience flags
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["-vvv", "-c", "general.verbosity=2", "--config", config_path],
-                                     input=input_text)
+            result = self.cli.invoke(cli.cli, ["-vvv", "-c", "general.verbosity=2", "--config", config_path])
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
 
         # 2. commandline -c flags
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path], input=input_text)
+            result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path])
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive)\n")
 
         # 3. config file
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["--config", config_path], input=input_text)
+            result = self.cli.invoke(cli.cli, ["--config", config_path])
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5\n")
 
         # 4. default config
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, input=input_text)
+            result = self.cli.invoke(cli.cli)
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
 
-    @patch('gitlint.cli.stdin_has_data', return_value=True)
-    def test_ignore_precedence(self, _):
+    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: This is å test")
+    def test_ignore_precedence(self, get_stdin_data):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             # --ignore takes precedence over -c general.ignore
-            result = self.cli.invoke(cli.cli, ["-c", "general.ignore=T5", "--ignore", "B6"],
-                                     input=u"WIP: This is å test")
+            result = self.cli.invoke(cli.cli, ["-c", "general.ignore=T5", "--ignore", "B6"])
             self.assertEqual(result.output, "")
             self.assertEqual(result.exit_code, 1)
             # We still expect the T5 violation, but no B6 violation as --ignore overwrites -c general.ignore
@@ -76,10 +73,11 @@ class LintConfigPrecedenceTests(BaseTestCase):
 
         # test that we can also still configure a rule that is first ignored but then not
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            get_stdin_data.return_value = u"This is å test"
             # --ignore takes precedence over -c general.ignore
             result = self.cli.invoke(cli.cli, ["-c", "general.ignore=title-max-length",
                                                "-c", "title-max-length.line-length=5",
-                                               "--ignore", "B6"], input=u"This is å test")
+                                               "--ignore", "B6"])
             self.assertEqual(result.output, "")
             self.assertEqual(result.exit_code, 1)
 

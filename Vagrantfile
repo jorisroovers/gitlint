@@ -19,13 +19,24 @@ grep 'cd /vagrant' /home/vagrant/.bashrc || echo 'cd /vagrant' >> /home/vagrant/
 grep 'source .venv27/bin/activate' /home/vagrant/.bashrc || echo 'source .venv27/bin/activate' >> /home/vagrant/.bashrc
 EOF
 
+INSTALL_JENKINS=<<EOF
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt-get install -y jenkins
+EOF
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.box = "ubuntu/xenial64"
 
     config.vm.define "dev" do |dev|
-        dev.vm.provision "shell", inline: "#{INSTALL_DEPS}"
+        dev.vm.provision "gitlint", type: "shell", inline: "#{INSTALL_DEPS}"
+        # Use 'vagrant provision --provision-with jenkins' to only run jenkins install
+        dev.vm.provision "jenkins", type: "shell", inline: "#{INSTALL_JENKINS}"
     end
+
+    config.vm.network "forwarded_port", guest: 8080, host: 9080
 
     if Vagrant.has_plugin?("vagrant-cachier")
         config.cache.scope = :box
