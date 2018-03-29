@@ -117,6 +117,7 @@ Commands:
   generate-config  Generates a sample gitlint config file.
   install-hook     Install gitlint as a git commit-msg hook.
   lint             Lints a git repository [default command]
+  lint-pre-push    Lints a git push (use with a pre-push hook)
   uninstall-hook   Uninstall gitlint commit-msg hook.
 
   When no COMMAND is specified, gitlint defaults to 'gitlint lint'.

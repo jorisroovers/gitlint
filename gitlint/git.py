@@ -172,8 +172,6 @@ class GitContext(object):
         :param refspec: The commit(s) to retrieve
         """
 
-        context = GitContext()
-
         # If no refspec is defined, fallback to the last commit on the current branch
         if refspec is None:
             # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
@@ -182,6 +180,12 @@ class GitContext(object):
             sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace(u"\n", u"")]
         else:
             sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
+
+        return GitContext.process_sha_list(repository_path, sha_list)
+
+    @staticmethod
+    def process_sha_list(repository_path, sha_list):
+        context = GitContext()
 
         for sha in sha_list:
             # Get info from the local git repository: https://git-scm.com/docs/pretty-formats

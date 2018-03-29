@@ -196,6 +196,23 @@ def lint(ctx):
         LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
         gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
 
+    lint_context(ctx, gitcontext)
+
+
+@cli.command("lint-pre-push")
+@click.pass_context
+def lint_pre_push(ctx):
+    """ Lints a git pre-push """
+    lint_config = ctx.obj[0]
+
+    hashes = [line.split()[1] for line in sys.stdin]
+
+    gitcontext = GitContext.process_sha_list(lint_config.target, hashes)
+    lint_context(ctx, gitcontext)
+
+
+def lint_context(ctx, gitcontext):
+    lint_config = ctx.obj[0]
     number_of_commits = len(gitcontext.commits)
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
     # where users are using --commits in a check job to check the commit messages inside a CI job. By returning 0, we

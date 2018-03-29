@@ -9,9 +9,10 @@ help(){
     echo "  -p, --pep8               Run pep8 checks"
     echo "  -l, --lint               Run pylint checks"
     echo "  -g, --git                Run gitlint checks"
+    echo "  -G, --git-pre-push       Run gitlint pre-push checks"
     echo "  -i, --integration        Run integration tests"
     echo "  -b, --build              Run build tests"
-    echo "  -a, --all                Run all tests and checks (unit, integration, pep8, git)"
+    echo "  -a, --all                Run all tests and checks (unit, integration, pep8, git, git-pre-push)"
     echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments (envs: 26,27,33,34,35,pypy2)."
     echo "                           Also works for integration, pep8 and lint tests."
     echo "  --all-env                Run all tests against all python environments"
@@ -126,6 +127,17 @@ run_git_check(){
     return $exit_code
 }
 
+run_git_pre_push_check(){
+    echo -ne "Running gitlint...${RED}"
+    OLDSHA="bccd6dd1f92a46f955aacf11abd787d024bc79d0"
+    NEWSHA="d67ea21754f996388a7b19cdb2ec881507796a52"
+    RESULT=$(echo $OLDSHA $NEWSHA ref | gitlint lint-pre-push 2>&1)
+    local exit_code=$?
+    handle_test_result "$RESULT"
+    # FUTURE: check if we use str() function: egrep -nriI "( |\(|\[)+str\(" gitlint | egrep -v "\w*#(.*)"
+    return $exit_code
+}
+
 run_lint_check(){
     echo -ne "Running pylint...${RED}"
 
@@ -227,6 +239,8 @@ run_all(){
     exit_code=$((exit_code + $?))
     run_git_check
     exit_code=$((exit_code + $?))
+    run_git_pre_push_check
+    exit_code=$((exit_code + $?))
     return $exit_code
 }
 
@@ -316,6 +330,7 @@ while [ "$#" -gt 0 ]; do
         -p|--pep8) shift; just_pep8=1;;
         -l|--lint) shift; just_lint=1;;
         -g|--git) shift; just_git=1;;
+        -G|--git-pre-push) shift; just_git_pre_push=1;;
         -b|--build) shift; just_build_tests=1;;
         -s|--stats) shift; just_stats=1;;
         -i|--integration) shift; just_integration_tests=1;;
@@ -364,6 +379,9 @@ for environment in $envs; do
     elif [ $just_git -eq 1 ]; then
         switch_env "$environment"
         run_git_check
+    elif [ $just_git_pre_push -eq 1 ]; then
+        switch_env "$environment"
+        run_git_pre_push_check
     elif [ $just_lint -eq 1 ]; then
         switch_env "$environment"
         run_lint_check
