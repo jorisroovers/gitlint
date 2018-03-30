@@ -375,6 +375,8 @@ class CLITests(BaseTestCase):
         """ Test for --commits with the specified range being empty. """
         sh.git.side_effect = lambda *_args, **_kwargs: ""
         result = self.cli.invoke(cli.cli, ["--commits", "master...HEAD"])
+
+        self.assert_log_contains(u"DEBUG: gitlint.cli No commits in range \"master...HEAD\"")
         self.assertEqual(result.exit_code, 0)
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')

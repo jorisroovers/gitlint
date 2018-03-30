@@ -97,6 +97,10 @@ class BaseTestCase(unittest.TestCase):
         """ Asserts that a certain list of messages has been logged """
         self.assertListEqual(self.logcapture.messages, lines)
 
+    def assert_log_contains(self, line):
+        """ Asserts that a certain line is in the logs """
+        self.assertIn(line, self.logcapture.messages)
+
 
 class LogCapture(logging.Handler):
     """ Mock logging handler used to capture any log messages during tests."""
