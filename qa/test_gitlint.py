@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from datetime import datetime
 import os
 from sh import git, gitlint, echo  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
@@ -126,6 +126,19 @@ class IntegrationTests(BaseTestCase):
 
         expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Pïpe test.\"\n" + \
                    u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pïpe test.\"\n" + \
+                   u"3: B6 Body message is missing\n"
+
+        self.assertEqual(output, expected)
+
+    def test_from_file(self):
+        tmp_commit_msg_file = os.path.realpath("/tmp/commitmsg-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
+        with open(tmp_commit_msg_file, "w") as f:
+            f.write("WIP: msg-fïlename test.")
+
+        output = gitlint("--msg-filename", tmp_commit_msg_file, _tty_in=False, _err_to_out=True, _ok_code=[3])
+
+        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: msg-fïlename test.\"\n" + \
+                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: msg-fïlename test.\"\n" + \
                    u"3: B6 Body message is missing\n"
 
         self.assertEqual(output, expected)

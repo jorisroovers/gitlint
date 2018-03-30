@@ -24,7 +24,6 @@ class HookTests(BaseTestCase):
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
         expected_installed = u"Successfully installed gitlint commit-msg hook in %s/.git/hooks/commit-msg\n" % \
                              self.tmp_git_repo
-
         self.assertEqual(output_installed, expected_installed)
 
     def tearDown(self):

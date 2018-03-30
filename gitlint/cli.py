@@ -118,17 +118,14 @@ def stdin_has_data():
 @click.option('-e', '--extra-path', help="Path to a directory or python module with extra user-defined rules",
               type=click.Path(exists=True, resolve_path=True, readable=True))
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
-@click.option(
-    '--msg-filename', type=click.File(),
-    help='Path to a file containing a commit-msg',
-)
+@click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
 @click.option('-d', '--debug', help="Enable debugging output.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
-def cli(
+def cli(  # pylint: disable=too-many-arguments
         ctx, target, config, c, commits, extra_path, ignore, msg_filename,
         verbose, silent, debug,
 ):
@@ -166,7 +163,7 @@ def lint(ctx):
 
     # If we get data via stdin, then let's consider that our commit message, otherwise parse it from the local git repo.
     if msg_filename:
-        gitcontext = GitContext.from_commit_msg(msg_filename.read())
+        gitcontext = GitContext.from_commit_msg(ustr(msg_filename.read()))
     elif stdin_has_data():
         stdin_str = ustr(sys.stdin.read())
         gitcontext = GitContext.from_commit_msg(stdin_str)
