@@ -124,12 +124,45 @@ class CLITests(BaseTestCase):
                               u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
                               u"file4.txt\npåth/to/file5.txt\n",
                               u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
-                              u"commït-title3\n\ncommït-body3",
+                              u"commït-title3.\n\ncommït-body3",
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
             # We expect that the second commit has no failures because of 'gitlint-ignore: T3' in its commit msg body
+            expected = (u"Commit 6f29bf81a8:\n"
+                        u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
+                        u"Commit 4da2656b0d:\n"
+                        u'1: T3 Title has trailing punctuation (.): "commït-title3."\n'
+                        u'3: B5 Body message is too short (12<20): "commït-body3"\n')
+            self.assertEqual(stderr.getvalue(), expected)
+            self.assertEqual(result.exit_code, 3)
+
+    @patch('gitlint.cli.stdin_has_data', return_value=False)
+    @patch('gitlint.git.sh')
+    def test_lint_multiple_commits_configuration_rules(self, sh, _):
+        """ Test for --commits option where some of the commits have gitlint config in the commit message """
+
+        # Note that the second commit title has a trailing period that is being ignored by gitlint-ignore: T3
+        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
+                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
+                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+                              # git log --pretty <FORMAT> <SHA>
+                              u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+                              u"commït-title1\n\ncommït-body1",
+                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
+                              u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
+                              u"commït-title2.\n\ncommït-body2\n",
+                              u"file4.txt\npåth/to/file5.txt\n",
+                              u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
+                              u"commït-title3\n\ncommït-body3",
+                              u"file6.txt\npåth/to/file7.txt\n"]
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--commits", "foo...bar", "-c", "I1.regex=^commït-title2(.*)"])
+            # We expect that the second commit has no failures because of it matching against I1.regex
+            # Because we do test for the 3th commit to return violations, this test also ensures that a unique
+            # config object is passed to each commit lint call
             expected = (u"Commit 6f29bf81a8:\n"
                         u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
                         u"Commit 4da2656b0d:\n"

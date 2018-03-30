@@ -1,5 +1,6 @@
 # pylint: disable=bad-option-value,wrong-import-position
 # We need to disable the import position checks because of the windows check that we need to do below
+import copy
 import logging
 import os
 import platform
@@ -185,13 +186,16 @@ def lint(ctx):
     first_violation = True
     exit_code = 0
     for commit in gitcontext.commits:
-        # Build a config_builder and linter taking into account the commit specific config (if any)
+        # Build a config_builder taking into account the commit specific config (if any)
         config_builder = general_config_builder.clone()
         config_builder.set_config_from_commit(commit)
-        lint_config = config_builder.build(lint_config)
-        linter = GitLinter(lint_config)
+
+        # Create a deepcopy from the original config, so we have a unique config object per commit
+        # This is important for configuration rules to be able to modifying the config on a per commit basis
+        commit_config = config_builder.build(copy.deepcopy(lint_config))
 
         # Actually do the linting
+        linter = GitLinter(commit_config)
         violations = linter.lint(commit)
         # exit code equals the total number of violations in all commits
         exit_code += len(violations)

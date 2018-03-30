@@ -15,25 +15,31 @@ class GitLinter(object):
 
         self.display = display.Display(config)
 
-    def ignore_rule(self, rule):
+    def should_ignore_rule(self, rule):
+        """ Determines whether a rule should be ignored based on the general list of commits to ignore """
         return rule.id in self.config.ignore or rule.name in self.config.ignore
+
+    @property
+    def configuration_rules(self):
+        return [rule for rule in self.config.rules if
+                isinstance(rule, gitlint_rules.ConfigurationRule) and not self.should_ignore_rule(rule)]
 
     @property
     def title_line_rules(self):
         return [rule for rule in self.config.rules if
                 isinstance(rule, gitlint_rules.LineRule) and
-                rule.target == gitlint_rules.CommitMessageTitle and not self.ignore_rule(rule)]
+                rule.target == gitlint_rules.CommitMessageTitle and not self.should_ignore_rule(rule)]
 
     @property
     def body_line_rules(self):
         return [rule for rule in self.config.rules if
                 isinstance(rule, gitlint_rules.LineRule) and
-                rule.target == gitlint_rules.CommitMessageBody and not self.ignore_rule(rule)]
+                rule.target == gitlint_rules.CommitMessageBody and not self.should_ignore_rule(rule)]
 
     @property
     def commit_rules(self):
         return [rule for rule in self.config.rules if isinstance(rule, gitlint_rules.CommitRule) and
-                not self.ignore_rule(rule)]
+                not self.should_ignore_rule(rule)]
 
     @staticmethod
     def _apply_line_rules(lines, commit, rules, line_nr_start):
@@ -61,9 +67,13 @@ class GitLinter(object):
         return all_violations
 
     def lint(self, commit):
-        """ Lint the last commit in a given git context by applying all title, body and general rules. """
+        """ Lint the last commit in a given git context by applying all ignore, title, body and commit rules. """
         LOG.debug("Linting commit %s", commit.sha or "[SHA UNKNOWN]")
         LOG.debug("Commit Object\n" + ustr(commit))
+
+        # Apply config rules
+        for rule in self.configuration_rules:
+            rule.apply(self.config, commit)
 
         # Skip linting if this is a special commit type that is configured to be ignored
         ignore_commit_types = ["merge", "squash", "fixup"]

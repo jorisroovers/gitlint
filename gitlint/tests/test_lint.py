@@ -127,6 +127,29 @@ class LintTests(BaseTestCase):
 
         self.assertListEqual(violations, expected)
 
+    def test_lint_configuration_rule(self):
+        # Test that all rules are ignored because of matching regex
+        lint_config = LintConfig()
+        lint_config.set_rule_option("I1", "regex", "^Just a title(.*)")
+
+        linter = GitLinter(lint_config)
+        violations = linter.lint(self.gitcommit(self.get_sample("commit_message/sample2")))
+        self.assertListEqual(violations, [])
+
+        # Test ignoring only certain rules
+        lint_config = LintConfig()
+        lint_config.set_rule_option("I1", "regex", "^Just a title(.*)")
+        lint_config.set_rule_option("I1", "ignore", "B6")
+
+        linter = GitLinter(lint_config)
+        violations = linter.lint(self.gitcommit(self.get_sample("commit_message/sample2")))
+
+        # Normally we'd expect a B6 violation, but that one is skipped because of the specific ignore set above
+        expected = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
+                                  u"Just a title contåining WIP", 1)]
+
+        self.assertListEqual(violations, expected)
+
     def test_lint_special_commit(self):
         for commit_type in ["merge", "squash", "fixup"]:
             commit = self.gitcommit(self.get_sample("commit_message/{0}".format(commit_type)))

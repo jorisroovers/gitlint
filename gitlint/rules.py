@@ -1,8 +1,12 @@
 import copy
+import logging
 import re
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption
 from gitlint.utils import sstr
+
+LOG = logging.getLogger(__name__)
+logging.basicConfig()
 
 
 class Rule(object):
@@ -34,6 +38,11 @@ class Rule(object):
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
+
+
+class ConfigurationRule(Rule):
+    """ Class representing rules that can dynamically change the configuration of gitlint during runtime. """
+    pass
 
 
 class CommitRule(Rule):
@@ -301,3 +310,21 @@ class AuthorValidEmail(CommitRule):
 
         if commit.author_email and not email_regex.match(commit.author_email):
             return [RuleViolation(self.id, "Author email for commit is invalid", commit.author_email)]
+
+
+class IgnoreByTitle(ConfigurationRule):
+    name = "ignore-by-title"
+    id = "I1"
+    options_spec = [StrOption('regex', None, "Regex that matches the titles of commits this rule should apply to"),
+                    StrOption('ignore', "all", "Comman-seperate list of rules to ignore")]
+
+    def apply(self, config, commit):
+        title_regex = re.compile(self.options['regex'].value, re.UNICODE)
+
+        if title_regex.match(commit.message.title):
+            config.ignore = self.options['ignore'].value
+
+            message = u"Commit title '{0}' matches the regex '{1}', ignoring rules: {2}"
+            message = message.format(commit.message.title, self.options['regex'].value, self.options['ignore'].value)
+
+            LOG.debug("Ignoring commit because of rule '%s': %s", self.id, message)
