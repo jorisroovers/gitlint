@@ -76,6 +76,26 @@ class LintConfig(object):
         self._config_path = None
         ignore_stdin_description = "Ignore any stdin data. Useful for running in CI server."
         self._ignore_stdin = options.BoolOption('ignore-stdin', False, ignore_stdin_description)
+        self._format = {}
+
+    # def format()
+
+    def templates(self, template_name):
+        if template_name not in self._format:
+            if template_name == "violation":
+                if self.verbosity == 1:
+                    return u"{line_nr}: {rule_id}"
+                elif self.verbosity == 2:
+                    return u"{line_nr}: {rule_id} {message}"
+                elif self.verbosity == 3:
+                    # TODO: fix case if there's no content!
+                    # self.display.eee(u"{line_nr}: {rule_id} {message}".format(**violation_context), exact=True)
+                    return u"{line_nr}: {rule_id} {message}: \"{content}\""
+            elif template_name == "commit":
+                # TODO: the newline probably doesn't need to be part of the template?
+                return u"{newline}Commit {sha}:"
+
+        return self._format[template_name] if self._format else None
 
     @property
     def target(self):

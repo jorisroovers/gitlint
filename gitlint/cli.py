@@ -49,7 +49,7 @@ def log_system_info():
 
 
 def build_config(  # pylint: disable=too-many-arguments
-        ctx, target, config_path, c, extra_path, ignore, contrib, ignore_stdin, verbose, silent, debug
+        ctx, target, config_path, c, extra_path, ignore, contrib, ignore_stdin, format, verbose, silent, debug
 ):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     config_builder = LintConfigBuilder()
@@ -76,6 +76,8 @@ def build_config(  # pylint: disable=too-many-arguments
 
         if silent:
             config_builder.set_option('general', 'verbosity', 0)
+        elif format:
+            config_builder.set_option('general', 'format', format)
         elif verbose > 0:
             config_builder.set_option('general', 'verbosity', verbose)
 
@@ -165,6 +167,7 @@ def build_git_context(lint_config, msg_filename, refspec):
 @click.option('--contrib', default="", help="Contrib rules to enable (comma-separated by id or name).")
 @click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
 @click.option('--ignore-stdin', is_flag=True, help="Ignore any stdin data. Useful for running in CI server.")
+@click.option('--format', nargs=2, multiple=True, help="Format string to customize gitlint's output format.")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
@@ -173,7 +176,7 @@ def build_git_context(lint_config, msg_filename, refspec):
 @click.pass_context
 def cli(  # pylint: disable=too-many-arguments
         ctx, target, config, c, commits, extra_path, ignore, contrib,
-        msg_filename, ignore_stdin, verbose, silent, debug,
+        msg_filename, ignore_stdin, format, verbose, silent, debug,
 ):
     """ Git lint tool, checks your git commit messages for styling issues
 
@@ -190,7 +193,7 @@ def cli(  # pylint: disable=too-many-arguments
         # Get the lint config from the commandline parameters and
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
         config, config_builder = build_config(ctx, target, config, c, extra_path,
-                                              ignore, contrib, ignore_stdin, verbose, silent, debug)
+                                              ignore, contrib, ignore_stdin, format, verbose, silent, debug)
         LOG.debug(u"Configuration\n%s", ustr(config))
 
         ctx.obj = (config, config_builder, commits, msg_filename)
@@ -245,10 +248,10 @@ def lint(ctx):
         if violations:
             # Display the commit hash & new lines intelligently
             if number_of_commits > 1 and commit.sha:
-                linter.display.e(u"{0}Commit {1}:".format(
-                    "\n" if not first_violation or commit is last_commit else "",
-                    commit.sha[:10]
-                ))
+                render_context = {"newline": "\n" if not first_violation or commit is last_commit else "",
+                                  "sha": commit.sha[:10]}
+                linter.display.render_template("commit", render_context)
+
             linter.print_violations(violations)
             first_violation = False
 

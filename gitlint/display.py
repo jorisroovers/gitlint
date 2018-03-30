@@ -44,3 +44,8 @@ class Display(object):
 
     def eee(self, message, exact=False):  # pylint: disable=invalid-name
         self._output(message, 3, exact, stderr)
+
+    def render_template(self, template_name, context_dict, stream=stderr):  # pylint: disable=invalid-name
+        message = self.config.templates(template_name).format(**context_dict)
+        stream.write(message + "\n")
+        # self._output(message, 3, exact, stderr)
