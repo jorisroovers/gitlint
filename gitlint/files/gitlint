@@ -44,6 +44,7 @@
 
 # [body-min-length]
 # min-length=5
+# ignore-body-checks-regex=''
 
 # [body-is-missing]
 # Whether to ignore this rule on merge commits (which typically only have a title)

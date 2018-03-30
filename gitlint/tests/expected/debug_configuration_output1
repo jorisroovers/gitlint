@@ -23,8 +23,10 @@ target: {target}
   B1: body-max-line-length
      line-length=30
   B5: body-min-length
+     ignore-body-checks-regex=
      min-length=20
   B6: body-is-missing
+     ignore-body-checks-regex=
      ignore-merge-commits=True
   B2: body-trailing-whitespace
   B3: body-hard-tab

@@ -1,9 +1,11 @@
 import copy
+import logging
 import re
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption
 from gitlint.utils import sstr
 
+LOG = logging.getLogger("gitlint")
 
 class Rule(object):
     """ Class representing gitlint rules. """
@@ -79,14 +81,14 @@ class RuleViolation(object):
         return equal
 
     def __str__(self):
-        return sstr(self)  # pragma: no cover
+        return self.__unicode__()  # pragma: no cover
 
     def __unicode__(self):
         return u"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
                                                self.content)  # pragma: no cover
 
     def __repr__(self):
-        return self.__str__()  # pragma: no cover
+        return self.__unicode__()  # pragma: no cover
 
 
 class MaxLineLength(LineRule):
@@ -247,10 +249,19 @@ class BodyFirstLineEmpty(CommitRule):
 class BodyMinLength(CommitRule):
     name = "body-min-length"
     id = "B5"
-    options_spec = [IntOption('min-length', 20, "Minimum body length")]
+    options_spec = [IntOption('min-length', 20, "Minimum body length"),
+                    StrOption('ignore-body-checks-regex', '', 'Ignore body checks for tiles matching regex')]
+
 
     def validate(self, commit):
         min_length = self.options['min-length'].value
+        regex = self.options['ignore-body-checks-regex'].value
+
+        if regex and re.search(regex, commit.message.title):
+            logmsg = "Skipping %s (%s), because ignore-body-checks-regex matches." % (self.id, self.name)
+            LOG.info(logmsg)
+            return
+
         body_message_no_newline = "".join([line for line in commit.message.body if line is not None])
         actual_length = len(body_message_no_newline)
         if actual_length > 0 and actual_length < min_length:
@@ -261,12 +272,23 @@ class BodyMinLength(CommitRule):
 class BodyMissing(CommitRule):
     name = "body-is-missing"
     id = "B6"
-    options_spec = [BoolOption('ignore-merge-commits', True, "Ignore merge commits")]
+    # This needs to come from the real options
+    options_spec = [BoolOption('ignore-merge-commits', True, "Ignore merge commits"),
+                    StrOption('ignore-body-checks-regex', '', 'Ignore body checks for tiles matching regex')]
+
 
     def validate(self, commit):
+        regex = self.options['ignore-body-checks-regex'].value
+
         # ignore merges when option tells us to, which may have no body
         if self.options['ignore-merge-commits'].value and commit.is_merge_commit:
             return
+
+        if regex and re.search(regex, commit.message.title):
+            logmsg = "Skipping %s (%s), because ignore-body-checks-regex matches." % (self.id, self.name)
+            LOG.info(logmsg)
+            return
+
         if len(commit.message.body) < 2:
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
 

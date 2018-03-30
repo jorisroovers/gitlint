@@ -254,7 +254,7 @@ class LintConfig(object):
         return_str += u"[RULES]\n"
         for rule in self.rules:
             return_str += u"  {0}: {1}\n".format(rule.id, rule.name)
-            for option_name, option_value in rule.options.items():
+            for option_name, option_value in sorted(rule.options.items()):
                 if isinstance(option_value.value, list):
                     option_val_repr = ",".join(option_value.value)
                 else:
