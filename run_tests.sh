@@ -264,8 +264,8 @@ install_virtualenv(){
     virtualenv -p "$python_binary" "$venv_name"
     source "${venv_name}/bin/activate"
     easy_install -U pip
-    pip install -r requirements.txt
-    pip install -r test-requirements.txt
+    pip install --ignore-requires-python -r requirements.txt
+    pip install --ignore-requires-python -r test-requirements.txt
     deactivate  2> /dev/null
 }
 

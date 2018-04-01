@@ -1,0 +1,3 @@
+[ignore-by-title]
+regex=^Release(.*)
+ignore=T5,T3

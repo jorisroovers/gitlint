@@ -1,4 +1,6 @@
 # All these sections are optional, edit this file as you like.
+# Note that this file is not exhaustive, it's just an example
+# Use 'gitlint generate-config' to generate a config file with all possible options
 [general]
 ignore=title-trailing-punctuation, T3
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this

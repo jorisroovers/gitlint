@@ -38,6 +38,8 @@ gitlint
 cat examples/commit-message-1 | gitlint
 # or
 git log -1 --pretty=%B | gitlint
+# Or read the commit-msg from a file, like so:
+gitlint --msg-filename examples/commit-message-2
 
 # To install a gitlint as a commit-msg git hook:
 gitlint install-hook
@@ -175,8 +177,8 @@ Note that gitlint requires that you specify ```--pretty=%B``` (=only print the l
 future versions of gitlint might fix this and not require the ```--pretty``` argument.
 
 ## Linting a range of commits ##
-_Experimental support introduced in gitlint v0.8.1, known issues:_
-_[#23](https://github.com/jorisroovers/gitlint/pull/23)_
+
+_Introduced in gitlint v0.9.0 (experimental in v0.8.0)_
 
 Gitlint allows users to commit a number of commits at once like so:
 
@@ -236,6 +238,32 @@ In case you *do* want to lint these commit messages, you can disable this behavi
 general ```ignore-merge-commits```, ```ignore-fixup-commits``` or ```ignore-squash-commits``` option to ```false```
 [using one of the various ways to configure gitlint](configuration.md).
 
+## Ignoring commits ##
+_Introduced in gitlint v0.10.0_
+
+Gitlint allows you to ignore specific rules for specific commits.
+
+One way to do this, is to by [adding a gitline-ignore line to your commit message](configuration.md#commit-specific-config).
+
+If you have a case where you want to ignore a certain type of commits all-together, you can
+use gitlint's *ignore* rules to do so.
+Here's an example gitlint file that configures gitlint to ignore rules ```title-max-length``` and ```body-min-length```
+for all commits with a title starting with *"Release"*.
+
+```ini
+[ignore-by-title]
+# Match commit titles starting with Release
+regex=^Release(.*)
+ignore=title-max-length,body-min-length
+# ignore all rules by setting ignore to 'all'
+# ignore=all
+```
+
+!!! note
+
+    Right now it's not possible to write user-defined ignore rules to handle more complex user-cases.
+    This is however something that we'd like to implement in a future version. If this is something you're interested in
+    please let us know by [opening an issue](https://github.com/jorisroovers/gitlint/issues).
 ## Exit codes ##
 Gitlint uses the exit code as a simple way to indicate the number of violations found.
 Some exit codes are used to indicate special errors as indicated in the table below.
