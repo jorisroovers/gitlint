@@ -315,7 +315,7 @@ class AuthorValidEmail(CommitRule):
 class IgnoreByTitle(ConfigurationRule):
     name = "ignore-by-title"
     id = "I1"
-    options_spec = [StrOption('regex', None, "Regex that matches the titles of commits this rule should apply to"),
+    options_spec = [StrOption('regex', None, "Regex matching the titles of commits this rule should apply to"),
                     StrOption('ignore', "all", "Comman-seperate list of rules to ignore")]
 
     def apply(self, config, commit):
@@ -328,3 +328,24 @@ class IgnoreByTitle(ConfigurationRule):
             message = message.format(commit.message.title, self.options['regex'].value, self.options['ignore'].value)
 
             LOG.debug("Ignoring commit because of rule '%s': %s", self.id, message)
+
+
+class IgnoreByBody(ConfigurationRule):
+    name = "ignore-by-body"
+    id = "I2"
+    options_spec = [StrOption('regex', None, "Regex matching lines of the body of commits this rule should apply to"),
+                    StrOption('ignore', "all", "Comman-seperate list of rules to ignore")]
+
+    def apply(self, config, commit):
+        body_line_regex = re.compile(self.options['regex'].value, re.UNICODE)
+
+        for line in commit.message.body:
+            if body_line_regex.match(line):
+                config.ignore = self.options['ignore'].value
+
+                message = u"Commit message line '{0}' matches the regex '{1}', ignoring rules: {2}"
+                message = message.format(line, self.options['regex'].value, self.options['ignore'].value)
+
+                LOG.debug("Ignoring commit because of rule '%s': %s", self.id, message)
+                # No need to check other lines if we found a match
+                return

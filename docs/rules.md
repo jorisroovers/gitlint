@@ -183,7 +183,6 @@ regex                 | >= 0.9.0          | ```[^@ ]+@[^@ ]+\.[^@ ]+```  |  Rege
     An often recurring use-case is to only allow email addresses from a certain domain. The following regular expression achieves this: ```[^@]+@foo.com```
 
 
-
 ## I1: ignore-by-title ##
 
 ID    | Name                        | gitlint version | Description
@@ -196,4 +195,19 @@ I1    |  ignore-by-title            | >= 0.10.0       | Ignore a commit based on
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
 regex                 | >= 0.10.0         | None                         |  Regex to match against commit title. On match, the commit will be ignored.
+ignore                | >= 0.10.0         | all                          |  Comma-seperated list of rule names or ids to ignore when this rule is matched.
+
+
+## I2: ignore-by-body ##
+
+ID    | Name                        | gitlint version | Description
+------|-----------------------------|-----------------|-------------------------------------------
+I2    |  ignore-by-body             | >= 0.10.0       | Ignore a commit based on matching its body.
+
+
+### Options ###
+
+Name                  | gitlint version   | Default                      | Description
+----------------------|-------------------|------------------------------|----------------------------------
+regex                 | >= 0.10.0         | None                         |  Regex to match against each line of the body. On match, the commit will be ignored.
 ignore                | >= 0.10.0         | all                          |  Comma-seperated list of rule names or ids to ignore when this rule is matched.

@@ -83,7 +83,8 @@ class CommitsTests(BaseTestCase):
         # But in this case only B5 because T3 and T5 are being ignored because of config
         self._create_simple_commit(u"Release: WIP tïtle.\n\nShort", git_repo=tmp_git_repo)
         # In the following 2 commits, the T3 violations are as normal
-        self._create_simple_commit(u"Sïmple title3.\n\nSimple bödy describing the commit3", git_repo=tmp_git_repo)
+        self._create_simple_commit(
+            u"Sïmple WIP title3.\n\nThis is \ta relëase commit\nMore info", git_repo=tmp_git_repo)
         self._create_simple_commit(u"Sïmple title4.\n\nSimple bödy describing the commit4", git_repo=tmp_git_repo)
         revlist = git("rev-list", "HEAD", _err_to_out=True, _cwd=tmp_git_repo).split()
 
@@ -95,7 +96,7 @@ class CommitsTests(BaseTestCase):
             u"Commit {0}:\n".format(revlist[0][:10]) +
             u"1: T3 Title has trailing punctuation (.): \"Sïmple title4.\"\n\n" +
             u"Commit {0}:\n".format(revlist[1][:10]) +
-            u"1: T3 Title has trailing punctuation (.): \"Sïmple title3.\"\n\n" +
+            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"Sïmple WIP title3.\"\n\n" +
             u"Commit {0}:\n".format(revlist[2][:10]) +
             u"3: B5 Body message is too short (5<20): \"Short\"\n\n" +
             u"Commit {0}:\n".format(revlist[3][:10]) +

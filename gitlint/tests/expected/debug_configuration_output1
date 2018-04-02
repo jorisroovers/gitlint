@@ -11,8 +11,11 @@ debug: True
 target: {target}
 [RULES]
   I1: ignore-by-title
-     regex=None
      ignore=all
+     regex=None
+  I2: ignore-by-body
+     ignore=all
+     regex=None
   T1: title-max-length
      line-length=20
   T2: title-trailing-whitespace

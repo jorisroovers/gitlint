@@ -71,3 +71,12 @@
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
 # ignore=T1,body-min-length
+
+# [ignore-by-body]
+# Ignore certain rules for commits of which the body has a line that matches a regex
+# E.g. Match bodies that have a line that that contain "release"
+# regex=(.*)release(.*)
+#
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+# ignore=T1,body-min-length

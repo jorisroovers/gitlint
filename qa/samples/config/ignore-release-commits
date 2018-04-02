@@ -1,3 +1,7 @@
 [ignore-by-title]
 regex=^Release(.*)
 ignore=T5,T3
+
+[ignore-by-body]
+regex=(.*)relëase(.*)
+ignore=T3,B3

@@ -1,6 +1,8 @@
+# Contributing
+
 We'd love for you to contribute to gitlint. Thanks for your interest!
-Sometimes it takes a while for [me](https://github.com/jorisroovers) to
-get back to you (this is a hobby project), but rest assured that we read your message and appreciate your interest!
+Sometimes it takes a while for [me](https://github.com/jorisroovers) to get back to you (sometimes up to a few months,
+this is a hobby project), but rest assured that we read your message and appreciate your interest!
 We maintain a [wishlist on our wiki](https://github.com/jorisroovers/gitlint/wiki/Wishlist),
 but we're obviously open to any suggestions!
 

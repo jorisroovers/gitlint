@@ -257,6 +257,11 @@ regex=^Release(.*)
 ignore=title-max-length,body-min-length
 # ignore all rules by setting ignore to 'all'
 # ignore=all
+
+[ignore-by-title]
+# Match commits message bodies that have a line that contains 'release'
+regex=(.*)release(.*)
+ignore=all
 ```
 
 !!! note
