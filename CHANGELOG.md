@@ -1,5 +1,37 @@
 # Changelog #
 
+## Unreleased: v0.10.0 (2018-04-?) ##
+The 0.10.0 release adds the ability to ignore commits based on their contents,
+support for [pre-commit](https://pre-commit.com/), and important fix for running gitlint in CI environments
+(such as Jenkins, Gitlab, etc).
+
+Special thanks to @asottile, @bdrung, @pbregener, @torwald-sergesson, @RykHawthorn, @SteffenKockel and @tommyip for
+their contributions.
+
+**Since it's becoming increasingly hard to support Python 2.6 and 3.3, we'd like to encourage our users to upgrade their
+python version to 2.7 or 3.3+. Future versions of gitlint are likely to drop support for Python 2.6 and 3.3.**
+
+Full Changelog:
+
+- New Rule: ```ignore-by-title``` allows users to
+[ignore certain commits](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
+a commit message title. ([#54](https://github.com/jorisroovers/gitlint/issues/54), [#57](https://github.com/jorisroovers/gitlint/issues/57)).
+- New Rule: ```ignore-by-body``` allows users to
+[ignore certain commits](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
+a line in a commit message body.
+- Gitlint now supports [pre-commit.com](https://pre-commit.com).
+[Details in our documentation](http://jorisroovers.github.io/gitlint/#using-gitlint-through-pre-commit)
+([#62](https://github.com/jorisroovers/gitlint/issues/62)).
+- Gitlint now has a ```--msg-filename``` commandline flag that allows you to specify the commit message to lint via
+  a file ([#39](https://github.com/jorisroovers/gitlint/issues/39)).
+- Gitlint will now be silent by default when a specified commit range is empty ([#46](https://github.com/jorisroovers/gitlint/issues/46)).
+- Gitlint can now be installed on MacOS by brew via the [homebrew-devops](https://github.com/rockyluke/homebrew-devops) tap. To get the latest version of gitlint, always use pip for installation.
+- If all goes well,
+[gitlint will also be available as a package in the Ubuntu 18.04 repositories](https://launchpad.net/ubuntu/+source/gitlint).
+- Bugfixes:
+  - We fixed a nasty and recurring issue with running gitlint in CI. Hopefully that's the end of it :-) ([#40](https://github.com/jorisroovers/gitlint/issues/40)).
+  - Fix for custom git comment characters ([#48](https://github.com/jorisroovers/gitlint/issues/48)).
+
 ## v0.9.0 (2017-12-03) ##
 The 0.9.0 release adds a new default ```author-valid-email``` rule, important bugfixes and special case handling.
 Special thanks to [joshholl](https://github.com/joshholl), [ron8mcr](https://github.com/ron8mcr),
@@ -13,7 +45,7 @@ and [AlexMooney](https://github.com/AlexMooney) for their contributions.
   that linting a single commit using ```gitlint --commits <SHA>``` won't work anymore. Instead, for single commits,
   users now need to specificy ```gitlint --commits <SHA>^...<SHA>```. On the upside, this change also means
   that gitlint will now understand all refspec formatters, including ```gitlint --commits HEAD``` to lint all commits
-  in the repository. This fixes [#23](https://github.com/jorisroovers/gitlint/issues/40).
+  in the repository. This fixes [#23](https://github.com/jorisroovers/gitlint/issues/23).
 - **Breaking change**: Gitlint now always falls back on trying to read a git message from a local git repository, only
   reading a commit message from STDIN if one is passed. Before, gitlint only read from the local git repository when
   a TTY was present. This is likely the expected and desired behavior for anyone running gitlint in a CI environment.

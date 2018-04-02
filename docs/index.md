@@ -31,6 +31,9 @@ useful throughout the years.
 ```bash
 # Install gitlint
 pip install gitlint
+# On macOS (recommended to use pip for the latest version)
+brew tap rockyluke/devops
+brew install gitlint
 
 # Check the last commit message
 gitlint

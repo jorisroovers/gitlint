@@ -187,15 +187,18 @@ run_stats(){
     echo "*** Code ***"
     radon raw -s gitlint | tail -n 6
     echo "*** Docs ***"
-    echo "    Markdown: $(cat docs/*.md | wc -l) lines"
+    echo "    Markdown: $(cat docs/*.md | wc -l | tr -d " ") lines"
     echo "*** Tests ***"
     nr_unit_tests=$(py.test gitlint/ --collect-only | grep TestCaseFunction | wc -l)
     nr_integration_tests=$(py.test qa/ --collect-only | grep TestCaseFunction | wc -l)
     echo "    Unit Tests: ${nr_unit_tests//[[:space:]]/}"
     echo "    Integration Tests: ${nr_integration_tests//[[:space:]]/}"
     echo "*** Git ***"
-    echo "    Number of commits: $(git rev-list --all --count)"
-    echo "    Number of authors: $(git log --format='%aN' | sort -u | wc -l | tr -d ' ')"
+    echo "    Commits: $(git rev-list --all --count)"
+    echo "    Commits (master): $(git rev-list master --count)"
+    echo "    First commit: $(git log --pretty="%aD" $(git rev-list --max-parents=0 HEAD))"
+    echo "    Contributors: $(git log --format='%aN' | sort -u | wc -l | tr -d ' ')"
+    echo "    Releases (tags): $(git tag --list | wc -l | tr -d ' ')"
 }
 
 clean(){
