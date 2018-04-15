@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+from __future__ import print_function
 from setuptools import setup, find_packages
 import re
 import os
+import sys
 
 # There is an issue with building python packages in a shared vagrant directory because of how setuptools works
 # in python < 2.7.9. We solve this by deleting the filesystem hardlinking capability during build.
@@ -9,7 +11,7 @@ import os
 try:
     del os.link
 except:
-    pass # Not all OSes (e.g. windows) support os.link
+    pass  # Not all OSes (e.g. windows) support os.link
 
 description = "Git commit message linter written in python, checks your commit messages for style."
 long_description = """
@@ -89,3 +91,9 @@ setup(
         ],
     },
 )
+
+# Print a red deprecation warning for python 2.6 users
+if sys.version_info[0] == 2 and sys.version_info[1] <= 6:
+    msg = "\033[31mDEPRECATION: Python 2.6 is no longer supported by the Python core team, please upgrade your Python. " + \
+        "A future version of gitlint will drop support for Python 2.6\033[0m"
+    print(msg)

@@ -166,13 +166,28 @@ run_build_test(){
     # Attempt to build the package
     echo "Building package ..."
     pushd "$temp_dir"
-    python setup.py sdist bdist_wheel
+    # Copy stdout file descriptor so we can both print output to stdout as well as capture it in a variable
+    # https://stackoverflow.com/questions/12451278/bash-capture-stdout-to-a-variable-but-still-display-it-in-the-console
+    exec 5>&1
+    output=$(python setup.py sdist bdist_wheel | tee /dev/fd/5)
     local exit_code=$?
     popd
     # Cleanup :-)
     rm -rf "$temp_dir"
 
-    # Print success/mno success
+    # Check for deprecation message in python 2.6
+    if [[ $(python --version 2>&1) == 'Python 2.6'* ]]; then
+        echo -n "[Python 2.6] Checking for deprecation warning..."
+        echo "$output" | grep "A future version of gitlint will drop support for Python 2.6" > /dev/null
+        exit_code=$((exit_code + $?))
+        if [ $exit_code -gt 0 ]; then
+            echo -e "${RED}FAIL${NO_COLOR}"
+        else
+            echo -e "${GREEN}SUCCESS${NO_COLOR}"
+        fi
+    fi
+
+    # Print success/no success
     if [ $exit_code -gt 0 ]; then
         echo -e "Building package...${RED}FAIL${NO_COLOR}"
     else
@@ -266,7 +281,7 @@ install_virtualenv(){
     deactivate 2> /dev/null # deactivate any active environment
     virtualenv -p "$python_binary" "$venv_name"
     source "${venv_name}/bin/activate"
-    easy_install -U pip
+    # easy_install -U pip # Commenting out for now, since this gives issues with python 2.6
     pip install --ignore-requires-python -r requirements.txt
     pip install --ignore-requires-python -r test-requirements.txt
     deactivate  2> /dev/null
