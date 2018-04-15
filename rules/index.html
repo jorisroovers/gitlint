@@ -98,6 +98,10 @@
                 
                     <li><a class="toctree-l4" href="#m1-author-valid-email">M1: author-valid-email</a></li>
                 
+                    <li><a class="toctree-l4" href="#i1-ignore-by-title">I1: ignore-by-title</a></li>
+                
+                    <li><a class="toctree-l4" href="#i2-ignore-by-body">I2: ignore-by-body</a></li>
+                
             
             </ul>
         
@@ -706,6 +710,94 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 <p class="admonition-title">Note</p>
 <p>An often recurring use-case is to only allow email addresses from a certain domain. The following regular expression achieves this: <code>[^@]+@foo.com</code></p>
 </div>
+<h2 id="i1-ignore-by-title">I1: ignore-by-title</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I1</td>
+<td>ignore-by-title</td>
+<td>&gt;= 0.10.0</td>
+<td>Ignore a commit based on matching its title.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_8">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regex</td>
+<td>&gt;= 0.10.0</td>
+<td>None</td>
+<td>Regex to match against commit title. On match, the commit will be ignored.</td>
+</tr>
+<tr>
+<td>ignore</td>
+<td>&gt;= 0.10.0</td>
+<td>all</td>
+<td>Comma-seperated list of rule names or ids to ignore when this rule is matched.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="i2-ignore-by-body">I2: ignore-by-body</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I2</td>
+<td>ignore-by-body</td>
+<td>&gt;= 0.10.0</td>
+<td>Ignore a commit based on matching its body.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_9">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regex</td>
+<td>&gt;= 0.10.0</td>
+<td>None</td>
+<td>Regex to match against each line of the body. On match, the commit will be ignored.</td>
+</tr>
+<tr>
+<td>ignore</td>
+<td>&gt;= 0.10.0</td>
+<td>all</td>
+<td>Comma-seperated list of rule names or ids to ignore when this rule is matched.</td>
+</tr>
+</tbody>
+</table>
               
             </div>
           </div>
