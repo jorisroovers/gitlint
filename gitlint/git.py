@@ -166,7 +166,7 @@ class GitContext(object):
         return context
 
     @staticmethod
-    def from_local_repository(repository_path, refspec=None):
+    def from_local_repository(repository_path, refspec=None, sha_list=None):
         """ Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
         :param refspec: The commit(s) to retrieve
@@ -174,14 +174,18 @@ class GitContext(object):
 
         context = GitContext()
 
-        # If no refspec is defined, fallback to the last commit on the current branch
-        if refspec is None:
-            # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
-            # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into
-            # problems with e.g. merge commits. Easiest solution is just taking the SHA from `git log -1`.
-            sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace(u"\n", u"")]
-        else:
-            sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
+        # If no explicit sha_list is provided, then let's see if a refspec is specified
+        if sha_list is None:
+
+            # If no refspec is defined, fallback to the last commit on the current branch
+            if refspec is None:
+                # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
+                # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into
+                # problems with e.g. merge commits. Easiest solution is just taking the SHA from `git log -1`.
+                sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace(u"\n", u"")]
+            else:
+                sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
+
 
         for sha in sha_list:
             # Get info from the local git repository: https://git-scm.com/docs/pretty-formats
