@@ -17,7 +17,10 @@ def ustr(obj):
         else:
             return unicode(obj)  # pragma: no cover # noqa
     else:
-        return str(obj)
+        if type(obj) in [bytes]:
+            return obj.decode(DEFAULT_ENCODING)
+        else:
+            return str(obj)
 
 
 def sstr(obj):

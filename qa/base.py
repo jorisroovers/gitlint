@@ -16,12 +16,15 @@ def ustr(obj):
     if sys.version_info[0] == 2:
         # If we are getting a string, then do an explicit decode
         # else, just call the unicode method of the object
-        if type(obj) in [str, basestring]:  # pragma: no cover # noqa # pylint: disable=unidiomatic-typecheck
+        if type(obj) in [str, basestring]:  # pragma: no cover # noqa
             return unicode(obj, DEFAULT_ENCODING)  # pragma: no cover # noqa
         else:
             return unicode(obj)  # pragma: no cover # noqa
     else:
-        return str(obj)
+        if type(obj) in [bytes]:
+            return obj.decode(DEFAULT_ENCODING)
+        else:
+            return str(obj)
 
 
 class BaseTestCase(TestCase):
