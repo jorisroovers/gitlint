@@ -5,7 +5,7 @@
 [![PyPi Package](https://img.shields.io/pypi/v/gitlint.png)](https://pypi.python.org/pypi/gitlint)
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/gitlint.svg)
 
-Git commit message linter written in python, checks your commit messages for style.
+Git commit message linter written in python (for Linux and Mac), checks your commit messages for style.
 
 **See [jorisroovers.github.io/gitlint](http://jorisroovers.github.io/gitlint/) for full documentation.**
 

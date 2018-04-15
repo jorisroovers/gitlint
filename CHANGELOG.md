@@ -1,6 +1,6 @@
 # Changelog #
 
-## Unreleased: v0.10.0 (2018-04-?) ##
+## v0.10.0 (2018-04-15) ##
 The 0.10.0 release adds the ability to ignore commits based on their contents,
 support for [pre-commit](https://pre-commit.com/), and important fix for running gitlint in CI environments
 (such as Jenkins, Gitlab, etc).
@@ -13,10 +13,10 @@ python version to 2.7 or 3.3+. Future versions of gitlint are likely to drop sup
 
 Full Changelog:
 
-- New Rule: ```ignore-by-title``` allows users to
+- **New Rule**: ```ignore-by-title``` allows users to
 [ignore certain commits](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
 a commit message title. ([#54](https://github.com/jorisroovers/gitlint/issues/54), [#57](https://github.com/jorisroovers/gitlint/issues/57)).
-- New Rule: ```ignore-by-body``` allows users to
+- **New Rule**: ```ignore-by-body``` allows users to
 [ignore certain commits](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
 a line in a commit message body.
 - Gitlint now supports [pre-commit.com](https://pre-commit.com).

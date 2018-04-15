@@ -7,9 +7,11 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
 !!! note
-    Gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
-    have a look at [fit-commit](https://github.com/m1foley/fit-commit) (Ruby) or
-    [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js).
+    Gitlint is currently [**not** supported on Windows](https://github.com/jorisroovers/gitlint/issues/20).
+
+    Also, gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
+    have a look at [fit-commit](https://github.com/m1foley/fit-commit) (Ruby),
+    [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js) or [commitlint](http://marionebl.github.io/commitlint) (Node.js).
 
 ## Features ##
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook).
@@ -190,8 +192,8 @@ Gitlint allows users to commit a number of commits at once like so:
 gitlint --commits 019cf40...d6bc75a
 # You can also use git's special references:
 gitlint --commits origin..HEAD
-# Or specify a single specific commit:
-gitlint --commits 6f29bf81a8322a04071bb794666e48c443a90360
+# Or specify a single specific commit in refspec format, like so:
+gitlint --commits 019cf40^...019cf40
 ```
 
 The ```--commits``` flag takes a **single** refspec argument or commit range. Basically, any range that is understood
@@ -287,4 +289,3 @@ Exit Code  | Description
 253        | Wrong invocation of the ```gitlint``` command.
 254        | Something went wrong when invoking git.
 255        | Invalid gitlint configuration
-

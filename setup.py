@@ -15,7 +15,7 @@ except:
 
 description = "Git commit message linter written in python, checks your commit messages for style."
 long_description = """
-Great for use as a commit-msg git hook or as part of your gating script in a CI pipeline (e.g. jenkins).
+Great for use as a commit-msg git hook or as part of your gating script in a CI pipeline (e.g. jenkins, gitlab).
 Many of the gitlint validations are based on `well-known`_ community_ `standards`_, others are based on checks that
 we've found useful throughout the years. Gitlint has sane defaults, but you can also easily customize it to your
 own liking.
