@@ -65,8 +65,8 @@ setup(
         "License :: OSI Approved :: MIT License"
     ],
     install_requires=[
-        'Click==6.6',
-        'arrow==0.10.0'
+        'Click>=6.6',
+        'arrow>=0.10.0'
     ],
     extras_require={
         ':python_version < "2.7"': [
