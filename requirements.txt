@@ -1,7 +1,7 @@
 setuptools
 wheel==0.24.0
-Click==6.6
+Click==6.7
 sh==1.11; sys_platform != 'win32' # sh is not supported on windows
-arrow==0.10.0
+arrow==0.12.1
 ordereddict==1.1; python_version < '2.7'
 importlib==1.0.3; python_version < '2.7'
