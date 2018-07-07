@@ -5,6 +5,7 @@ flake8==3.2.1; python_version >= '2.7'
 coverage==3.7.1
 python-coveralls==2.9.0
 radon==1.4.2
+sh==1.11; sys_platform != 'win32' # sh is not supported on windows
 mock==2.0.0
 pytest==3.0.4
 pylint<1.4; python_version < '2.7'

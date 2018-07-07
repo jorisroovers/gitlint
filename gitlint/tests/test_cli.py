@@ -23,13 +23,12 @@ except ImportError:
     # python 3.x
     from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
 
-from sh import CommandNotFound
-
 from gitlint.tests.base import BaseTestCase
 from gitlint import cli
 from gitlint import hooks
 from gitlint import __version__
 from gitlint import config
+from gitlint import git
 
 
 @contextlib.contextmanager
@@ -402,10 +401,10 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.output, expected_msg)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
-    @patch('gitlint.git.sh')
-    def test_git_error(self, sh, _):
+    @patch('gitlint.git._git')
+    def test_git_error(self, _git, _):
         """ Tests that the cli handles git errors properly """
-        sh.git.side_effect = CommandNotFound("git")
+        _git.side_effect = git.GitNotInstalledError()
         result = self.cli.invoke(cli.cli)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 

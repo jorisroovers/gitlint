@@ -10,15 +10,13 @@ except ImportError:
     # python 3.x
     from unittest.mock import patch, call, PropertyMock  # pylint: disable=no-name-in-module, import-error
 
-from sh import ErrorReturnCode, CommandNotFound
-
 from gitlint.tests.base import BaseTestCase
 from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError, GitNotInstalledError, git_commentchar
+from gitlint.sh import ShResult
 
 
 class GitTests(BaseTestCase):
     expected_sh_special_args = {
-        '_tty_out': False,
         '_cwd': u"fåke/path"
     }
 
@@ -156,7 +154,7 @@ class GitTests(BaseTestCase):
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_command_not_found(self, sh):
-        sh.git.side_effect = CommandNotFound("git")
+        sh.git.side_effect = GitNotInstalledError()
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
         with self.assertRaisesRegex(GitNotInstalledError, expected_msg):
@@ -168,17 +166,18 @@ class GitTests(BaseTestCase):
     @patch('gitlint.git.sh')
     def test_get_latest_commit_git_error(self, sh):
         # Current directory not a git repo
-        err = b"fatal: Not a git repository (or any of the parent directories): .git"
-        sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
-
+        err = u"fatal: Not a git repository (or any of the parent directories): .git"
+        cmd = "git log -1 --pretty=%H"
+        sh.git.side_effect = [ShResult("", err, 200, cmd.split(' '))]
+        cwd = u"fåke/path"
         with self.assertRaisesRegex(GitContextError, u"fåke/path is not a git repository."):
-            GitContext.from_local_repository(u"fåke/path")
+            GitContext.from_local_repository(cwd)
 
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
         sh.git.reset_mock()
-        err = b"fatal: Random git error"
-        sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
+        err = u"fatal: Random git error"
+        sh.git.side_effect = [ShResult("", err, 200, cmd.split(' '))]
 
         expected_msg = u"An error occurred while executing 'git log -1 --pretty=%H': {0}".format(err)
         with self.assertRaisesRegex(GitContextError, expected_msg):

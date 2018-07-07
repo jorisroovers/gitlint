@@ -14,13 +14,6 @@ USAGE_ERROR_CODE = 253  # noqa
 GIT_CONTEXT_ERROR_CODE = 254  # noqa
 CONFIG_ERROR_CODE = 255  # noqa
 
-# We need to make sure we're not on Windows before importing other gitlint modules, as some of these modules use sh
-# which will raise an exception when imported on Windows.
-if "windows" in platform.system().lower():  # noqa
-    click.echo("Gitlint currently does not support Windows. Check out "  # noqa
-               "https://github.com/jorisroovers/gitlint/issues/20 for details.", err=True)  # noqa
-    exit(USAGE_ERROR_CODE)  # noqa
-
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
