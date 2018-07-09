@@ -139,7 +139,7 @@ class RuleOptionTests(BaseTestCase):
             option.set(u"/föo/bar")
 
         # set to a file, should raise exception since option.type = dir
-        sample_path = self.get_sample_path("commit_message/sample1")
+        sample_path = self.get_sample_path(os.path.join("commit_message", "sample1"))
         expected = u"Option test-directory must be an existing directory \(current value: '{0}'\)".format(
             re.escape(sample_path))
         with self.assertRaisesRegex(RuleOptionError, expected):

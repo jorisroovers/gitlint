@@ -9,6 +9,7 @@ import copy
 import re
 import os
 import shutil
+import codecs
 
 try:
     # python >= 2.7
@@ -313,7 +314,8 @@ class LintConfigBuilder(object):
         self._config_path = os.path.abspath(filename)
         try:
             parser = ConfigParser()
-            parser.read(filename)
+            with codecs.open(filename, encoding="UTF-8") as config_file:
+                parser.readfp(config_file, filename)  # pylint: disable=bad-option-value,deprecated-method
 
             for section_name in parser.sections():
                 for option_name, option_value in parser.items(section_name):

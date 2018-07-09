@@ -1,5 +1,6 @@
 import logging
 import os
+import codecs
 
 try:
     # python 2.x
@@ -53,7 +54,7 @@ class BaseTestCase(unittest.TestCase):
     def get_sample(filename=""):
         """ Read and return the contents of a file in gitlint/tests/samples """
         sample_path = BaseTestCase.get_sample_path(filename)
-        with open(sample_path) as content:
+        with codecs.open(sample_path, encoding="UTF-8") as content:
             sample = ustr(content.read())
         return sample
 
@@ -63,7 +64,7 @@ class BaseTestCase(unittest.TestCase):
         Optionally replace template variables specified by variable_dict. """
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        with open(expected_path) as content:
+        with codecs.open(expected_path, encoding="UTF-8") as content:
             expected = ustr(content.read())
 
         if variable_dict:

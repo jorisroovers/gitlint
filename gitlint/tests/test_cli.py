@@ -259,7 +259,7 @@ class CLITests(BaseTestCase):
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            config_path = self.get_sample_path("config/gitlintconfig")
+            config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
             result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug", "--commits",
                                                "foo...bar"])
 
@@ -388,11 +388,11 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["generate-config"], input=u"/föo/bar")
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = u"Please specify a location for the sample gitlint config file [.gitlint]: /föo/bar\n" + \
-                       u"Error: Directory '/föo' does not exist.\n"
+                       u"Error: Directory '{0}' does not exist.\n".format(os.path.abspath(u'/föo'))
         self.assertEqual(result.output, expected_msg)
 
         # Existing file
-        sample_path = self.get_sample_path("config/gitlintconfig")
+        sample_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
         result = self.cli.invoke(cli.cli, ["generate-config"], input=sample_path)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = "Please specify a location for the sample gitlint " + \

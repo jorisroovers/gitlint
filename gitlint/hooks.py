@@ -3,8 +3,8 @@ import os
 import stat
 
 COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/commit-msg")
-COMMIT_MSG_HOOK_DST_PATH = ".git/hooks/commit-msg"
-HOOKS_DIR_PATH = ".git/hooks"
+COMMIT_MSG_HOOK_DST_PATH = os.path.join(".git", "hooks", "commit-msg")
+HOOKS_DIR_PATH = os.path.join(".git", "hooks")
 GITLINT_HOOK_IDENTIFIER = "### gitlint commit-msg hook start ###\n"
 
 

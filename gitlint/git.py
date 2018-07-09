@@ -1,5 +1,6 @@
 import sys
 from locale import getpreferredencoding
+import arrow
 from gitlint.utils import ustr, sstr
 from gitlint import sh
 DEFAULT_ENCODING = getpreferredencoding() or "UTF-8"
