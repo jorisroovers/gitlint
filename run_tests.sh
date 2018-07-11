@@ -217,7 +217,9 @@ run_stats(){
 }
 
 clean(){
-    echo -n "Cleaning the site, build, dist and all __pycache__directories..."
+    echo -n "Cleaning the site, build, dist, *.pyc and all __pycache__directories..."
+    find gitlint -type d  -name "*.pyc" -exec rm -rf {} \; 2> /dev/null
+    find qa -type d  -name "*.pyc" -exec rm -rf {} \; 2> /dev/null
     find gitlint -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
     find qa -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
     rm -rf "site" "dist" "build"
