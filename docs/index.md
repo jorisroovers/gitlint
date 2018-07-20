@@ -222,7 +222,7 @@ done
 
 
 ## Merge, fixup and squash commits ##
-_Introduced in gitlint v0.7.0 (merge commits) and gilint v0.9.0 (fixup, squash)_
+_Introduced in gitlint v0.7.0 (merge commits) and gitlint v0.9.0 (fixup, squash)_
 
 **Gitlint ignores merge, fixup and squash commits by default.**
 
