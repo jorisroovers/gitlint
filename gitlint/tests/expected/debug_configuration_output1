@@ -39,3 +39,8 @@ target: {target}
      files=
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
+  M2: author-from-file
+     file=AUTHORS
+     regex=\A{{name}}\s+<{{email}}>\Z
+     validate-authors=False
+     validate-committers=False

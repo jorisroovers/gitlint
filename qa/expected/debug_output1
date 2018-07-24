@@ -43,6 +43,11 @@ target: {target}
      files=
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
+  M2: author-from-file
+     file=AUTHORS
+     regex=\A{{name}}\s+<{{email}}>\Z
+     validate-authors=False
+     validate-committers=False
 
 DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.
 DEBUG: gitlint.lint Linting commit {commit_sha}
