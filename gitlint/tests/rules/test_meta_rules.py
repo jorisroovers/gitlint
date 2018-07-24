@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
-from gitlint.rules import AuthorValidEmail, RuleViolation
+from gitlint.rules import AuthorValidEmail, AuthorFromFile, RuleViolation
+
+import tempfile
 
 
 class MetaRuleTests(BaseTestCase):
@@ -48,3 +50,33 @@ class MetaRuleTests(BaseTestCase):
             violations = rule.validate(commit)
             self.assertListEqual(violations,
                                  [RuleViolation("M1", "Author email for commit is invalid", email)])
+
+    def test_author_from_list_rule(self):
+        authors_file = tempfile.NamedTemporaryFile(mode='wb')
+        valid_authors = [
+            (u'Foo Bar', u'foo@bar.com'),
+            (u'Jöhn Doe', u'jöhndoe@bar.com')
+        ]
+        invalid_authors = [
+            (u'Föo', u'fäo@bar.com'),
+            (u'Jöhn Doe', u'jöhndoe@doe.com')
+        ]
+        for author in valid_authors:
+            line = u'{0} <{1}>\n'.format(*author)
+            authors_file.write(line.encode('utf-8'))
+            authors_file.flush()
+            rule = AuthorFromFile({'file': authors_file.name,
+                                   'validate-authors': True,
+                                   'validate-committers': False})
+        for author in valid_authors:
+            commit = self.gitcommit(u"", author_name=author[0],
+                                    author_email=author[1])
+            violations = rule.validate(commit)
+            self.assertIsNone(violations)
+        for author in invalid_authors:
+            commit = self.gitcommit(u"", author_name=author[0],
+                                    author_email=author[1])
+            violations = rule.validate(commit)
+            self.assertListEqual(
+                violations,
+                [RuleViolation("M2", u"Author information does not match", u"{} <{}>".format(author[0], author[1]))])
