@@ -1,6 +1,7 @@
 import copy
 import logging
 import re
+from io import open
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption
 from gitlint.utils import sstr
@@ -310,6 +311,37 @@ class AuthorValidEmail(CommitRule):
 
         if commit.author_email and not email_regex.match(commit.author_email):
             return [RuleViolation(self.id, "Author email for commit is invalid", commit.author_email)]
+
+
+class AuthorFromFile(CommitRule):
+    name = "author-from-file"
+    id = "M2"
+    options_spec = [StrOption('file', 'AUTHORS', "Path to file that contains valid authors"),
+                    StrOption('regex', u'\A{name}\s+<{email}>\Z',
+                              "Regex to match lines in author file against,"
+                              "can contain placeholders for 'name' and 'email'"),
+                    BoolOption('validate-authors', False, "Validate author information"),
+                    BoolOption('validate-committers', False, "Validate committer information")]
+
+    def is_author_in_file(self, name, email):
+        with open(self.options['file'].value, mode='r') as author_file:
+            for line in author_file.read().splitlines():
+                regex_s = self.options['regex'].value
+                regex_s = regex_s.format(name=name, email=email)
+                regex = re.compile(regex_s, re.UNICODE)
+                if regex.match(line):
+                    return True
+        return False
+
+    def validate(self, commit):
+        if self.options['validate-authors'].value and \
+           not self.is_author_in_file(commit.author_name, commit.author_email):
+            context = u"Committer information does not match"
+            error = u"{name} <{email}>".format(name=commit.author_name, email=commit.author_email)
+            return [RuleViolation(self.id, context, error)]
+
+    def __str__(self):
+        return self.name
 
 
 class IgnoreByTitle(ConfigurationRule):
