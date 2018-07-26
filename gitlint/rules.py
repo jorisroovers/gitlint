@@ -334,11 +334,18 @@ class AuthorFromFile(CommitRule):
         return False
 
     def validate(self, commit):
+        violations = []
         if self.options['validate-authors'].value and \
            not self.is_author_in_file(commit.author_name, commit.author_email):
+            context = u"Author information does not match"
+            error = u"{name} <{email}>".format(name=commit.author_name, email=commit.author_email)
+            violations.append(RuleViolation(self.id, context, error))
+        if self.options['validate-committers'].value and \
+           not self.is_author_in_file(commit.committer_name, commit.committer_email):
             context = u"Committer information does not match"
             error = u"{name} <{email}>".format(name=commit.author_name, email=commit.author_email)
-            return [RuleViolation(self.id, context, error)]
+            violations.append(RuleViolation(self.id, context, error))
+        return violations or None
 
     def __str__(self):
         return self.name
