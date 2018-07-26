@@ -107,7 +107,8 @@ class GitCommit(object):
     """
 
     def __init__(self, context, message, sha=None, date=None, author_name=None,  # pylint: disable=too-many-arguments
-                 author_email=None, parents=None, is_merge_commit=None, is_fixup_commit=None,
+                 author_email=None, committer_name=None, committer_email=None, commit_date=None,
+                 parents=None, is_merge_commit=None, is_fixup_commit=None,
                  is_squash_commit=None, changed_files=None):
         self.context = context
         self.message = message
@@ -115,6 +116,9 @@ class GitCommit(object):
         self.date = date
         self.author_name = author_name
         self.author_email = author_email
+        self.committer_name = committer_name
+        self.committer_email = committer_email
+        self.commit_date = commit_date
         # parent commit hashes
         self.parents = parents or []
         self.changed_files = changed_files or []
@@ -139,6 +143,7 @@ class GitCommit(object):
         return isinstance(other, GitCommit) and self.message == other.message and \
                self.sha == other.sha and self.author_name == other.author_name and \
                self.author_email == other.author_email and \
+               self.committer_name == other.committer_name and self.committer_email == other.committer_email and \
                self.date == other.date and self.parents == other.parents and \
                self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit and \
                self.is_squash_commit == other.is_squash_commit and self.changed_files == other.changed_files  # noqa
@@ -185,10 +190,12 @@ class GitContext(object):
 
         for sha in sha_list:
             # Get info from the local git repository: https://git-scm.com/docs/pretty-formats
-            long_format = "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B"
+            long_format = "--pretty=%aN%x00%aE%x00%ai%x00%cN%x00%cE%x00%ci%x00%P%n%B"
             raw_commit = _git("log", sha, "-1", long_format, _cwd=repository_path).split("\n")
 
-            (name, email, date, parents), commit_msg = raw_commit[0].split('\x00'), "\n".join(raw_commit[1:])
+            (author_name, author_email, author_date, committer_name, committer_email, commit_date, parents), \
+                commit_msg = \
+                raw_commit[0].split('\x00'), "\n".join(raw_commit[1:])
 
             commit_parents = parents.split(" ")
             commit_is_merge_commit = len(commit_parents) > 1
@@ -199,13 +206,17 @@ class GitContext(object):
             # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
             # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
             # http://stackoverflow.com/a/30696682/381010
-            commit_date = arrow.get(ustr(date), "YYYY-MM-DD HH:mm:ss Z").datetime
+            commit_date = arrow.get(ustr(commit_date), "YYYY-MM-DD HH:mm:ss Z").datetime
+            author_date = arrow.get(ustr(author_date), "YYYY-MM-DD HH:mm:ss Z").datetime
 
             # Create Git commit object with the retrieved info
             commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
 
-            commit = GitCommit(context, commit_msg_obj, sha=sha, author_name=name,
-                               author_email=email, date=commit_date, changed_files=changed_files,
+            commit = GitCommit(context, commit_msg_obj, sha=sha,
+                               author_name=author_name, author_email=author_email,
+                               committer_name=committer_name, committer_email=committer_email,
+                               commit_date=commit_date,
+                               date=author_date, changed_files=changed_files,
                                parents=commit_parents, is_merge_commit=commit_is_merge_commit)
 
             context.commits.append(commit)
