@@ -27,7 +27,8 @@ class GitTests(BaseTestCase):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
         sh.git.side_effect = [sample_sha,
-                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00"
+                              u"test ćommitter\x00test-ćommitter@foo.bar\x002016-12-03 15:28:15 01:00\x00åbc\n"
                               u"cömmit-title\n\ncömmit-body",
                               u"file1.txt\npåth/to/file2.txt\n"]
 
@@ -35,7 +36,8 @@ class GitTests(BaseTestCase):
         # assert that commit info was read using git command
         expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
-            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%cN%x00%cE%x00%ci%x00%P%n%B",
+                 **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
         ]
         self.assertListEqual(sh.git.mock_calls, expected_calls)
@@ -45,6 +47,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, ["", u"cömmit-body"])
         self.assertEqual(last_commit.author_name, u"test åuthor")
         self.assertEqual(last_commit.author_email, u"test-emåil@foo.com")
+        self.assertEqual(last_commit.committer_name, u"test ćommitter")
+        self.assertEqual(last_commit.committer_email, u"test-ćommitter@foo.bar")
         self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
                                                              tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, [u"åbc"])
@@ -58,7 +62,8 @@ class GitTests(BaseTestCase):
         sample_sha = "myspecialref"
 
         sh.git.side_effect = [sample_sha,
-                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00"
+                              u"test ćommitter\x00test-ćommitter@foo.bar\x002016-12-03 15:28:15 01:00\x00åbc\n"
                               u"cömmit-title\n\ncömmit-body",
                               u"file1.txt\npåth/to/file2.txt\n"]
 
@@ -66,7 +71,8 @@ class GitTests(BaseTestCase):
         # assert that commit info was read using git command
         expected_calls = [
             call("rev-list", sample_sha, **self.expected_sh_special_args),
-            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%cN%x00%cE%x00%ci%x00%P%n%B",
+                 **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
         ]
         self.assertListEqual(sh.git.mock_calls, expected_calls)
@@ -76,6 +82,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, ["", u"cömmit-body"])
         self.assertEqual(last_commit.author_name, u"test åuthor")
         self.assertEqual(last_commit.author_email, u"test-emåil@foo.com")
+        self.assertEqual(last_commit.committer_name, u"test ćommitter")
+        self.assertEqual(last_commit.committer_email, u"test-ćommitter@foo.bar")
         self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
                                                              tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, [u"åbc"])
@@ -89,7 +97,8 @@ class GitTests(BaseTestCase):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
         sh.git.side_effect = [sample_sha,
-                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc def\n"
+                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00"
+                              u"test ćommitter\x00test-ćommitter@foo.bar\x002016-12-03 15:28:15 01:00\x00åbc def\n"
                               u"Merge \"foo bår commit\"",
                               u"file1.txt\npåth/to/file2.txt\n"]
 
@@ -97,7 +106,8 @@ class GitTests(BaseTestCase):
         # assert that commit info was read using git command
         expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
-            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%cN%x00%cE%x00%ci%x00%P%n%B",
+                 **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
         ]
 
@@ -108,6 +118,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, [])
         self.assertEqual(last_commit.author_name, u"test åuthor")
         self.assertEqual(last_commit.author_email, u"test-emåil@foo.com")
+        self.assertEqual(last_commit.committer_name, u"test ćommitter")
+        self.assertEqual(last_commit.committer_email, u"test-ćommitter@foo.bar")
         self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
                                                              tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, [u"åbc", "def"])
@@ -121,7 +133,8 @@ class GitTests(BaseTestCase):
             sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
             sh.git.side_effect = [sample_sha,
-                                  u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+                                  u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00"
+                                  u"test ćommitter\x00test-ćommitter@foo.bar\x002016-12-03 15:28:15 01:00\x00åbc\n"
                                   u"{0}! \"foo bår commit\"".format(commit_type),
                                   u"file1.txt\npåth/to/file2.txt\n"]
 
@@ -129,7 +142,8 @@ class GitTests(BaseTestCase):
             # assert that commit info was read using git command
             expected_calls = [
                 call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
-                call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+                call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%cN%x00%cE%x00%ci%x00%P%n%B",
+                     **self.expected_sh_special_args),
                 call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
             ]
 
@@ -140,6 +154,8 @@ class GitTests(BaseTestCase):
             self.assertEqual(last_commit.message.body, [])
             self.assertEqual(last_commit.author_name, u"test åuthor")
             self.assertEqual(last_commit.author_email, u"test-emåil@foo.com")
+            self.assertEqual(last_commit.committer_name, u"test ćommitter")
+            self.assertEqual(last_commit.committer_email, u"test-ćommitter@foo.bar")
             self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
                                                                  tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
             self.assertListEqual(last_commit.parents, [u"åbc"])
@@ -217,6 +233,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(commit.message.original, expected_original)
         self.assertEqual(commit.author_name, None)
         self.assertEqual(commit.author_email, None)
+        self.assertEqual(commit.committer_name, None)
+        self.assertEqual(commit.committer_email, None)
         self.assertEqual(commit.date, None)
         self.assertListEqual(commit.parents, [])
         self.assertFalse(commit.is_merge_commit)
@@ -234,6 +252,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(commit.message.original, u"Just a title contåining WIP")
         self.assertEqual(commit.author_name, None)
         self.assertEqual(commit.author_email, None)
+        self.assertEqual(commit.committer_name, None)
+        self.assertEqual(commit.committer_email, None)
         self.assertListEqual(commit.parents, [])
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
@@ -250,6 +270,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(commit.message.original, "")
         self.assertEqual(commit.author_name, None)
         self.assertEqual(commit.author_email, None)
+        self.assertEqual(commit.committer_name, None)
+        self.assertEqual(commit.committer_email, None)
         self.assertEqual(commit.date, None)
         self.assertListEqual(commit.parents, [])
         self.assertFalse(commit.is_merge_commit)
@@ -267,6 +289,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(commit.message.original, u"Tïtle\n\nBödy 1\n#Cömment\nBody 2")
         self.assertEqual(commit.author_name, None)
         self.assertEqual(commit.author_email, None)
+        self.assertEqual(commit.committer_name, None)
+        self.assertEqual(commit.committer_email, None)
         self.assertEqual(commit.date, None)
         self.assertListEqual(commit.parents, [])
         self.assertFalse(commit.is_merge_commit)
@@ -285,6 +309,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(commit.message.original, commit_msg)
         self.assertEqual(commit.author_name, None)
         self.assertEqual(commit.author_email, None)
+        self.assertEqual(commit.committer_name, None)
+        self.assertEqual(commit.committer_email, None)
         self.assertEqual(commit.date, None)
         self.assertListEqual(commit.parents, [])
         self.assertTrue(commit.is_merge_commit)
@@ -305,6 +331,8 @@ class GitTests(BaseTestCase):
             self.assertEqual(commit.message.original, commit_msg)
             self.assertEqual(commit.author_name, None)
             self.assertEqual(commit.author_email, None)
+            self.assertEqual(commit.committer_name, None)
+            self.assertEqual(commit.committer_email, None)
             self.assertEqual(commit.date, None)
             self.assertListEqual(commit.parents, [])
             self.assertEqual(len(gitcontext.commits), 1)
@@ -334,8 +362,8 @@ class GitTests(BaseTestCase):
         self.assertEqual(commit1, commit2)
 
         # Check that objects are inequal when changing a single attribute
-        for attr in ['message', 'author_name', 'author_email', 'parents', 'is_merge_commit', 'is_fixup_commit',
-                     'is_squash_commit', 'changed_files']:
+        for attr in ['message', 'author_name', 'author_email', 'committer_name', 'committer_email', 'parents',
+                     'is_merge_commit', 'is_fixup_commit', 'is_squash_commit', 'changed_files']:
             prev_val = getattr(commit1, attr)
             setattr(commit1, attr, u"föo")
             self.assertNotEqual(commit1, commit2)
