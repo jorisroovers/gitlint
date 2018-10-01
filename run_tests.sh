@@ -144,10 +144,6 @@ run_lint_check(){
 
 run_build_test(){
     clean
-    echo -n "Making sure wheel is installed..."
-    pip install "$(grep --color=never wheel requirements.txt)" > /dev/null
-    echo -e "${GREEN}DONE${NO_COLOR}"
-
     datestr=$(date +"%Y-%m-%d-%H-%M-%S")
     temp_dir="/tmp/gitlint-build-test-$datestr"
 
