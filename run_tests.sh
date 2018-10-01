@@ -54,12 +54,20 @@ assert_root(){
 
 # Utility method that prints SUCCESS if a test was succesful, or FAIL together with the test output
 handle_test_result(){
-    RESULT="$1"
-    if [ -z "$RESULT" ]; then
-        echo -e "${GREEN}SUCCESS${NO_COLOR}"
+    EXIT_CODE=$1
+    RESULT="$2"
+    # Change color to red or green depending on SUCCESS
+    if [ $EXIT_CODE -eq 0 ]; then
+        echo -e "${GREEN}SUCCESS"
     else
-        echo -e "${RED}FAIL\n${RESULT}${NO_COLOR}"
+        echo -e "${RED}FAIL"
     fi
+    # Print RESULT if not empty
+    if [ -n "$RESULT" ] ; then
+        echo -e "\n$RESULT"
+    fi
+    # Reset color
+    echo -e "${NO_COLOR}"
 }
 
 run_pep8_check(){
@@ -76,7 +84,7 @@ run_pep8_check(){
     echo -ne "Running flake8..."
     RESULT=$(flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa examples)
     local exit_code=$?
-    handle_test_result "$RESULT"
+    handle_test_result $exit_code "$RESULT"
     return $exit_code
 }
 
@@ -121,17 +129,16 @@ run_git_check(){
     echo -ne "Running gitlint...${RED}"
     RESULT=$(gitlint 2>&1)
     local exit_code=$?
-    handle_test_result "$RESULT"
+    handle_test_result $exit_code "$RESULT"
     # FUTURE: check if we use str() function: egrep -nriI "( |\(|\[)+str\(" gitlint | egrep -v "\w*#(.*)"
     return $exit_code
 }
 
 run_lint_check(){
     echo -ne "Running pylint...${RED}"
-
     RESULT=$(pylint gitlint qa --rcfile=".pylintrc" -r n)
     local exit_code=$?
-    handle_test_result "$RESULT"
+    handle_test_result $exit_code "$RESULT"
     return $exit_code
 }
 
