@@ -1,4 +1,4 @@
-discover==0.4.0 # support for python 2.6
+discover==0.4.0; python_version < '2.7'
 unittest2==1.1.0; python_version <= '2.7'
 flake8==2.6.2; python_version < '2.7'
 flake8==3.2.1; python_version >= '2.7'
