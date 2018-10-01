@@ -39,13 +39,6 @@ matrix:
         - "./run_tests.sh --git"
     - python: "3.6"
       os: linux
-      script:
-      # Skip lint tests for python 3.6 (see https://github.com/PyCQA/pylint/issues/1072)
-        - "./run_tests.sh"
-        - "./run_tests.sh --integration"
-        - "./run_tests.sh --build"
-        - "./run_tests.sh --pep8"
-        - "./run_tests.sh --git"
     - python: "pypy"
       os: linux
 install:

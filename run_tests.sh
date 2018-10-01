@@ -129,12 +129,6 @@ run_git_check(){
 run_lint_check(){
     echo -ne "Running pylint...${RED}"
 
-    # Skip pylint for python 3.6, since it's not supported
-    if [[ $(python --version 2>&1) == 'Python 3.6'* ]]; then
-        echo -e "${YELLOW}SKIPPING${NO_COLOR} (See https://github.com/PyCQA/pylint/issues/1072)"
-        return 0
-    fi
-
     RESULT=$(pylint gitlint qa --rcfile=".pylintrc" -r n)
     local exit_code=$?
     handle_test_result "$RESULT"
