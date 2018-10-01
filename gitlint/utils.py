@@ -1,4 +1,4 @@
-# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable
+# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
 import sys
 
 from locale import getpreferredencoding

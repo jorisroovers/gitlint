@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable
+# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
 
 import os
 import sys

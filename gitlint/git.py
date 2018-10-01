@@ -82,7 +82,7 @@ class GitCommitMessage(object):
             cutline_index = None
         lines = [line for line in all_lines[:cutline_index] if not line.startswith(GitCommitMessage.COMMENT_CHAR)]
         full = "\n".join(lines)
-        title = lines[0] if len(lines) > 0 else ""
+        title = lines[0] if lines else ""
         body = lines[1:] if len(lines) > 1 else []
         return GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
 
