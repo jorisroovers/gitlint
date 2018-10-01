@@ -11,7 +11,7 @@
 # R0801: Similar lines in files
 # I0011: Informational: locally disabled pylint
 # I0013: Informational: Ignoring entire file
-disable=C0111,W0511,W0142,W0622,W0223,W0212,R0901,R0801,I0011,I0013,anomalous-backslash-in-string,useless-object-inheritance
+disable=bad-option-value,C0111,W0511,W0142,W0622,W0223,W0212,R0901,R0801,I0011,I0013,anomalous-backslash-in-string,useless-object-inheritance
 
 [Format]
 max-line-length=120
