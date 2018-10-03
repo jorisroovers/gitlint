@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 from sh import gitlint  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
@@ -37,4 +37,4 @@ class UserDefinedRuleTests(BaseTestCase):
         self._create_simple_commit("WIP: test")
         output = gitlint("--extra-path", extra_path, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[255])
         self.assertEqualStdout(output,
-                         "Config Error: User-defined rule class 'MyUserLineRule' must have a 'validate' method\n")
+                               "Config Error: User-defined rule class 'MyUserLineRule' must have a 'validate' method\n")

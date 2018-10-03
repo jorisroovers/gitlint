@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 import os
 from sh import git, gitlint  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
@@ -37,7 +38,8 @@ class IntegrationTests(BaseTestCase):
         # Assert that we do see the error if we disable the ignore-merge-commits option
         output = gitlint("-c", "general.ignore-merge-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
         self.assertEqual(output.exit_code, 1)
-        self.assertEqualStdout(output, u"1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
+        self.assertEqualStdout(output,
+                               u"1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
 
     def test_fixup_commit(self):
         # Create a normal commit and assert that it has a violation

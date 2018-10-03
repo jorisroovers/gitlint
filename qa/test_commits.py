@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 from sh import git, gitlint  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 

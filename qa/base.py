@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
+# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return,
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 
 import os
 import sys
@@ -48,7 +49,7 @@ class BaseTestCase(TestCase):
         for tmpfile in self.tmpfiles:
             os.remove(tmpfile)
 
-    def assertEqualStdout(self, output, expected):
+    def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
         output = output.stdout.decode(DEFAULT_ENCODING)
         output = output.replace('\r\n', '\n')
