@@ -24,14 +24,14 @@ class HookTests(BaseTestCase):
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
         expected_installed = u"Successfully installed gitlint commit-msg hook in %s/.git/hooks/commit-msg\n" % \
                              self.tmp_git_repo
-        self.assertEqual(output_installed, expected_installed)
+        self.assertEqualStdout(output_installed, expected_installed)
 
     def tearDown(self):
         # uninstall git commit-msg hook and assert output
         output_uninstalled = gitlint("uninstall-hook", _cwd=self.tmp_git_repo)
         expected_uninstalled = u"Successfully uninstalled gitlint commit-msg hook from %s/.git/hooks/commit-msg\n" % \
                                self.tmp_git_repo
-        self.assertEqual(output_uninstalled, expected_uninstalled)
+        self.assertEqualStdout(output_uninstalled, expected_uninstalled)
 
     def _violations(self):
         # Make a copy of the violations array so that we don't inadvertently edit it in the test (like I did :D)

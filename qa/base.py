@@ -14,7 +14,7 @@ except ImportError:
     # python 3.x
     from unittest import TestCase
 
-from sh import git, rm, touch, DEFAULT_ENCODING  # pylint: disable=no-name-in-module
+from sh import git, rm, touch, DEFAULT_ENCODING, RunningCommand  # pylint: disable=no-name-in-module
 
 
 def ustr(obj):
@@ -47,6 +47,12 @@ class BaseTestCase(TestCase):
     def tearDown(self):
         for tmpfile in self.tmpfiles:
             os.remove(tmpfile)
+
+    def assertEqualStdout(self, output, expected):
+        self.assertIsInstance(output, RunningCommand)
+        output = output.stdout.decode(DEFAULT_ENCODING)
+        output = output.replace('\r\n', '\n')
+        self.assertMultiLineEqual(output, expected)
 
     @classmethod
     def setUpClass(cls):
@@ -145,11 +151,3 @@ class BaseTestCase(TestCase):
         if variable_dict:
             expected = expected.format(**variable_dict)
         return expected
-
-    @staticmethod
-    def mock_stdin():
-        """ Convenience method to create a Mock stdin object to deal with https://github.com/amoffat/sh/issues/427 """
-        class MockInput(object):
-            def read(self, _size):  # pylint: disable=no-self-use
-                return
-        return MockInput()

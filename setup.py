@@ -56,6 +56,7 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Environment :: Console",
@@ -74,7 +75,7 @@ setup(
             'ordereddict==1.1',
         ],
         ':sys_platform != "win32"': [
-            'sh==1.11',
+            'sh==1.12.14',
         ],
     },
     keywords='gitlint git lint',
