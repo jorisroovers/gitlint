@@ -355,8 +355,7 @@ class CLITests(BaseTestCase):
         # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
         # into account).
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
-        expected_path = os.path.realpath("/tmp")
-        self.assertEqual(result.output, "%s is not a git repository.\n" % expected_path)
+        self.assertTrue("not a git repository" in result.output)
 
     def test_target_negative(self):
         """ Negative test for the --target option """
