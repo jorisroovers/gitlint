@@ -66,7 +66,7 @@ setup(
         "License :: OSI Approved :: MIT License"
     ],
     install_requires=[
-        'Click==6.6',
+        'Click==6.7',
         'arrow==0.10.0'
     ],
     extras_require={
