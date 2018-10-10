@@ -57,7 +57,8 @@ class BaseTestCase(TestCase):
     @classmethod
     def create_tmp_git_repo(cls):
         """ Creates a temporary git repository and returns its directory path """
-        tmp_git_repo = os.path.realpath("/tmp/gitlint-test-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
+        tmp_git_repo = os.path.realpath("/tmp/gitlint-test-{0}".format(
+            datetime.now().strftime("%Y%m%d-%H%M%S-%f")))
         git("init", tmp_git_repo)
         # configuring name and email is required in every git repot
         git("config", "user.name", "gitlint-test-user", _cwd=tmp_git_repo)
