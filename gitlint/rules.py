@@ -1,3 +1,4 @@
+# pylint: disable=inconsistent-return-statements
 import copy
 import logging
 import re
@@ -262,7 +263,7 @@ class BodyMinLength(CommitRule):
         min_length = self.options['min-length'].value
         body_message_no_newline = "".join([line for line in commit.message.body if line is not None])
         actual_length = len(body_message_no_newline)
-        if actual_length > 0 and actual_length < min_length:
+        if 0 < actual_length < min_length:
             violation_message = "Body message is too short ({0}<{1})".format(actual_length, min_length)
             return [RuleViolation(self.id, violation_message, body_message_no_newline, 3)]
 

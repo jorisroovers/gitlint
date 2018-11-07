@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable
+# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return,
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 
 import os
 import sys
@@ -7,8 +8,14 @@ import tempfile
 from datetime import datetime
 from uuid import uuid4
 
-from unittest2 import TestCase
-from sh import git, rm, touch, DEFAULT_ENCODING  # pylint: disable=no-name-in-module
+try:
+    # python 2.x
+    from unittest2 import TestCase
+except ImportError:
+    # python 3.x
+    from unittest import TestCase
+
+from sh import git, rm, touch, DEFAULT_ENCODING, RunningCommand  # pylint: disable=no-name-in-module
 
 
 def ustr(obj):
@@ -42,6 +49,12 @@ class BaseTestCase(TestCase):
         for tmpfile in self.tmpfiles:
             os.remove(tmpfile)
 
+    def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
+        self.assertIsInstance(output, RunningCommand)
+        output = output.stdout.decode(DEFAULT_ENCODING)
+        output = output.replace('\r\n', '\n')
+        self.assertMultiLineEqual(output, expected)
+
     @classmethod
     def setUpClass(cls):
         """ Sets up the integration tests by creating a new temporary git repository """
@@ -57,7 +70,8 @@ class BaseTestCase(TestCase):
     @classmethod
     def create_tmp_git_repo(cls):
         """ Creates a temporary git repository and returns its directory path """
-        tmp_git_repo = os.path.realpath("/tmp/gitlint-test-%s" % datetime.now().strftime("%Y%m%d-%H%M%S"))
+        tmp_git_repo = os.path.realpath("/tmp/gitlint-test-{0}".format(
+            datetime.now().strftime("%Y%m%d-%H%M%S-%f")))
         git("init", tmp_git_repo)
         # configuring name and email is required in every git repot
         git("config", "user.name", "gitlint-test-user", _cwd=tmp_git_repo)
@@ -138,11 +152,3 @@ class BaseTestCase(TestCase):
         if variable_dict:
             expected = expected.format(**variable_dict)
         return expected
-
-    @staticmethod
-    def mock_stdin():
-        """ Convenience method to create a Mock stdin object to deal with https://github.com/amoffat/sh/issues/427 """
-        class MockInput(object):
-            def read(self, _size):  # pylint: disable=no-self-use
-                return
-        return MockInput()

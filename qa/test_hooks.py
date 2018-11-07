@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 from sh import git, gitlint  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
@@ -24,14 +24,14 @@ class HookTests(BaseTestCase):
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
         expected_installed = u"Successfully installed gitlint commit-msg hook in %s/.git/hooks/commit-msg\n" % \
                              self.tmp_git_repo
-        self.assertEqual(output_installed, expected_installed)
+        self.assertEqualStdout(output_installed, expected_installed)
 
     def tearDown(self):
         # uninstall git commit-msg hook and assert output
         output_uninstalled = gitlint("uninstall-hook", _cwd=self.tmp_git_repo)
         expected_uninstalled = u"Successfully uninstalled gitlint commit-msg hook from %s/.git/hooks/commit-msg\n" % \
                                self.tmp_git_repo
-        self.assertEqual(output_uninstalled, expected_uninstalled)
+        self.assertEqualStdout(output_uninstalled, expected_uninstalled)
 
     def _violations(self):
         # Make a copy of the violations array so that we don't inadvertently edit it in the test (like I did :D)
@@ -63,7 +63,11 @@ class HookTests(BaseTestCase):
                             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
                             u" create mode 100644 %s\n" % test_filename]
 
-        self.assertListEqual(expected_output, self.githook_output)
+        assert len(self.githook_output) == len(expected_output)
+        for output, expected in zip(self.githook_output, expected_output):
+            self.assertMultiLineEqual(
+                output.replace('\r', ''),
+                expected.replace('\r', ''))
 
     def test_commit_hook_abort(self):
         self.responses = ["n"]
@@ -89,7 +93,7 @@ class HookTests(BaseTestCase):
         self.responses = ["e", "y"]
         env = {"EDITOR": ":"}
         test_filename = self._create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
-                                                   out=self._interact, env=env, ok_code=1, tty_in=True)
+                                                   out=self._interact, env=env, tty_in=True)
         git("rm", "-f", test_filename, _cwd=self.tmp_git_repo)
 
         short_hash = git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
@@ -106,4 +110,8 @@ class HookTests(BaseTestCase):
                             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
                             u" create mode 100644 %s\n" % test_filename]
 
-        self.assertListEqual(expected_output, self.githook_output)
+        assert len(self.githook_output) == len(expected_output)
+        for output, expected in zip(self.githook_output, expected_output):
+            self.assertMultiLineEqual(
+                output.replace('\r', ''),
+                expected.replace('\r', ''))

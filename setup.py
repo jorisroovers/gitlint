@@ -56,6 +56,7 @@ setup(
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Environment :: Console",
@@ -65,7 +66,7 @@ setup(
         "License :: OSI Approved :: MIT License"
     ],
     install_requires=[
-        'Click==6.6',
+        'Click==6.7',
         'arrow==0.10.0'
     ],
     extras_require={
@@ -74,7 +75,7 @@ setup(
             'ordereddict==1.1',
         ],
         ':sys_platform != "win32"': [
-            'sh==1.11',
+            'sh==1.12.14',
         ],
     },
     keywords='gitlint git lint',

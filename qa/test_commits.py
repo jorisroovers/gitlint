@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 from sh import git, gitlint  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
@@ -17,7 +17,7 @@ class CommitsTests(BaseTestCase):
         self._create_simple_commit(u"Sïmple title3\n\nSimple bödy describing the commit3")
         output = gitlint("--commits", "test-branch-commits-base...test-branch-commits",
                          _cwd=self.tmp_git_repo, _tty_in=True)
-        self.assertEqual(output, "")
+        self.assertEqualStdout(output, "")
 
     def test_violations(self):
         """ Test linting multiple commits with violations """
@@ -40,7 +40,7 @@ class CommitsTests(BaseTestCase):
                     u"3: B6 Body message is missing\n")
 
         self.assertEqual(output.exit_code, 4)
-        self.assertEqual(output, expected)
+        self.assertEqualStdout(output, expected)
 
     def test_lint_single_commit(self):
         self._create_simple_commit(u"Sïmple title.\n")
@@ -52,7 +52,7 @@ class CommitsTests(BaseTestCase):
         expected = (u"1: T3 Title has trailing punctuation (.): \"Sïmple title2.\"\n" +
                     u"3: B6 Body message is missing\n")
         self.assertEqual(output.exit_code, 2)
-        self.assertEqual(output, expected)
+        self.assertEqualStdout(output, expected)
 
     def test_lint_head(self):
         """ Testing whether we can also recognize special refs like 'HEAD' """
@@ -72,7 +72,7 @@ class CommitsTests(BaseTestCase):
             u"1: T3 Title has trailing punctuation (.): \"Sïmple title.\"\n"
         )
 
-        self.assertEqual(output, expected)
+        self.assertEqualStdout(output, expected)
 
     def test_ignore_commits(self):
         """ Tests multiple commits of which some rules get igonored because of ignore-* rules """
@@ -102,4 +102,4 @@ class CommitsTests(BaseTestCase):
             u"1: T3 Title has trailing punctuation (.): \"Sïmple title.\"\n"
         )
 
-        self.assertEqual(output, expected)
+        self.assertEqualStdout(output, expected)
