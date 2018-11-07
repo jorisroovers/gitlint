@@ -41,7 +41,7 @@ def find_rule_classes(extra_path):
             modules.append(os.path.splitext(filename)[0])
 
     # No need to continue if there are no modules specified
-    if len(modules) == 0:
+    if not modules:
         return []
 
     # Append the extra rules path to python path so that we can import them
@@ -93,7 +93,7 @@ def assert_valid_rule_class(clazz):
                                        rules.LineRule.__name__, rules.CommitRule.__name__))
 
     # Rules must have an id attribute
-    if not hasattr(clazz, 'id') or clazz.id is None or len(clazz.id) == 0:
+    if not hasattr(clazz, 'id') or clazz.id is None or not clazz.id:
         raise UserRuleError(u"User-defined rule class '{0}' must have an 'id' attribute".format(clazz.__name__))
 
     # Rule id's cannot start with gitlint reserved letters
@@ -102,7 +102,7 @@ def assert_valid_rule_class(clazz):
         raise UserRuleError(msg.format(clazz.__name__, clazz.id[0]))
 
     # Rules must have a name attribute
-    if not hasattr(clazz, 'name') or clazz.name is None or len(clazz.name) == 0:
+    if not hasattr(clazz, 'name') or clazz.name is None or not clazz.name:
         raise UserRuleError(u"User-defined rule class '{0}' must have a 'name' attribute".format(clazz.__name__))
 
     # if set, options_spec must be a list of RuleOption

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=too-many-function-args,unexpected-keyword-arg
 import subprocess
 from sh import gitlint, echo  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase, ustr
@@ -21,7 +22,7 @@ class StdInTests(BaseTestCase):
                    u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pïpe test.\"\n" + \
                    u"3: B6 Body message is missing\n"
 
-        self.assertEqual(output, expected)
+        self.assertEqualStdout(output, expected)
 
     def test_stdin_pipe_empty(self):
         """ Test the scenario where no TTY is attached an nothing is piped into gitlint. This occurs in
@@ -35,12 +36,12 @@ class StdInTests(BaseTestCase):
         # We need to set _err_to_out explicitly for sh to merge stdout and stderr output in case there's
         # no TTY attached to STDIN
         # http://amoffat.github.io/sh/sections/special_arguments.html?highlight=_tty_in#err-to-out
-        output = gitlint(_cwd=self.tmp_git_repo, _in=self.mock_stdin(), _tty_in=False, _err_to_out=True, _ok_code=[3])
+        output = gitlint(echo("-n", ""), _cwd=self.tmp_git_repo, _tty_in=False, _err_to_out=True, _ok_code=[3])
 
         expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
             u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
             u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
-        self.assertEqual(output, expected)
+        self.assertEqualStdout(output, expected)
 
     def test_stdin_file(self):
         """ Test the scenario where STDIN is a regular file (stat.S_ISREG = True)

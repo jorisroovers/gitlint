@@ -120,7 +120,7 @@ def get_stdin_data():
         input_data = sys.stdin.read()
         # Only return the input data if there's actually something passed
         # i.e. don't consider empty piped data
-        if len(input_data) != 0:
+        if input_data:
             return ustr(input_data)
     return False
 
@@ -295,4 +295,5 @@ def generate_config(ctx):
 # Let's Party!
 setup_logging()
 if __name__ == "__main__":
-    cli()  # pragma: no cover, # pylint: disable=no-value-for-parameter
+    # pylint: disable=no-value-for-parameter
+    cli()  # pragma: no cover

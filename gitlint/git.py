@@ -24,7 +24,7 @@ def _git(*command_parts, **kwargs):
     git_kwargs = {'_tty_out': False}
     git_kwargs.update(kwargs)
     try:
-        result = sh.git(*command_parts, **git_kwargs)
+        result = sh.git(*command_parts, **git_kwargs)  # pylint: disable=unexpected-keyword-arg
         # If we reach this point and the result has an exit_code that is larger than 0, this means that we didn't
         # get an exception (which is the default sh behavior for non-zero exit codes) and so the user is expecting
         # a non-zero exit code -> just return the entire result
@@ -82,7 +82,7 @@ class GitCommitMessage(object):
             cutline_index = None
         lines = [line for line in all_lines[:cutline_index] if not line.startswith(GitCommitMessage.COMMENT_CHAR)]
         full = "\n".join(lines)
-        title = lines[0] if len(lines) > 0 else ""
+        title = lines[0] if lines else ""
         body = lines[1:] if len(lines) > 1 else []
         return GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
 

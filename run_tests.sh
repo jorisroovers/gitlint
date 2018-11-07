@@ -54,12 +54,20 @@ assert_root(){
 
 # Utility method that prints SUCCESS if a test was succesful, or FAIL together with the test output
 handle_test_result(){
-    RESULT="$1"
-    if [ -z "$RESULT" ]; then
-        echo -e "${GREEN}SUCCESS${NO_COLOR}"
+    EXIT_CODE=$1
+    RESULT="$2"
+    # Change color to red or green depending on SUCCESS
+    if [ $EXIT_CODE -eq 0 ]; then
+        echo -e "${GREEN}SUCCESS"
     else
-        echo -e "${RED}FAIL\n${RESULT}${NO_COLOR}"
+        echo -e "${RED}FAIL"
     fi
+    # Print RESULT if not empty
+    if [ -n "$RESULT" ] ; then
+        echo -e "\n$RESULT"
+    fi
+    # Reset color
+    echo -e "${NO_COLOR}"
 }
 
 run_pep8_check(){
@@ -76,7 +84,7 @@ run_pep8_check(){
     echo -ne "Running flake8..."
     RESULT=$(flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa examples)
     local exit_code=$?
-    handle_test_result "$RESULT"
+    handle_test_result $exit_code "$RESULT"
     return $exit_code
 }
 
@@ -121,32 +129,21 @@ run_git_check(){
     echo -ne "Running gitlint...${RED}"
     RESULT=$(gitlint 2>&1)
     local exit_code=$?
-    handle_test_result "$RESULT"
+    handle_test_result $exit_code "$RESULT"
     # FUTURE: check if we use str() function: egrep -nriI "( |\(|\[)+str\(" gitlint | egrep -v "\w*#(.*)"
     return $exit_code
 }
 
 run_lint_check(){
     echo -ne "Running pylint...${RED}"
-
-    # Skip pylint for python 3.6, since it's not supported
-    if [[ $(python --version 2>&1) == 'Python 3.6'* ]]; then
-        echo -e "${YELLOW}SKIPPING${NO_COLOR} (See https://github.com/PyCQA/pylint/issues/1072)"
-        return 0
-    fi
-
     RESULT=$(pylint gitlint qa --rcfile=".pylintrc" -r n)
     local exit_code=$?
-    handle_test_result "$RESULT"
+    handle_test_result $exit_code "$RESULT"
     return $exit_code
 }
 
 run_build_test(){
     clean
-    echo -n "Making sure wheel is installed..."
-    pip install "$(grep --color=never wheel requirements.txt)" > /dev/null
-    echo -e "${GREEN}DONE${NO_COLOR}"
-
     datestr=$(date +"%Y-%m-%d-%H-%M-%S")
     temp_dir="/tmp/gitlint-build-test-$datestr"
 
