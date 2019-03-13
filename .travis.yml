@@ -3,8 +3,6 @@ matrix:
   allow_failures:
     - os: osx
   include:
-    - python: "2.6"
-      os: linux
     - python: "2.7"
       os: linux
     - python: "3.3"

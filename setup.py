@@ -50,7 +50,6 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
@@ -95,6 +94,6 @@ setup(
 
 # Print a red deprecation warning for python 2.6 users
 if sys.version_info[0] == 2 and sys.version_info[1] <= 6:
-    msg = "\033[31mDEPRECATION: Python 2.6 is no longer supported by the Python core team, please upgrade your Python. " + \
-        "A future version of gitlint will drop support for Python 2.6\033[0m"
+    msg = "\033[31mDEPRECATION: Python 2.6 or below are no longer supported by gitlint or the Python core team." + \
+          "Please upgrade your Python to a later version.\033[0m"
     print(msg)

@@ -13,7 +13,7 @@ help(){
     echo "  -b, --build              Run build tests"
     echo "  -a, --all                Run all tests and checks (unit, integration, pep8, git)"
     echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments"
-    echo "                           (envs: 26,27,33,34,35,36,37,pypy2)."
+    echo "                           (envs: 27,33,34,35,36,37,pypy2)."
     echo "                           Also works for integration, pep8 and lint tests."
     echo "  --all-env                Run all tests against all python environments"
     echo "  --install                Install virtualenvs for the --envs specified"
@@ -173,18 +173,6 @@ run_build_test(){
     # Cleanup :-)
     rm -rf "$temp_dir"
 
-    # Check for deprecation message in python 2.6
-    if [[ $(python --version 2>&1) == 'Python 2.6'* ]]; then
-        echo -n "[Python 2.6] Checking for deprecation warning..."
-        echo "$output" | grep "A future version of gitlint will drop support for Python 2.6" > /dev/null
-        exit_code=$((exit_code + $?))
-        if [ $exit_code -gt 0 ]; then
-            echo -e "${RED}FAIL${NO_COLOR}"
-        else
-            echo -e "${GREEN}SUCCESS${NO_COLOR}"
-        fi
-    fi
-
     # Print success/no success
     if [ $exit_code -gt 0 ]; then
         echo -e "Building package...${RED}FAIL${NO_COLOR}"
@@ -279,7 +267,6 @@ install_virtualenv(){
     deactivate 2> /dev/null # deactivate any active environment
     virtualenv -p "$python_binary" "$venv_name"
     source "${venv_name}/bin/activate"
-    # easy_install -U pip # Commenting out for now, since this gives issues with python 2.6
     pip install --ignore-requires-python -r requirements.txt
     pip install --ignore-requires-python -r test-requirements.txt
     deactivate  2> /dev/null
@@ -287,7 +274,7 @@ install_virtualenv(){
 
 assert_specific_env(){
     if [ -z "$1" ] || [ "$1" == "default" ]; then
-        fatal "ERROR: Please specify one or more valid python environments using --envs: 26,27,33,34,35,36,37,pypy2"
+        fatal "ERROR: Please specify one or more valid python environments using --envs: 27,33,34,35,36,37,pypy2"
         exit 1
     fi
 }
@@ -355,7 +342,7 @@ exit_code=0
 
 # If the users specified 'all', then just replace $envs with the list of all envs
 if [ "$envs" == "all" ]; then
-    envs="26,27,33,34,35,36,37,pypy2"
+    envs="27,33,34,35,36,37,pypy2"
 fi
 envs=$(echo "$envs" | tr ',' '\n') # Split the env list on comma so we can loop through it
 

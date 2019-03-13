@@ -7,7 +7,7 @@ INSTALL_DEPS=<<EOF
 cd /vagrant
 sudo add-apt-repository -y ppa:deadsnakes/ppa
 sudo apt-get update
-sudo apt-get install -y --allow-unauthenticated python2.6-dev python2.7-dev python3.3-dev python3.4-dev python3.5-dev python3.6-dev python3.7-dev
+sudo apt-get install -y --allow-unauthenticated python2.7-dev python3.3-dev python3.4-dev python3.5-dev python3.6-dev python3.7-dev
 sudo apt-get install -y python-virtualenv git ipython python-pip python3-pip silversearcher-ag
 sudo apt-get purge -y python3-virtualenv
 sudo pip3 install virtualenv
