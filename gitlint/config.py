@@ -225,8 +225,9 @@ class LintConfig(object):
         # only allow setting general options that exist and don't start with an underscore
         if not hasattr(self, attr_name) or attr_name[0] == "_":
             raise LintConfigError(u"'{0}' is not a valid gitlint option".format(option_name))
-        else:
-            setattr(self, attr_name, option_value)
+
+        # else:
+        setattr(self, attr_name, option_value)
 
     def __eq__(self, other):
         return isinstance(other, LintConfig) and \
