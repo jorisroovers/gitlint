@@ -35,7 +35,7 @@ def _git(*command_parts, **kwargs):
         raise GitNotInstalledError()
     except ErrorReturnCode as e:  # Something went wrong while executing the git command
         error_msg = e.stderr.strip()
-        if '_cwd' in git_kwargs and b"Not a git repository" in error_msg:
+        if '_cwd' in git_kwargs and b"not a git repository" in error_msg.lower():
             error_msg = u"{0} is not a git repository.".format(git_kwargs['_cwd'])
         else:
             error_msg = u"An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
