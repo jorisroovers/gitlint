@@ -1,5 +1,13 @@
 # Changelog #
 
+## v0.11.0 (2019-03-13) ##
+
+- Python 3.7 support
+- Python 2.6 no longer supported
+- Various dependency updates and under the hood fixes (see [#76](https://github.com/jorisroovers/gitlint/pull/76) for details)
+
+Special thanks to @pbregener for his contributions related to python 3.7 support and test fixes.
+
 ## v0.10.0 (2018-04-15) ##
 The 0.10.0 release adds the ability to ignore commits based on their contents,
 support for [pre-commit](https://pre-commit.com/), and important fix for running gitlint in CI environments
