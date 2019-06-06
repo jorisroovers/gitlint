@@ -20,7 +20,8 @@ except ImportError:  # pragma: no cover
 from gitlint.utils import ustr
 from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
-from gitlint import user_rules
+from gitlint import rule_finder
+from gitlint.contrib import rules as contrib_rules
 
 
 def handle_option_error(func):
@@ -76,6 +77,7 @@ class LintConfig(object):
         target_description = "Path of the target git repository (default=current working directory)"
         self._target = options.PathOption('target', os.path.abspath(os.getcwd()), target_description)
         self._ignore = options.ListOption('ignore', [], 'List of rule-ids to ignore')
+        self._contrib = options.ListOption('contrib', [], 'List of contrib-rules to enable')
         self._config_path = None
 
     @property
@@ -152,19 +154,19 @@ class LintConfig(object):
 
             # Make sure we unload any previously loaded extra-path rules
             for rule in self.rules:
-                if hasattr(rule, 'user_defined') and rule.user_defined:
+                if hasattr(rule, 'is_user_defined') and rule.is_user_defined:
                     del self._rules[rule.id]
 
             # Find rules in the new extra-path
-            rule_classes = user_rules.find_rule_classes(self.extra_path)
+            rule_classes = rule_finder.find_rule_classes(self.extra_path)
 
             # Add the newly found rules to the existing rules
             for rule_class in rule_classes:
                 rule_obj = rule_class()
-                rule_obj.user_defined = True
+                rule_obj.is_user_defined = True
                 self._rules[rule_class.id] = rule_obj
 
-        except (options.RuleOptionError, user_rules.UserRuleError) as e:
+        except (options.RuleOptionError, rules.UserRuleError) as e:
             raise LintConfigError(ustr(e))
 
     @property
@@ -176,6 +178,40 @@ class LintConfig(object):
         if value == "all":
             value = [rule.id for rule in self.rules]
         return self._ignore.set(value)
+
+    @property
+    def contrib(self):
+        return self._contrib.value
+
+    @contrib.setter
+    def contrib(self, value):
+        try:
+            self._contrib.set(value)
+
+            # Make sure we unload any previously loaded contrib rules when re-setting the value
+            for rule in self.rules:
+                if hasattr(rule, 'is_contrib') and rule.is_contrib:
+                    del self._rules[rule.id]
+
+            # Load all classes from the contrib directory
+            contrib_dir_path = os.path.dirname(os.path.realpath(contrib_rules.__file__))
+            rule_classes = rule_finder.find_rule_classes(contrib_dir_path)
+
+            # For each specified contrib rule, check whether it exists among the contrib classes
+            for rule_id_or_name in self.contrib:
+                rule_class = next((rc for rc in rule_classes if
+                                   rc.id == ustr(rule_id_or_name) or rc.name == ustr(rule_id_or_name)), False)
+
+                # If contrib rule exists, instantiate it and add it to the rules list
+                if rule_class:
+                    rule_obj = rule_class()
+                    rule_obj.is_contrib = True
+                    self._rules[rule_class.id] = rule_obj
+                else:
+                    raise LintConfigError(u"No contrib rule with id or name '{0}' found.".format(ustr(rule_id_or_name)))
+
+        except (options.RuleOptionError, rules.UserRuleError) as e:
+            raise LintConfigError(ustr(e))
 
     @property
     def rules(self):
@@ -235,6 +271,7 @@ class LintConfig(object):
                self.verbosity == other.verbosity and \
                self.target == other.target and \
                self.extra_path == other.extra_path and \
+               self.contrib == other.contrib and \
                self.ignore_merge_commits == other.ignore_merge_commits and \
                self.ignore_fixup_commits == other.ignore_fixup_commits and \
                self.ignore_squash_commits == other.ignore_squash_commits and \
@@ -247,6 +284,7 @@ class LintConfig(object):
         return_str = u"config-path: {0}\n".format(self._config_path)
         return_str += u"[GENERAL]\n"
         return_str += u"extra-path: {0}\n".format(self.extra_path)
+        return_str += u"contrib: {0}\n".format(self.contrib)
         return_str += u"ignore: {0}\n".format(",".join(self.ignore))
         return_str += u"ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
         return_str += u"ignore-fixup-commits: {0}\n".format(self.ignore_fixup_commits)

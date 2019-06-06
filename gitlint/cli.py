@@ -54,7 +54,7 @@ def log_system_info():
     LOG.debug("Gitlint version: %s", gitlint.__version__)
 
 
-def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silent, debug):
+def build_config(ctx, target, config_path, c, extra_path, ignore, contrib, verbose, silent, debug):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     config_builder = LintConfigBuilder()
     try:
@@ -71,6 +71,10 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, verbose, silen
         # Finally, overwrite with any convenience commandline flags
         if ignore:
             config_builder.set_option('general', 'ignore', ignore)
+
+        if contrib:
+            config_builder.set_option('general', 'contrib', contrib)
+
         if silent:
             config_builder.set_option('general', 'verbosity', 0)
         elif verbose > 0:
@@ -137,6 +141,7 @@ def get_stdin_data():
 @click.option('-e', '--extra-path', help="Path to a directory or python module with extra user-defined rules",
               type=click.Path(exists=True, resolve_path=True, readable=True))
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
+@click.option('--contrib', default="", help="Contrib rules to enable (comma-separated by id or name).")
 @click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
@@ -145,8 +150,8 @@ def get_stdin_data():
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
 def cli(  # pylint: disable=too-many-arguments
-        ctx, target, config, c, commits, extra_path, ignore, msg_filename,
-        verbose, silent, debug,
+        ctx, target, config, c, commits, extra_path, ignore, contrib,
+        msg_filename, verbose, silent, debug,
 ):
     """ Git lint tool, checks your git commit messages for styling issues """
 
@@ -158,7 +163,8 @@ def cli(  # pylint: disable=too-many-arguments
 
         # Get the lint config from the commandline parameters and
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
-        config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, verbose, silent, debug)
+        config, config_builder = build_config(ctx, target, config, c, extra_path,
+                                              ignore, contrib, verbose, silent, debug)
 
         LOG.debug(u"Configuration\n%s", ustr(config))
 

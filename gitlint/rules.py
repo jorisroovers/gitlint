@@ -99,6 +99,11 @@ class RuleViolation(object):
         return self.__str__()  # pragma: no cover
 
 
+class UserRuleError(Exception):
+    """ Error used to indicate that an error occurred while trying to load a user rule """
+    pass
+
+
 class MaxLineLength(LineRule):
     name = "max-line-length"
     id = "R1"

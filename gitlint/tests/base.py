@@ -29,6 +29,7 @@ class BaseTestCase(unittest.TestCase):
     maxDiff = None
 
     SAMPLES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
+    EXPECTED_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
 
     def setUp(self):
         self.logcapture = LogCapture()
@@ -61,8 +62,7 @@ class BaseTestCase(unittest.TestCase):
     def get_expected(filename="", variable_dict=None):
         """ Utility method to read an expected file from gitlint/tests/expected and return it as a string.
         Optionally replace template variables specified by variable_dict. """
-        expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
-        expected_path = os.path.join(expected_dir, filename)
+        expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)
         with open(expected_path) as content:
             expected = ustr(content.read())
 

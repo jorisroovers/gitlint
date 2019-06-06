@@ -4,7 +4,8 @@ import os
 import sys
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.user_rules import find_rule_classes, assert_valid_rule_class, UserRuleError
+from gitlint.rule_finder import find_rule_classes, assert_valid_rule_class
+from gitlint.rules import UserRuleError
 from gitlint.utils import ustr
 
 from gitlint import options, rules

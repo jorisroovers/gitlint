@@ -14,7 +14,7 @@ Git commit message linter written in python (for Linux and Mac), checks your com
 ## Contributing ##
 All contributions are welcome and very much appreciated!
 
-** I'm looking for contributors that are interested in taking a more active co-maintainer role as it's becoming increasingly difficult for me to find time to maintain gitlint. Please open a PR if you're interested - Thanks! **
+**I'm looking for contributors that are interested in taking a more active co-maintainer role as it's becoming increasingly difficult for me to find time to maintain gitlint. Please open a PR if you're interested - Thanks!**
 
 See [jorisroovers.github.io/gitlint/contributing](http://jorisroovers.github.io/gitlint/contributing) for details on
 how to get started - it's easy!
