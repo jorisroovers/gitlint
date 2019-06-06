@@ -9,7 +9,7 @@ except ImportError:
 
 from gitlint import rules
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
-from gitlint.options import IntOption
+from gitlint import options
 from gitlint.tests.base import BaseTestCase
 from gitlint.utils import ustr
 
@@ -106,7 +106,62 @@ class LintConfigTests(BaseTestCase):
         config.set_general_option("target", self.SAMPLES_DIR)
         self.assertEqual(config.target, self.SAMPLES_DIR)
 
-        # extra_path has its own test: test_extra_path
+        # extra_path has its own test: test_extra_path and test_extra_path_negative
+        # contrib has its own tests: test_contrib and test_contrib_negative
+
+    def test_contrib(self):
+        config = LintConfig()
+        contrib_rules = ["contrib-title-conventional-commits", "CC1"]
+        config.set_general_option("contrib", ",".join(contrib_rules))
+        self.assertEqual(config.contrib, contrib_rules)
+
+        # Check contrib-title-conventional-commits contrib rule
+        actual_rule = config.get_rule("contrib-title-conventional-commits")
+        self.assertTrue(actual_rule.is_contrib)
+
+        self.assertEqual(ustr(type(actual_rule)), "<class 'conventional_commit.ConventionalCommit'>")
+        self.assertEqual(actual_rule.id, 'CL1')
+        self.assertEqual(actual_rule.name, u'contrib-title-conventional-commits')
+        self.assertEqual(actual_rule.target, rules.CommitMessageTitle)
+
+        expected_rule_option = options.ListOption(
+            "types",
+            ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test"],
+            "Comma seperated list of allowed commit types.",
+        )
+
+        self.assertListEqual(actual_rule.options_spec, [expected_rule_option])
+        self.assertDictEqual(actual_rule.options, {'types': expected_rule_option})
+
+        # Check contrib-body-requires-signed-off-by contrib rule
+        actual_rule = config.get_rule("contrib-body-requires-signed-off-by")
+        self.assertTrue(actual_rule.is_contrib)
+
+        self.assertEqual(ustr(type(actual_rule)), "<class 'signedoff_by.SignedOffBy'>")
+        self.assertEqual(actual_rule.id, 'CC1')
+        self.assertEqual(actual_rule.name, u'contrib-body-requires-signed-off-by')
+
+        # reset value (this is a different code path)
+        config.set_general_option("contrib", "contrib-body-requires-signed-off-by")
+        self.assertEqual(actual_rule, config.get_rule("contrib-body-requires-signed-off-by"))
+        self.assertIsNone(config.get_rule("contrib-title-conventional-commits"))
+
+        # empty value
+        config.set_general_option("contrib", "")
+        self.assertListEqual(config.contrib, [])
+
+    def test_contrib_negative(self):
+        config = LintConfig()
+        # non-existent contrib rule
+        with self.assertRaisesRegex(LintConfigError, u"No contrib rule with id or name 'föo' found."):
+            config.contrib = u"contrib-title-conventional-commits,föo"
+
+        # UserRuleError, RuleOptionError should be re-raised as LintConfigErrors
+        side_effects = [rules.UserRuleError(u"üser-rule"), options.RuleOptionError(u"rüle-option")]
+        for side_effect in side_effects:
+            with patch('gitlint.config.rule_finder.find_rule_classes', side_effect=side_effect):
+                with self.assertRaisesRegex(LintConfigError, ustr(side_effect)):
+                    config.contrib = u"contrib-title-conventional-commits"
 
     def test_extra_path(self):
         config = LintConfig()
@@ -114,12 +169,12 @@ class LintConfigTests(BaseTestCase):
         config.set_general_option("extra-path", self.get_user_rules_path())
         self.assertEqual(config.extra_path, self.get_user_rules_path())
         actual_rule = config.get_rule('UC1')
-        self.assertTrue(actual_rule.user_defined)
+        self.assertTrue(actual_rule.is_user_defined)
         self.assertEqual(ustr(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
         self.assertEqual(actual_rule.id, 'UC1')
         self.assertEqual(actual_rule.name, u'my-üser-commit-rule')
         self.assertEqual(actual_rule.target, None)
-        expected_rule_option = IntOption('violation-count', 1, u"Number of violåtions to return")
+        expected_rule_option = options.IntOption('violation-count', 1, u"Number of violåtions to return")
         self.assertListEqual(actual_rule.options_spec, [expected_rule_option])
         self.assertDictEqual(actual_rule.options, {'violation-count': expected_rule_option})
 
@@ -143,7 +198,7 @@ class LintConfigTests(BaseTestCase):
     def test_set_general_option_negative(self):
         config = LintConfig()
 
-        # Note that we should't test whether we can set unicode because python just doesn't allow unicode attributes
+        # Note that we shouldn't test whether we can set unicode because python just doesn't allow unicode attributes
         with self.assertRaisesRegex(LintConfigError, "'foo' is not a valid gitlint option"):
             config.set_general_option("foo", u"bår")
 

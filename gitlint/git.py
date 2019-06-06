@@ -80,7 +80,7 @@ class GitCommitMessage(object):
             cutline_index = all_lines.index(GitCommitMessage.CUTLINE)
         except ValueError:
             cutline_index = None
-        lines = [line for line in all_lines[:cutline_index] if not line.startswith(GitCommitMessage.COMMENT_CHAR)]
+        lines = [ustr(line) for line in all_lines[:cutline_index] if not line.startswith(GitCommitMessage.COMMENT_CHAR)]
         full = "\n".join(lines)
         title = lines[0] if lines else ""
         body = lines[1:] if len(lines) > 1 else []

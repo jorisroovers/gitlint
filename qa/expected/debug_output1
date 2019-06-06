@@ -6,6 +6,7 @@ DEBUG: gitlint.cli Configuration
 config-path: {config_path}
 [GENERAL]
 extra-path: None
+contrib: []
 ignore: title-trailing-punctuation,B2
 ignore-merge-commits: True
 ignore-fixup-commits: True

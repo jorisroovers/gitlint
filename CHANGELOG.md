@@ -4,7 +4,7 @@
 
 - Python 3.7 support
 - Python 2.6 no longer supported
-- Various dependency updates and under the hood fixes (see [#76](https://github.com/jorisroovers/gitlint/pull/76) for details)
+- Various dependency updates and under the hood fixes (see [#76](https://github.com/jorisroovers/gitlint/pull/76) for details).
 
 Special thanks to @pbregener for his contributions related to python 3.7 support and test fixes.
 

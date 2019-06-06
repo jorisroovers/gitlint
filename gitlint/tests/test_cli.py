@@ -308,11 +308,26 @@ class CLITests(BaseTestCase):
         # Test extra-path pointing to a file
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules/my_commit_rules.py")
-            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"], input=u"Test tïtle\n")
+            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"])
             expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
                               "3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 2)
+
+    @patch('gitlint.cli.get_stdin_data', return_value=u"Test tïtle\n\nMy body that is long enough")
+    def test_contrib(self, _):
+        # Test enabled contrib rules
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--contrib", "contrib-title-conventional-commits,CC1"])
+            expected_output = self.get_expected('test_cli/test_contrib_1')
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 3)
+
+    @patch('gitlint.cli.get_stdin_data', return_value=u"Test tïtle\n")
+    def test_contrib_negative(self, _):
+        result = self.cli.invoke(cli.cli, ["--contrib", u"föobar,CC1"])
+        self.assertEqual(result.output, u"Config Error: No contrib rule with id or name 'föobar' found.\n")
+        self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
     @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: tëst")
     def test_config_file(self, _):

@@ -2,6 +2,7 @@ DEBUG: gitlint.cli Configuration
 config-path: {config_path}
 [GENERAL]
 extra-path: None
+contrib: []
 ignore: title-trailing-whitespace,B2
 ignore-merge-commits: False
 ignore-fixup-commits: True

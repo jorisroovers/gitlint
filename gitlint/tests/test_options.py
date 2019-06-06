@@ -101,6 +101,18 @@ class RuleOptionTests(BaseTestCase):
         option.set([u"foo", u"bår", u"test"])
         self.assertListEqual(option.value, [u"foo", u"bår", u"test"])
 
+        # empty string
+        option.set("")
+        self.assertListEqual(option.value, [])
+
+        # whitespace string
+        option.set("  \t  ")
+        self.assertListEqual(option.value, [])
+
+        # empty list
+        option.set([])
+        self.assertListEqual(option.value, [])
+
         # trailing comma
         option.set(u"ë,f,g,")
         self.assertListEqual(option.value, [u"ë", u"f", u"g"])

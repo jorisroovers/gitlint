@@ -1,0 +1,4 @@
+1: CC1 Body does not contain a 'Signed-Off-By' line
+1: CL1 Title does not start with one of föo, bår: "WIP Thi$ is å title"
+1: CL1 Title does not follow ConventionalCommits.org format 'type(optional-scope): description': "WIP Thi$ is å title"
+1: T5 Title contains the word 'WIP' (case-insensitive): "WIP Thi$ is å title"
