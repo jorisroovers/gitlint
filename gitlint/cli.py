@@ -121,7 +121,9 @@ def get_stdin_data():
         # Only return the input data if there's actually something passed
         # i.e. don't consider empty piped data
         if input_data:
-            return ustr(input_data)
+            stdin_data = ustr(input_data)
+            LOG.debug("stdin data:\n%s", stdin_data)
+            return stdin_data
     return False
 
 
