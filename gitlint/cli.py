@@ -119,11 +119,12 @@ def get_stdin_data():
     if stdin_is_pipe_or_file:
         input_data = sys.stdin.read()
         # Only return the input data if there's actually something passed
-        # i.e. don't consider empty piped data
+        # i.e. don't consider empty (or whitespace-only) piped data
         if input_data:
-            stdin_data = ustr(input_data)
-            LOG.debug("stdin data:\n%r", stdin_data)
-            return stdin_data
+            LOG.debug("input data:\n%r", input_data)
+            if not input_data.isspace():
+                stdin_data = ustr(input_data)
+                return stdin_data
     return False
 
 
