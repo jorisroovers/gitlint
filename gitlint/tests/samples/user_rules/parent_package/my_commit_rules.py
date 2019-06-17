@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+
+from gitlint.rules import CommitRule
+
+
+class MyUserCommitRule(CommitRule):
+    name = u"my-user-cömmit-rule"
+    id = "UC2"
+    options_spec = []
+
+    def validate(self, _commit):
+        return []

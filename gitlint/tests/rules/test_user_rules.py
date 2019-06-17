@@ -31,7 +31,7 @@ class UserRuleTests(BaseTestCase):
         self.assertIn(user_rule_path, sys.path)
         self.assertIn("my_commit_rules", sys.modules)
 
-        # # Do some basic asserts on our user rule
+        # Do some basic asserts on our user rule
         self.assertEqual(classes[0].id, "UC1")
         self.assertEqual(classes[0].name, u"my-üser-commit-rule")
         expected_option = options.IntOption('violation-count', 1, u"Number of violåtions to return")
@@ -59,6 +59,18 @@ class UserRuleTests(BaseTestCase):
         rule_class = classes[0]()
         violations = rule_class.validate("false-commit-object (ignored)")
         self.assertListEqual(violations, [rules.RuleViolation("UC1", u"Commit violåtion 1", u"Contënt 1", 1)])
+
+    def test_rules_from_init_file(self):
+        # Test that we can import rules that are defined in __init__.py files
+        # This also tests that we can import rules from python packages. This use to cause issues with pypy
+        # So this is also a regression test for that.
+        user_rule_path = self.get_sample_path(os.path.join("user_rules", "parent_package"))
+        classes = find_rule_classes(user_rule_path)
+
+        # convert classes to strings and sort them so we can compare them
+        class_strings = sorted([ustr(clazz) for clazz in classes])
+        expected = [u"<class 'my_commit_rules.MyUserCommitRule'>", u"<class 'parent_package.InitFileRule'>"]
+        self.assertListEqual(class_strings, expected)
 
     def test_empty_user_classes(self):
         # Test that we don't find rules if we scan a different directory
