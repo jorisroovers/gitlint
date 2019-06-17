@@ -129,7 +129,8 @@ def get_stdin_data():
     return False
 
 
-@click.group(invoke_without_command=True, epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
+@click.group(invoke_without_command=True, context_settings={'max_content_width': 120},
+             epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               help="Path of the target git repository. [default: current working directory]")
 @click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),

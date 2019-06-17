@@ -44,11 +44,10 @@ class ContribRuleTests(BaseTestCase):
 
             # Contrib line rules id's start with "CL"
             if issubclass(clazz, rules.LineRule):
-                self.assertTrue(clazz.id.startswith("CL"))
-
-            # Contrib commit rule id's start with "CC"
-            if issubclass(clazz, rules.CommitRule):
-                self.assertTrue(clazz.id.startswith("CC"))
+                if clazz.target == rules.CommitMessageTitle:
+                    self.assertTrue(clazz.id.startswith("CT"))
+                elif clazz.target == rules.CommitMessageBody:
+                    self.assertTrue(clazz.id.startswith("CB"))
 
     def test_contrib_rule_uniqueness(self):
         """ Tests that all contrib rules have unique identifiers.

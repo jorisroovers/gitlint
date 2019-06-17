@@ -1,3 +1,6 @@
+# Configuration
+Gitlint can be configured through different means.
+
 # Config files #
 You can modify gitlint's behavior by adding a ```.gitlint``` file to your git repository.
 
@@ -35,6 +38,10 @@ The block below shows a sample ```.gitlint``` file. Details about rule config op
 
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
+
+# Enable community contributed rules
+# See http://jorisroovers.github.io/gitlint/contrib_rules for details
+# contrib=contrib-title-conventional-commits,CC1
 
 # Set the extra-path where gitlint will search for user defined rules
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
@@ -79,7 +86,29 @@ The block below shows a sample ```.gitlint``` file. Details about rule config op
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit author email address should be matched to
 # For example, use the following regex if you only want to allow email addresses from foo.com
-# regex = "[^@]+@foo.com"
+# regex=[^@]+@foo.com
+
+# [ignore-by-title]
+# Ignore certain rules for commits of which the title matches a regex
+# E.g. Match commit titles that start with "Release"
+# regex=^Release(.*)
+#
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+# ignore=T1,body-min-length
+
+# [ignore-by-body]
+# Ignore certain rules for commits of which the body has a line that matches a regex
+# E.g. Match bodies that have a line that that contain "release"
+# regex=(.*)release(.*)
+#
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+# ignore=T1,body-min-length
+
+# [contrib-title-conventional-commits]
+# Specify allowed commit types. For details see: https://www.conventionalcommits.org/
+# types = bugfix,user-story,epic
 ```
 
 # Commandline config #
@@ -120,14 +149,15 @@ gitlint configuration is applied in the following order of precedence:
 The table below outlines configuration options that modify gitlint's overall behavior. These options can be specified
 using commandline flags or in ```general``` section in a ```.gitlint``` configuration file.
 
-Name                 | Default value |  gitlint version | commandline flag                      | Description
-----------------------|---------------|------------------|---------------------------------------|-------------------------------------
-silent                | false         | >= 0.1           | ```--silent```                        | Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
-verbosity             | 3             | >= 0.1           | ```--verbosity=3```                   | Amount of output gitlint will show when printing errors.
-ignore-merge-commits  | true          | >= 0.7.0         |   Not available                       | Whether or not to ignore merge commits.
-ignore-fixup-commits  | true          | >= 0.9.0         |   Not available                       | Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
-ignore-squash-commits | true          | >= 0.9.0         |   Not available                       | Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
-ignore                | [] (=empty)   | >= 0.1           | ```--ignore=T1,body-min-length```     | Comma seperated list of rules to ignore (by name or id)
-debug                 | false         | >= 0.7.1         |  ```--debug```                        | Enable debugging output
-target                | (empty)       | >= 0.8.0         |  ```---target=/home/joe/myrepo/   ``` | Target git repository gitlint should be linting against.
-extra-path            | (empty)       | >= 0.8.0         |  ```---extra-path=/home/joe/rules/``` | Path where gitlint looks for [user-defined rules](user_defined_rules.md).
+Name                 | Default value |  gitlint version | commandline flag                                        | Description
+----------------------|---------------|------------------|--------------------------------------------------------|-------------------------------------
+silent                | false         | >= 0.1.0          | ```--silent```                                         | Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
+verbosity             | 3             | >= 0.1.0          | ```--verbose=3```                                      | Amount of output gitlint will show when printing errors.
+ignore-merge-commits  | true          | >= 0.7.0         |   Not available                                        | Whether or not to ignore merge commits.
+ignore-fixup-commits  | true          | >= 0.9.0         |   Not available                                        | Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
+ignore-squash-commits | true          | >= 0.9.0         |   Not available                                        | Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
+ignore                | [] (=empty)   | >= 0.1.0          | ```--ignore=T1,body-min-length```                      | Comma seperated list of rules to ignore (by name or id)
+debug                 | false         | >= 0.7.1         |  ```--debug```                                         | Enable debugging output
+target                | (empty)       | >= 0.8.0         |  ```--target=/home/joe/myrepo/   ```                   | Target git repository gitlint should be linting against.
+extra-path            | (empty)       | >= 0.8.0         |  ```--extra-path=/home/joe/rules/```                   | Path where gitlint looks for [user-defined rules](user_defined_rules.md).
+contrib               | (empty)       | >= 0.12.0        | ```--contrib=contrib-title-conventional-commits,CC1``` | [Contrib rules](contrib_rules) to enable.
