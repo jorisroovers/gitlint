@@ -8,17 +8,17 @@ RULE_REGEX = re.compile(r"[^(]+?(\([^)]+?\))?: .+")
 
 
 class ConventionalCommit(LineRule):
-    """This rule enforces the spec at https://www.conventionalcommits.org/."""
+    """ This rule enforces the spec at https://www.conventionalcommits.org/. """
 
     name = "contrib-title-conventional-commits"
-    id = "CL1"
+    id = "CT1"
     target = CommitMessageTitle
 
     options_spec = [
         ListOption(
             "types",
             ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test"],
-            "Comma seperated list of allowed commit types.",
+            "Comma separated list of allowed commit types.",
         )
     ]
 

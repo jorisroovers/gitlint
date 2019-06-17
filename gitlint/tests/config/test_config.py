@@ -120,14 +120,14 @@ class LintConfigTests(BaseTestCase):
         self.assertTrue(actual_rule.is_contrib)
 
         self.assertEqual(ustr(type(actual_rule)), "<class 'conventional_commit.ConventionalCommit'>")
-        self.assertEqual(actual_rule.id, 'CL1')
+        self.assertEqual(actual_rule.id, 'CT1')
         self.assertEqual(actual_rule.name, u'contrib-title-conventional-commits')
         self.assertEqual(actual_rule.target, rules.CommitMessageTitle)
 
         expected_rule_option = options.ListOption(
             "types",
             ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test"],
-            "Comma seperated list of allowed commit types.",
+            "Comma separated list of allowed commit types.",
         )
 
         self.assertListEqual(actual_rule.options_spec, [expected_rule_option])

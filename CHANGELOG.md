@@ -1,5 +1,16 @@
 # Changelog #
 
+## v0.12.0 (In Progress) ##
+
+- [Contrib Rules](http://jorisroovers.github.io/gitlint/contrib_rules): community-contributed rules that are disabled
+   by default, but can be enabled through configuration. Contrib rules are meant to augment default gitlint behavior by
+   providing users with rules for common use-cases without forcing these rules on all gitlint users.
+   interested in contributing new rules
+    - **New Contrib Rule**: ```contrib-title-conventional-commits``` enforces the [Conventional Commits](https://www.conventionalcommits.org) spec. Details in our [documentation](http://jorisroovers.github.io/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits).
+    - **New Contrib Rule**: ```cc1-contrib-requires-signed-off-by``` ensures that all commit messages contain a ```Sign-Off-By``` line. Details in our [documentation](http://jorisroovers.github.io/gitlint/contrib_rules/#cc1-contrib-requires-signed-off-by).
+    - If you're interested in adding new Contrib rules to gitlint, please start by reading the
+      [Contributing](http://jorisroovers.github.io/gitlint/contributing/) page. Thanks for considering!
+
 ## v0.11.0 (2019-03-13) ##
 
 - Python 3.7 support

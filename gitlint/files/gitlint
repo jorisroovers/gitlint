@@ -18,6 +18,10 @@
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
 
+# Enable community contributed rules
+# See http://jorisroovers.github.io/gitlint/contrib_rules for details
+# contrib=contrib-title-conventional-commits,CC1
+
 # Set the extra-path where gitlint will search for user defined rules
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
 # extra-path=examples/
@@ -80,3 +84,7 @@
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
 # ignore=T1,body-min-length
+
+# [contrib-title-conventional-commits]
+# Specify allowed commit types. For details see: https://www.conventionalcommits.org/
+# types = bugfix,user-story,epic

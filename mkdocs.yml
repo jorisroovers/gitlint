@@ -6,6 +6,7 @@ pages:
     - Home: index.md
     - Configuration: configuration.md
     - Rules: rules.md
+    - Contrib Rules: contrib_rules.md
     - User Defined Rules: user_defined_rules.md
     - Contributing: contributing.md
 

@@ -10,7 +10,7 @@ class ContribConventionalCommitTests(BaseTestCase):
 
     def test_enable(self):
         # Test that rule can be enabled in config
-        for rule_ref in ['CL1', 'contrib-title-conventional-commits']:
+        for rule_ref in ['CT1', 'contrib-title-conventional-commits']:
             config = LintConfig()
             config.contrib = [rule_ref]
             self.assertIn(ConventionalCommit(), config.rules)
@@ -24,13 +24,13 @@ class ContribConventionalCommitTests(BaseTestCase):
             self.assertListEqual([], violations)
 
         # assert violation on wrong type
-        expected_violation = RuleViolation("CL1", "Title does not start with one of fix, feat, chore, docs,"
+        expected_violation = RuleViolation("CT1", "Title does not start with one of fix, feat, chore, docs,"
                                                   " style, refactor, perf, test", u"bår: foo")
         violations = rule.validate(u"bår: foo", None)
         self.assertListEqual([expected_violation], violations)
 
         # assert violation on wrong format
-        expected_violation = RuleViolation("CL1", "Title does not follow ConventionalCommits.org format "
+        expected_violation = RuleViolation("CT1", "Title does not follow ConventionalCommits.org format "
                                                   "'type(optional-scope): description'", u"fix föo")
         violations = rule.validate(u"fix föo", None)
         self.assertListEqual([expected_violation], violations)
@@ -43,5 +43,5 @@ class ContribConventionalCommitTests(BaseTestCase):
 
         # assert violation when using incorrect type when types have been reconfigured
         violations = rule.validate(u"fix: hür dur", None)
-        expected_violation = RuleViolation("CL1", u"Title does not start with one of föo, bär", u"fix: hür dur")
+        expected_violation = RuleViolation("CT1", u"Title does not start with one of föo, bär", u"fix: hür dur")
         self.assertListEqual([expected_violation], violations)

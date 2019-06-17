@@ -15,15 +15,15 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 
 ## Features ##
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook).
- - **Easily integrated**: Gitlint will validate any git commit message you give it via standard input.
-   Perfect for [integration with your own scripts or CI system](#using-gitlint-in-a-ci-environment).
+ - **Easily integrated**: Gitlint is designed to work [with your own scripts or CI system](#using-gitlint-in-a-ci-environment).
  - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
- - **User-defined Rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
+ - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules).
+ - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
  - **Broad python version support:** Gitlint supports python versions 2.7, 3.3+ and PyPy2.
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: high unit test coverage, integration tests,
@@ -96,21 +96,17 @@ Usage: gitlint [OPTIONS] COMMAND [ARGS]...
   Git lint tool, checks your git commit messages for styling issues
 
 Options:
-  --target DIRECTORY       Path of the target git repository. [default:
-                           current working directory]
+  --target DIRECTORY       Path of the target git repository. [default: current working directory]
   -C, --config PATH        Config file location [default: .gitlint]
-  -c TEXT                  Config flags in format <rule>.<option>=<value>
-                           (e.g.: -c T1.line-length=80). Flag can be used
-                           multiple times to set multiple config values.
+  -c TEXT                  Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). Flag can be
+                           used multiple times to set multiple config values.
   --commits TEXT           The range of commits to lint. [default: HEAD]
-  -e, --extra-path PATH    Path to a directory or python module with extra
-                           user-defined rules
+  -e, --extra-path PATH    Path to a directory or python module with extra user-defined rules
   --ignore TEXT            Ignore rules (comma-separated by id or name).
-  --msg-filename FILENAME  Path to a file containing a commit-msg
-  -v, --verbose            Verbosity, more v's for more verbose output (e.g.:
-                           -v, -vv, -vvv). [default: -vvv]
-  -s, --silent             Silent mode (no output). Takes precedence over -v,
-                           -vv, -vvv.
+  --contrib TEXT           Contrib rules to enable (comma-separated by id or name).
+  --msg-filename FILENAME  Path to a file containing a commit-msg.
+  -v, --verbose            Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]
+  -s, --silent             Silent mode (no output). Takes precedence over -v, -vv, -vvv.
   -d, --debug              Enable debugging output.
   --version                Show the version and exit.
   --help                   Show this message and exit.
@@ -274,6 +270,7 @@ ignore=all
     Right now it's not possible to write user-defined ignore rules to handle more complex user-cases.
     This is however something that we'd like to implement in a future version. If this is something you're interested in
     please let us know by [opening an issue](https://github.com/jorisroovers/gitlint/issues).
+
 ## Exit codes ##
 Gitlint uses the exit code as a simple way to indicate the number of violations found.
 Some exit codes are used to indicate special errors as indicated in the table below.

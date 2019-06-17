@@ -1,8 +1,9 @@
 # Contributing
 
 We'd love for you to contribute to gitlint. Thanks for your interest!
-Sometimes it takes a while for [me](https://github.com/jorisroovers) to get back to you (sometimes up to a few months,
-this is a hobby project), but rest assured that we read your message and appreciate your interest!
+Often it takes a while for us (well, actually just [me](https://github.com/jorisroovers)) to get back to you
+(sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
+your interest!
 We maintain a [wishlist on our wiki](https://github.com/jorisroovers/gitlint/wiki/Wishlist),
 but we're obviously open to any suggestions!
 
@@ -21,6 +22,7 @@ When contributing code, please consider all the parts that are typically require
 Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
 can make it as part of a release. If you can already include them as part of your PR, it's a huge timesaver for us
 and it's likely that your PR will be merged and released a lot sooner. Thanks!
+
 # Development #
 
 There is a Vagrantfile in this repository that can be used for development.
@@ -82,3 +84,31 @@ mkdocs serve
 
 Then access the documentation website on your host machine on [http://localhost:8000]().
 Note that this is only supported for python >= 2.7.
+
+# Contrib rules
+Since gitlint 0.12.0, we support [Contrib rules](contrib_rules): community contributed rules that are part of gitlint
+itself. Thanks for considering to add a new one to gitlint!
+
+Before starting, please read all the other documentation on this page about contributing first. Then, we suggest taking the following approach to add a Contrib rule:
+
+1. **Write your rule as a [user-defined rule](user_defined_rules)**. In terms of code, Contrib rules are identical to
+   user-defined rules, they just happen to have their code sit within the gitlint codebase itself.
+2. **Add your user-defined rule to gitlint**. You should put your file(s) in the [gitlint/contrib/rules](https://github.com/jorisroovers/gitlint/tree/master/gitlint/contrib/rules) directory.
+3. **Write unit tests**. The gitlint codebase contains [Contrib rule test files you can copy and modify](https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests/contrib).
+4. **Write documentation**. In particular, you should update the [gitlint/docs/contrib_rules.md](https://github.com/jorisroovers/gitlint/blob/master/docs/contrib_rules.md) file with details on your Contrib rule.
+
+
+## Contrib rule requirements
+If you follow the steps above and follow the existing gitlint conventions wrt naming things, you should already be fairly close to done.
+
+In case you're looking for a slightly less formal spec, here's what gitlint requires of Contrib rules.
+
+- Since Contrib rules are really just user-defined rules that live withing the gitlint code-base, all the [user-rule requirements](user_defined_rules/#rule-requirements) also apply to Contrib rules.
+- All contrib rules **must** have associated unit tests. We *sort of* enforce this by a unit test that verifies that there's a
+  test file for each contrib file.
+- All contrib rules **must** have names that start with `contrib-`. This is to easily distinguish them from default gitlint rules.
+- All contrib rule ids **must** start with `CT` (for LineRules targeting the title), `CB` (for LineRules targeting the body) or `CC` (for CommitRules). Again, this is to easily distinguish them from default gitlint rules.
+- All contrib rules **must** have unique names and ids.
+- You **can** add multiple rule classes to the same file, but classes **should** be logically grouped together in a single file that implements related rules.
+- Contrib rules **should** be meaningfully different from one another. If a behavior change or tweak can be added to an existing rule by adding options, that should be considered first. However, large [god classes](https://en.wikipedia.org/wiki/God_object) that implement multiple rules in a single class should obviously also be avoided.
+- Contrib rules **should** use [options](user_defined_rules/#options) to make rules configurable.
