@@ -33,7 +33,13 @@ def find_rule_classes(extra_path):
     # Filter out files that are not python modules
     for filename in files:
         if fnmatch.fnmatch(filename, '*.py'):
-            modules.append(os.path.splitext(filename)[0])
+            # We have to treat __init__ files a bit special: add the parent dir instead of the filename, and also
+            # add their parent dir to the sys.path (this fixes import issues with pypy2).
+            if filename == "__init__.py":
+                modules.append(os.path.basename(directory))
+                sys.path.append(os.path.dirname(directory))
+            else:
+                modules.append(os.path.splitext(filename)[0])
 
     # No need to continue if there are no modules specified
     if not modules:
@@ -48,6 +54,7 @@ def find_rule_classes(extra_path):
         # Import the module
         try:
             importlib.import_module(module)
+
         except Exception as e:
             raise rules.UserRuleError(u"Error while importing extra-path module '{0}': {1}".format(module, ustr(e)))
 

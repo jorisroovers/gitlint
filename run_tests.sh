@@ -249,13 +249,13 @@ install_virtualenv(){
 
     # For pypy: custom path + fetch from the web if not installed (=distro agnostic)
     if [[ $version == *"pypy"* ]]; then
-        python_binary="/opt/pypy2-v5.6.0-linux64/bin/pypy"
+        python_binary="/opt/pypy2.7-v7.1.1-linux64/bin/pypy"
         # download
         if [ ! -f $python_binary ]; then
             assert_root "Must be root to install pypy, use sudo"
             title "### DOWNLOADING PYPY ($pypy_archive) ###"
             pushd "/opt"
-            pypy_archive="pypy2-v5.6.0-linux64.tar.bz2"
+            pypy_archive="pypy2.7-v7.1.1-linux64.tar.bz2"
             wget "https://bitbucket.org/pypy/pypy/downloads/$pypy_archive"
             title "### EXTRACTING PYPY TARBALL ($pypy_archive) ###"
             tar xvf $pypy_archive
