@@ -116,4 +116,4 @@ class PathOption(RuleOption):
         if error_msg:
             raise RuleOptionError(error_msg)
 
-        self.value = os.path.abspath(value)
+        self.value = os.path.realpath(value)

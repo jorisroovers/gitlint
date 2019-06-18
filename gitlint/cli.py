@@ -285,7 +285,7 @@ def uninstall_hook(ctx):
 def generate_config(ctx):
     """ Generates a sample gitlint config file. """
     path = click.prompt('Please specify a location for the sample gitlint config file', default=DEFAULT_CONFIG_FILE)
-    path = os.path.abspath(path)
+    path = os.path.realpath(path)
     dir_name = os.path.dirname(path)
     if not os.path.exists(dir_name):
         click.echo(u"Error: Directory '{0}' does not exist.".format(dir_name), err=True)

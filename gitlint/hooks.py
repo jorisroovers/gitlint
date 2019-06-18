@@ -1,10 +1,13 @@
+import io
 import shutil
 import os
 import stat
 
-COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/commit-msg")
-COMMIT_MSG_HOOK_DST_PATH = ".git/hooks/commit-msg"
-HOOKS_DIR_PATH = ".git/hooks"
+from gitlint.utils import DEFAULT_ENCODING
+
+COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files/commit-msg")
+COMMIT_MSG_HOOK_DST_PATH = os.path.join(".git", "hooks", "commit-msg")
+HOOKS_DIR_PATH = os.path.join(".git", "hooks")
 GITLINT_HOOK_IDENTIFIER = "### gitlint commit-msg hook start ###\n"
 
 
@@ -17,12 +20,12 @@ class GitHookInstaller(object):
 
     @staticmethod
     def commit_msg_hook_path(lint_config):
-        return os.path.abspath(os.path.join(lint_config.target, COMMIT_MSG_HOOK_DST_PATH))
+        return os.path.realpath(os.path.join(lint_config.target, COMMIT_MSG_HOOK_DST_PATH))
 
     @staticmethod
     def _assert_git_repo(target):
         """ Asserts that a given target directory is a git repository """
-        hooks_dir = os.path.abspath(os.path.join(target, HOOKS_DIR_PATH))
+        hooks_dir = os.path.realpath(os.path.join(target, HOOKS_DIR_PATH))
         if not os.path.isdir(hooks_dir):
             raise GitHookInstallerError(u"{0} is not a git repository.".format(target))
 
@@ -48,8 +51,8 @@ class GitHookInstaller(object):
         if not os.path.exists(dest_path):
             raise GitHookInstallerError(u"There is no commit-msg hook present in {0}.".format(dest_path))
 
-        with open(dest_path) as file:
-            lines = file.readlines()
+        with io.open(dest_path, encoding=DEFAULT_ENCODING) as fp:
+            lines = fp.readlines()
             if len(lines) < 2 or lines[1] != GITLINT_HOOK_IDENTIFIER:
                 msg = u"The commit-msg hook in {0} was not installed by gitlint (or it was modified).\n" + \
                       u"Uninstallation of 3th party or modified gitlint hooks is not supported."

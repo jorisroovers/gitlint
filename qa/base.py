@@ -2,6 +2,7 @@
 # pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return,
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 
+import io
 import os
 import sys
 import tempfile
@@ -15,7 +16,10 @@ except ImportError:
     # python 3.x
     from unittest import TestCase
 
-from sh import git, rm, touch, DEFAULT_ENCODING, RunningCommand  # pylint: disable=no-name-in-module
+import sh
+from sh import git, rm, touch, RunningCommand  # pylint: disable=no-name-in-module
+
+DEFAULT_ENCODING = sh.DEFAULT_ENCODING
 
 
 def ustr(obj):
@@ -145,9 +149,7 @@ class BaseTestCase(TestCase):
         specified by variable_dict. """
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        expected = open(expected_path).read()
-        if sys.version_info[0] == 2:  # decode string if python2
-            expected = unicode(expected, DEFAULT_ENCODING)  # noqa # pylint: disable=undefined-variable
+        expected = io.open(expected_path, encoding=DEFAULT_ENCODING).read()
 
         if variable_dict:
             expected = expected.format(**variable_dict)

@@ -1,3 +1,4 @@
+import io
 import logging
 import os
 
@@ -9,7 +10,8 @@ except ImportError:
     import unittest
 
 from gitlint.git import GitContext
-from gitlint.utils import ustr, LOG_FORMAT
+from gitlint.utils import ustr, LOG_FORMAT, DEFAULT_ENCODING
+
 
 # unittest2's assertRaisesRegex doesn't do unicode comparison.
 # Let's monkeypatch the str() function to point to unicode() so that it does :)
@@ -54,7 +56,7 @@ class BaseTestCase(unittest.TestCase):
     def get_sample(filename=""):
         """ Read and return the contents of a file in gitlint/tests/samples """
         sample_path = BaseTestCase.get_sample_path(filename)
-        with open(sample_path) as content:
+        with io.open(sample_path, encoding=DEFAULT_ENCODING) as content:
             sample = ustr(content.read())
         return sample
 
@@ -63,7 +65,7 @@ class BaseTestCase(unittest.TestCase):
         """ Utility method to read an expected file from gitlint/tests/expected and return it as a string.
         Optionally replace template variables specified by variable_dict. """
         expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)
-        with open(expected_path) as content:
+        with io.open(expected_path, encoding=DEFAULT_ENCODING) as content:
             expected = ustr(content.read())
 
         if variable_dict:

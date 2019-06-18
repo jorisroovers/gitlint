@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
+import io
 import subprocess
 from sh import gitlint, echo  # pylint: disable=no-name-in-module
-from qa.base import BaseTestCase, ustr
+from qa.base import BaseTestCase, ustr, DEFAULT_ENCODING
 
 
 class StdInTests(BaseTestCase):
@@ -50,7 +51,7 @@ class StdInTests(BaseTestCase):
         """
         tmp_commit_msg_file = self.create_tmpfile("WIP: STDIN ïs a file test.")
 
-        with open(tmp_commit_msg_file) as file_handle:
+        with io.open(tmp_commit_msg_file, encoding=DEFAULT_ENCODING) as file_handle:
 
             # We need to use subprocess.Popen() here instead of sh because when passing a file_handle to sh, it will
             # deal with reading the file itself instead of passing it on to gitlint as a STDIN. Since we're trying to

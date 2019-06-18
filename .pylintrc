@@ -24,7 +24,7 @@ variable-rgx=[a-z_][a-z0-9_]{0,30}$
 argument-rgx=[a-z_][a-z0-9_]{1,30}$
 
 # Method names should be at least 3 characters long
-# and be lowecased with underscores
+# and be lower-cased with underscores
 method-rgx=([a-z_][a-z0-9_]{2,50}|setUp|tearDown)$
 
 # Allow 'id' as variable name everywhere

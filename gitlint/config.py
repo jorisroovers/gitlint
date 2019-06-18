@@ -6,18 +6,13 @@ except ImportError:  # pragma: no cover
     from configparser import ConfigParser, Error as ConfigParserError  # pragma: no cover, pylint: disable=import-error
 
 import copy
+import io
 import re
 import os
 import shutil
 
-try:
-    # python >= 2.7
-    from collections import OrderedDict  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    # python 2.4-2.6
-    from ordereddict import OrderedDict  # pragma: no cover
-
-from gitlint.utils import ustr
+from collections import OrderedDict
+from gitlint.utils import ustr, DEFAULT_ENCODING
 from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
 from gitlint import rule_finder
@@ -75,7 +70,7 @@ class LintConfig(object):
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
         self._extra_path = None
         target_description = "Path of the target git repository (default=current working directory)"
-        self._target = options.PathOption('target', os.path.abspath(os.getcwd()), target_description)
+        self._target = options.PathOption('target', os.path.realpath(os.getcwd()), target_description)
         self._ignore = options.ListOption('ignore', [], 'List of rule-ids to ignore')
         self._contrib = options.ListOption('contrib', [], 'List of contrib-rules to enable')
         self._config_path = None
@@ -349,10 +344,13 @@ class LintConfigBuilder(object):
         """ Loads lint config from a ini-style config file """
         if not os.path.exists(filename):
             raise LintConfigError(u"Invalid file path: {0}".format(filename))
-        self._config_path = os.path.abspath(filename)
+        self._config_path = os.path.realpath(filename)
         try:
             parser = ConfigParser()
-            parser.read(filename)
+
+            with io.open(filename, encoding=DEFAULT_ENCODING) as config_file:
+                # readfp() is deprecated in python 3.2+, but compatible with 2.7
+                parser.readfp(config_file, filename)  # pylint: disable=deprecated-method
 
             for section_name in parser.sections():
                 for option_name, option_value in parser.items(section_name):
@@ -394,7 +392,7 @@ class LintConfigBuilder(object):
         return builder
 
 
-GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files/gitlint")
+GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files/gitlint")
 
 
 class LintConfigGenerator(object):

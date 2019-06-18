@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import contextlib
+import io
 import os
 import sys
 import platform
@@ -12,7 +13,7 @@ try:
     from StringIO import StringIO
 except ImportError:
     # python 3.x
-    from io import StringIO
+    from io import StringIO  # pylint: disable=ungrouped-imports
 
 from click.testing import CliRunner
 
@@ -30,6 +31,7 @@ from gitlint import cli
 from gitlint import hooks
 from gitlint import __version__
 from gitlint import config
+from gitlint.utils import DEFAULT_ENCODING
 
 
 @contextlib.contextmanager
@@ -194,8 +196,8 @@ class CLITests(BaseTestCase):
 
         with tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "msg")
-            with open(msg_filename, 'w') as f:
-                f.write("Commït title\n")
+            with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
+                f.write(u"Commït title\n")
 
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                 result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename])
@@ -260,7 +262,7 @@ class CLITests(BaseTestCase):
                               u"file6.txt\npåth/to/file7.txt\n"]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            config_path = self.get_sample_path("config/gitlintconfig")
+            config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
             result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug", "--commits",
                                                "foo...bar"])
 
@@ -276,8 +278,8 @@ class CLITests(BaseTestCase):
                              u"DEBUG: gitlint.cli Python version: {0}".format(sys.version),
                              u"DEBUG: gitlint.cli Git version: git version 1.2.3",
                              u"DEBUG: gitlint.cli Gitlint version: {0}".format(__version__),
-                             self.get_expected('debug_configuration_output1', {'config_path': config_path,
-                                                                               'target': os.path.abspath(os.getcwd())}),
+                             self.get_expected('debug_configuration_output1',
+                                               {'config_path': config_path, 'target': os.path.realpath(os.getcwd())}),
                              u"DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. " +
                              u"Attempting to read from the local repo.",
                              u"DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360",
@@ -307,7 +309,7 @@ class CLITests(BaseTestCase):
 
         # Test extra-path pointing to a file
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            extra_path = self.get_sample_path("user_rules/my_commit_rules.py")
+            extra_path = self.get_sample_path(os.path.join("user_rules", "my_commit_rules.py"))
             result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"])
             expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
                               "3: B6 Body message is missing\n"
@@ -333,7 +335,7 @@ class CLITests(BaseTestCase):
     def test_config_file(self, _):
         """ Test for --config option """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            config_path = self.get_sample_path("config/gitlintconfig")
+            config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
             result = self.cli.invoke(cli.cli, ["--config", config_path])
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
@@ -358,7 +360,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
         # Invalid config file
-        config_path = self.get_sample_path("config/invalid-option-value")
+        config_path = self.get_sample_path(os.path.join("config", "invalid-option-value"))
         result = self.cli.invoke(cli.cli, ["--config", config_path])
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
@@ -382,7 +384,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.output.split("\n")[3], expected_msg)
 
         # try setting a file as target
-        target_path = self.get_sample_path("config/gitlintconfig")
+        target_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
         result = self.cli.invoke(cli.cli, ["--target", target_path])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = u"Error: Invalid value for \"--target\": Directory \"{0}\" is a file.".format(target_path)
@@ -394,9 +396,9 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["generate-config"], input=u"tëstfile\n")
         self.assertEqual(result.exit_code, 0)
         expected_msg = u"Please specify a location for the sample gitlint config file [.gitlint]: tëstfile\n" + \
-                       u"Successfully generated {0}\n".format(os.path.abspath(u"tëstfile"))
+                       u"Successfully generated {0}\n".format(os.path.realpath(u"tëstfile"))
         self.assertEqual(result.output, expected_msg)
-        generate_config.assert_called_once_with(os.path.abspath(u"tëstfile"))
+        generate_config.assert_called_once_with(os.path.realpath(u"tëstfile"))
 
     def test_generate_config_negative(self):
         """ Negative test for the generate-config subcommand """
@@ -408,7 +410,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.output, expected_msg)
 
         # Existing file
-        sample_path = self.get_sample_path("config/gitlintconfig")
+        sample_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
         result = self.cli.invoke(cli.cli, ["generate-config"], input=sample_path)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = "Please specify a location for the sample gitlint " + \
@@ -443,7 +445,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
         expected_config = config.LintConfig()
-        expected_config.target = os.path.abspath(os.getcwd())
+        expected_config.target = os.path.realpath(os.getcwd())
         install_hook.assert_called_once_with(expected_config)
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
@@ -467,7 +469,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, u"tëst\n")
         expected_config = config.LintConfig()
-        expected_config.target = os.path.abspath(os.getcwd())
+        expected_config.target = os.path.realpath(os.getcwd())
         install_hook.assert_called_once_with(expected_config)
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
@@ -479,7 +481,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
         expected_config = config.LintConfig()
-        expected_config.target = os.path.abspath(os.getcwd())
+        expected_config.target = os.path.realpath(os.getcwd())
         uninstall_hook.assert_called_once_with(expected_config)
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError(u"tëst"))
@@ -489,5 +491,5 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         self.assertEqual(result.output, u"tëst\n")
         expected_config = config.LintConfig()
-        expected_config.target = os.path.abspath(os.getcwd())
+        expected_config.target = os.path.realpath(os.getcwd())
         uninstall_hook.assert_called_once_with(expected_config)

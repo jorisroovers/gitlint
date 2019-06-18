@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
+import io
 import os
 from sh import git, gitlint  # pylint: disable=no-name-in-module
-from qa.base import BaseTestCase
+from qa.base import BaseTestCase, DEFAULT_ENCODING
 
 
 class IntegrationTests(BaseTestCase):
@@ -49,12 +50,12 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using fixup commit
-        with open(os.path.join(self.tmp_git_repo, test_filename), "a") as fh:
+        with io.open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=DEFAULT_ENCODING) as fh:
             # Wanted to write a unicode string, but that's obnoxious if you want to do it across Python 2 and 3.
             # https://stackoverflow.com/questions/22392377/
             # error-writing-a-file-with-file-write-in-python-unicodeencodeerror
             # So just keeping it simple - ASCII will here
-            fh.write("Appending some stuff\n")
+            fh.write(u"Appending some stuff\n")
 
         git("add", test_filename, _cwd=self.tmp_git_repo)
 
@@ -80,12 +81,12 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using squash commit
-        with open(os.path.join(self.tmp_git_repo, test_filename), "a") as fh:
+        with io.open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=DEFAULT_ENCODING) as fh:
             # Wanted to write a unicode string, but that's obnoxious if you want to do it across Python 2 and 3.
             # https://stackoverflow.com/questions/22392377/
             # error-writing-a-file-with-file-write-in-python-unicodeencodeerror
             # So just keeping it simple - ASCII will here
-            fh.write("Appending some stuff\n")
+            fh.write(u"Appending some stuff\n")
 
         git("add", test_filename, _cwd=self.tmp_git_repo)
 
