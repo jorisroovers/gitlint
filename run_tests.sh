@@ -13,7 +13,7 @@ help(){
     echo "  -b, --build              Run build tests"
     echo "  -a, --all                Run all tests and checks (unit, integration, pep8, git)"
     echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments"
-    echo "                           (envs: 27,34,35,36,37,pypy2)."
+    echo "                           (envs: 27,34,35,36,37,pypy2,pypy35)."
     echo "                           Also works for integration, pep8 and lint tests."
     echo "  --all-env                Run all tests against all python environments"
     echo "  --install                Install virtualenvs for the --envs specified"
@@ -248,14 +248,27 @@ install_virtualenv(){
     python_binary="/usr/bin/python${version:0:1}.${version:1:1}"
 
     # For pypy: custom path + fetch from the web if not installed (=distro agnostic)
-    if [[ $version == *"pypy"* ]]; then
+    if [[ $version == *"pypy2"* ]]; then
         python_binary="/opt/pypy2.7-v7.1.1-linux64/bin/pypy"
-        # download
         if [ ! -f $python_binary ]; then
-            assert_root "Must be root to install pypy, use sudo"
-            title "### DOWNLOADING PYPY ($pypy_archive) ###"
+            assert_root "Must be root to install pypy2.7, use sudo"
+            title "### DOWNLOADING PYPY2 ($pypy_archive) ###"
             pushd "/opt"
             pypy_archive="pypy2.7-v7.1.1-linux64.tar.bz2"
+            wget "https://bitbucket.org/pypy/pypy/downloads/$pypy_archive"
+            title "### EXTRACTING PYPY TARBALL ($pypy_archive) ###"
+            tar xvf $pypy_archive
+            popd
+        fi
+    fi
+
+    if [[ $version == *"pypy35"* ]]; then
+        python_binary="/opt/pypy3.5-v7.0.0-linux64/bin/pypy3"
+        if [ ! -f $python_binary ]; then
+            assert_root "Must be root to install pypy3.5, use sudo"
+            title "### DOWNLOADING PYPY3 ($pypy_archive) ###"
+            pushd "/opt"
+            pypy_archive="pypy3.5-v7.0.0-linux64.tar.bz2"
             wget "https://bitbucket.org/pypy/pypy/downloads/$pypy_archive"
             title "### EXTRACTING PYPY TARBALL ($pypy_archive) ###"
             tar xvf $pypy_archive
@@ -274,7 +287,7 @@ install_virtualenv(){
 
 assert_specific_env(){
     if [ -z "$1" ] || [ "$1" == "default" ]; then
-        fatal "ERROR: Please specify one or more valid python environments using --envs: 27,34,35,36,37,pypy2"
+        fatal "ERROR: Please specify one or more valid python environments using --envs: 27,34,35,36,37,pypy2,pypy35"
         exit 1
     fi
 }
@@ -342,7 +355,7 @@ exit_code=0
 
 # If the users specified 'all', then just replace $envs with the list of all envs
 if [ "$envs" == "all" ]; then
-    envs="27,34,35,36,37,pypy2"
+    envs="27,34,35,36,37,pypy2,pypy35"
 fi
 envs=$(echo "$envs" | tr ',' '\n') # Split the env list on comma so we can loop through it
 

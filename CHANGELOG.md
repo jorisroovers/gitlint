@@ -11,7 +11,9 @@
     - If you're interested in adding new Contrib rules to gitlint, please start by reading the
       [Contributing](http://jorisroovers.github.io/gitlint/contributing/) page. Thanks for considering!
 
-- Python 3.3 no longer supported
+- Python 3.3 no longer supported. Python 3.4 is likely to follow in a future release as it has reached EOL as well.
+- PyPy 3.5 supported
+
 
 ## v0.11.0 (2019-03-13) ##
 
