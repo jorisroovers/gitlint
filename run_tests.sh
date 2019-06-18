@@ -93,7 +93,7 @@ run_unit_tests(){
     clean
     # py.test -s  => print standard output (i.e. show print statement output)
     #         -rw => print warnings
-    OMIT="*pypy*"
+    OMIT="*pypy*,*venv*,*virtualenv*,*gitlint/tests/*"
     if [ -n "$testargs" ]; then
         coverage run --omit=$OMIT -m pytest -rw -s "$testargs"
     else
@@ -186,7 +186,7 @@ run_build_test(){
 run_stats(){
     clean # required for py.test to count properly
     echo "*** Code ***"
-    radon raw -s gitlint | tail -n 6
+    radon raw -s gitlint | tail -n 11
     echo "*** Docs ***"
     echo "    Markdown: $(cat docs/*.md | wc -l | tr -d " ") lines"
     echo "*** Tests ***"
@@ -200,6 +200,12 @@ run_stats(){
     echo "    First commit: $(git log --pretty="%aD" $(git rev-list --max-parents=0 HEAD))"
     echo "    Contributors: $(git log --format='%aN' | sort -u | wc -l | tr -d ' ')"
     echo "    Releases (tags): $(git tag --list | wc -l | tr -d ' ')"
+    # PyPi API: https://pypistats.org/api/
+    echo "*** PyPi ***"
+    stats=$(curl -s https://pypistats.org/api/packages/gitlint/recent)
+    echo "    Last Month: $(echo $stats | jq .data.last_month)"
+    echo "    Last Week: $(echo $stats | jq .data.last_week)"
+    echo "    Last Day: $(echo $stats | jq .data.last_day)"
 }
 
 clean(){

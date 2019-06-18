@@ -1,8 +1,6 @@
 setuptools
-wheel==0.29.0; python_version == '2.6' or python_version == '3.3'
-wheel==0.32.2; python_version != '2.6' and python_version != '3.3'
-Click==6.7
+wheel==0.33.4;
+Click==7.0
 sh==1.12.14; sys_platform != 'win32' # sh is not supported on windows
-arrow==0.10.0
-ordereddict==1.1; python_version < '2.7'
-importlib==1.0.3; python_version < '2.7'
+arrow==0.14.2; python_version != '3.4'
+arrow==0.13.2; python_version == '3.4'

@@ -64,13 +64,14 @@ setup(
         "License :: OSI Approved :: MIT License"
     ],
     install_requires=[
-        'Click==6.7',
-        'arrow==0.10.0'
+        'Click==7.0',
     ],
     extras_require={
-        ':python_version < "2.7"': [
-            'importlib==1.0.3',
-            'ordereddict==1.1',
+        ':python_version != "3.4"': [
+            'arrow==0.14.2',
+        ],
+        ':python_version == "3.4"': [
+            'arrow==0.13.2',
         ],
         ':sys_platform != "win32"': [
             'sh==1.12.14',
