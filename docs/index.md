@@ -24,7 +24,7 @@ useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
  - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules).
  - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
- - **Broad python version support:** Gitlint supports python versions 2.7, 3.3+ and PyPy2.
+ - **Broad python version support:** Gitlint supports python versions 2.7, 3.4+ and PyPy2.
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: high unit test coverage, integration tests,
    python code standards (pep8, pylint), good documentation, proven track record.
