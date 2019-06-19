@@ -69,10 +69,12 @@ class CLITests(BaseTestCase):
     @patch('gitlint.git.sh')
     def test_lint(self, sh, _):
         """ Test for basic simple linting functionality """
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360",
-                              u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
-                              u"commït-title\n\ncommït-body",
-                              u"file1.txt\npåth/to/file2.txt\n"]
+        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            "6f29bf81a8322a04071bb794666e48c443a90360",
+            u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"commït-title\n\ncommït-body",
+            u"file1.txt\npåth/to/file2.txt\n"
+        ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
@@ -84,19 +86,21 @@ class CLITests(BaseTestCase):
     def test_lint_multiple_commits(self, sh, _):
         """ Test for --commits option """
 
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
-                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
-                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              # git log --pretty <FORMAT> <SHA>
-                              u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01 :00\x00åbc\n"
-                              u"commït-title1\n\ncommït-body1",
-                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
-                              u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
-                              u"commït-title2\n\ncommït-body2",
-                              u"file4.txt\npåth/to/file5.txt\n",
-                              u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
-                              u"commït-title3\n\ncommït-body3",
-                              u"file6.txt\npåth/to/file7.txt\n"]
+        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            "6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
+            "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+            # git log --pretty <FORMAT> <SHA>
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01 :00\x00åbc\n"
+            u"commït-title1\n\ncommït-body1",
+            u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
+            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
+            u"commït-title2\n\ncommït-body2",
+            u"file4.txt\npåth/to/file5.txt\n",
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
+            u"commït-title3\n\ncommït-body3",
+            u"file6.txt\npåth/to/file7.txt\n"
+        ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
@@ -115,19 +119,21 @@ class CLITests(BaseTestCase):
         """ Test for --commits option where some of the commits have gitlint config in the commit message """
 
         # Note that the second commit title has a trailing period that is being ignored by gitlint-ignore: T3
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
-                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
-                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              # git log --pretty <FORMAT> <SHA>
-                              u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
-                              u"commït-title1\n\ncommït-body1",
-                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
-                              u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
-                              u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
-                              u"file4.txt\npåth/to/file5.txt\n",
-                              u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
-                              u"commït-title3.\n\ncommït-body3",
-                              u"file6.txt\npåth/to/file7.txt\n"]
+        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            "6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
+            "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+            # git log --pretty <FORMAT> <SHA>
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"commït-title1\n\ncommït-body1",
+            u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
+            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
+            u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
+            u"file4.txt\npåth/to/file5.txt\n",
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
+            u"commït-title3.\n\ncommït-body3",
+            u"file6.txt\npåth/to/file7.txt\n"
+        ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
@@ -147,22 +153,24 @@ class CLITests(BaseTestCase):
         """
 
         # Note that the second commit
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
-                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
-                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              # git log --pretty <FORMAT> <SHA>
-                              u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
-                              u"commït-title1\n\ncommït-body1",
-                              u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
-                              u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
-                              # Normally T3 violation (trailing punctuation), but this commit is ignored because of
-                              # config below
-                              u"commït-title2.\n\ncommït-body2\n",
-                              u"file4.txt\npåth/to/file5.txt\n",
-                              u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
-                              # Normally T1 and B5 violations, now only T1 because we're ignoring B5 in config below
-                              u"commït-title3.\n\ncommït-body3 foo",
-                              u"file6.txt\npåth/to/file7.txt\n"]
+        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            "6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
+            "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+            # git log --pretty <FORMAT> <SHA>
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"commït-title1\n\ncommït-body1",
+            u"file1.txt\npåth/to/file2.txt\n",  # git diff-tree <SHA>
+            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
+            # Normally T3 violation (trailing punctuation), but this commit is ignored because of
+            # config below
+            u"commït-title2.\n\ncommït-body2\n",
+            u"file4.txt\npåth/to/file5.txt\n",
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
+            # Normally T1 and B5 violations, now only T1 because we're ignoring B5 in config below
+            u"commït-title3.\n\ncommït-body3 foo",
+            u"file6.txt\npåth/to/file7.txt\n"
+        ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar", "-c", "I1.regex=^commït-title2(.*)",
@@ -248,18 +256,20 @@ class CLITests(BaseTestCase):
     def test_debug(self, sh, _):
         """ Test for --debug option """
 
-        sh.git.side_effect = ["6f29bf81a8322a04071bb794666e48c443a90360\n"  # git rev-list <SHA>
-                              "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
-                              "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
-                              u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00abc\n"
-                              u"commït-title1\n\ncommït-body1",
-                              u"file1.txt\npåth/to/file2.txt\n",
-                              u"test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 01:00\x00abc\n"
-                              u"commït-title2.\n\ncommït-body2",
-                              u"file4.txt\npåth/to/file5.txt\n",
-                              u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00abc\n"
-                              u"föo\nbar",
-                              u"file6.txt\npåth/to/file7.txt\n"]
+        sh.git.side_effect = self. GIT_CONFIG_SIDE_EFFECTS + [
+            "6f29bf81a8322a04071bb794666e48c443a90360\n"  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
+            "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00abc\n"
+            u"commït-title1\n\ncommït-body1",
+            u"file1.txt\npåth/to/file2.txt\n",
+            u"test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 01:00\x00abc\n"
+            u"commït-title2.\n\ncommït-body2",
+            u"file4.txt\npåth/to/file5.txt\n",
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00abc\n"
+            u"föo\nbar",
+            u"file6.txt\npåth/to/file7.txt\n"
+        ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))

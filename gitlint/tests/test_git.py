@@ -5,10 +5,10 @@ import dateutil
 
 try:
     # python 2.x
-    from mock import patch, call, PropertyMock
+    from mock import patch, call
 except ImportError:
     # python 3.x
-    from unittest.mock import patch, call, PropertyMock  # pylint: disable=no-name-in-module, import-error
+    from unittest.mock import patch, call  # pylint: disable=no-name-in-module, import-error
 
 from sh import ErrorReturnCode, CommandNotFound
 
@@ -17,23 +17,32 @@ from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError
 
 
 class GitTests(BaseTestCase):
+
+    # Expected special_args passed to 'sh'
     expected_sh_special_args = {
         '_tty_out': False,
         '_cwd': u"fåke/path"
     }
 
+    # Expected calls to 'git config'
+    expected_git_config_calls = [
+        call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **expected_sh_special_args)
+    ]
+
     @patch('gitlint.git.sh')
     def test_get_latest_commit(self, sh):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
-        sh.git.side_effect = [sample_sha,
-                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
-                              u"cömmit-title\n\ncömmit-body",
-                              u"file1.txt\npåth/to/file2.txt\n"]
+        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            sample_sha,
+            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"cömmit-title\n\ncömmit-body",
+            u"file1.txt\npåth/to/file2.txt\n"
+        ]
 
         context = GitContext.from_local_repository(u"fåke/path")
         # assert that commit info was read using git command
-        expected_calls = [
+        expected_calls = self.expected_git_config_calls + [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
@@ -57,14 +66,16 @@ class GitTests(BaseTestCase):
     def test_from_local_repository_specific_ref(self, sh):
         sample_sha = "myspecialref"
 
-        sh.git.side_effect = [sample_sha,
-                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
-                              u"cömmit-title\n\ncömmit-body",
-                              u"file1.txt\npåth/to/file2.txt\n"]
+        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            sample_sha,
+            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"cömmit-title\n\ncömmit-body",
+            u"file1.txt\npåth/to/file2.txt\n"
+        ]
 
         context = GitContext.from_local_repository(u"fåke/path", sample_sha)
         # assert that commit info was read using git command
-        expected_calls = [
+        expected_calls = self.expected_git_config_calls + [
             call("rev-list", sample_sha, **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
@@ -88,14 +99,16 @@ class GitTests(BaseTestCase):
     def test_get_latest_commit_merge_commit(self, sh):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
-        sh.git.side_effect = [sample_sha,
-                              u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc def\n"
-                              u"Merge \"foo bår commit\"",
-                              u"file1.txt\npåth/to/file2.txt\n"]
+        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            sample_sha,
+            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc def\n"
+            u"Merge \"foo bår commit\"",
+            u"file1.txt\npåth/to/file2.txt\n"
+        ]
 
         context = GitContext.from_local_repository(u"fåke/path")
         # assert that commit info was read using git command
-        expected_calls = [
+        expected_calls = self.expected_git_config_calls + [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
@@ -120,14 +133,16 @@ class GitTests(BaseTestCase):
         for commit_type in commit_types:
             sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
-            sh.git.side_effect = [sample_sha,
-                                  u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
-                                  u"{0}! \"foo bår commit\"".format(commit_type),
-                                  u"file1.txt\npåth/to/file2.txt\n"]
+            sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+                sample_sha,
+                u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+                u"{0}! \"foo bår commit\"".format(commit_type),
+                u"file1.txt\npåth/to/file2.txt\n"
+            ]
 
             context = GitContext.from_local_repository(u"fåke/path")
             # assert that commit info was read using git command
-            expected_calls = [
+            expected_calls = self.expected_git_config_calls + [
                 call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
                 call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
                 call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args)
@@ -155,7 +170,8 @@ class GitTests(BaseTestCase):
             sh.git.reset_mock()
 
     @patch('gitlint.git.sh')
-    def test_get_latest_commit_command_not_found(self, sh):
+    @patch("gitlint.git.git_commentchar")
+    def test_get_latest_commit_command_not_found(self, _, sh):
         sh.git.side_effect = CommandNotFound("git")
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
@@ -166,7 +182,8 @@ class GitTests(BaseTestCase):
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
 
     @patch('gitlint.git.sh')
-    def test_get_latest_commit_git_error(self, sh):
+    @patch("gitlint.git.git_commentchar")
+    def test_get_latest_commit_git_error(self, _, sh):
         # Current directory not a git repo
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
@@ -177,6 +194,7 @@ class GitTests(BaseTestCase):
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
         sh.git.reset_mock()
+
         err = b"fatal: Random git error"
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
@@ -187,7 +205,9 @@ class GitTests(BaseTestCase):
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
 
-    def test_from_commit_msg_full(self):
+    @patch("gitlint.git.git_commentchar")
+    def test_from_commit_msg_full(self, commentchar):
+        commentchar.return_value = u"#"
         gitcontext = GitContext.from_commit_msg(self.get_sample("commit_message/sample1"))
 
         expected_title = u"Commit title contåining 'WIP', as well as trailing punctuation."
@@ -257,7 +277,9 @@ class GitTests(BaseTestCase):
         self.assertFalse(commit.is_squash_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
-    def test_from_commit_msg_comment(self):
+    @patch("gitlint.git.git_commentchar")
+    def test_from_commit_msg_comment(self, commentchar):
+        commentchar.return_value = u"#"
         gitcontext = GitContext.from_commit_msg(u"Tïtle\n\nBödy 1\n#Cömment\nBody 2")
         commit = gitcontext.commits[-1]
 
@@ -318,14 +340,14 @@ class GitTests(BaseTestCase):
         # Test simple equality case
         now = datetime.datetime.utcnow()
         context1 = GitContext()
-        commit_message1 = GitCommitMessage(u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
+        commit_message1 = GitCommitMessage(context1, u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
         commit1 = GitCommit(context1, commit_message1, now, u"Jöhn Smith", u"jöhn.smith@test.com", None, True,
                             [u"föo/bar"])
         context1.commits = [commit1]
 
         context2 = GitContext()
-        commit_message2 = GitCommitMessage(u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
-        commit2 = GitCommit(context1, commit_message1, now, u"Jöhn Smith", u"jöhn.smith@test.com", None, True,
+        commit_message2 = GitCommitMessage(context2, u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
+        commit2 = GitCommit(context2, commit_message1, now, u"Jöhn Smith", u"jöhn.smith@test.com", None, True,
                             [u"föo/bar"])
         context2.commits = [commit2]
 
@@ -355,12 +377,13 @@ class GitTests(BaseTestCase):
         git.return_value = ';\n'
         self.assertEqual(git_commentchar(), ';')
 
-    def test_commit_msg_custom_commentchar(self):
-        with patch.object(GitCommitMessage, 'COMMENT_CHAR', new_callable=PropertyMock) as comment_char_mock:
-            comment_char_mock.return_value = u"ä"
-            message = GitCommitMessage.from_full_message(u"Tïtle\n\nBödy 1\näCömment\nBody 2")
+    @patch("gitlint.git.git_commentchar")
+    def test_commit_msg_custom_commentchar(self, patched):
+        patched.return_value = u"ä"
+        context = GitContext()
+        message = GitCommitMessage.from_full_message(context, u"Tïtle\n\nBödy 1\näCömment\nBody 2")
 
-            self.assertEqual(message.title, u"Tïtle")
-            self.assertEqual(message.body, ["", u"Bödy 1", "Body 2"])
-            self.assertEqual(message.full, u"Tïtle\n\nBödy 1\nBody 2")
-            self.assertEqual(message.original, u"Tïtle\n\nBödy 1\näCömment\nBody 2")
+        self.assertEqual(message.title, u"Tïtle")
+        self.assertEqual(message.body, ["", u"Bödy 1", "Body 2"])
+        self.assertEqual(message.full, u"Tïtle\n\nBödy 1\nBody 2")
+        self.assertEqual(message.original, u"Tïtle\n\nBödy 1\näCömment\nBody 2")

@@ -9,6 +9,13 @@ except ImportError:
     # python 3.x
     import unittest
 
+try:
+    # python 2.x
+    from mock import patch
+except ImportError:
+    # python 3.x
+    from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
+
 from gitlint.git import GitContext
 from gitlint.utils import ustr, LOG_FORMAT, DEFAULT_ENCODING
 
@@ -32,6 +39,11 @@ class BaseTestCase(unittest.TestCase):
 
     SAMPLES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
     EXPECTED_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
+
+    # List of 'git config' side-effects that can be used when mocking calls to git
+    GIT_CONFIG_SIDE_EFFECTS = [
+        u"#"  # git config --get core.commentchar
+    ]
 
     def setUp(self):
         self.logcapture = LogCapture()
@@ -77,14 +89,16 @@ class BaseTestCase(unittest.TestCase):
         return os.path.join(BaseTestCase.SAMPLES_DIR, "user_rules")
 
     @staticmethod
-    def gitcontext(commit_msg_str, changed_files=None):
+    def gitcontext(commit_msg_str, changed_files=None, ):
         """ Utility method to easily create gitcontext objects based on a given commit msg string and an optional set of
         changed files"""
-        gitcontext = GitContext.from_commit_msg(commit_msg_str)
-        commit = gitcontext.commits[-1]
-        if changed_files:
-            commit.changed_files = changed_files
-        return gitcontext
+        with patch("gitlint.git.git_commentchar") as comment_char:
+            comment_char.return_value = u"#"
+            gitcontext = GitContext.from_commit_msg(commit_msg_str)
+            commit = gitcontext.commits[-1]
+            if changed_files:
+                commit.changed_files = changed_files
+            return gitcontext
 
     @staticmethod
     def gitcommit(commit_msg_str, changed_files=None, **kwargs):

@@ -47,9 +47,9 @@ def git_version():
     return _git("--version").replace(u"\n", u"")
 
 
-def git_commentchar():
+def git_commentchar(repository_path=None):
     """ Shortcut for retrieving comment char from git config """
-    commentchar = _git("config", "--get", "core.commentchar", _ok_code=[1])
+    commentchar = _git("config", "--get", "core.commentchar", _cwd=repository_path, _ok_code=[0, 1])
     # git will return an exit code of 1 if it can't find a config value, in this case we fall-back to # as commentchar
     if hasattr(commentchar, 'exit_code') and commentchar.exit_code == 1:  # pylint: disable=no-member
         commentchar = "#"
@@ -58,33 +58,33 @@ def git_commentchar():
 
 class GitCommitMessage(object):
     """ Class representing a git commit message. A commit message consists of the following:
+      - context: The `GitContext` this commit message is part of
       - original: The actual commit message as returned by `git log`
       - full: original, but stripped of any comments
       - title: the first line of full
       - body: all lines following the title
     """
-    COMMENT_CHAR = git_commentchar()
-    CUTLINE = '{0} ------------------------ >8 ------------------------'.format(COMMENT_CHAR)
-
-    def __init__(self, original=None, full=None, title=None, body=None):
+    def __init__(self, context, original=None, full=None, title=None, body=None):
+        self.context = context
         self.original = original
         self.full = full
         self.title = title
         self.body = body
 
     @staticmethod
-    def from_full_message(commit_msg_str):
+    def from_full_message(context, commit_msg_str):
         """  Parses a full git commit message by parsing a given string into the different parts of a commit message """
         all_lines = commit_msg_str.splitlines()
+        cutline = u"{0} ------------------------ >8 ------------------------".format(context.commentchar)
         try:
-            cutline_index = all_lines.index(GitCommitMessage.CUTLINE)
+            cutline_index = all_lines.index(cutline)
         except ValueError:
             cutline_index = None
-        lines = [ustr(line) for line in all_lines[:cutline_index] if not line.startswith(GitCommitMessage.COMMENT_CHAR)]
+        lines = [ustr(line) for line in all_lines[:cutline_index] if not line.startswith(context.commentchar)]
         full = "\n".join(lines)
         title = lines[0] if lines else ""
         body = lines[1:] if len(lines) > 1 else []
-        return GitCommitMessage(original=commit_msg_str, full=full, title=title, body=body)
+        return GitCommitMessage(context=context, original=commit_msg_str, full=full, title=title, body=body)
 
     def __unicode__(self):
         return self.full  # pragma: no cover
@@ -149,8 +149,10 @@ class GitContext(object):
     the git repository that gitlint is linting.
     """
 
-    def __init__(self):
+    def __init__(self, repository_path=None):
         self.commits = []
+        self.repository_path = repository_path
+        self.commentchar = git_commentchar(repository_path)
 
     @staticmethod
     def from_commit_msg(commit_msg_str):
@@ -158,7 +160,7 @@ class GitContext(object):
         :param commit_msg_str: Full git commit message.
         """
         context = GitContext()
-        commit_msg_obj = GitCommitMessage.from_full_message(commit_msg_str)
+        commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg_str)
 
         commit = GitCommit(context, commit_msg_obj)
 
@@ -172,7 +174,7 @@ class GitContext(object):
         :param refspec: The commit(s) to retrieve
         """
 
-        context = GitContext()
+        context = GitContext(repository_path=repository_path)
 
         # If no refspec is defined, fallback to the last commit on the current branch
         if refspec is None:
@@ -202,7 +204,7 @@ class GitContext(object):
             commit_date = arrow.get(ustr(date), "YYYY-MM-DD HH:mm:ss Z").datetime
 
             # Create Git commit object with the retrieved info
-            commit_msg_obj = GitCommitMessage.from_full_message(commit_msg)
+            commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg)
 
             commit = GitCommit(context, commit_msg_obj, sha=sha, author_name=name,
                                author_email=email, date=commit_date, changed_files=changed_files,

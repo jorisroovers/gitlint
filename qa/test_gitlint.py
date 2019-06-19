@@ -15,6 +15,16 @@ class IntegrationTests(BaseTestCase):
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _err_to_out=True)
         self.assertEqualStdout(output, "")
 
+    def test_successful_gitconfig(self):
+        """ Test gitlint when the underlying repo has specific git config set.
+        In the past, we've had issues with gitlint failing on some of these, so this acts as a regression test. """
+
+        # Different commentchar (Note: tried setting this to a special unicode char, but git doesn't like that)
+        git("config", "--add", "core.commentchar", "$", _cwd=self.tmp_git_repo)
+        self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit\n$after commentchar\t ignored")
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _err_to_out=True)
+        self.assertEqualStdout(output, "")
+
     def test_successful_merge_commit(self):
         # Create branch on master
         self._create_simple_commit(u"Cömmit on master\n\nSimple bödy")
