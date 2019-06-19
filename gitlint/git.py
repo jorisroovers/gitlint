@@ -1,3 +1,5 @@
+import os
+
 import arrow
 import sh
 # import exceptions separately, this makes it a little easier to mock them out in the unit tests
@@ -54,6 +56,13 @@ def git_commentchar(repository_path=None):
     if hasattr(commentchar, 'exit_code') and commentchar.exit_code == 1:  # pylint: disable=no-member
         commentchar = "#"
     return ustr(commentchar).replace(u"\n", u"")
+
+
+def git_hooks_dir(repository_path):
+    """ Determine hooks directory for a given target dir """
+    hooks_dir = _git("rev-parse", "--git-path", "hooks", _cwd=repository_path)
+    hooks_dir = ustr(hooks_dir).replace(u"\n", u"")
+    return os.path.realpath(os.path.join(repository_path, hooks_dir))
 
 
 class GitCommitMessage(object):

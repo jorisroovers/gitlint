@@ -4,10 +4,10 @@ import os
 import stat
 
 from gitlint.utils import DEFAULT_ENCODING
+from gitlint.git import git_hooks_dir
 
-COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files/commit-msg")
-COMMIT_MSG_HOOK_DST_PATH = os.path.join(".git", "hooks", "commit-msg")
-HOOKS_DIR_PATH = os.path.join(".git", "hooks")
+COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files", "commit-msg")
+COMMIT_MSG_HOOK_DST_PATH = "commit-msg"
 GITLINT_HOOK_IDENTIFIER = "### gitlint commit-msg hook start ###\n"
 
 
@@ -20,12 +20,12 @@ class GitHookInstaller(object):
 
     @staticmethod
     def commit_msg_hook_path(lint_config):
-        return os.path.realpath(os.path.join(lint_config.target, COMMIT_MSG_HOOK_DST_PATH))
+        return os.path.join(git_hooks_dir(lint_config.target), COMMIT_MSG_HOOK_DST_PATH)
 
     @staticmethod
     def _assert_git_repo(target):
         """ Asserts that a given target directory is a git repository """
-        hooks_dir = os.path.realpath(os.path.join(target, HOOKS_DIR_PATH))
+        hooks_dir = git_hooks_dir(target)
         if not os.path.isdir(hooks_dir):
             raise GitHookInstallerError(u"{0} is not a git repository.".format(target))
 

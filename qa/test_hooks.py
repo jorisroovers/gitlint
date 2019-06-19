@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
+import os
 from sh import git, gitlint  # pylint: disable=no-name-in-module
 from qa.base import BaseTestCase
 
@@ -115,3 +116,33 @@ class HookTests(BaseTestCase):
             self.assertMultiLineEqual(
                 output.replace('\r', ''),
                 expected.replace('\r', ''))
+
+    def test_commit_hook_worktree(self):
+        """ Tests that hook installation and un-installation also work in git worktrees.
+        Test steps:
+            ```sh
+            git init <tmpdir>
+            cd <tmpdir>
+            git worktree add <worktree-tempdir>
+            cd <worktree-tempdir>
+            gitlint install-hook
+            gitlint uninstall-hook
+            ```
+        """
+        tmp_git_repo = self.create_tmp_git_repo()
+        self._create_simple_commit(u"Simple title\n\nContënt in the body", git_repo=tmp_git_repo)
+
+        worktree_dir = self.generate_temp_path()
+        self.tmp_git_repos.append(worktree_dir)  # make sure we clean up the worktree afterwards
+
+        git("worktree", "add", worktree_dir, _cwd=tmp_git_repo, _tty_in=True)
+
+        output_installed = gitlint("install-hook", _cwd=worktree_dir)
+        expected_hook_path = os.path.join(tmp_git_repo, ".git", "hooks", "commit-msg")
+        expected_msg = "Successfully installed gitlint commit-msg hook in {0}\n".format(expected_hook_path)
+        self.assertEqual(output_installed, expected_msg)
+
+        output_uninstalled = gitlint("uninstall-hook", _cwd=worktree_dir)
+        expected_hook_path = os.path.join(tmp_git_repo, ".git", "hooks", "commit-msg")
+        expected_msg = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_hook_path)
+        self.assertEqual(output_uninstalled, expected_msg)

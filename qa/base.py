@@ -62,20 +62,25 @@ class BaseTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         """ Sets up the integration tests by creating a new temporary git repository """
-        cls._tmp_git_repos = [cls.create_tmp_git_repo()]
-        cls.tmp_git_repo = cls._tmp_git_repos[0]
+        cls.tmp_git_repos = []
+        cls.tmp_git_repo = cls.create_tmp_git_repo()
 
     @classmethod
     def tearDownClass(cls):
         """ Cleans up the temporary git repositories """
-        for repo in cls._tmp_git_repos:
+        for repo in cls.tmp_git_repos:
             rm("-rf", repo)
+
+    @classmethod
+    def generate_temp_path(cls):
+        return os.path.realpath("/tmp/gitlint-test-{0}".format(datetime.now().strftime("%Y%m%d-%H%M%S-%f")))
 
     @classmethod
     def create_tmp_git_repo(cls):
         """ Creates a temporary git repository and returns its directory path """
-        tmp_git_repo = os.path.realpath("/tmp/gitlint-test-{0}".format(
-            datetime.now().strftime("%Y%m%d-%H%M%S-%f")))
+        tmp_git_repo = cls.generate_temp_path()
+        cls.tmp_git_repos.append(tmp_git_repo)
+
         git("init", tmp_git_repo)
         # configuring name and email is required in every git repot
         git("config", "user.name", "gitlint-test-user", _cwd=tmp_git_repo)
@@ -89,6 +94,7 @@ class BaseTestCase(TestCase):
         # Git on mac doesn't like unicode characters by default, so we need to set this option
         # http://stackoverflow.com/questions/5581857/git-and-the-umlaut-problem-on-mac-os-x
         git("config", "core.precomposeunicode", "true", _cwd=tmp_git_repo)
+
         return tmp_git_repo
 
     def _create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):

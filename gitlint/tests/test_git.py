@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+import os
+
 import dateutil
 
 try:
@@ -13,7 +15,8 @@ except ImportError:
 from sh import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError, GitNotInstalledError, git_commentchar
+from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError, \
+    GitNotInstalledError, git_commentchar, git_hooks_dir
 
 
 class GitTests(BaseTestCase):
@@ -375,7 +378,19 @@ class GitTests(BaseTestCase):
         self.assertEqual(git_commentchar(), u"ä")
 
         git.return_value = ';\n'
-        self.assertEqual(git_commentchar(), ';')
+        self.assertEqual(git_commentchar(os.path.join(u"/föo", u"bar")), ';')
+
+        git.assert_called_with("config", "--get", "core.commentchar", _ok_code=[0, 1],
+                               _cwd=os.path.join(u"/föo", u"bar"))
+
+    @patch("gitlint.git._git")
+    def test_git_hooks_dir(self, git):
+        hooks_dir = os.path.join(u"föo", ".git", "hooks")
+        git.return_value.__str__ = lambda _: hooks_dir + "\n"
+        git.return_value.__unicode__ = lambda _: hooks_dir + "\n"
+        self.assertEqual(git_hooks_dir(u"/blä"), os.path.join(u"/blä", hooks_dir))
+
+        git.assert_called_once_with("rev-parse", "--git-path", "hooks", _cwd=u"/blä")
 
     @patch("gitlint.git.git_commentchar")
     def test_commit_msg_custom_commentchar(self, patched):
