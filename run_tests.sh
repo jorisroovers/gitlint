@@ -15,9 +15,12 @@ help(){
     echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments"
     echo "                           (envs: 27,34,35,36,37,pypy2,pypy35)."
     echo "                           Also works for integration, pep8 and lint tests."
+    echo "  -C, --container          Run the specified command in the container for the --envs specified"
     echo "  --all-env                Run all tests against all python environments"
     echo "  --install                Install virtualenvs for the --envs specified"
     echo "  --uninstall              Remove virtualenvs for the --envs specified"
+    echo "  --install-container      Build and run Docker container for the --envs specified"
+    echo "  --uninstall-container    Kill Docker container for the --envs specified"
     echo "  --exec [CMD]             Execute [CMD] in the --envs specified"
     echo "  -s, --stats              Show some project stats"
     echo "  --no-coverage            Don't make a unit test coverage report"
@@ -291,6 +294,78 @@ install_virtualenv(){
     deactivate  2> /dev/null
 }
 
+container_name(){
+    echo "gitlint-python-$1"
+}
+
+start_container(){
+    container_name="$1"
+    echo -n "Starting container $1..."
+    container_details=$(docker container inspect $container_name 2>&1 > /dev/null)
+    local exit_code=$?
+    if [ $exit_code -gt 0 ]; then
+        docker run -t -d -v $(pwd):/gitlint --name $container_name $container_name
+        exit_code=$?
+        echo -e "${GREEN}DONE${NO_COLOR}"
+    else
+        echo -e "${YELLOW}SKIP (ALREADY RUNNING)${NO_COLOR}"
+        exit_code=0
+    fi
+    return $exit_code
+}
+
+stop_container(){
+    container_name="$1"
+    echo -n "Stopping container $container_name..."
+    result=$(docker kill $container_name 2> /dev/null)
+    local exit_code=$?
+    if [ $exit_code -gt 0 ]; then
+        echo -e "${YELLOW}SKIP (DOES NOT EXIST)${NO_COLOR}"
+        exit_code=0
+    else
+        echo -e "${GREEN}DONE${NO_COLOR}"
+    fi
+    return $exit_code
+}
+
+install_container(){
+    local exit_code=0
+    python_version="$1"
+    python_version_dotted="${python_version:0:1}.${python_version:1:1}"
+    container_name="$(container_name $python_version)"
+
+    title "Installing container $container_name"
+    image_details=$(docker image inspect $container_name 2> /dev/null)
+    tmp_exit_code=$?
+    if [ $tmp_exit_code -gt 0 ]; then
+        subtitle "Building container image from python:${python_version_dotted}-stretch..."
+        docker build --build-arg python_version_dotted="$python_version_dotted" -t $container_name .
+        exit_code=$?
+    else
+        subtitle "Building container image from python:${python_version_dotted}-stretch...SKIP (ALREADY-EXISTS)"
+        echo "  Use '$0 --uninstall-container; $0 --install-container'  to rebuild"
+        exit_code=0
+    fi
+    return $exit_code
+}
+
+uninstall_container(){
+    python_version="$1"
+    container_name="$(container_name $python_version)"
+
+    echo -n "Removing container image $container_name..."
+    image_details=$(docker image inspect $container_name 2> /dev/null)
+    tmp_exit_code=$?
+    if [ $tmp_exit_code -gt 0 ]; then
+        echo -e "${YELLOW}SKIP (DOES NOT EXIST)${NO_COLOR}"
+        exit_code=0
+    else
+        result=$(docker image rm -f $container_name 2> /dev/null)
+        exit_code=$?
+    fi
+    return $exit_code
+}
+
 assert_specific_env(){
     if [ -z "$1" ] || [ "$1" == "default" ]; then
         fatal "ERROR: Please specify one or more valid python environments using --envs: 27,34,35,36,37,pypy2,pypy35"
@@ -307,6 +382,18 @@ switch_env(){
     fi
     title "### PYTHON ($(python --version 2>&1), $(which python)) ###"
 }
+
+run_in_container(){
+    python_version="$1"
+    envs="$2"
+    args="$3"
+    container_name="$(container_name $python_version)"
+    container_command=$(echo "$0 $args" | sed -E "s/( -e | --envs )$envs//" | sed -E "s/( --container| -C)//")
+
+    title "### CONTAINER $container_name"
+    start_container "$container_name"
+    docker exec "$container_name" $container_command
+}
 ##############################################################################
 # The magic starts here: argument parsing and determining what to do
 
@@ -322,12 +409,15 @@ just_all=0
 just_clean=0
 just_install=0
 just_uninstall=0
+just_install_container=0
+just_uninstall_container=0
 just_exec=0
+container_enabled=0
 include_coverage=1
 envs="default"
 cmd=""
 testargs=""
-
+original_args="$@"
 while [ "$#" -gt 0 ]; do
     case "$1" in
         -h|--help) shift; help;;
@@ -343,7 +433,10 @@ while [ "$#" -gt 0 ]; do
         --exec) shift; just_exec=1; cmd="$1"; shift;;
         --install) shift; just_install=1;;
         --uninstall) shift; just_uninstall=1;;
+        --install-container) shift; just_install_container=1;;
+        --uninstall-container) shift; just_uninstall_container=1;;
         --all-env) shift; envs="all";;
+        --C|--container) shift; container_enabled=1;;
         --no-coverage)shift; include_coverage=0;;
         *) testargs="$1"; shift;
    esac
@@ -363,12 +456,14 @@ exit_code=0
 if [ "$envs" == "all" ]; then
     envs="27,34,35,36,37,pypy2,pypy35"
 fi
+original_envs="$envs"
 envs=$(echo "$envs" | tr ',' '\n') # Split the env list on comma so we can loop through it
-
 
 for environment in $envs; do
 
-    if [ $just_pep8 -eq 1 ]; then
+    if [ $container_enabled -eq 1 ]; then
+        run_in_container "$environment" "$original_envs" "$original_args"
+    elif [ $just_pep8 -eq 1 ]; then
         switch_env "$environment"
         run_pep8_check
     elif [ $just_stats -eq 1 ]; then
@@ -401,6 +496,12 @@ for environment in $envs; do
     elif [ $just_install -eq 1 ]; then
         assert_specific_env "$environment"
         install_virtualenv "$environment"
+    elif [ $just_install_container -eq 1 ]; then
+        assert_specific_env "$environment"
+        install_container "$environment"
+    elif [ $just_uninstall_container -eq 1 ]; then
+        assert_specific_env "$environment"
+        uninstall_container "$environment"
     else
         switch_env "$environment"
         run_unit_tests
