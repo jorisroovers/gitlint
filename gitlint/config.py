@@ -74,6 +74,8 @@ class LintConfig(object):
         self._ignore = options.ListOption('ignore', [], 'List of rule-ids to ignore')
         self._contrib = options.ListOption('contrib', [], 'List of contrib-rules to enable')
         self._config_path = None
+        ignore_stdin_description = "Ignore any stdin data. Useful for running in CI server."
+        self._ignore_stdin = options.BoolOption('ignore-stdin', False, ignore_stdin_description)
 
     @property
     def target(self):
@@ -207,6 +209,15 @@ class LintConfig(object):
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
             raise LintConfigError(ustr(e))
+
+    @property
+    def ignore_stdin(self):
+        return self._ignore_stdin.value
+
+    @ignore_stdin.setter
+    @handle_option_error
+    def ignore_stdin(self, value):
+        return self._ignore_stdin.set(value)
 
     @property
     def rules(self):

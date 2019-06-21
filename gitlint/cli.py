@@ -54,7 +54,9 @@ def log_system_info():
     LOG.debug("Gitlint version: %s", gitlint.__version__)
 
 
-def build_config(ctx, target, config_path, c, extra_path, ignore, contrib, verbose, silent, debug):
+def build_config(  # pylint: disable=too-many-arguments
+        ctx, target, config_path, c, extra_path, ignore, contrib, ignore_stdin, verbose, silent, debug
+):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     config_builder = LintConfigBuilder()
     try:
@@ -74,6 +76,9 @@ def build_config(ctx, target, config_path, c, extra_path, ignore, contrib, verbo
 
         if contrib:
             config_builder.set_option('general', 'contrib', contrib)
+
+        if ignore_stdin:
+            config_builder.set_option('general', 'ignore-stdin', ignore_stdin)
 
         if silent:
             config_builder.set_option('general', 'verbosity', 0)
@@ -144,6 +149,7 @@ def get_stdin_data():
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('--contrib', default="", help="Contrib rules to enable (comma-separated by id or name).")
 @click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
+@click.option('--ignore-stdin', is_flag=True, help="Ignore any stdin data. Useful for running in CI server.")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
@@ -152,7 +158,7 @@ def get_stdin_data():
 @click.pass_context
 def cli(  # pylint: disable=too-many-arguments
         ctx, target, config, c, commits, extra_path, ignore, contrib,
-        msg_filename, verbose, silent, debug,
+        msg_filename, ignore_stdin, verbose, silent, debug,
 ):
     """ Git lint tool, checks your git commit messages for styling issues
 
@@ -169,7 +175,7 @@ def cli(  # pylint: disable=too-many-arguments
         # Get the lint config from the commandline parameters and
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
         config, config_builder = build_config(ctx, target, config, c, extra_path,
-                                              ignore, contrib, verbose, silent, debug)
+                                              ignore, contrib, ignore_stdin, verbose, silent, debug)
 
         LOG.debug(u"Configuration\n%s", ustr(config))
 
@@ -197,11 +203,14 @@ def lint(ctx):
     # 2. Any data sent to stdin
     # 3. Fallback to reading from local repository
     stdin_input = get_stdin_data()
+    if stdin_input:
+        LOG.debug("Stdin data: %r", stdin_input)
+
     if msg_filename:
         LOG.debug("Attempting to read from --msg-filename.")
         gitcontext = GitContext.from_commit_msg(ustr(msg_filename.read()))
-    elif stdin_input:
-        LOG.debug("No --msg-filename flag. Attempting to read from stdin.")
+    elif stdin_input and not lint_config.ignore_stdin:
+        LOG.debug("Stdin detected and not ignored. Will be used as input.")
         gitcontext = GitContext.from_commit_msg(stdin_input)
     else:
         LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
