@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-<!---
+<!--- THIS IS A COMMENT BLOCK, REMOVE IT BEFORE SUBMITTING YOUR ISSUE
 
 Thank you for your interest in gitlint and taking the time to open a bug report!
 
@@ -18,3 +18,5 @@ A few quick notes:
 - If you're looking to contribute code to gitlint, please start here: http://jorisroovers.github.io/gitlint/contributing/
 
 -->
+
+Enter your issue details here
