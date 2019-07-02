@@ -19,13 +19,13 @@ class ContribConventionalCommitTests(BaseTestCase):
         rule = ConventionalCommit()
 
         # No violations when using a correct type and format
-        for type in ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test"]:
+        for type in ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test", "revert"]:
             violations = rule.validate(type + u": föo", None)
             self.assertListEqual([], violations)
 
         # assert violation on wrong type
         expected_violation = RuleViolation("CT1", "Title does not start with one of fix, feat, chore, docs,"
-                                                  " style, refactor, perf, test", u"bår: foo")
+                                                  " style, refactor, perf, test, revert", u"bår: foo")
         violations = rule.validate(u"bår: foo", None)
         self.assertListEqual([expected_violation], violations)
 

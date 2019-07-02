@@ -50,21 +50,14 @@ CT1   | contrib-title-conventional-commits    | >= 0.12.0          | Enforces [C
 
 Name           | gitlint version    | Default      | Description
 ---------------|--------------------|--------------|----------------------------------
-types          | >= 0.12.0          | `fix,feat,chore,docs,style,refactor,perf,test` | Comma separated list of allowed commit types.
+types          | >= 0.12.0          | `fix,feat,chore,docs,style,refactor,perf,test,revert` | Comma separated list of allowed commit types.
 
 
 ## CC1: contrib-requires-signed-off-by ##
 
 ID    | Name                                  | gitlint version    | Description
 ------|---------------------------------------|--------------------|-------------------------------------------
-CT1   | contrib-requires-signed-off-by        | >= 0.12.0          | Commit body must contain a `Signed-Off-By` line. This means, a line that starts with the `Signed-Off-By` keyword.
-
-### Options ###
-
-Name           | gitlint version    | Default      | Description
----------------|--------------------|--------------|----------------------------------
-types          | >= 0.12.0          | `fix,feat,chore,docs,style,refactor,perf,test` | Comma separated list of allowed commit types.
-
+CC1   | contrib-requires-signed-off-by        | >= 0.12.0          | Commit body must contain a `Signed-Off-By` line. This means, a line that starts with the `Signed-Off-By` keyword.
 
 
 # Contributing Contrib rules

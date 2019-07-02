@@ -126,7 +126,7 @@ class LintConfigTests(BaseTestCase):
 
         expected_rule_option = options.ListOption(
             "types",
-            ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test"],
+            ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test", "revert"],
             "Comma separated list of allowed commit types.",
         )
 
