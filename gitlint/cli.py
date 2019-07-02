@@ -154,11 +154,15 @@ def cli(  # pylint: disable=too-many-arguments
         ctx, target, config, c, commits, extra_path, ignore, contrib,
         msg_filename, verbose, silent, debug,
 ):
-    """ Git lint tool, checks your git commit messages for styling issues """
+    """ Git lint tool, checks your git commit messages for styling issues
+
+        Documentation: http://jorisroovers.github.io/gitlint
+    """
 
     try:
         if debug:
             logging.getLogger("gitlint").setLevel(logging.DEBUG)
+        LOG.debug("To report issues, please visit https://github.com/jorisroovers/gitlint/issues")
 
         log_system_info()
 

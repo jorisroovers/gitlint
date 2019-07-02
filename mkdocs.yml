@@ -2,7 +2,7 @@ site_name: Gitlint
 site_description: Linting for your git commit messages
 site_url: http://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
-pages:
+nav:
     - Home: index.md
     - Configuration: configuration.md
     - Rules: rules.md

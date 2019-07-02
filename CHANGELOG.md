@@ -10,10 +10,12 @@
     - **New Contrib Rule**: ```cc1-contrib-requires-signed-off-by``` ensures that all commit messages contain a ```Sign-Off-By``` line. Details in our [documentation](http://jorisroovers.github.io/gitlint/contrib_rules/#cc1-contrib-requires-signed-off-by).
     - If you're interested in adding new Contrib rules to gitlint, please start by reading the
       [Contributing](http://jorisroovers.github.io/gitlint/contributing/) page. Thanks for considering!
-
-- Python 3.3 no longer supported. Python 3.4 is likely to follow in a future release as it has reached EOL as well.
+- Python 3.3 no longer supported. Python 3.4 is likely to follow in a future release as it has [reached EOL](https://www.python.org/dev/peps/pep-0429/#id4) as well.
 - PyPy 3.5 supported
-
+- Bugfixes:
+  - [#68: Can't use install-hooks in with git worktree](https://github.com/jorisroovers/gitlint/issues/68)
+  - [#59: gitlint failed with configured commentchar](https://github.com/jorisroovers/gitlint/issues/59)
+- Under-the-hood: dependencies updated, experimental Dockerfile, github issue template,
 
 ## v0.11.0 (2019-03-13) ##
 

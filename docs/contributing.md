@@ -1,11 +1,13 @@
 # Contributing
 
 We'd love for you to contribute to gitlint. Thanks for your interest!
+The [source-code and issue tracker](https://github.com/jorisroovers/gitlint) are hosted on Github.
+
 Often it takes a while for us (well, actually just [me](https://github.com/jorisroovers)) to get back to you
 (sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
 your interest!
-We maintain a [wishlist on our wiki](https://github.com/jorisroovers/gitlint/wiki/Wishlist),
-but we're obviously open to any suggestions!
+We maintain a [loose roadmap on our wiki](https://github.com/jorisroovers/gitlint/wiki/Roadmap), but
+that's open to a lot of change and input.
 
 # Guidelines
 
@@ -84,6 +86,14 @@ mkdocs serve
 
 Then access the documentation website on your host machine on [http://localhost:8000]().
 Note that this is only supported for python >= 2.7.
+
+# Tools #
+We keep a small set of scripts in the ```tools/``` directory:
+
+```sh
+# Create a test git repo in your /tmp directory
+tools/create-test-repo.sh
+```
 
 # Contrib rules
 Since gitlint 0.12.0, we support [Contrib rules](contrib_rules): community contributed rules that are part of gitlint

@@ -14,11 +14,11 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
     [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js) or [commitlint](http://marionebl.github.io/commitlint) (Node.js).
 
 ## Features ##
- - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook).
+ - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook). Also [works with pre-commit](http://localhost:8000/#using-gitlint-through-pre-commit).
  - **Easily integrated**: Gitlint is designed to work [with your own scripts or CI system](#using-gitlint-in-a-ci-environment).
  - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
-[community](http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/),
+[community](http://addamhardy.com/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks.html),
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
@@ -30,13 +30,21 @@ useful throughout the years.
    python code standards (pep8, pylint), good documentation, proven track record.
 
 ## Getting Started ##
+### Installation
 ```bash
-# Install gitlint
+# Pip is recommended to install the latest version
 pip install gitlint
-# On macOS (recommended to use pip for the latest version)
+
+# macOS
 brew tap rockyluke/devops
 brew install gitlint
 
+# Ubuntu
+apt-get install gitlint
+```
+
+### Usage
+```sh
 # Check the last commit message
 gitlint
 # Alternatively, pipe a commit message to gitlint:
@@ -95,17 +103,20 @@ Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
 
+  Documentation: http://jorisroovers.github.io/gitlint
+
 Options:
   --target DIRECTORY       Path of the target git repository. [default: current working directory]
-  -C, --config PATH        Config file location [default: .gitlint]
-  -c TEXT                  Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). Flag can be
-                           used multiple times to set multiple config values.
+  -C, --config FILE        Config file location [default: .gitlint]
+  -c TEXT                  Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-
+                           length=80). Flag can be used multiple times to set multiple config values.
   --commits TEXT           The range of commits to lint. [default: HEAD]
   -e, --extra-path PATH    Path to a directory or python module with extra user-defined rules
   --ignore TEXT            Ignore rules (comma-separated by id or name).
   --contrib TEXT           Contrib rules to enable (comma-separated by id or name).
   --msg-filename FILENAME  Path to a file containing a commit-msg.
-  -v, --verbose            Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]
+  -v, --verbose            Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv).
+                           [default: -vvv]
   -s, --silent             Silent mode (no output). Takes precedence over -v, -vv, -vvv.
   -d, --debug              Enable debugging output.
   --version                Show the version and exit.
@@ -138,6 +149,8 @@ gitlint uninstall-hook
     Gitlint cannot work together with an existing hook. If you already have a ```.git/hooks/commit-msg```
     file in your local repository, gitlint will refuse to install the ```commit-msg``` hook. Gitlint will also only
     uninstall unmodified commit-msg hooks that were installed by gitlint.
+    If you're looking to use gitlint in conjunction with other hooks, you should consider
+    [using gitlint with pre-commit](#using-gitlint-through-pre-commit).
 
 ## Using gitlint through [pre-commit](https://pre-commit.com)
 
@@ -151,13 +164,27 @@ framework.  Simply add the configuration to your `.pre-commit-config.yaml`:
     -   id: gitlint
 ```
 
+You then need to install the pre-commit hook like so:
+```sh
+pre-commit install --hook-type commit-msg
+```
+!!! important
+
+    It's important that you run ```pre-commit install --hook-type commit-msg```, even if you've already used
+    ```pre-commit install``` before. ```pre-commit install``` does **not** install commit-msg hooks by default!
+
+To manually trigger gitlint using ```pre-commit``` for your last commit message, use the following command:
+```sh
+pre-commit run gitlint --hook-stage commit-msg --commit-msg-filename .git/COMMIT_EDITMSG
+```
+
 
 ## Using gitlint in a CI environment ##
-By default, when just running ```gitlint``` without additional parameters, gitlint lint the last commit in the current
-git repository.
+By default, when just running ```gitlint``` without additional parameters, gitlint lints the last commit in the current
+working directory.
 
 This makes it easy to add gitlint to a check script that is run in a CI environment (Jenkins, TravisCI, pre-commit,
-CircleCI, etc).
+CircleCI, Gitlab, etc).
 In fact, this is exactly what we do ourselves: on every commit,
 [we run gitlint as part of our travisCI tests](https://github.com/jorisroovers/gitlint/blob/v0.7.1/run_tests.sh#L62-L65).
 This will cause the build to fail when we submit a bad commit message.
@@ -222,6 +249,12 @@ _Introduced in gitlint v0.7.0 (merge commits) and gitlint v0.9.0 (fixup, squash)
 
 **Gitlint ignores merge, fixup and squash commits by default.**
 
+!!! note
+    Right now, gitlint does not ignore **revert** commits. This is something we'd like to add in the future. 
+    If this is something you're interested in
+    please let us know by [opening an issue](https://github.com/jorisroovers/gitlint/issues).
+
+
 For merge commits, the rationale for ignoring them is
 that in many cases merge commits are not created by users themselves but by tools such as github,
 [gerrit](https://code.google.com/p/gerrit/) and others. These tools often generate merge commit messages that
@@ -242,7 +275,7 @@ general ```ignore-merge-commits```, ```ignore-fixup-commits``` or ```ignore-squa
 ## Ignoring commits ##
 _Introduced in gitlint v0.10.0_
 
-Gitlint allows you to ignore specific rules for specific commits.
+You can configure gitlint to ignore specific commits.
 
 One way to do this, is to by [adding a gitline-ignore line to your commit message](configuration.md#commit-specific-config).
 
@@ -267,7 +300,7 @@ ignore=all
 
 !!! note
 
-    Right now it's not possible to write user-defined ignore rules to handle more complex user-cases.
+    Right now it's not possible to write user-defined ignore rules to handle more complex use-cases.
     This is however something that we'd like to implement in a future version. If this is something you're interested in
     please let us know by [opening an issue](https://github.com/jorisroovers/gitlint/issues).
 

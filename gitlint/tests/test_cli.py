@@ -284,7 +284,9 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 6)
 
             # Make sure gitlint captured the correct logs
-            expected_logs = [u"DEBUG: gitlint.cli Platform: {0}".format(platform.platform()),
+            expected_logs = [u"DEBUG: gitlint.cli To report issues, please visit " +
+                             u"https://github.com/jorisroovers/gitlint/issues",
+                             u"DEBUG: gitlint.cli Platform: {0}".format(platform.platform()),
                              u"DEBUG: gitlint.cli Python version: {0}".format(sys.version),
                              u"DEBUG: gitlint.cli Git version: git version 1.2.3",
                              u"DEBUG: gitlint.cli Gitlint version: {0}".format(__version__),

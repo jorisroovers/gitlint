@@ -1,3 +1,4 @@
+DEBUG: gitlint.cli To report issues, please visit https://github.com/jorisroovers/gitlint/issues
 DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
 DEBUG: gitlint.cli Git version: {git_version}
