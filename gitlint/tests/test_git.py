@@ -12,7 +12,7 @@ except ImportError:
     # python 3.x
     from unittest.mock import patch, call  # pylint: disable=no-name-in-module, import-error
 
-from sh import ErrorReturnCode, CommandNotFound
+from gitlint.shell import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
 from gitlint.git import GitContext, GitCommit, GitCommitMessage, GitContextError, \

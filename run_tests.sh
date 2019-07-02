@@ -212,9 +212,11 @@ run_stats(){
 }
 
 clean(){
-    echo -n "Cleaning the site, build, dist and all __pycache__directories..."
+    echo -n "Cleaning the *.pyc, site/, build/, dist/ and all __pycache__ directories..."
     find gitlint -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
     find qa -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
+    find gitlint -iname *.pyc -exec rm -rf {} \; 2> /dev/null
+    find qa -iname *.pyc -exec rm -rf {} \; 2> /dev/null
     rm -rf "site" "dist" "build"
     echo -e "${GREEN}DONE${NO_COLOR}"
 }

@@ -1,10 +1,21 @@
 # pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
+import platform
 import sys
+import os
 
 from locale import getpreferredencoding
 
 DEFAULT_ENCODING = getpreferredencoding() or "UTF-8"
 LOG_FORMAT = '%(levelname)s: %(name)s %(message)s'
+
+# On windows we won't want to use the sh library since it's not supported - instead we'll use our own shell module.
+# However, we want to be able to overwrite this behavior for testing using the GITLINT_USE_SH_LIB env var.
+PLATFORM_IS_WINDOWS = "windows" in platform.system().lower()
+GITLINT_USE_SH_LIB_ENV = os.environ.get('GITLINT_USE_SH_LIB', None)
+if GITLINT_USE_SH_LIB_ENV:
+    USE_SH_LIB = (GITLINT_USE_SH_LIB_ENV == "1")
+else:
+    USE_SH_LIB = not PLATFORM_IS_WINDOWS
 
 
 def ustr(obj):
