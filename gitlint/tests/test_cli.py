@@ -24,7 +24,7 @@ except ImportError:
     # python 3.x
     from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
 
-from sh import CommandNotFound
+from gitlint.shell import CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
 from gitlint import cli
@@ -306,6 +306,7 @@ class CLITests(BaseTestCase):
                              u"DEBUG: gitlint.cli Python version: {0}".format(sys.version),
                              u"DEBUG: gitlint.cli Git version: git version 1.2.3",
                              u"DEBUG: gitlint.cli Gitlint version: {0}".format(__version__),
+                             u"DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {0}".format(self.GITLINT_USE_SH_LIB),
                              self.get_expected('debug_configuration_output1',
                                                {'config_path': config_path, 'target': os.path.realpath(os.getcwd())}),
                              u"DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. " +
@@ -395,13 +396,13 @@ class CLITests(BaseTestCase):
     @patch('gitlint.cli.get_stdin_data', return_value=False)
     def test_target(self, _):
         """ Test for the --target option """
-        os.environ["LANGUAGE"] = "C"
+        os.environ["LANGUAGE"] = "C"  # Force language to english so we can check for error message
         result = self.cli.invoke(cli.cli, ["--target", "/tmp"])
         # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
         # into account).
-        self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
         expected_path = os.path.realpath("/tmp")
         self.assertEqual(result.output, "%s is not a git repository.\n" % expected_path)
+        self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
     def test_target_negative(self):
         """ Negative test for the --target option """

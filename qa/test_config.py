@@ -86,6 +86,7 @@ class ConfigTests(BaseTestCase):
         expected = self.get_expected('debug_output1', {'platform': platform.platform(), 'python_version': sys.version,
                                                        'git_version': expected_git_version,
                                                        'gitlint_version': expected_gitlint_version,
+                                                       'GITLINT_USE_SH_LIB': self.GITLINT_USE_SH_LIB,
                                                        'config_path': config_path, 'target': self.tmp_git_repo,
                                                        'commit_sha': commit_sha, 'commit_date': expected_date})
 

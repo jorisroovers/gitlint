@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 import io
 import re
 import os
+import platform
 import sys
 
 # There is an issue with building python packages in a shared vagrant directory because of how setuptools works
@@ -97,4 +98,13 @@ setup(
 if sys.version_info[0] == 2 and sys.version_info[1] <= 6:
     msg = "\033[31mDEPRECATION: Python 2.6 or below are no longer supported by gitlint or the Python core team." + \
           "Please upgrade your Python to a later version.\033[0m"
+    print(msg)
+
+# Print a red deprecation warning for python 2.6 users
+PLATFORM_IS_WINDOWS = "windows" in platform.system().lower()
+if PLATFORM_IS_WINDOWS:
+    msg = "\n\n\n\n\n****************\n" + \
+          "WARNING: Gitlint support for Windows is still experimental and there are some known issues: " + \
+          "https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows " + \
+          "\n*******************"
     print(msg)

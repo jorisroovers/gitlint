@@ -20,6 +20,29 @@ matrix:
       os: linux
     - python: "pypy3.5"
       os: linux
+
+      # Using 'sh' shim
+    - python: "2.7"
+      env: GITLINT_USE_SH_LIB=0
+      os: linux
+    - python: "3.7"
+      env: GITLINT_USE_SH_LIB=0
+      os: linux
+      dist: xenial
+      sudo: true
+
+      # Windows
+      # Travis doesn't support python on windows yet:
+      # https://travis-ci.community/t/python-support-on-windows
+      # Unit tests are known to have issues on windows: https://github.com/jorisroovers/gitlint/issues/92
+      # For now, we just run a few simple sanity tests
+      # - python: "3.7"
+      #   os: windows
+      #   script:
+      #     - pytest -rw -s gitlint\tests\test_cli.py::CLITests::test_lint
+      #     - gitlint --version
+      #     - gitlint
+
 install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"

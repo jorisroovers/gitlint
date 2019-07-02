@@ -46,6 +46,8 @@ class BaseTestCase(TestCase):
     maxDiff = None
     tmp_git_repo = None
 
+    GITLINT_USE_SH_LIB = os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]")
+
     def setUp(self):
         self.tmpfiles = []
 

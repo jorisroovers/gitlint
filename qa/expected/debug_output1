@@ -3,6 +3,7 @@ DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
 DEBUG: gitlint.cli Git version: {git_version}
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
+DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
 DEBUG: gitlint.cli Configuration
 config-path: {config_path}
 [GENERAL]

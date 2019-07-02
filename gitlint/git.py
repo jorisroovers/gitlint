@@ -1,9 +1,9 @@
 import os
-
 import arrow
-import sh
+
+from gitlint import shell as sh
 # import exceptions separately, this makes it a little easier to mock them out in the unit tests
-from sh import CommandNotFound, ErrorReturnCode
+from gitlint.shell import CommandNotFound, ErrorReturnCode
 
 from gitlint.utils import ustr, sstr
 
@@ -22,7 +22,6 @@ class GitNotInstalledError(GitContextError):
 
 def _git(*command_parts, **kwargs):
     """ Convenience function for running git commands. Automatically deals with exceptions and unicode. """
-    # Special arguments passed to sh: http://amoffat.github.io/sh/special_arguments.html
     git_kwargs = {'_tty_out': False}
     git_kwargs.update(kwargs)
     try:

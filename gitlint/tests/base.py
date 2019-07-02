@@ -39,6 +39,7 @@ class BaseTestCase(unittest.TestCase):
 
     SAMPLES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
     EXPECTED_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
+    GITLINT_USE_SH_LIB = os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]")
 
     # List of 'git config' side-effects that can be used when mocking calls to git
     GIT_CONFIG_SIDE_EFFECTS = [

@@ -7,7 +7,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
 !!! note
-    Gitlint is currently [**not** supported on Windows](https://github.com/jorisroovers/gitlint/issues/20).
+    **Gitlint support for Windows is still experimental**, and [there are some known issues](https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows).
 
     Also, gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
     have a look at [fit-commit](https://github.com/m1foley/fit-commit) (Ruby),
