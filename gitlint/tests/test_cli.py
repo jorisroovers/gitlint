@@ -200,8 +200,8 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.cli.get_stdin_data', return_value="Should be ignored\n")
     @patch('gitlint.git.sh')
-    def test_lint_force_target_repo(self, sh, _):
-        """ Test for ignoring stdin when --force-target-repo flag is enabled"""
+    def test_lint_ignore_stdin(self, sh, _):
+        """ Test for ignoring stdin when --ignore-stdin flag is enabled"""
         sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
             "6f29bf81a8322a04071bb794666e48c443a90360",
             u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
@@ -210,7 +210,7 @@ class CLITests(BaseTestCase):
         ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            result = self.cli.invoke(cli.cli, ["--force-target-repo"])
+            result = self.cli.invoke(cli.cli, ["--ignore-stdin"])
             self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
 

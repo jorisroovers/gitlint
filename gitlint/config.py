@@ -74,8 +74,8 @@ class LintConfig(object):
         self._ignore = options.ListOption('ignore', [], 'List of rule-ids to ignore')
         self._contrib = options.ListOption('contrib', [], 'List of contrib-rules to enable')
         self._config_path = None
-        force_target_repo_description = "Ignore stdin and always select target repo."
-        self._force_target_repo = options.BoolOption('force-target-repo', False, force_target_repo_description)
+        ignore_stdin_description = "Ignore any stdin data. Useful for running in CI server."
+        self._ignore_stdin = options.BoolOption('ignore-stdin', False, ignore_stdin_description)
 
     @property
     def target(self):
@@ -211,13 +211,13 @@ class LintConfig(object):
             raise LintConfigError(ustr(e))
 
     @property
-    def force_target_repo(self):
-        return self._force_target_repo.value
+    def ignore_stdin(self):
+        return self._ignore_stdin.value
 
-    @force_target_repo.setter
+    @ignore_stdin.setter
     @handle_option_error
-    def force_target_repo(self, value):
-        return self._force_target_repo.set(value)
+    def ignore_stdin(self, value):
+        return self._ignore_stdin.set(value)
 
     @property
     def rules(self):
