@@ -161,4 +161,4 @@ debug                 | false         | >= 0.7.1         |  ```--debug```       
 target                | (empty)       | >= 0.8.0         |  ```--target=/home/joe/myrepo/   ```                   | Target git repository gitlint should be linting against.
 extra-path            | (empty)       | >= 0.8.0         |  ```--extra-path=/home/joe/rules/```                   | Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 contrib               | (empty)       | >= 0.12.0        | ```--contrib=contrib-title-conventional-commits,CC1``` | [Contrib rules](contrib_rules) to enable.
-force-target-repo     | false         | >= 0.12.0        | ```--force-target-repo``` or ```-f```                  | Ignore stdin and always select target repo.
+ignore-stdin          | false         | >= 0.12.0        | ```--ignore-stdin```                                   | Ignore any stdin data. Useful for running in CI server.

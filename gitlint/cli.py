@@ -149,7 +149,7 @@ def get_stdin_data():
 @click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('--contrib', default="", help="Contrib rules to enable (comma-separated by id or name).")
 @click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
-@click.option('--ignore-stdin', is_flag=True, help="Ignore stdin and always select target repo.")
+@click.option('--ignore-stdin', is_flag=True, help="Ignore any stdin data. Useful for running in CI server.")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
