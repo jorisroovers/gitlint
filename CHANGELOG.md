@@ -2,6 +2,11 @@
 
 ## v0.12.0 (In Progress) ##
 
+
+Contributors:
+Special thanks to all contributors for this release, in particular [@rogalksi](https://github.com/rogalski) and [@byrney](https://github.com/byrney).
+
+
 - [Contrib Rules](http://jorisroovers.github.io/gitlint/contrib_rules): community-contributed rules that are disabled
    by default, but can be enabled through configuration. Contrib rules are meant to augment default gitlint behavior by
    providing users with rules for common use-cases without forcing these rules on all gitlint users.
@@ -10,12 +15,14 @@
     - **New Contrib Rule**: ```cc1-contrib-requires-signed-off-by``` ensures that all commit messages contain a ```Sign-Off-By``` line. Details in our [documentation](http://jorisroovers.github.io/gitlint/contrib_rules/#cc1-contrib-requires-signed-off-by).
     - If you're interested in adding new Contrib rules to gitlint, please start by reading the
       [Contributing](http://jorisroovers.github.io/gitlint/contributing/) page. Thanks for considering!
+- **Experimental** Windows support: Basic functionality is working, but there are still caveats. For more details, please refer to [#20](https://github.com/jorisroovers/gitlint/issues/20) and the [open issues related to Windows](https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows).
 - Python 3.3 no longer supported. Python 3.4 is likely to follow in a future release as it has [reached EOL](https://www.python.org/dev/peps/pep-0429/#id4) as well.
 - PyPy 3.5 supported
+- Support for ```--ignore-stdin``` command-line flag to ignore any text send via stdin. [#56](https://github.com/jorisroovers/gitlint/issues/56) [#89](https://github.com/jorisroovers/gitlint/issues/89)
 - Bugfixes:
   - [#68: Can't use install-hooks in with git worktree](https://github.com/jorisroovers/gitlint/issues/68)
   - [#59: gitlint failed with configured commentchar](https://github.com/jorisroovers/gitlint/issues/59)
-- Under-the-hood: dependencies updated, experimental Dockerfile, github issue template,
+- Under-the-hood: dependencies updated, experimental Dockerfile, github issue template, doc updates.
 
 ## v0.11.0 (2019-03-13) ##
 
@@ -30,8 +37,7 @@ The 0.10.0 release adds the ability to ignore commits based on their contents,
 support for [pre-commit](https://pre-commit.com/), and important fix for running gitlint in CI environments
 (such as Jenkins, Gitlab, etc).
 
-Special thanks to @asottile, @bdrung, @pbregener, @torwald-sergesson, @RykHawthorn, @SteffenKockel and @tommyip for
-their contributions.
+Special thanks to [asottile](https://github.com/asottile), [bdrung](https://github.com/bdrung), [pbregener](https://github.com/pbregener), [torwald-sergesson](https://github.com/torwald-sergesson), [RykHawthorn](https://github.com/RykHawthorn), [SteffenKockel](https://github.com/SteffenKockel) and [tommyip](https://github.com/tommyip) for their contributions.
 
 **Since it's becoming increasingly hard to support Python 2.6 and 3.3, we'd like to encourage our users to upgrade their
 python version to 2.7 or 3.3+. Future versions of gitlint are likely to drop support for Python 2.6 and 3.3.**

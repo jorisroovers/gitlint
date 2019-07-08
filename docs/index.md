@@ -108,15 +108,15 @@ Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 Options:
   --target DIRECTORY       Path of the target git repository. [default: current working directory]
   -C, --config FILE        Config file location [default: .gitlint]
-  -c TEXT                  Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-
-                           length=80). Flag can be used multiple times to set multiple config values.
+  -c TEXT                  Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). Flag can be
+                           used multiple times to set multiple config values.
   --commits TEXT           The range of commits to lint. [default: HEAD]
   -e, --extra-path PATH    Path to a directory or python module with extra user-defined rules
   --ignore TEXT            Ignore rules (comma-separated by id or name).
   --contrib TEXT           Contrib rules to enable (comma-separated by id or name).
   --msg-filename FILENAME  Path to a file containing a commit-msg.
-  -v, --verbose            Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv).
-                           [default: -vvv]
+  --ignore-stdin           Ignore any stdin data. Useful for running in CI server.
+  -v, --verbose            Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]
   -s, --silent             Silent mode (no output). Takes precedence over -v, -vv, -vvv.
   -d, --debug              Enable debugging output.
   --version                Show the version and exit.
