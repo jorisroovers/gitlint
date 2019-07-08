@@ -128,6 +128,27 @@ def get_stdin_data():
     return False
 
 
+def build_git_context(lint_config, msg_filename, refspec):
+    """ Builds a git context based on passed parameters and order of precedence """
+    # Order of precedence:
+    # 1. Any data specified via --msg-filename
+    if msg_filename:
+        LOG.debug("Attempting to read from --msg-filename.")
+        return GitContext.from_commit_msg(ustr(msg_filename.read()))
+
+    # 2. Any data sent to stdin (unless stdin is being ignored)
+    if not lint_config.ignore_stdin:
+        stdin_input = get_stdin_data()
+        if stdin_input:
+            LOG.debug("Stdin data: %r", stdin_input)
+            LOG.debug("Stdin detected and not ignored. Will be used as input.")
+            return GitContext.from_commit_msg(stdin_input)
+
+    # 3. Fallback to reading from local repository
+    LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
+    return GitContext.from_local_repository(lint_config.target, refspec)
+
+
 @click.group(invoke_without_command=True, context_settings={'max_content_width': 120},
              epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
@@ -170,7 +191,6 @@ def cli(  # pylint: disable=too-many-arguments
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
         config, config_builder = build_config(ctx, target, config, c, extra_path,
                                               ignore, contrib, ignore_stdin, verbose, silent, debug)
-
         LOG.debug(u"Configuration\n%s", ustr(config))
 
         ctx.obj = (config, config_builder, commits, msg_filename)
@@ -189,26 +209,10 @@ def cli(  # pylint: disable=too-many-arguments
 def lint(ctx):
     """ Lints a git repository [default command] """
     lint_config = ctx.obj[0]
+    refspec = ctx.obj[2]
     msg_filename = ctx.obj[3]
 
-    # Let's determine where our input data is coming from:
-    # Order of precedence:
-    # 1. Any data specified via --msg-filename
-    # 2. Any data sent to stdin
-    # 3. Fallback to reading from local repository
-    stdin_input = get_stdin_data()
-    if stdin_input:
-        LOG.debug("Stdin data: %r", stdin_input)
-
-    if msg_filename:
-        LOG.debug("Attempting to read from --msg-filename.")
-        gitcontext = GitContext.from_commit_msg(ustr(msg_filename.read()))
-    elif stdin_input and not lint_config.ignore_stdin:
-        LOG.debug("Stdin detected and not ignored. Will be used as input.")
-        gitcontext = GitContext.from_commit_msg(stdin_input)
-    else:
-        LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
-        gitcontext = GitContext.from_local_repository(lint_config.target, ctx.obj[2])
+    gitcontext = build_git_context(lint_config, msg_filename, refspec)
 
     number_of_commits = len(gitcontext.commits)
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one

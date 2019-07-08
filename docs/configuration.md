@@ -36,6 +36,9 @@ The block below shows a sample ```.gitlint``` file. Details about rule config op
 # By default gitlint will ignore squash commits. Set to 'false' to disable.
 # ignore-squash-commits=true
 
+# Ignore any data send to gitlint via stdin
+# ignore-stdin=true
+
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
 

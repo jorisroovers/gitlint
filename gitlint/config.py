@@ -281,6 +281,7 @@ class LintConfig(object):
                self.ignore_merge_commits == other.ignore_merge_commits and \
                self.ignore_fixup_commits == other.ignore_fixup_commits and \
                self.ignore_squash_commits == other.ignore_squash_commits and \
+               self.ignore_stdin == other.ignore_stdin and \
                self.debug == other.debug and \
                self.ignore == other.ignore and \
                self._config_path == other._config_path  # noqa
@@ -295,6 +296,7 @@ class LintConfig(object):
         return_str += u"ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
         return_str += u"ignore-fixup-commits: {0}\n".format(self.ignore_fixup_commits)
         return_str += u"ignore-squash-commits: {0}\n".format(self.ignore_squash_commits)
+        return_str += u"ignore-stdin: {0}\n".format(self.ignore_stdin)
         return_str += u"verbosity: {0}\n".format(self.verbosity)
         return_str += u"debug: {0}\n".format(self.debug)
         return_str += u"target: {0}\n".format(self.target)

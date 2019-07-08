@@ -200,7 +200,7 @@ class CLITests(BaseTestCase):
 
     @patch('gitlint.cli.get_stdin_data', return_value="Should be ignored\n")
     @patch('gitlint.git.sh')
-    def test_lint_ignore_stdin(self, sh, _):
+    def test_lint_ignore_stdin(self, sh, stdin_data):
         """ Test for ignoring stdin when --ignore-stdin flag is enabled"""
         sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
             "6f29bf81a8322a04071bb794666e48c443a90360",
@@ -213,6 +213,9 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli, ["--ignore-stdin"])
             self.assertEqual(stderr.getvalue(), u'3: B5 Body message is too short (11<20): "commït-body"\n')
             self.assertEqual(result.exit_code, 1)
+
+        # Assert that we didn't even try to get the stdin data
+        self.assertEqual(stdin_data.call_count, 0)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
     def test_msg_filename(self, _):
@@ -472,8 +475,8 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["install-hook"])
         expected_path = os.path.join(u"/hür", u"dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
         expected = u"Successfully installed gitlint commit-msg hook in {0}\n".format(expected_path)
-        self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
+        self.assertEqual(result.exit_code, 0)
         expected_config = config.LintConfig()
         expected_config.target = os.path.realpath(os.getcwd())
         install_hook.assert_called_once_with(expected_config)
