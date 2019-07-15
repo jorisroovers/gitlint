@@ -13,18 +13,19 @@
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "Configuration";
     var mkdocs_page_input_path = "configuration.md";
-    var mkdocs_page_url = "/configuration/";
+    var mkdocs_page_url = "/gitlint/configuration/";
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,67 +39,65 @@
         <a href=".." class="icon icon-home"> Gitlint</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Configuration</a>
-        
-            <ul>
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Configuration</a>
+    <ul class="subnav">
             
-                <li class="toctree-l3"><a href="#config-files">Config files</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#commandline-config">Commandline config</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#commit-specific-config">Commit specific config</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#configuration-precedence">Configuration precedence</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#general-configuration">General configuration</a></li>
-                
-            
-            </ul>
-        
-    </li>
-<li>
+    <li class="toctree-l2"><a href="#configuration">Configuration</a></li>
+    
+
+    <li class="toctree-l2"><a href="#config-files">Config files</a></li>
+    
+
+    <li class="toctree-l2"><a href="#commandline-config">Commandline config</a></li>
+    
+
+    <li class="toctree-l2"><a href="#commit-specific-config">Commit specific config</a></li>
+    
+
+    <li class="toctree-l2"><a href="#configuration-precedence">Configuration precedence</a></li>
+    
+
+    <li class="toctree-l2"><a href="#general-configuration">General configuration</a></li>
+    
+
+    </ul>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../rules/">Rules</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../rules/">Rules</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../user_defined_rules/">User Defined Rules</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../contrib_rules/">Contrib Rules</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../contributing/">Contributing</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../user_defined_rules/">User Defined Rules</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../contributing/">Contributing</a>
+	    </li>
           
         </ul>
       </div>
@@ -135,7 +134,9 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="config-files">Config files</h1>
+                <h1 id="configuration">Configuration</h1>
+<p>Gitlint can be configured through different means.</p>
+<h1 id="config-files">Config files</h1>
 <p>You can modify gitlint's behavior by adding a <code>.gitlint</code> file to your git repository.</p>
 <p>Generate a default <code>.gitlint</code> config file by running:</p>
 <pre><code class="bash">gitlint generate-config
@@ -165,8 +166,15 @@
 # By default gitlint will ignore squash commits. Set to 'false' to disable.
 # ignore-squash-commits=true
 
+# Ignore any data send to gitlint via stdin
+# ignore-stdin=true
+
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
+
+# Enable community contributed rules
+# See http://jorisroovers.github.io/gitlint/contrib_rules for details
+# contrib=contrib-title-conventional-commits,CC1
 
 # Set the extra-path where gitlint will search for user defined rules
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
@@ -211,7 +219,29 @@
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit author email address should be matched to
 # For example, use the following regex if you only want to allow email addresses from foo.com
-# regex = &quot;[^@]+@foo.com&quot;
+# regex=[^@]+@foo.com
+
+# [ignore-by-title]
+# Ignore certain rules for commits of which the title matches a regex
+# E.g. Match commit titles that start with &quot;Release&quot;
+# regex=^Release(.*)
+#
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+# ignore=T1,body-min-length
+
+# [ignore-by-body]
+# Ignore certain rules for commits of which the body has a line that matches a regex
+# E.g. Match bodies that have a line that that contain &quot;release&quot;
+# regex=(.*)release(.*)
+#
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+# ignore=T1,body-min-length
+
+# [contrib-title-conventional-commits]
+# Specify allowed commit types. For details see: https://www.conventionalcommits.org/
+# types = bugfix,user-story,epic
 </code></pre>
 
 <h1 id="commandline-config">Commandline config</h1>
@@ -258,15 +288,15 @@ using commandline flags or in <code>general</code> section in a <code>.gitlint</
 <tr>
 <td>silent</td>
 <td>false</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td><code>--silent</code></td>
 <td>Enable silent mode (no output). Use <a href="..#exit-codes">exit</a> code to determine result.</td>
 </tr>
 <tr>
 <td>verbosity</td>
 <td>3</td>
-<td>&gt;= 0.1</td>
-<td><code>--verbosity=3</code></td>
+<td>&gt;= 0.1.0</td>
+<td><code>--verbose=3</code></td>
 <td>Amount of output gitlint will show when printing errors.</td>
 </tr>
 <tr>
@@ -293,7 +323,7 @@ using commandline flags or in <code>general</code> section in a <code>.gitlint</
 <tr>
 <td>ignore</td>
 <td>[] (=empty)</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td><code>--ignore=T1,body-min-length</code></td>
 <td>Comma seperated list of rules to ignore (by name or id)</td>
 </tr>
@@ -308,15 +338,29 @@ using commandline flags or in <code>general</code> section in a <code>.gitlint</
 <td>target</td>
 <td>(empty)</td>
 <td>&gt;= 0.8.0</td>
-<td><code>---target=/home/joe/myrepo/</code></td>
+<td><code>--target=/home/joe/myrepo/</code></td>
 <td>Target git repository gitlint should be linting against.</td>
 </tr>
 <tr>
 <td>extra-path</td>
 <td>(empty)</td>
 <td>&gt;= 0.8.0</td>
-<td><code>---extra-path=/home/joe/rules/</code></td>
+<td><code>--extra-path=/home/joe/rules/</code></td>
 <td>Path where gitlint looks for <a href="../user_defined_rules/">user-defined rules</a>.</td>
+</tr>
+<tr>
+<td>contrib</td>
+<td>(empty)</td>
+<td>&gt;= 0.12.0</td>
+<td><code>--contrib=contrib-title-conventional-commits,CC1</code></td>
+<td><a href="contrib_rules">Contrib rules</a> to enable.</td>
+</tr>
+<tr>
+<td>ignore-stdin</td>
+<td>false</td>
+<td>&gt;= 0.12.0</td>
+<td><code>--ignore-stdin</code></td>
+<td>Ignore any stdin data. Useful for running in CI server.</td>
 </tr>
 </tbody>
 </table>
@@ -344,18 +388,18 @@ using commandline flags or in <code>general</code> section in a <code>.gitlint</
 
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-	  
+      
         </div>
       </div>
 
     </section>
-    
+
   </div>
 
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/jorisroovers/gitlint" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
@@ -365,7 +409,9 @@ using commandline flags or in <code>general</code> section in a <code>.gitlint</
       
     </span>
 </div>
-    <script src="../js/theme.js"></script>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>

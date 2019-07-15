@@ -13,18 +13,19 @@
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "Contributing";
     var mkdocs_page_input_path = "contributing.md";
-    var mkdocs_page_url = "/contributing/";
+    var mkdocs_page_url = "/gitlint/contributing/";
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,67 +39,74 @@
         <a href=".." class="icon icon-home"> Gitlint</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../configuration/">Configuration</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../configuration/">Configuration</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../rules/">Rules</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../rules/">Rules</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../user_defined_rules/">User Defined Rules</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../contrib_rules/">Contrib Rules</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Contributing</a>
+            <li class="toctree-l1">
+		
+    <a class="" href="../user_defined_rules/">User Defined Rules</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Contributing</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#contributing">Contributing</a></li>
+    
+
+    <li class="toctree-l2"><a href="#guidelines">Guidelines</a></li>
+    
+
+    <li class="toctree-l2"><a href="#development">Development</a></li>
+    
+
+    <li class="toctree-l2"><a href="#packaging">Packaging</a></li>
+    
+
+    <li class="toctree-l2"><a href="#documentation">Documentation</a></li>
+    
+
+    <li class="toctree-l2"><a href="#tools">Tools</a></li>
+    
+
+    <li class="toctree-l2"><a href="#contrib-rules">Contrib rules</a></li>
+    
+        <ul>
         
-            <ul>
-            
-                <li class="toctree-l3"><a href="#contributing">Contributing</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#guidelines">Guidelines</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#development">Development</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#packaging">Packaging</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#documentation">Documentation</a></li>
-                
-            
-            </ul>
+            <li><a class="toctree-l3" href="#contrib-rule-requirements">Contrib rule requirements</a></li>
         
-    </li>
-<li>
+        </ul>
+    
+
+    </ul>
+	    </li>
           
         </ul>
       </div>
@@ -137,10 +145,12 @@
               
                 <h1 id="contributing">Contributing</h1>
 <p>We'd love for you to contribute to gitlint. Thanks for your interest!
-Sometimes it takes a while for <a href="https://github.com/jorisroovers">me</a> to get back to you (sometimes up to a few months,
-this is a hobby project), but rest assured that we read your message and appreciate your interest!
-We maintain a <a href="https://github.com/jorisroovers/gitlint/wiki/Wishlist">wishlist on our wiki</a>,
-but we're obviously open to any suggestions!</p>
+The <a href="https://github.com/jorisroovers/gitlint">source-code and issue tracker</a> are hosted on Github.</p>
+<p>Often it takes a while for us (well, actually just <a href="https://github.com/jorisroovers">me</a>) to get back to you
+(sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
+your interest!
+We maintain a <a href="https://github.com/jorisroovers/gitlint/wiki/Roadmap">loose roadmap on our wiki</a>, but
+that's open to a lot of change and input.</p>
 <h1 id="guidelines">Guidelines</h1>
 <p>When contributing code, please consider all the parts that are typically required:</p>
 <ul>
@@ -180,11 +190,11 @@ python setup.py develop
 ./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
 </code></pre>
 
-<p>The <code>Vagrantfile</code> comes with <code>virtualenv</code>s for python 2.7, 3.3, 3.4, 3.5, 3.6, 3.7 and pypy2.
+<p>The <code>Vagrantfile</code> comes with <code>virtualenv</code>s for python 2.7, 3.4, 3.5, 3.6, 3.7 and pypy2.
 You can easily run tests against specific python environments by using the following commands <em>inside</em> of the Vagrant VM:</p>
 <pre><code>./run_tests.sh --envs 27               # Run the unit tests against Python 2.7
-./run_tests.sh --envs 27,33,pypy2      # Run the unit tests against Python 2.7, Python 3.3 and Pypy2
-./run_tests.sh --envs 27,33 --pep8     # Run pep8 checks against Python 2.7 and Python 3.3 (also works for ```--git```, ```--integration```, ```--pep8```, ```--stats``` and ```--lint```).
+./run_tests.sh --envs 27,35,pypy2      # Run the unit tests against Python 2.7, Python 3.5 and Pypy2
+./run_tests.sh --envs 27,35 --pep8     # Run pep8 checks against Python 2.7 and Python 3.5 (also works for ```--git```, ```--integration```, ```--pep8```, ```--stats``` and ```--lint```).
 ./run_tests.sh --envs all --all        # Run all tests against all environments
 ./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
 </code></pre>
@@ -208,6 +218,37 @@ python setup.py --long-description | rst2html.py &gt; output.html
 
 <p>Then access the documentation website on your host machine on <a href="">http://localhost:8000</a>.
 Note that this is only supported for python &gt;= 2.7.</p>
+<h1 id="tools">Tools</h1>
+<p>We keep a small set of scripts in the <code>tools/</code> directory:</p>
+<pre><code class="sh"># Create a test git repo in your /tmp directory
+tools/create-test-repo.sh
+</code></pre>
+
+<h1 id="contrib-rules">Contrib rules</h1>
+<p>Since gitlint 0.12.0, we support <a href="contrib_rules">Contrib rules</a>: community contributed rules that are part of gitlint
+itself. Thanks for considering to add a new one to gitlint!</p>
+<p>Before starting, please read all the other documentation on this page about contributing first. Then, we suggest taking the following approach to add a Contrib rule:</p>
+<ol>
+<li><strong>Write your rule as a <a href="user_defined_rules">user-defined rule</a></strong>. In terms of code, Contrib rules are identical to
+   user-defined rules, they just happen to have their code sit within the gitlint codebase itself.</li>
+<li><strong>Add your user-defined rule to gitlint</strong>. You should put your file(s) in the <a href="https://github.com/jorisroovers/gitlint/tree/master/gitlint/contrib/rules">gitlint/contrib/rules</a> directory.</li>
+<li><strong>Write unit tests</strong>. The gitlint codebase contains <a href="https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests/contrib">Contrib rule test files you can copy and modify</a>.</li>
+<li><strong>Write documentation</strong>. In particular, you should update the <a href="https://github.com/jorisroovers/gitlint/blob/master/docs/contrib_rules.md">gitlint/docs/contrib_rules.md</a> file with details on your Contrib rule.</li>
+</ol>
+<h2 id="contrib-rule-requirements">Contrib rule requirements</h2>
+<p>If you follow the steps above and follow the existing gitlint conventions wrt naming things, you should already be fairly close to done.</p>
+<p>In case you're looking for a slightly less formal spec, here's what gitlint requires of Contrib rules.</p>
+<ul>
+<li>Since Contrib rules are really just user-defined rules that live withing the gitlint code-base, all the <a href="user_defined_rules/#rule-requirements">user-rule requirements</a> also apply to Contrib rules.</li>
+<li>All contrib rules <strong>must</strong> have associated unit tests. We <em>sort of</em> enforce this by a unit test that verifies that there's a
+  test file for each contrib file.</li>
+<li>All contrib rules <strong>must</strong> have names that start with <code>contrib-</code>. This is to easily distinguish them from default gitlint rules.</li>
+<li>All contrib rule ids <strong>must</strong> start with <code>CT</code> (for LineRules targeting the title), <code>CB</code> (for LineRules targeting the body) or <code>CC</code> (for CommitRules). Again, this is to easily distinguish them from default gitlint rules.</li>
+<li>All contrib rules <strong>must</strong> have unique names and ids.</li>
+<li>You <strong>can</strong> add multiple rule classes to the same file, but classes <strong>should</strong> be logically grouped together in a single file that implements related rules.</li>
+<li>Contrib rules <strong>should</strong> be meaningfully different from one another. If a behavior change or tweak can be added to an existing rule by adding options, that should be considered first. However, large <a href="https://en.wikipedia.org/wiki/God_object">god classes</a> that implement multiple rules in a single class should obviously also be avoided.</li>
+<li>Contrib rules <strong>should</strong> use <a href="user_defined_rules/#options">options</a> to make rules configurable.</li>
+</ul>
               
             </div>
           </div>
@@ -230,18 +271,18 @@ Note that this is only supported for python &gt;= 2.7.</p>
 
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-	  
+      
         </div>
       </div>
 
     </section>
-    
+
   </div>
 
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/jorisroovers/gitlint" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../user_defined_rules/" style="color: #fcfcfc;">&laquo; Previous</a></span>
@@ -249,7 +290,9 @@ Note that this is only supported for python &gt;= 2.7.</p>
       
     </span>
 </div>
-    <script src="../js/theme.js"></script>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>

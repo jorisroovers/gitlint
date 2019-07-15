@@ -13,18 +13,19 @@
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../css/highlight.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
   
   <script>
     // Current page data
     var mkdocs_page_name = "Rules";
     var mkdocs_page_input_path = "rules.md";
-    var mkdocs_page_url = "/rules/";
+    var mkdocs_page_url = "/gitlint/rules/";
   </script>
   
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
 
@@ -38,89 +39,88 @@
         <a href=".." class="icon icon-home"> Gitlint</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
 	<ul class="current">
+	  
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="..">Home</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../configuration/">Configuration</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../configuration/">Configuration</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Rules</a>
-        
-            <ul>
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Rules</a>
+    <ul class="subnav">
             
-                <li class="toctree-l3"><a href="#overview">Overview</a></li>
-                
-                    <li><a class="toctree-l4" href="#t1-title-max-length">T1: title-max-length</a></li>
-                
-                    <li><a class="toctree-l4" href="#t2-title-trailing-whitespace">T2: title-trailing-whitespace</a></li>
-                
-                    <li><a class="toctree-l4" href="#t3-title-trailing-punctuation">T3: title-trailing-punctuation</a></li>
-                
-                    <li><a class="toctree-l4" href="#t4-title-hard-tab">T4: title-hard-tab</a></li>
-                
-                    <li><a class="toctree-l4" href="#t5-title-must-not-contain-word">T5: title-must-not-contain-word</a></li>
-                
-                    <li><a class="toctree-l4" href="#t6-title-leading-whitespace">T6: title-leading-whitespace</a></li>
-                
-                    <li><a class="toctree-l4" href="#t7-title-match-regex">T7: title-match-regex</a></li>
-                
-                    <li><a class="toctree-l4" href="#b1-body-max-line-length">B1: body-max-line-length</a></li>
-                
-                    <li><a class="toctree-l4" href="#b2-body-trailing-whitespace">B2: body-trailing-whitespace</a></li>
-                
-                    <li><a class="toctree-l4" href="#b3-body-hard-tab">B3: body-hard-tab</a></li>
-                
-                    <li><a class="toctree-l4" href="#b4-body-first-line-empty">B4: body-first-line-empty</a></li>
-                
-                    <li><a class="toctree-l4" href="#b5-body-min-length">B5: body-min-length</a></li>
-                
-                    <li><a class="toctree-l4" href="#b6-body-is-missing">B6: body-is-missing</a></li>
-                
-                    <li><a class="toctree-l4" href="#b7-body-changed-file-mention">B7: body-changed-file-mention</a></li>
-                
-                    <li><a class="toctree-l4" href="#m1-author-valid-email">M1: author-valid-email</a></li>
-                
-                    <li><a class="toctree-l4" href="#i1-ignore-by-title">I1: ignore-by-title</a></li>
-                
-                    <li><a class="toctree-l4" href="#i2-ignore-by-body">I2: ignore-by-body</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l2"><a href="#overview">Overview</a></li>
+    
+        <ul>
         
-    </li>
-<li>
+            <li><a class="toctree-l3" href="#t1-title-max-length">T1: title-max-length</a></li>
+        
+            <li><a class="toctree-l3" href="#t2-title-trailing-whitespace">T2: title-trailing-whitespace</a></li>
+        
+            <li><a class="toctree-l3" href="#t3-title-trailing-punctuation">T3: title-trailing-punctuation</a></li>
+        
+            <li><a class="toctree-l3" href="#t4-title-hard-tab">T4: title-hard-tab</a></li>
+        
+            <li><a class="toctree-l3" href="#t5-title-must-not-contain-word">T5: title-must-not-contain-word</a></li>
+        
+            <li><a class="toctree-l3" href="#t6-title-leading-whitespace">T6: title-leading-whitespace</a></li>
+        
+            <li><a class="toctree-l3" href="#t7-title-match-regex">T7: title-match-regex</a></li>
+        
+            <li><a class="toctree-l3" href="#b1-body-max-line-length">B1: body-max-line-length</a></li>
+        
+            <li><a class="toctree-l3" href="#b2-body-trailing-whitespace">B2: body-trailing-whitespace</a></li>
+        
+            <li><a class="toctree-l3" href="#b3-body-hard-tab">B3: body-hard-tab</a></li>
+        
+            <li><a class="toctree-l3" href="#b4-body-first-line-empty">B4: body-first-line-empty</a></li>
+        
+            <li><a class="toctree-l3" href="#b5-body-min-length">B5: body-min-length</a></li>
+        
+            <li><a class="toctree-l3" href="#b6-body-is-missing">B6: body-is-missing</a></li>
+        
+            <li><a class="toctree-l3" href="#b7-body-changed-file-mention">B7: body-changed-file-mention</a></li>
+        
+            <li><a class="toctree-l3" href="#m1-author-valid-email">M1: author-valid-email</a></li>
+        
+            <li><a class="toctree-l3" href="#i1-ignore-by-title">I1: ignore-by-title</a></li>
+        
+            <li><a class="toctree-l3" href="#i2-ignore-by-body">I2: ignore-by-body</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../user_defined_rules/">User Defined Rules</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../contrib_rules/">Contrib Rules</a>
+	    </li>
           
-            <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../contributing/">Contributing</a>
-        
-    </li>
-<li>
+            <li class="toctree-l1">
+		
+    <a class="" href="../user_defined_rules/">User Defined Rules</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../contributing/">Contributing</a>
+	    </li>
           
         </ul>
       </div>
@@ -175,92 +175,104 @@ The rest of this page contains details on the available configuration options fo
 <tr>
 <td>T1</td>
 <td>title-max-length</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Title length must be &lt; 72 chars.</td>
 </tr>
 <tr>
 <td>T2</td>
 <td>title-trailing-whitespace</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Title cannot have trailing whitespace (space or tab)</td>
 </tr>
 <tr>
 <td>T3</td>
 <td>title-trailing-punctuation</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Title cannot have trailing punctuation (?:!.,;)</td>
 </tr>
 <tr>
 <td>T4</td>
 <td>title-hard-tab</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Title cannot contain hard tab characters (\t)</td>
 </tr>
 <tr>
 <td>T5</td>
 <td>title-must-not-contain-word</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Title cannot contain certain words (default: "WIP")</td>
 </tr>
 <tr>
 <td>T6</td>
 <td>title-leading-whitespace</td>
-<td>&gt;= 0.4</td>
+<td>&gt;= 0.4.0</td>
 <td>Title cannot have leading whitespace (space or tab)</td>
 </tr>
 <tr>
 <td>T7</td>
 <td>title-match-regex</td>
-<td>&gt;= 0.5</td>
+<td>&gt;= 0.5.0</td>
 <td>Title must match a given regex (default: .*)</td>
 </tr>
 <tr>
 <td>B1</td>
 <td>body-max-line-length</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Lines in the body must be &lt; 80 chars</td>
 </tr>
 <tr>
 <td>B2</td>
 <td>body-trailing-whitespace</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Body cannot have trailing whitespace (space or tab)</td>
 </tr>
 <tr>
 <td>B3</td>
 <td>body-hard-tab</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>Body cannot contain hard tab characters (\t)</td>
 </tr>
 <tr>
 <td>B4</td>
 <td>body-first-line-empty</td>
-<td>&gt;= 0.1</td>
+<td>&gt;= 0.1.0</td>
 <td>First line of the body (second line of commit message) must be empty</td>
 </tr>
 <tr>
 <td>B5</td>
 <td>body-min-length</td>
-<td>&gt;= 0.4</td>
+<td>&gt;= 0.4.0</td>
 <td>Body length must be at least 20 characters</td>
 </tr>
 <tr>
 <td>B6</td>
 <td>body-is-missing</td>
-<td>&gt;= 0.4</td>
+<td>&gt;= 0.4.0</td>
 <td>Body message must be specified</td>
 </tr>
 <tr>
 <td>B7</td>
 <td>body-changed-file-mention</td>
-<td>&gt;= 0.4</td>
+<td>&gt;= 0.4.0</td>
 <td>Body must contain references to certain files if those files are changed in the last commit</td>
 </tr>
 <tr>
 <td>M1</td>
 <td>author-valid-email</td>
-<td>&gt;= 0.9</td>
+<td>&gt;= 0.9.0</td>
 <td>Author email address must be a valid email address</td>
+</tr>
+<tr>
+<td>I1</td>
+<td>ignore-by-title</td>
+<td>&gt;= 0.10.0</td>
+<td>Ignore a commit based on matching its title</td>
+</tr>
+<tr>
+<td>I2</td>
+<td>ignore-by-body</td>
+<td>&gt;= 0.10.0</td>
+<td>Ignore a commit based on matching its body</td>
 </tr>
 </tbody>
 </table>
@@ -805,7 +817,7 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../user_defined_rules/" class="btn btn-neutral float-right" title="User Defined Rules">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../contrib_rules/" class="btn btn-neutral float-right" title="Contrib Rules">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../configuration/" class="btn btn-neutral" title="Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -822,28 +834,30 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
-	  
+      
         </div>
       </div>
 
     </section>
-    
+
   </div>
 
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/jorisroovers/gitlint" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../configuration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../user_defined_rules/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../contrib_rules/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
-    <script src="../js/theme.js"></script>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
 
 </body>
 </html>
