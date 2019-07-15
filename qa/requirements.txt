@@ -1,6 +1,5 @@
-unittest2==1.1.0; python_version <= '2.7'
 sh==1.12.14
-pytest==3.2.5; python_version == '2.6' or python_version == '3.3'
-pytest==3.10.0; python_version != '2.6' and python_version != '3.3'
-arrow==0.10.0
+pytest==4.6.3;
+arrow==0.14.2; python_version != '3.4'
+arrow==0.13.2; python_version == '3.4'
 gitlint # no version as you want to test the currently installed version
