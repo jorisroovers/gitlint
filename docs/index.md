@@ -72,28 +72,41 @@ $ cat examples/commit-message-2 | gitlint
 !!! note
     The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
 
-For a list of available rules and their configuration options, have a look at the [Rules](rules.md) page.
+## Configuration
 
-The [Configuration](configuration.md) page explains how you can modify gitlint's runtime behavior via command-line
-flags, a ```.gitlint``` configuration file or on a per commit basis.
+For in-depth documentation of general and rule-specific configuration options, have a look at the [Configuration](configuration.md) and [Rules](rules.md) pages.
 
-As a simple example, you can modify gitlint's verbosity using the ```-v``` flag, like so:
-```bash
-$ cat examples/commit-message-2 | gitlint -v
-1: T1
-1: T2
-[removed output]
-$ cat examples/commit-message-2 | gitlint -vv
-1: T1 Title exceeds max length (134>80)
-1: T2 Title has trailing whitespace
-1: T4 Title contains hard tab characters (\t)
-[removed output]
-$ cat examples/commit-message-2 | gitlint -vvv
-1: T1 Title exceeds max length (134>80): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
-1: T2 Title has trailing whitespace: "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
-[removed output]
+Short example ```.gitlint``` file ([full reference](configuration.md)):
+
+```ini
+[general]
+# Ignore certain rules (comma-separated list), you can reference them by their id or by their full name
+ignore=body-is-missing,T3
+
+# Ignore any data send to gitlint via stdin
+ignore-stdin=true
+
+# Configure title-max-length rule, set title length to 80 (72 = default)
+[title-max-length]
+line-length=80
+
+# You can also reference rules by their id (B1 = body-max-line-length)
+[B1]
+line-length=123
 ```
-The default verbosity is ```-vvv```.
+
+Example use of flags:
+
+```bash
+# Change gitlint's verbosity.
+$ gitlint -v
+# Ignore certain rules
+$ gitlint --ignore body-is-missing,T3
+# Enable debug mode
+$ gitlint --debug
+# Load user-defined rules (see http://jorisroovers.github.io/gitlint/user_defined_rules)
+$ gitlint --extra-path /home/joe/mygitlint_rules
+```
 
 Other commands and variations:
 

@@ -20,98 +20,98 @@ The block below shows a sample ```.gitlint``` file. Details about rule config op
 
 ```ini
 # All these sections are optional, edit this file as you like.
-# [general]
-# Ignore certain rules, you can reference them by their id or by their full name
-# ignore=title-trailing-punctuation, T3
+[general]
+# Ignore certain rules (comma-separated list), you can reference them by their id or by their full name
+ignore=title-trailing-punctuation, T3
 
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
-# verbosity = 2
+verbosity = 2
 
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
-# ignore-merge-commits=true
+ignore-merge-commits=true
 
 # By default gitlint will ignore fixup commits. Set to 'false' to disable.
-# ignore-fixup-commits=true
+ignore-fixup-commits=true
 
 # By default gitlint will ignore squash commits. Set to 'false' to disable.
-# ignore-squash-commits=true
+ignore-squash-commits=true
 
 # Ignore any data send to gitlint via stdin
-# ignore-stdin=true
+ignore-stdin=true
 
 # Enable debug mode (prints more output). Disabled by default.
-# debug=true
+debug=true
 
 # Enable community contributed rules
 # See http://jorisroovers.github.io/gitlint/contrib_rules for details
-# contrib=contrib-title-conventional-commits,CC1
+contrib=contrib-title-conventional-commits,CC1
 
 # Set the extra-path where gitlint will search for user defined rules
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
-# extra-path=examples/
+extra-path=examples/
 
-# [title-max-length]
-# line-length=80
+[title-max-length]
+line-length=80
 
-# [title-must-not-contain-word]
+[title-must-not-contain-word]
 # Comma-separated list of words that should not occur in the title. Matching is case
 # insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING"
 # will not cause a violation, but "WIP: my title" will.
-# words=wip
+words=wip
 
-# [title-match-regex]
+[title-match-regex]
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit-msg title must be matched to.
 # Note that the regex can contradict with other rules if not used correctly
 # (e.g. title-must-not-contain-word).
-# regex=^US[0-9]*
+regex=^US[0-9]*
 
-# [B1]
+[B1]
 # B1 = body-max-line-length
-# line-length=120
+line-length=120
 
-# [body-min-length]
-# min-length=5
+[body-min-length]
+min-length=5
 
-# [body-is-missing]
+[body-is-missing]
 # Whether to ignore this rule on merge commits (which typically only have a title)
 # default = True
-# ignore-merge-commits=false
+ignore-merge-commits=false
 
-# [body-changed-file-mention]
+[body-changed-file-mention]
 # List of files that need to be explicitly mentioned in the body when they are changed
 # This is useful for when developers often erroneously edit certain files or git submodules.
 # By specifying this rule, developers can only change the file when they explicitly reference
 # it in the commit message.
-# files=gitlint/rules.py,README.md
+files=gitlint/rules.py,README.md
 
-# [author-valid-email]
+[author-valid-email]
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit author email address should be matched to
 # For example, use the following regex if you only want to allow email addresses from foo.com
-# regex=[^@]+@foo.com
+regex=[^@]+@foo.com
 
-# [ignore-by-title]
+[ignore-by-title]
 # Ignore certain rules for commits of which the title matches a regex
 # E.g. Match commit titles that start with "Release"
-# regex=^Release(.*)
+regex=^Release(.*)
 #
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
-# ignore=T1,body-min-length
+ignore=T1,body-min-length
 
-# [ignore-by-body]
+[ignore-by-body]
 # Ignore certain rules for commits of which the body has a line that matches a regex
 # E.g. Match bodies that have a line that that contain "release"
 # regex=(.*)release(.*)
 #
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
-# ignore=T1,body-min-length
+ignore=T1,body-min-length
 
-# [contrib-title-conventional-commits]
+[contrib-title-conventional-commits]
 # Specify allowed commit types. For details see: https://www.conventionalcommits.org/
-# types = bugfix,user-story,epic
+types = bugfix,user-story,epic
 ```
 
 # Commandline config #
