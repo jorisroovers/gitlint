@@ -1,6 +1,14 @@
-# All these sections are optional, edit this file as you like.
+# Edit this file as you like.
+#
+# All these sections are optional. Each section with the exception of general represents
+# one rule and each key in it is an option for that specific rule.
+#
+# Rules and sections can be referenced by their full name or by id. For example
+# section "[body-max-line-length]" could be written as "[B1]". Full section names are
+# used in here for clarity.
+#
 # [general]
-# Ignore certain rules, you can reference them by their id or by their full name
+# Ignore certain rules, this example uses both full name and id
 # ignore=title-trailing-punctuation, T3
 
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
@@ -30,7 +38,7 @@
 # extra-path=examples/
 
 # [title-max-length]
-# line-length=80
+# line-length=50
 
 # [title-must-not-contain-word]
 # Comma-separated list of words that should not occur in the title. Matching is case
@@ -45,9 +53,8 @@
 # (e.g. title-must-not-contain-word).
 # regex=^US[0-9]*
 
-# [B1]
-# B1 = body-max-line-length
-# line-length=120
+# [body-max-line-length]
+# line-length=72
 
 # [body-min-length]
 # min-length=5
