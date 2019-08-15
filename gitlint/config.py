@@ -255,9 +255,18 @@ class LintConfig(object):
     def set_rule_option(self, rule_name_or_id, option_name, option_value):
         """ Attempts to set a given value for a given option for a given rule.
             LintConfigErrors will be raised if the rule or option don't exist or if the value is invalid. """
+        print option_name
+        option_name_parts = option_name.split(".")
+        option_name = option_name_parts[0]
+        print option_name
+        print option_value
+        print "---"
         option = self._get_option(rule_name_or_id, option_name)
         try:
-            option.set(option_value)
+            if isinstance(option, options.DictOption):
+                option.set_key(".".join(option_name_parts[1:]), option_value)
+            else:
+                option.set(option_value)
         except options.RuleOptionError as e:
             msg = u"'{0}' is not a valid value for option '{1}.{2}'. {3}."
             raise LintConfigError(msg.format(option_value, rule_name_or_id, option_name, ustr(e)))

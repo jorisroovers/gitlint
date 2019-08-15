@@ -44,6 +44,18 @@ class StrOption(RuleOption):
         self.value = ustr(value)
 
 
+class DictOption(RuleOption):
+
+    def set(self, value):
+        if isinstance(value, dict):
+            self.value = value
+        else:
+            raise RuleOptionError(u"Option '{0}' must be python dict".format(self.name))
+
+    def set_key(self, key, value):
+        self.value[key].set(value)
+
+
 class IntOption(RuleOption):
     def __init__(self, name, value, description, allow_negative=False):
         self.allow_negative = allow_negative
