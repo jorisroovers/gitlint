@@ -306,7 +306,7 @@ class BodyChangedFileMention(CommitRule):
 class AuthorValidEmail(CommitRule):
     name = "author-valid-email"
     id = "M1"
-    options_spec = [StrOption('regex', "[^@ ]+@[^@ ]+\.[^@ ]+", "Regex that author email address should match")]
+    options_spec = [StrOption('regex', r"[^@ ]+@[^@ ]+\.[^@ ]+", "Regex that author email address should match")]
 
     def validate(self, commit):
         # Note that unicode is allowed in email addresses
@@ -322,7 +322,7 @@ class IgnoreByTitle(ConfigurationRule):
     name = "ignore-by-title"
     id = "I1"
     options_spec = [StrOption('regex', None, "Regex matching the titles of commits this rule should apply to"),
-                    StrOption('ignore', "all", "Comman-seperate list of rules to ignore")]
+                    StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
 
     def apply(self, config, commit):
         title_regex = re.compile(self.options['regex'].value, re.UNICODE)
@@ -340,7 +340,7 @@ class IgnoreByBody(ConfigurationRule):
     name = "ignore-by-body"
     id = "I2"
     options_spec = [StrOption('regex', None, "Regex matching lines of the body of commits this rule should apply to"),
-                    StrOption('ignore', "all", "Comman-seperate list of rules to ignore")]
+                    StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
 
     def apply(self, config, commit):
         body_line_regex = re.compile(self.options['regex'].value, re.UNICODE)
