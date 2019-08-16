@@ -151,7 +151,7 @@ class LintTests(BaseTestCase):
         self.assertListEqual(violations, expected)
 
     def test_lint_special_commit(self):
-        for commit_type in ["merge", "squash", "fixup"]:
+        for commit_type in ["merge", "revert", "squash", "fixup"]:
             commit = self.gitcommit(self.get_sample("commit_message/{0}".format(commit_type)))
             lintconfig = LintConfig()
             linter = GitLinter(lintconfig)

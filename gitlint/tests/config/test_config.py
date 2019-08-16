@@ -98,6 +98,10 @@ class LintConfigTests(BaseTestCase):
         config.set_general_option("ignore-squash-commits", "false")
         self.assertFalse(config.ignore_squash_commits)
 
+        # ignore_revert_commit
+        config.set_general_option("ignore-revert-commits", "false")
+        self.assertFalse(config.ignore_revert_commits)
+
         # debug
         config.set_general_option("debug", "true")
         self.assertTrue(config.debug)
@@ -220,7 +224,8 @@ class LintConfigTests(BaseTestCase):
                 config.verbosity = value
 
         # invalid ignore_xxx_commits
-        ignore_attributes = ['ignore_merge_commits', 'ignore_fixup_commits', 'ignore_squash_commits']
+        ignore_attributes = ["ignore_merge_commits", "ignore_fixup_commits", "ignore_squash_commits",
+                             "ignore_revert_commits"]
         incorrect_values = [-1, 4, u"föo"]
         for attribute in ignore_attributes:
             for value in incorrect_values:

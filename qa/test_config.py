@@ -71,5 +71,4 @@ class ConfigTests(BaseTestCase):
                            'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
                            'GITLINT_USE_SH_LIB': self.GITLINT_USE_SH_LIB, 'config_path': config_path,
                            'target': self.tmp_git_repo, 'commit_sha': commit_sha, 'commit_date': expected_date}
-
         self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_debug_1", expected_kwargs))

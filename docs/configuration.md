@@ -19,6 +19,18 @@ The block below shows a sample ```.gitlint``` file. Details about rule config op
 [General Configuration](configuration.md#general-configuration) section of this page.
 
 ```ini
+# Edit this file as you like.
+#
+# All these sections are optional. Each section with the exception of general represents
+# one rule and each key in it is an option for that specific rule.
+#
+# Rules and sections can be referenced by their full name or by id. For example
+# section "[body-max-line-length]" could be written as "[B1]". Full section names are
+# used in here for clarity.
+# Rule reference documentation: http://jorisroovers.github.io/gitlint/rules/
+#
+# Note that this file is not exhaustive, it's just an example
+# Use 'gitlint generate-config' to generate a config file with all possible options
 # All these sections are optional, edit this file as you like.
 [general]
 # Ignore certain rules (comma-separated list), you can reference them by their id or by their full name
@@ -29,6 +41,9 @@ verbosity = 2
 
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
 ignore-merge-commits=true
+
+# By default gitlint will ignore revert commits. Set to 'false' to disable.
+ignore-revert-commits=true
 
 # By default gitlint will ignore fixup commits. Set to 'false' to disable.
 ignore-fixup-commits=true
@@ -66,8 +81,7 @@ words=wip
 # (e.g. title-must-not-contain-word).
 regex=^US[0-9]*
 
-[B1]
-# B1 = body-max-line-length
+[body-max-line-length]
 line-length=120
 
 [body-min-length]
@@ -157,6 +171,7 @@ Name                 | Default value |  gitlint version | commandline flag      
 silent                | false         | >= 0.1.0          | ```--silent```                                         | Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
 verbosity             | 3             | >= 0.1.0          | ```--verbose=3```                                      | Amount of output gitlint will show when printing errors.
 ignore-merge-commits  | true          | >= 0.7.0         |   Not available                                        | Whether or not to ignore merge commits.
+ignore-revert-commits | true          | >= 0.13.0        |   Not available                                        | Whether or not to ignore revert commits.
 ignore-fixup-commits  | true          | >= 0.9.0         |   Not available                                        | Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
 ignore-squash-commits | true          | >= 0.9.0         |   Not available                                        | Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
 ignore                | [] (=empty)   | >= 0.1.0          | ```--ignore=T1,body-min-length```                      | Comma seperated list of rules to ignore (by name or id)

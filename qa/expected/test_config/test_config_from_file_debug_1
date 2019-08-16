@@ -13,6 +13,7 @@ ignore: title-trailing-punctuation,B2
 ignore-merge-commits: True
 ignore-fixup-commits: True
 ignore-squash-commits: True
+ignore-revert-commits: True
 ignore-stdin: False
 verbosity: 2
 debug: True

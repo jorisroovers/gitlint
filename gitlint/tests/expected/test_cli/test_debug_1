@@ -13,6 +13,7 @@ ignore: title-trailing-whitespace,B2
 ignore-merge-commits: False
 ignore-fixup-commits: True
 ignore-squash-commits: True
+ignore-revert-commits: True
 ignore-stdin: False
 verbosity: 1
 debug: True
