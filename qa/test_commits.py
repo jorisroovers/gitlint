@@ -31,16 +31,10 @@ class CommitsTests(BaseTestCase):
         commit_sha2 = self.get_last_commit_hash()[:10]
         output = gitlint("--commits", "test-branch-commits-violations-base...test-branch-commits-violations",
                          _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
-        expected = (u"Commit {0}:\n".format(commit_sha2) +
-                    u"1: T3 Title has trailing punctuation (.): \"Sïmple title3.\"\n" +
-                    u"3: B6 Body message is missing\n"
-                    "\n"
-                    u"Commit {0}:\n".format(commit_sha1) +
-                    u"1: T3 Title has trailing punctuation (.): \"Sïmple title2.\"\n"
-                    u"3: B6 Body message is missing\n")
 
         self.assertEqual(output.exit_code, 4)
-        self.assertEqualStdout(output, expected)
+        expected_kwargs = {'commit_sha1': commit_sha1, 'commit_sha2': commit_sha2}
+        self.assertEqualStdout(output, self.get_expected("test_commits/test_violations_1", expected_kwargs))
 
     def test_lint_single_commit(self):
         self._create_simple_commit(u"Sïmple title.\n")
@@ -63,16 +57,10 @@ class CommitsTests(BaseTestCase):
         output = gitlint("--commits", "HEAD", _cwd=tmp_git_repo, _tty_in=True, _ok_code=[3])
         revlist = git("rev-list", "HEAD", _tty_in=True, _cwd=tmp_git_repo).split()
 
-        expected = (
-            u"Commit {0}:\n".format(revlist[0][:10]) +
-            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Sïmple title\"\n\n" +
-            u"Commit {0}:\n".format(revlist[1][:10]) +
-            u"3: B6 Body message is missing\n\n" +
-            u"Commit {0}:\n".format(revlist[2][:10]) +
-            u"1: T3 Title has trailing punctuation (.): \"Sïmple title.\"\n"
-        )
+        expected_kwargs = {"commit_sha0": revlist[0][:10], "commit_sha1": revlist[1][:10],
+                           "commit_sha2": revlist[2][:10]}
 
-        self.assertEqualStdout(output, expected)
+        self.assertEqualStdout(output, self.get_expected("test_commits/test_lint_head_1", expected_kwargs))
 
     def test_ignore_commits(self):
         """ Tests multiple commits of which some rules get igonored because of ignore-* rules """
@@ -91,15 +79,6 @@ class CommitsTests(BaseTestCase):
         config_path = self.get_sample_path("config/ignore-release-commits")
         output = gitlint("--commits", "HEAD", "--config", config_path, _cwd=tmp_git_repo, _tty_in=True, _ok_code=[4])
 
-        expected = (
-            u"Commit {0}:\n".format(revlist[0][:10]) +
-            u"1: T3 Title has trailing punctuation (.): \"Sïmple title4.\"\n\n" +
-            u"Commit {0}:\n".format(revlist[1][:10]) +
-            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"Sïmple WIP title3.\"\n\n" +
-            u"Commit {0}:\n".format(revlist[2][:10]) +
-            u"3: B5 Body message is too short (5<20): \"Short\"\n\n" +
-            u"Commit {0}:\n".format(revlist[3][:10]) +
-            u"1: T3 Title has trailing punctuation (.): \"Sïmple title.\"\n"
-        )
-
-        self.assertEqualStdout(output, expected)
+        expected_kwargs = {"commit_sha0": revlist[0][:10], "commit_sha1": revlist[1][:10],
+                           "commit_sha2": revlist[2][:10], "commit_sha3": revlist[3][:10]}
+        self.assertEqualStdout(output, self.get_expected("test_commits/test_ignore_commits_1", expected_kwargs))

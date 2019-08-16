@@ -18,12 +18,7 @@ class StdInTests(BaseTestCase):
         # there never is a TTY connected to stdin (per definition). We're setting _tty_in=False here to be explicit
         # but note that this is always true when piping something into a command.
         output = gitlint(echo(u"WIP: Pïpe test."), _tty_in=False, _err_to_out=True, _ok_code=[3])
-
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: Pïpe test.\"\n" + \
-                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pïpe test.\"\n" + \
-                   u"3: B6 Body message is missing\n"
-
-        self.assertEqualStdout(output, expected)
+        self.assertEqualStdout(output, self.get_expected("test_stdin/test_stdin_pipe_1"))
 
     def test_stdin_pipe_empty(self):
         """ Test the scenario where no TTY is attached an nothing is piped into gitlint. This occurs in
@@ -39,10 +34,7 @@ class StdInTests(BaseTestCase):
         # http://amoffat.github.io/sh/sections/special_arguments.html?highlight=_tty_in#err-to-out
         output = gitlint(echo("-n", ""), _cwd=self.tmp_git_repo, _tty_in=False, _err_to_out=True, _ok_code=[3])
 
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
-            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
-            u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
-        self.assertEqualStdout(output, expected)
+        self.assertEqual(ustr(output), self.get_expected("test_stdin/test_stdin_pipe_empty_1"))
 
     def test_stdin_file(self):
         """ Test the scenario where STDIN is a regular file (stat.S_ISREG = True)
@@ -58,8 +50,4 @@ class StdInTests(BaseTestCase):
             # test for the condition where stat.S_ISREG == True that won't work for us here.
             p = subprocess.Popen(u"gitlint", stdin=file_handle, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             output, _ = p.communicate()
-
-            expected = u"1: T3 Title has trailing punctuation (.): \"WIP: STDIN ïs a file test.\"\n" + \
-                       u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: STDIN ïs a file test.\"\n" + \
-                       u"3: B6 Body message is missing\n"
-            self.assertEqual(ustr(output), expected)
+            self.assertEqual(ustr(output), self.get_expected("test_stdin/test_stdin_file_1"))

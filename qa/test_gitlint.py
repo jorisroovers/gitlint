@@ -119,22 +119,12 @@ class IntegrationTests(BaseTestCase):
         commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
         self._create_simple_commit(commit_msg)
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
-
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: This ïs a title.\"\n" + \
-            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n" + \
-            u"2: B4 Second line is not empty: \"Content on the sëcond line\"\n"
-        self.assertEqualStdout(output, expected)
+        self.assertEqualStdout(output, self.get_expected("test_gitlint/test_violations_1"))
 
     def test_msg_filename(self):
         tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename test.")
-
         output = gitlint("--msg-filename", tmp_commit_msg_file, _tty_in=True, _ok_code=[3])
-
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: msg-fïlename test.\"\n" + \
-            u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: msg-fïlename test.\"\n" + \
-            u"3: B6 Body message is missing\n"
-
-        self.assertEqualStdout(output, expected)
+        self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_1"))
 
     def test_msg_filename_no_tty(self):
         """ Make sure --msg-filename option also works with no TTY attached """
@@ -148,8 +138,4 @@ class IntegrationTests(BaseTestCase):
         output = gitlint("--msg-filename", tmp_commit_msg_file, _in=" ",
                          _tty_in=False, _err_to_out=True, _ok_code=[3])
 
-        expected = u"1: T3 Title has trailing punctuation (.): \"WIP: msg-fïlename NO TTY test.\"\n" + \
-                   u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: msg-fïlename NO TTY test.\"\n" + \
-                   u"3: B6 Body message is missing\n"
-
-        self.assertEqualStdout(output, expected)
+        self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_no_tty_1"))

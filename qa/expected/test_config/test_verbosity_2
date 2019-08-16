@@ -1,0 +1,3 @@
+1: T3 Title has trailing punctuation (.): "WIP: Thïs is a title."
+1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: Thïs is a title."
+2: B4 Second line is not empty: "Contënt on the second line"

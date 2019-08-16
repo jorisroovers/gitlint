@@ -110,9 +110,14 @@ class BaseTestCase(unittest.TestCase):
             setattr(commit, attr, value)
         return commit
 
-    def assert_logged(self, lines):
-        """ Asserts that a certain list of messages has been logged """
-        self.assertListEqual(self.logcapture.messages, lines)
+    def assert_logged(self, expected):
+        """ Asserts that the logs match an expected string or list.
+            This method knows how to compare a passed list of log lines as well as a newline concatenated string
+            of all loglines. """
+        if isinstance(expected, list):
+            self.assertListEqual(self.logcapture.messages, expected)
+        else:
+            self.assertEqual("\n".join(self.logcapture.messages), expected)
 
     def assert_log_contains(self, line):
         """ Asserts that a certain line is in the logs """

@@ -1,0 +1,6 @@
+Commit 6f29bf81a8:
+3: B5 Body message is too short (12<20): "commït-body1"
+
+Commit 4da2656b0d:
+1: T3 Title has trailing punctuation (.): "commït-title3."
+3: B5 Body message is too short (12<20): "commït-body3"

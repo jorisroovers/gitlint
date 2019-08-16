@@ -23,7 +23,8 @@ git config core.precomposeunicde true
 # Add a test commit
 echo "test 123" > test.txt
 git add test.txt
-git commit -m "test commit title\n\ntest commit body that has a bit more text\n"
+# commit -m -> use multiple -m args to add multiple paragraphs (/n in strings are ignored)
+git commit -m "test commit title" -m "test commit body that has a bit more text"
 cd $CWD
 
 # Let the user know

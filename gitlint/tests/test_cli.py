@@ -104,13 +104,7 @@ class CLITests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
-            expected = (u"Commit 6f29bf81a8:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
-                        u"Commit 25053ccec5:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body2"\n\n'
-                        u"Commit 4da2656b0d:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body3"\n')
-            self.assertEqual(stderr.getvalue(), expected)
+            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_multiple_commits_1"))
             self.assertEqual(result.exit_code, 3)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
@@ -138,12 +132,7 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
             # We expect that the second commit has no failures because of 'gitlint-ignore: T3' in its commit msg body
-            expected = (u"Commit 6f29bf81a8:\n"
-                        u'3: B5 Body message is too short (12<20): "commït-body1"\n\n'
-                        u"Commit 4da2656b0d:\n"
-                        u'1: T3 Title has trailing punctuation (.): "commït-title3."\n'
-                        u'3: B5 Body message is too short (12<20): "commït-body3"\n')
-            self.assertEqual(stderr.getvalue(), expected)
+            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_multiple_commits_config_1"))
             self.assertEqual(result.exit_code, 3)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
@@ -188,13 +177,9 @@ class CLITests(BaseTestCase):
     @patch('gitlint.cli.get_stdin_data', return_value=u'WIP: tïtle \n')
     def test_input_stream(self, _):
         """ Test for linting when a message is passed via stdin """
-        expected_output = u"1: T2 Title has trailing whitespace: \"WIP: tïtle \"\n" + \
-                          u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: tïtle \"\n" + \
-                          u"3: B6 Body message is missing\n"
-
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
-            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_input_stream_1"))
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
@@ -302,29 +287,10 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 6)
 
-            # Make sure gitlint captured the correct logs
-            expected_logs = [u"DEBUG: gitlint.cli To report issues, please visit " +
-                             u"https://github.com/jorisroovers/gitlint/issues",
-                             u"DEBUG: gitlint.cli Platform: {0}".format(platform.platform()),
-                             u"DEBUG: gitlint.cli Python version: {0}".format(sys.version),
-                             u"DEBUG: gitlint.cli Git version: git version 1.2.3",
-                             u"DEBUG: gitlint.cli Gitlint version: {0}".format(__version__),
-                             u"DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {0}".format(self.GITLINT_USE_SH_LIB),
-                             self.get_expected('debug_configuration_output1',
-                                               {'config_path': config_path, 'target': os.path.realpath(os.getcwd())}),
-                             u"DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. " +
-                             u"Attempting to read from the local repo.",
-                             u"DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360",
-                             u"DEBUG: gitlint.lint Commit Object\nAuthor: test åuthor1 <test-email1@föo.com>\n" +
-                             u"Date:   2016-12-03 15:28:15+01:00\ncommït-title1\n\ncommït-body1",
-                             u"DEBUG: gitlint.lint Linting commit 25053ccec5e28e1bb8f7551fdbb5ab213ada2401",
-                             u"DEBUG: gitlint.lint Commit Object\nAuthor: test åuthor2 <test-email2@föo.com>\n" +
-                             u"Date:   2016-12-04 15:28:15+01:00\ncommït-title2.\n\ncommït-body2",
-                             u"DEBUG: gitlint.lint Linting commit 4da2656b0dadc76c7ee3fd0243a96cb64007f125",
-                             u"DEBUG: gitlint.lint Commit Object\nAuthor: test åuthor3 <test-email3@föo.com>\n" +
-                             u"Date:   2016-12-05 15:28:15+01:00\nföo\nbar",
-                             u"DEBUG: gitlint.cli Exit Code = 6"]
-
+            expected_kwargs = {'platform': platform.platform(), "python_version": sys.version,
+                               'gitlint_version': __version__, 'config_path': config_path,
+                               'GITLINT_USE_SH_LIB': self.GITLINT_USE_SH_LIB, 'target': os.path.realpath(os.getcwd())}
+            expected_logs = self.get_expected('test_cli/test_debug_1', expected_kwargs)
             self.assert_logged(expected_logs)
 
     @patch('gitlint.cli.get_stdin_data', return_value=u"Test tïtle\n")

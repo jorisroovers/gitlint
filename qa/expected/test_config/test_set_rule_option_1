@@ -1,0 +1,3 @@
+1: T1 Title exceeds max length (16>5): "This ïs a title."
+1: T3 Title has trailing punctuation (.): "This ïs a title."
+3: B6 Body message is missing
