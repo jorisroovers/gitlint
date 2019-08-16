@@ -77,7 +77,7 @@ class GitLinter(object):
             rule.apply(self.config, commit)
 
         # Skip linting if this is a special commit type that is configured to be ignored
-        ignore_commit_types = ["merge", "squash", "fixup"]
+        ignore_commit_types = ["merge", "squash", "fixup", "revert"]
         for commit_type in ignore_commit_types:
             if getattr(commit, "is_{0}_commit".format(commit_type)) and \
                getattr(self.config, "ignore_{0}_commits".format(commit_type)):

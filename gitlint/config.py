@@ -67,6 +67,7 @@ class LintConfig(object):
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self._ignore_fixup_commits = options.BoolOption('ignore-fixup-commits', True, "Ignore fixup commits")
         self._ignore_squash_commits = options.BoolOption('ignore-squash-commits', True, "Ignore squash commits")
+        self._ignore_revert_commits = options.BoolOption('ignore-revert-commits', True, "Ignore revert commits")
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
         self._extra_path = None
         target_description = "Path of the target git repository (default=current working directory)"
@@ -123,6 +124,15 @@ class LintConfig(object):
     @handle_option_error
     def ignore_squash_commits(self, value):
         return self._ignore_squash_commits.set(value)
+
+    @property
+    def ignore_revert_commits(self):
+        return self._ignore_revert_commits.value
+
+    @ignore_revert_commits.setter
+    @handle_option_error
+    def ignore_revert_commits(self, value):
+        return self._ignore_revert_commits.set(value)
 
     @property
     def debug(self):
@@ -273,18 +283,19 @@ class LintConfig(object):
 
     def __eq__(self, other):
         return isinstance(other, LintConfig) and \
-               self.rules == other.rules and \
-               self.verbosity == other.verbosity and \
-               self.target == other.target and \
-               self.extra_path == other.extra_path and \
-               self.contrib == other.contrib and \
-               self.ignore_merge_commits == other.ignore_merge_commits and \
-               self.ignore_fixup_commits == other.ignore_fixup_commits and \
-               self.ignore_squash_commits == other.ignore_squash_commits and \
-               self.ignore_stdin == other.ignore_stdin and \
-               self.debug == other.debug and \
-               self.ignore == other.ignore and \
-               self._config_path == other._config_path  # noqa
+            self.rules == other.rules and \
+            self.verbosity == other.verbosity and \
+            self.target == other.target and \
+            self.extra_path == other.extra_path and \
+            self.contrib == other.contrib and \
+            self.ignore_merge_commits == other.ignore_merge_commits and \
+            self.ignore_fixup_commits == other.ignore_fixup_commits and \
+            self.ignore_squash_commits == other.ignore_squash_commits and \
+            self.ignore_revert_commits == other.ignore_revert_commits and \
+            self.ignore_stdin == other.ignore_stdin and \
+            self.debug == other.debug and \
+            self.ignore == other.ignore and \
+            self._config_path == other._config_path  # noqa
 
     def __str__(self):
         # config-path is not a user exposed variable, so don't print it under the general section
@@ -296,6 +307,7 @@ class LintConfig(object):
         return_str += u"ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
         return_str += u"ignore-fixup-commits: {0}\n".format(self.ignore_fixup_commits)
         return_str += u"ignore-squash-commits: {0}\n".format(self.ignore_squash_commits)
+        return_str += u"ignore-revert-commits: {0}\n".format(self.ignore_revert_commits)
         return_str += u"ignore-stdin: {0}\n".format(self.ignore_stdin)
         return_str += u"verbosity: {0}\n".format(self.verbosity)
         return_str += u"debug: {0}\n".format(self.debug)

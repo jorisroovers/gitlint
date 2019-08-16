@@ -83,6 +83,22 @@ class IntegrationTests(BaseTestCase):
 
         self.assertEqualStdout(output, expected)
 
+    def test_revert_commit(self):
+        self._create_simple_commit(u"WIP: Cömmit on master.\n\nSimple bödy")
+        hash = self.get_last_commit_hash()
+        git("revert", hash, _cwd=self.tmp_git_repo)
+
+        # Run gitlint and assert output is empty
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
+        self.assertEqualStdout(output, "")
+
+        # Assert that we do see the error if we disable the ignore-revert-commits option
+        output = gitlint("-c", "general.ignore-revert-commits=false",
+                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
+        self.assertEqual(output.exit_code, 1)
+        expected = u"1: T5 Title contains the word 'WIP' (case-insensitive): \"Revert \"WIP: Cömmit on master.\"\"\n"
+        self.assertEqualStdout(output, expected)
+
     def test_squash_commit(self):
         # Create a normal commit and assert that it has a violation
         test_filename = self._create_simple_commit(u"Cömmit on WIP master\n\nSimple bödy that is long enough")

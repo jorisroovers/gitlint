@@ -17,6 +17,9 @@
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
 # ignore-merge-commits=true
 
+# By default gitlint will ignore revert commits. Set to 'false' to disable.
+# ignore-revert-commits=true
+
 # By default gitlint will ignore fixup commits. Set to 'false' to disable.
 # ignore-fixup-commits=true
 

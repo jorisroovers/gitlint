@@ -258,22 +258,17 @@ done
 
 
 ## Merge, fixup and squash commits ##
-_Introduced in gitlint v0.7.0 (merge commits) and gitlint v0.9.0 (fixup, squash)_
+_Introduced in gitlint v0.7.0 (merge commits), gitlint v0.9.0 (fixup, squash) and gitlint v0.13.0 (revert)_
 
-**Gitlint ignores merge, fixup and squash commits by default.**
+**Gitlint ignores merge, revert, fixup and squash commits by default.**
 
-!!! note
-    Right now, gitlint does not ignore **revert** commits. This is something we'd like to add in the future. 
-    If this is something you're interested in
-    please let us know by [opening an issue](https://github.com/jorisroovers/gitlint/issues).
-
-
-For merge commits, the rationale for ignoring them is
-that in many cases merge commits are not created by users themselves but by tools such as github,
-[gerrit](https://code.google.com/p/gerrit/) and others. These tools often generate merge commit messages that
-violate gitlint's set of rules (a common example is *"Merge:"* being auto-prepended  which can trigger a
-[title-max-length](rules.md#t1-title-max-length) violation)
-and it's not always convenient or desired to change those.
+For merge and revert commits, the rationale for ignoring them is
+that most users keep git's default messages for these commits (i.e *Merge/Revert "[original commit message]"*).
+Often times these commit messages are also auto-generated through tools like github.
+However, these default/auto-generated commit messages tend to cause gitlint violations.
+For example, a common case is that *"Merge:"* being auto-prepended triggers a
+[title-max-length](rules.md#t1-title-max-length) violation. Most users don't want this, so we disable linting
+on Merge and Revert commits by default.
 
 For [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) and [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits, the rationale is that these are temporary
 commits that will be squashed into a different commit, and hence the commit messages for these commits are very
@@ -282,7 +277,8 @@ short-lived and not intended to make it into the final commit history. In additi
 (e.g. [title-max-length](rules.md#t1-title-max-length)) which is often undesirable.
 
 In case you *do* want to lint these commit messages, you can disable this behavior by setting the
-general ```ignore-merge-commits```, ```ignore-fixup-commits``` or ```ignore-squash-commits``` option to ```false```
+general ```ignore-merge-commits```, ```ignore-revert-commits```,  ```ignore-fixup-commits``` or
+```ignore-squash-commits``` option to ```false```
 [using one of the various ways to configure gitlint](configuration.md).
 
 ## Ignoring commits ##
