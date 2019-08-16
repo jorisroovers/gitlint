@@ -171,6 +171,9 @@ commit.author_name      | string         | Name of the author, result of ```git 
 commit.author_email     | string         | Email of the author, result of ```git log --pretty=%aE```
 commit.date             | datetime       | Python ```datetime``` object representing the time of commit
 commit.is_merge_commit  | boolean        | Boolean indicating whether the commit is a merge commit or not.
+commit.is_revert_commit | boolean        | Boolean indicating whether the commit is a revert commit or not.
+commit.is_fixup_commit  | boolean        | Boolean indicating whether the commit is a fixup commit or not.
+commit.is_squash_commit | boolean        | Boolean indicating whether the commit is a squash commit or not.
 commit.parents          | list of string | List of parent commit ```sha```s (only for merge commits).
 commit.changed_files    | list of string | List of files changed in the commit (relative paths).
 commit.context          | object         | Object pointing to the bigger git context that the commit is part of

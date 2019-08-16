@@ -116,7 +116,7 @@ class GitCommit(object):
 
     def __init__(self, context, message, sha=None, date=None, author_name=None,  # pylint: disable=too-many-arguments
                  author_email=None, parents=None, is_merge_commit=None, is_fixup_commit=None,
-                 is_squash_commit=None, changed_files=None):
+                 is_squash_commit=None, is_revert_commit=None, changed_files=None):
         self.context = context
         self.message = message
         self.sha = sha
@@ -131,10 +131,18 @@ class GitCommit(object):
         self.is_merge_commit = message.title.startswith(u"Merge") if is_merge_commit is None else is_merge_commit
         self.is_fixup_commit = message.title.startswith(u"fixup!") if is_fixup_commit is None else is_fixup_commit
         self.is_squash_commit = message.title.startswith(u"squash!") if is_squash_commit is None else is_squash_commit
+        self.is_revert_commit = message.title.startswith(u"Revert") if is_revert_commit is None else is_revert_commit
 
     def __unicode__(self):
-        format_str = u"Author: %s <%s>\nDate:   %s\n%s"  # pragma: no cover
-        return format_str % (self.author_name, self.author_email, self.date, ustr(self.message))  # pragma: no cover
+        format_str = u"--- Commit Message ----\n%s\n" + \
+                     u"--- Meta info ---------\n" + \
+                     u"Author: %s <%s>\nDate:   %s\n" + \
+                     u"is-merge-commit:  %s\nis-fixup-commit:  %s\n" + \
+                     u"is-squash-commit: %s\nis-revert-commit: %s\n" + \
+                     u"-----------------------"  # pragma: no cover
+        return format_str % (ustr(self.message), self.author_name, self.author_email, self.date,
+                             self.is_merge_commit, self.is_fixup_commit, self.is_squash_commit,
+                             self.is_revert_commit)  # pragma: no cover
 
     def __str__(self):
         return sstr(self.__unicode__())  # pragma: no cover
@@ -149,7 +157,8 @@ class GitCommit(object):
                self.author_email == other.author_email and \
                self.date == other.date and self.parents == other.parents and \
                self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit and \
-               self.is_squash_commit == other.is_squash_commit and self.changed_files == other.changed_files  # noqa
+               self.is_squash_commit == other.is_squash_commit and self.is_revert_commit == other.is_revert_commit and \
+               self.changed_files == other.changed_files  # noqa
 
 
 class GitContext(object):

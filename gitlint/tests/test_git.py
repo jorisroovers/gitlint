@@ -63,6 +63,7 @@ class GitTests(BaseTestCase):
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
         self.assertFalse(last_commit.is_squash_commit)
+        self.assertFalse(last_commit.is_revert_commit)
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
 
     @patch('gitlint.git.sh')
@@ -96,6 +97,7 @@ class GitTests(BaseTestCase):
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
         self.assertFalse(last_commit.is_squash_commit)
+        self.assertFalse(last_commit.is_revert_commit)
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
 
     @patch('gitlint.git.sh')
@@ -128,6 +130,9 @@ class GitTests(BaseTestCase):
                                                              tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
         self.assertListEqual(last_commit.parents, [u"åbc", "def"])
         self.assertTrue(last_commit.is_merge_commit)
+        self.assertFalse(last_commit.is_fixup_commit)
+        self.assertFalse(last_commit.is_squash_commit)
+        self.assertFalse(last_commit.is_revert_commit)
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
 
     @patch('gitlint.git.sh')
@@ -168,6 +173,7 @@ class GitTests(BaseTestCase):
                 self.assertEqual(getattr(last_commit, attr), commit_type == type)
 
             self.assertFalse(last_commit.is_merge_commit)
+            self.assertFalse(last_commit.is_revert_commit)
             self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
 
             sh.git.reset_mock()
@@ -245,6 +251,7 @@ class GitTests(BaseTestCase):
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
         self.assertFalse(commit.is_squash_commit)
+        self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
     def test_from_commit_msg_just_title(self):
@@ -261,6 +268,7 @@ class GitTests(BaseTestCase):
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
         self.assertFalse(commit.is_squash_commit)
+        self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
     def test_from_commit_msg_empty(self):
@@ -278,6 +286,7 @@ class GitTests(BaseTestCase):
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
         self.assertFalse(commit.is_squash_commit)
+        self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
     @patch("gitlint.git.git_commentchar")
@@ -297,6 +306,7 @@ class GitTests(BaseTestCase):
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
         self.assertFalse(commit.is_squash_commit)
+        self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
     def test_from_commit_msg_merge_commit(self):
@@ -315,6 +325,26 @@ class GitTests(BaseTestCase):
         self.assertTrue(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
         self.assertFalse(commit.is_squash_commit)
+        self.assertFalse(commit.is_revert_commit)
+        self.assertEqual(len(gitcontext.commits), 1)
+
+    def test_from_commit_msg_revert_commit(self):
+        commit_msg = "Revert \"Prev commit message\"\n\nThis reverts commit a8ad67e04164a537198dea94a4fde81c5592ae9c."
+        gitcontext = GitContext.from_commit_msg(commit_msg)
+        commit = gitcontext.commits[-1]
+
+        self.assertEqual(commit.message.title, "Revert \"Prev commit message\"")
+        self.assertEqual(commit.message.body, ["", "This reverts commit a8ad67e04164a537198dea94a4fde81c5592ae9c."])
+        self.assertEqual(commit.message.full, commit_msg)
+        self.assertEqual(commit.message.original, commit_msg)
+        self.assertEqual(commit.author_name, None)
+        self.assertEqual(commit.author_email, None)
+        self.assertEqual(commit.date, None)
+        self.assertListEqual(commit.parents, [])
+        self.assertFalse(commit.is_merge_commit)
+        self.assertFalse(commit.is_fixup_commit)
+        self.assertFalse(commit.is_squash_commit)
+        self.assertTrue(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
     def test_from_commit_msg_fixup_squash_commit(self):
@@ -334,6 +364,7 @@ class GitTests(BaseTestCase):
             self.assertListEqual(commit.parents, [])
             self.assertEqual(len(gitcontext.commits), 1)
             self.assertFalse(commit.is_merge_commit)
+            self.assertFalse(commit.is_revert_commit)
             # Asserting that squash and fixup are correct
             for type in commit_types:
                 attr = "is_" + type + "_commit"
@@ -360,7 +391,7 @@ class GitTests(BaseTestCase):
 
         # Check that objects are inequal when changing a single attribute
         for attr in ['message', 'author_name', 'author_email', 'parents', 'is_merge_commit', 'is_fixup_commit',
-                     'is_squash_commit', 'changed_files']:
+                     'is_squash_commit', 'is_revert_commit', 'changed_files']:
             prev_val = getattr(commit1, attr)
             setattr(commit1, attr, u"föo")
             self.assertNotEqual(commit1, commit2)
