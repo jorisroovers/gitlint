@@ -21,7 +21,7 @@ cd %Reponame%
 git config user.name gïtlint-test-user
 git config user.email gitlint@test.com
 git config core.quotePath false
-git config core.precomposeunicde true
+git config core.precomposeUnicode true
 
 :: Add a test commit
 echo "tëst 123" > test.txt

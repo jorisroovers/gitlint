@@ -4,7 +4,7 @@
 
 import io
 import os
-import sys
+import shutil
 import tempfile
 from datetime import datetime
 from uuid import uuid4
@@ -16,26 +16,8 @@ except ImportError:
     # python 3.x
     from unittest import TestCase
 
-import sh
-from sh import git, rm, touch, RunningCommand  # pylint: disable=no-name-in-module
-
-DEFAULT_ENCODING = sh.DEFAULT_ENCODING
-
-
-def ustr(obj):
-    """ Python 2 and 3 utility method that converts an obj to unicode in python 2 and to a str object in python 3"""
-    if sys.version_info[0] == 2:
-        # If we are getting a string, then do an explicit decode
-        # else, just call the unicode method of the object
-        if type(obj) in [str, basestring]:  # pragma: no cover # noqa
-            return unicode(obj, DEFAULT_ENCODING)  # pragma: no cover # noqa
-        else:
-            return unicode(obj)  # pragma: no cover # noqa
-    else:
-        if type(obj) in [bytes]:
-            return obj.decode(DEFAULT_ENCODING)
-        else:
-            return str(obj)
+from qa.shell import git, RunningCommand
+from qa.utils import DEFAULT_ENCODING, ustr
 
 
 class BaseTestCase(TestCase):
@@ -48,19 +30,6 @@ class BaseTestCase(TestCase):
 
     GITLINT_USE_SH_LIB = os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]")
 
-    def setUp(self):
-        self.tmpfiles = []
-
-    def tearDown(self):
-        for tmpfile in self.tmpfiles:
-            os.remove(tmpfile)
-
-    def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
-        self.assertIsInstance(output, RunningCommand)
-        output = output.stdout.decode(DEFAULT_ENCODING)
-        output = output.replace('\r', '')
-        self.assertMultiLineEqual(output, expected)
-
     @classmethod
     def setUpClass(cls):
         """ Sets up the integration tests by creating a new temporary git repository """
@@ -71,7 +40,20 @@ class BaseTestCase(TestCase):
     def tearDownClass(cls):
         """ Cleans up the temporary git repositories """
         for repo in cls.tmp_git_repos:
-            rm("-rf", repo)
+            shutil.rmtree(repo)
+
+    def setUp(self):
+        self.tmpfiles = []
+
+    def tearDown(self):
+        for tmpfile in self.tmpfiles:
+            os.remove(tmpfile)
+
+    def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
+        self.assertIsInstance(output, RunningCommand)
+        output = ustr(output.stdout)
+        output = output.replace('\r', '')
+        self.assertMultiLineEqual(output, expected)
 
     @classmethod
     def generate_temp_path(cls):
@@ -113,8 +95,9 @@ class BaseTestCase(TestCase):
         if env:
             environment.update(env)
 
+        # Create file and add to git
         test_filename = u"test-fïle-" + str(uuid4())
-        touch(test_filename, _cwd=git_repo)
+        io.open(os.path.join(git_repo, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
         git("add", test_filename, _cwd=git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
         if not ok_code:

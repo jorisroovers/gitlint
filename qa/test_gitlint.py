@@ -2,8 +2,9 @@
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 import io
 import os
-from sh import git, gitlint  # pylint: disable=no-name-in-module
-from qa.base import BaseTestCase, DEFAULT_ENCODING
+from qa.shell import git, gitlint
+from qa.base import BaseTestCase
+from qa.utils import DEFAULT_ENCODING
 
 
 class IntegrationTests(BaseTestCase):
