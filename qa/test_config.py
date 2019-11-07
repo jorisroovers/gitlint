@@ -5,7 +5,7 @@ import sys
 
 import arrow
 
-from sh import gitlint, git  # pylint: disable=no-name-in-module
+from qa.shell import git, gitlint
 from qa.base import BaseTestCase
 
 
@@ -28,6 +28,7 @@ class ConfigTests(BaseTestCase):
     def test_verbosity(self):
         self._create_simple_commit(u"WIP: Thïs is a title.\nContënt on the second line")
         output = gitlint("-v", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
+
         expected = u"1: T3\n1: T5\n2: B4\n"
         self.assertEqualStdout(output, expected)
 

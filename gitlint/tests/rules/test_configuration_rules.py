@@ -16,7 +16,7 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assert_logged([])  # nothing logged -> nothing ignored
 
         # Matching regex -> expect config to ignore all rules
-        rule = rules.IgnoreByTitle({"regex": "^Releäse(.*)"})
+        rule = rules.IgnoreByTitle({"regex": u"^Releäse(.*)"})
         expected_config = LintConfig()
         expected_config.ignore = "all"
         rule.apply(config, commit)
@@ -27,7 +27,7 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assert_log_contains(expected_log_message)
 
         # Matching regex with specific ignore
-        rule = rules.IgnoreByTitle({"regex": "^Releäse(.*)",
+        rule = rules.IgnoreByTitle({"regex": u"^Releäse(.*)",
                                     "ignore": "T1,B2"})
         expected_config = LintConfig()
         expected_config.ignore = "T1,B2"
@@ -48,7 +48,7 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assert_logged([])  # nothing logged -> nothing ignored
 
         # Matching regex -> expect config to ignore all rules
-        rule = rules.IgnoreByBody({"regex": "(.*)relëase(.*)"})
+        rule = rules.IgnoreByBody({"regex": u"(.*)relëase(.*)"})
         expected_config = LintConfig()
         expected_config.ignore = "all"
         rule.apply(config, commit)
@@ -60,7 +60,7 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assert_log_contains(expected_log_message)
 
         # Matching regex with specific ignore
-        rule = rules.IgnoreByBody({"regex": "(.*)relëase(.*)",
+        rule = rules.IgnoreByBody({"regex": u"(.*)relëase(.*)",
                                    "ignore": "T1,B2"})
         expected_config = LintConfig()
         expected_config.ignore = "T1,B2"
