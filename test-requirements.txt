@@ -1,5 +1,5 @@
 unittest2==1.1.0; python_version <= '2.7'
-flake8==3.5.0
+flake8==3.7.9
 coverage==4.5.3
 python-coveralls==2.9.2
 radon==3.0.3

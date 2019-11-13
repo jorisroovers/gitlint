@@ -16,6 +16,8 @@ matrix:
       # See https://github.com/travis-ci/travis-ci/issues/9815
       dist: xenial
       sudo: true
+    - python: "3.8"
+      os: linux
     - python: "pypy"
       os: linux
     - python: "pypy3.5"
@@ -50,7 +52,7 @@ script:
  - "./run_tests.sh"
  - "./run_tests.sh --integration"
  - "./run_tests.sh --build"
- - "./run_tests.sh --pep8"
+#  - "./run_tests.sh --pep8"
  - "./run_tests.sh --lint"
  - "./run_tests.sh --git"
 after_success:

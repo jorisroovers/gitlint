@@ -1,5 +1,8 @@
 # Changelog #
 
+## v0.13.0 (next up)
+- Python 3.8 support
+
 ## v0.12.0 (2019-07-15) ##
 
 Contributors:
