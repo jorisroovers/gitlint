@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-from gitlint.tests.base import BaseTestCase
+from gitlint.tests.base import BaseTestCase, ustr
 
 from gitlint.config import LintConfig, LintConfigBuilder, LintConfigError
 
@@ -127,7 +127,7 @@ class LintConfigBuilderTests(BaseTestCase):
         config_builder = LintConfigBuilder()
         config_builder.set_from_config_file(path)
         expected_error_msg = u"'föo' is not a valid value for option 'title-max-length.line-length'. " + \
-                             u"Option 'line-length' must be a positive integer \(current value: 'föo'\)."
+                             ustr(r"Option 'line-length' must be a positive integer \(current value: 'föo'\).")
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config_builder.build()
 

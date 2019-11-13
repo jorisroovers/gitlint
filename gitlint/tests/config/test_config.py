@@ -10,8 +10,7 @@ except ImportError:
 from gitlint import rules
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
 from gitlint import options
-from gitlint.tests.base import BaseTestCase
-from gitlint.utils import ustr
+from gitlint.tests.base import BaseTestCase, ustr
 
 
 class LintConfigTests(BaseTestCase):
@@ -57,7 +56,7 @@ class LintConfigTests(BaseTestCase):
 
         # invalid option value
         expected_error_msg = u"'föo' is not a valid value for option 'title-max-length.line-length'. " + \
-                             u"Option 'line-length' must be a positive integer \(current value: 'föo'\)."
+                             ustr(r"Option 'line-length' must be a positive integer \(current value: 'föo'\).")
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config.set_rule_option('title-max-length', 'line-length', u"föo")
 
@@ -189,7 +188,7 @@ class LintConfigTests(BaseTestCase):
 
     def test_extra_path_negative(self):
         config = LintConfig()
-        regex = u"Option extra-path must be either an existing directory or file \(current value: 'föo/bar'\)"
+        regex = ustr(r"Option extra-path must be either an existing directory or file \(current value: 'föo/bar'\)")
         # incorrect extra_path
         with self.assertRaisesRegex(LintConfigError, regex):
             config.extra_path = u"föo/bar"
@@ -214,7 +213,7 @@ class LintConfigTests(BaseTestCase):
         # invalid verbosity`
         incorrect_values = [-1, u"föo"]
         for value in incorrect_values:
-            expected_msg = u"Option 'verbosity' must be a positive integer \(current value: '{0}'\)".format(value)
+            expected_msg = ustr(r"Option 'verbosity' must be a positive integer \(current value: '{0}'\)").format(value)
             with self.assertRaisesRegex(LintConfigError, expected_msg):
                 config.verbosity = value
 
@@ -245,7 +244,7 @@ class LintConfigTests(BaseTestCase):
 
         # invalid target
         with self.assertRaisesRegex(LintConfigError,
-                                    u"Option target must be an existing directory \(current value: 'föo/bar'\)"):
+                                    ustr(r"Option target must be an existing directory \(current value: 'föo/bar'\)")):
             config.target = u"föo/bar"
 
     def test_ignore_independent_from_rules(self):

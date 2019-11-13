@@ -25,7 +25,7 @@ help(){
     echo "  -s, --stats              Show some project stats"
     echo "  --no-coverage            Don't make a unit test coverage report"
     echo ""
-    exit 0;
+    exit 0
 }
 
 RED="\033[31m"
@@ -39,7 +39,7 @@ title(){
     echo -e $MSG
 }
 
-subtitle() {
+subtitle(){
     MSG="$YELLOW$1$NO_COLOR"
     echo -e $MSG
 }
@@ -85,8 +85,9 @@ run_pep8_check(){
     FLAKE8_IGNORE="H307,H405,H803,H904,H802,H701"
     # exclude settings files and virtualenvs
     FLAKE8_EXCLUDE="*settings.py,*.venv/*.py"
+    target=${testargs:-"gitlint qa examples"}
     echo -ne "Running flake8..."
-    RESULT=$(flake8 --ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE gitlint qa examples)
+    RESULT=$(flake8 --extend-ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE $target)
     local exit_code=$?
     handle_test_result $exit_code "$RESULT"
     return $exit_code
@@ -97,11 +98,8 @@ run_unit_tests(){
     # py.test -s  => print standard output (i.e. show print statement output)
     #         -rw => print warnings
     OMIT="*pypy*,*venv*,*virtualenv*,*gitlint/tests/*"
-    if [ -n "$testargs" ]; then
-        coverage run --omit=$OMIT -m pytest -rw -s "$testargs"
-    else
-        coverage run --omit=$OMIT -m pytest -rw -s gitlint
-    fi
+    target=${testargs:-"gitlint"}
+    coverage run --omit=$OMIT -m pytest -rw -s $target
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
         COVERAGE_REPORT=$(coverage report -m)
@@ -122,11 +120,8 @@ run_integration_tests(){
 
     # py.test -s => print standard output (i.e. show print statement output)
     #         -rw => print warnings
-    if [ -n "$testargs" ]; then
-        py.test -s "$testargs"
-    else
-        py.test -s qa/
-    fi
+    target=${testargs:-"qa/"}
+    py.test -s $target
 }
 
 run_git_check(){
@@ -140,7 +135,8 @@ run_git_check(){
 
 run_lint_check(){
     echo -ne "Running pylint...${RED}"
-    RESULT=$(pylint gitlint qa --rcfile=".pylintrc" -r n)
+    target=${testargs:-"gitlint qa"}
+    RESULT=$(pylint $target --rcfile=".pylintrc" -r n)
     local exit_code=$?
     handle_test_result $exit_code "$RESULT"
     return $exit_code
