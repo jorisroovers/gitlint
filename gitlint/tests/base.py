@@ -1,6 +1,7 @@
 import io
 import logging
 import os
+import re
 
 try:
     # python 2.x
@@ -122,6 +123,13 @@ class BaseTestCase(unittest.TestCase):
     def assert_log_contains(self, line):
         """ Asserts that a certain line is in the logs """
         self.assertIn(line, self.logcapture.messages)
+
+    def assertRaisesRegex(self, expected_exception, expected_regex, *args, **kwargs):
+        """ Pass-through method to unittest.TestCase.assertRaisesRegex that applies re.escape() to the passed
+            `expected_regex`. This is useful to automatically escape all file paths that might be present in the regex.
+        """
+        return super(BaseTestCase, self).assertRaisesRegex(expected_exception, re.escape(expected_regex),
+                                                           *args, **kwargs)
 
 
 class LogCapture(logging.Handler):

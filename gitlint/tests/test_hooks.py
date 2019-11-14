@@ -128,7 +128,7 @@ class HookTests(BaseTestCase):
         read_data = "#!/bin/sh\nfoo"
         expected_dst = os.path.join(git_hooks_dir.return_value, COMMIT_MSG_HOOK_DST_PATH)
         expected_msg = u"The commit-msg hook in {0} was not installed by gitlint ".format(expected_dst) + \
-                       r"\(or it was modified\).\nUninstallation of 3th party or modified gitlint hooks " + \
+                       "(or it was modified).\nUninstallation of 3th party or modified gitlint hooks " + \
                        "is not supported."
         with patch('gitlint.hooks.io.open', mock_open(read_data=read_data), create=True):
             with self.assertRaisesRegex(GitHookInstallerError, expected_msg):

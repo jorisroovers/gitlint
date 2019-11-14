@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-import re
 
-from gitlint.tests.base import BaseTestCase, ustr
+from gitlint.tests.base import BaseTestCase
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption, PathOption, RuleOptionError
 
@@ -31,12 +30,12 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, 456)
 
         # error on negative int when not allowed
-        expected_error = ustr(r"Option 'test-name' must be a positive integer \(current value: '-123'\)")
+        expected_error = u"Option 'test-name' must be a positive integer (current value: '-123')"
         with self.assertRaisesRegex(RuleOptionError, expected_error):
             option.set(-123)
 
         # error on non-int value
-        expected_error = ustr(r"Option 'test-name' must be a positive integer \(current value: 'foo'\)")
+        expected_error = u"Option 'test-name' must be a positive integer (current value: 'foo')"
         with self.assertRaisesRegex(RuleOptionError, expected_error):
             option.set("foo")
 
@@ -46,7 +45,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, -456)
 
         # error on non-int value when negative int is allowed
-        expected_error = ustr(r"Option 'test-name' must be an integer \(current value: 'foo'\)")
+        expected_error = u"Option 'test-name' must be an integer (current value: 'foo')"
         with self.assertRaisesRegex(RuleOptionError, expected_error):
             option.set("foo")
 
@@ -141,20 +140,19 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, self.SAMPLES_DIR)
 
         # set to int
-        expected = ustr(r"Option test-directory must be an existing directory \(current value: '1234'\)")
+        expected = u"Option test-directory must be an existing directory (current value: '1234')"
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(1234)
 
         # set to non-existing directory
         non_existing_path = os.path.join(u"/föo", u"bar")
-        expected = ustr(r"Option test-directory must be an existing directory \(current value: '{0}'\)")
+        expected = u"Option test-directory must be an existing directory (current value: '{0}')"
         with self.assertRaisesRegex(RuleOptionError, expected.format(non_existing_path)):
             option.set(non_existing_path)
 
         # set to a file, should raise exception since option.type = dir
         sample_path = self.get_sample_path(os.path.join("commit_message", "sample1"))
-        expected = ustr(r"Option test-directory must be an existing directory \(current value: '{0}'\)").format(
-            re.escape(sample_path))
+        expected = u"Option test-directory must be an existing directory (current value: '{0}')".format(sample_path)
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(sample_path)
 
@@ -162,8 +160,8 @@ class RuleOptionTests(BaseTestCase):
         option.type = u"file"
         option.set(sample_path)
         self.assertEqual(option.value, sample_path)
-        expected = ustr(r"Option test-directory must be an existing file \(current value: '{0}'\)").format(
-            re.escape(self.get_sample_path()))
+        expected = u"Option test-directory must be an existing file (current value: '{0}')".format(
+            self.get_sample_path())
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set(self.get_sample_path())
 
@@ -176,6 +174,6 @@ class RuleOptionTests(BaseTestCase):
 
         # Expect exception if path type is invalid
         option.type = u'föo'
-        expected = ustr(r"Option test-directory type must be one of: 'file', 'dir', 'both' \(current: 'föo'\)")
+        expected = u"Option test-directory type must be one of: 'file', 'dir', 'both' (current: 'föo')"
         with self.assertRaisesRegex(RuleOptionError, expected):
             option.set("haha")
