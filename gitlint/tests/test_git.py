@@ -419,7 +419,7 @@ class GitTests(BaseTestCase):
         hooks_dir = os.path.join(u"föo", ".git", "hooks")
         git.return_value.__str__ = lambda _: hooks_dir + "\n"
         git.return_value.__unicode__ = lambda _: hooks_dir + "\n"
-        self.assertEqual(git_hooks_dir(u"/blä"), os.path.join(u"/blä", hooks_dir))
+        self.assertEqual(git_hooks_dir(u"/blä"), os.path.abspath(os.path.join(u"/blä", hooks_dir)))
 
         git.assert_called_once_with("rev-parse", "--git-path", "hooks", _cwd=u"/blä")
 

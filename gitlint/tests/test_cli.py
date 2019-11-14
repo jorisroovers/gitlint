@@ -401,10 +401,12 @@ class CLITests(BaseTestCase):
     def test_generate_config_negative(self):
         """ Negative test for the generate-config subcommand """
         # Non-existing directory
-        result = self.cli.invoke(cli.cli, ["generate-config"], input=u"/föo/bar")
+        fake_dir = os.path.abspath(u"/föo")
+        fake_path = os.path.join(fake_dir, u"bar")
+        result = self.cli.invoke(cli.cli, ["generate-config"], input=fake_path)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = u"Please specify a location for the sample gitlint config file [.gitlint]: /föo/bar\n" + \
-                       u"Error: Directory '/föo' does not exist.\n"
+        expected_msg = (u"Please specify a location for the sample gitlint config file [.gitlint]: {0}\n"
+                        + u"Error: Directory '{1}' does not exist.\n").format(fake_path, fake_dir)
         self.assertEqual(result.output, expected_msg)
 
         # Existing file
