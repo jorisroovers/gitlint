@@ -219,9 +219,10 @@ def lint(ctx):
     # where users are using --commits in a check job to check the commit messages inside a CI job. By returning 0, we
     # ensure that these jobs don't fail if for whatever reason the specified commit range is empty.
     if number_of_commits == 0:
-        LOG.debug(u'No commits in range "%s"', ctx.obj[2])
+        LOG.debug(u'No commits in range "%s"', refspec)
         ctx.exit(0)
 
+    LOG.debug(u'Linting %d commit(s)', number_of_commits)
     general_config_builder = ctx.obj[1]
     last_commit = gitcontext.commits[-1]
 
