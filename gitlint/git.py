@@ -118,23 +118,31 @@ class GitCommit(object):
     """
 
     def __init__(self, context, message, sha=None, date=None, author_name=None,  # pylint: disable=too-many-arguments
-                 author_email=None, parents=None, is_merge_commit=None, is_fixup_commit=None,
-                 is_squash_commit=None, is_revert_commit=None, changed_files=None):
+                 author_email=None, parents=None, changed_files=None):
         self.context = context
         self.message = message
         self.sha = sha
         self.date = date
         self.author_name = author_name
         self.author_email = author_email
-        # parent commit hashes
-        self.parents = parents or []
+        self.parents = parents or []  # parent commit hashes
         self.changed_files = changed_files or []
 
-        # If it's not explicitely specified, we consider a commit a merge commit if its title starts with "Merge"
-        self.is_merge_commit = message.title.startswith(u"Merge") if is_merge_commit is None else is_merge_commit
-        self.is_fixup_commit = message.title.startswith(u"fixup!") if is_fixup_commit is None else is_fixup_commit
-        self.is_squash_commit = message.title.startswith(u"squash!") if is_squash_commit is None else is_squash_commit
-        self.is_revert_commit = message.title.startswith(u"Revert") if is_revert_commit is None else is_revert_commit
+    @property
+    def is_merge_commit(self):
+        return self.message.title.startswith(u"Merge")
+
+    @property
+    def is_fixup_commit(self):
+        return self.message.title.startswith(u"fixup!")
+
+    @property
+    def is_squash_commit(self):
+        return self.message.title.startswith(u"squash!")
+
+    @property
+    def is_revert_commit(self):
+        return self.message.title.startswith(u"Revert")
 
     def __unicode__(self):
         format_str = u"--- Commit Message ----\n%s\n" + \
@@ -165,6 +173,82 @@ class GitCommit(object):
 
     def __ne__(self, other):
         return not self.__eq__(other)  # required for py2
+
+
+class LocalGitCommit(GitCommit):
+    """ Class representing a git commit that exists in the local git repository.
+        This class uses lazy loading: it defers reading information from the local git repository until the associated
+        property is accessed for the first time. Properties are then cached for subsequent access.
+
+        This approach ensures that we don't do 'expensive' git calls when certain properties are not actually used.
+        In addition, reading the required info when it's needed rather than up front avoids adding delay during gitlint
+        startup time and reduces gitlint's memory footprint.
+     """
+    def __init__(self, context, sha):  # pylint: disable=super-init-not-called
+        self.context = context
+        self.sha = sha
+        self._cache = {}
+
+    def _log(self):
+        """ Does a call to `git log` to determine a bunch of information about the commit. """
+        long_format = "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B"
+        raw_commit = _git("log", self.sha, "-1", long_format, _cwd=self.context.repository_path).split("\n")
+
+        (name, email, date, parents), commit_msg = raw_commit[0].split('\x00'), "\n".join(raw_commit[1:])
+
+        commit_parents = parents.split(" ")
+        commit_is_merge_commit = len(commit_parents) > 1
+
+        # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
+        # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
+        # http://stackoverflow.com/a/30696682/381010
+        commit_date = arrow.get(ustr(date), "YYYY-MM-DD HH:mm:ss Z").datetime
+
+        # Create Git commit object with the retrieved info
+        commit_msg_obj = GitCommitMessage.from_full_message(self.context, commit_msg)
+
+        self._cache.update({'message': commit_msg_obj, 'author_name': name, 'author_email': email, 'date': commit_date,
+                            'parents': commit_parents, 'is_merge_commit': commit_is_merge_commit})
+
+    def _try_cache(self, cache_key, cache_populate_func):
+        """ Tries to get a value from the cache identified by `cache_key`.
+            If no value is found in the cache, do a function call to `cache_populate_func` to populate the cache
+            and then return the value from the cache. """
+        if cache_key not in self._cache:
+            cache_populate_func()
+        return self._cache[cache_key]
+
+    @property
+    def message(self):
+        return self._try_cache("message", self._log)
+
+    @property
+    def author_name(self):
+        return self._try_cache("author_name", self._log)
+
+    @property
+    def author_email(self):
+        return self._try_cache("author_email", self._log)
+
+    @property
+    def date(self):
+        return self._try_cache("date", self._log)
+
+    @property
+    def parents(self):
+        return self._try_cache("parents", self._log)
+
+    @property
+    def is_merge_commit(self):
+        return self._try_cache("is_merge_commit", self._log)
+
+    @property
+    def changed_files(self):
+        def cache_changed_files():
+            self._cache['changed_files'] = _git("diff-tree", "--no-commit-id", "--name-only", "-r",
+                                                self.sha, _cwd=self.context.repository_path).split()
+
+        return self._try_cache("changed_files", cache_changed_files)
 
 
 class GitContext(object):
@@ -209,30 +293,7 @@ class GitContext(object):
             sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
 
         for sha in sha_list:
-            # Get info from the local git repository: https://git-scm.com/docs/pretty-formats
-            long_format = "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B"
-            raw_commit = _git("log", sha, "-1", long_format, _cwd=repository_path).split("\n")
-
-            (name, email, date, parents), commit_msg = raw_commit[0].split('\x00'), "\n".join(raw_commit[1:])
-
-            commit_parents = parents.split(" ")
-            commit_is_merge_commit = len(commit_parents) > 1
-
-            # changed files in last commit
-            changed_files = _git("diff-tree", "--no-commit-id", "--name-only", "-r", sha, _cwd=repository_path).split()
-
-            # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
-            # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
-            # http://stackoverflow.com/a/30696682/381010
-            commit_date = arrow.get(ustr(date), "YYYY-MM-DD HH:mm:ss Z").datetime
-
-            # Create Git commit object with the retrieved info
-            commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg)
-
-            commit = GitCommit(context, commit_msg_obj, sha=sha, author_name=name,
-                               author_email=email, date=commit_date, changed_files=changed_files,
-                               parents=commit_parents, is_merge_commit=commit_is_merge_commit)
-
+            commit = LocalGitCommit(context, sha)
             context.commits.append(commit)
 
         return context
