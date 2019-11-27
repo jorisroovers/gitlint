@@ -61,8 +61,7 @@ class LintConfig(object):
                             rules.AuthorValidEmail)
 
     def __init__(self):
-        # Use an ordered dict so that the order in which rules are applied is always the same
-        self._rules = OrderedDict([(rule_cls.id, rule_cls()) for rule_cls in self.default_rule_classes])
+        self.rules = RuleCollection(self.default_rule_classes)
         self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self._ignore_fixup_commits = options.BoolOption('ignore-fixup-commits', True, "Ignore fixup commits")
@@ -144,6 +143,25 @@ class LintConfig(object):
         return self._debug.set(value)
 
     @property
+    def ignore(self):
+        return self._ignore.value
+
+    @ignore.setter
+    def ignore(self, value):
+        if value == "all":
+            value = [rule.id for rule in self.rules]
+        return self._ignore.set(value)
+
+    @property
+    def ignore_stdin(self):
+        return self._ignore_stdin.value
+
+    @ignore_stdin.setter
+    @handle_option_error
+    def ignore_stdin(self, value):
+        return self._ignore_stdin.set(value)
+
+    @property
     def extra_path(self):
         return self._extra_path.value if self._extra_path else None
 
@@ -160,31 +178,14 @@ class LintConfig(object):
                 )
 
             # Make sure we unload any previously loaded extra-path rules
-            for rule in self.rules:
-                if hasattr(rule, 'is_user_defined') and rule.is_user_defined:
-                    del self._rules[rule.id]
+            self.rules.delete_rules_by_attr("is_user_defined", True)
 
-            # Find rules in the new extra-path
+            # Find rules in the new extra-path and add them to the existing rules
             rule_classes = rule_finder.find_rule_classes(self.extra_path)
-
-            # Add the newly found rules to the existing rules
-            for rule_class in rule_classes:
-                rule_obj = rule_class()
-                rule_obj.is_user_defined = True
-                self._rules[rule_class.id] = rule_obj
+            self.rules.add_rules(rule_classes, {'is_user_defined': True})
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
             raise LintConfigError(ustr(e))
-
-    @property
-    def ignore(self):
-        return self._ignore.value
-
-    @ignore.setter
-    def ignore(self, value):
-        if value == "all":
-            value = [rule.id for rule in self.rules]
-        return self._ignore.set(value)
 
     @property
     def contrib(self):
@@ -196,9 +197,7 @@ class LintConfig(object):
             self._contrib.set(value)
 
             # Make sure we unload any previously loaded contrib rules when re-setting the value
-            for rule in self.rules:
-                if hasattr(rule, 'is_contrib') and rule.is_contrib:
-                    del self._rules[rule.id]
+            self.rules.delete_rules_by_attr("is_contrib", True)
 
             # Load all classes from the contrib directory
             contrib_dir_path = os.path.dirname(os.path.realpath(contrib_rules.__file__))
@@ -211,42 +210,17 @@ class LintConfig(object):
 
                 # If contrib rule exists, instantiate it and add it to the rules list
                 if rule_class:
-                    rule_obj = rule_class()
-                    rule_obj.is_contrib = True
-                    self._rules[rule_class.id] = rule_obj
+                    self.rules.add_rule(rule_class, rule_class.id, {'is_contrib': True})
                 else:
                     raise LintConfigError(u"No contrib rule with id or name '{0}' found.".format(ustr(rule_id_or_name)))
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
             raise LintConfigError(ustr(e))
 
-    @property
-    def ignore_stdin(self):
-        return self._ignore_stdin.value
-
-    @ignore_stdin.setter
-    @handle_option_error
-    def ignore_stdin(self, value):
-        return self._ignore_stdin.set(value)
-
-    @property
-    def rules(self):
-        # Create a new list based on _rules.values() because in python 3, values() is a ValuesView as opposed to a list
-        return [rule for rule in self._rules.values()]
-
-    def get_rule(self, rule_id_or_name):
-        # try finding rule by id
-        rule_id_or_name = ustr(rule_id_or_name)  # convert to unicode first
-        rule = self._rules.get(rule_id_or_name)
-        # if not found, try finding rule by name
-        if not rule:
-            rule = next((rule for rule in self._rules.values() if rule.name == rule_id_or_name), None)
-        return rule
-
     def _get_option(self, rule_name_or_id, option_name):
         rule_name_or_id = ustr(rule_name_or_id)  # convert to unicode first
         option_name = ustr(option_name)
-        rule = self.get_rule(rule_name_or_id)
+        rule = self.rules.find_rule(rule_name_or_id)
         if not rule:
             raise LintConfigError(u"No such rule '{0}'".format(rule_name_or_id))
 
@@ -312,8 +286,70 @@ class LintConfig(object):
         return_str += u"verbosity: {0}\n".format(self.verbosity)
         return_str += u"debug: {0}\n".format(self.debug)
         return_str += u"target: {0}\n".format(self.target)
-        return_str += u"[RULES]\n"
-        for rule in self.rules:
+        return_str += u"[RULES]\n{0}".format(self.rules)
+        return return_str
+
+
+class RuleCollection(object):
+    """ Class representing an ordered list of rules. Methods are provided to easily retrieve, add or delete rules. """
+
+    def __init__(self, rule_classes=None, rule_attrs=None):
+        # Use an ordered dict so that the order in which rules are applied is always the same
+        self._rules = OrderedDict()
+        if rule_classes:
+            self.add_rules(rule_classes, rule_attrs)
+
+    def find_rule(self, rule_id_or_name):
+        # try finding rule by id
+        rule_id_or_name = ustr(rule_id_or_name)  # convert to unicode first
+        rule = self._rules.get(rule_id_or_name)
+        # if not found, try finding rule by name
+        if not rule:
+            rule = next((rule for rule in self._rules.values() if rule.name == rule_id_or_name), None)
+        return rule
+
+    def add_rule(self, rule_class, rule_id, rule_attrs=None):
+        """ Instantiates and adds a rule to RuleCollection.
+            Note: There can be multiple instantiations of the same rule_class in the RuleCollection, as long as the
+            rule_id is unique.
+            :param rule_class python class representing the rule
+            :param rule_id unique identifier for the rule. If not unique, it will
+                           overwrite the existing rule with that id
+            :param rule_attrs dictionary of attributes to set on the instantiated rule obj
+        """
+        rule_obj = rule_class()
+        rule_obj.id = rule_id
+        if rule_attrs:
+            for key, val in rule_attrs.items():
+                setattr(rule_obj, key, val)
+        self._rules[rule_obj.id] = rule_obj
+
+    def add_rules(self, rule_classes, rule_attrs=None):
+        """ Convenience method to add multiple rules at once based on a list of rule classes. """
+        for rule_class in rule_classes:
+            self.add_rule(rule_class, rule_class.id, rule_attrs)
+
+    def delete_rules_by_attr(self, attr_name, attr_val):
+        """ Deletes all rules from the collection that match a given attribute name and value """
+        # Create a new list based on _rules.values() because in python 3, values() is a ValuesView as opposed to a list
+        # This means you can't modify the ValueView while iterating over it.
+        for rule in [r for r in self._rules.values()]:
+            if hasattr(rule, attr_name) and (getattr(rule, attr_name) == attr_val):
+                del self._rules[rule.id]
+
+    def __iter__(self):
+        for rule in self._rules.values():
+            yield rule
+
+    def __eq__(self, other):
+        return isinstance(other, RuleCollection) and self._rules == other._rules
+
+    def __len__(self):
+        return len(self._rules)
+
+    def __str__(self):
+        return_str = ""
+        for rule in self._rules.values():
             return_str += u"  {0}: {1}\n".format(rule.id, rule.name)
             for option_name, option_value in sorted(rule.options.items()):
                 if isinstance(option_value.value, list):

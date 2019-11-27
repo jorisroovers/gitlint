@@ -41,7 +41,7 @@ class LintConfigBuilderTests(BaseTestCase):
         # nothing gitlint
         config_builder.set_config_from_commit(self.gitcommit(u"tëst\ngitlint\nfoo"))
         config = config_builder.build()
-        self.assertListEqual(config.rules, original_rules)
+        self.assertSequenceEqual(config.rules, original_rules)
         self.assertListEqual(config.ignore, [])
 
         # ignore all rules

@@ -14,22 +14,6 @@ from gitlint.tests.base import BaseTestCase, ustr
 
 
 class LintConfigTests(BaseTestCase):
-    def test_get_rule(self):
-        config = LintConfig()
-
-        # get by id
-        expected = rules.TitleMaxLength()
-        rule = config.get_rule('T1')
-        self.assertEqual(rule, expected)
-
-        # get by name
-        expected2 = rules.TitleTrailingWhitespace()
-        rule = config.get_rule('title-trailing-whitespace')
-        self.assertEqual(rule, expected2)
-
-        # get non-existing
-        rule = config.get_rule(u'föo')
-        self.assertIsNone(rule)
 
     def test_set_rule_option(self):
         config = LintConfig()
@@ -119,7 +103,7 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(config.contrib, contrib_rules)
 
         # Check contrib-title-conventional-commits contrib rule
-        actual_rule = config.get_rule("contrib-title-conventional-commits")
+        actual_rule = config.rules.find_rule("contrib-title-conventional-commits")
         self.assertTrue(actual_rule.is_contrib)
 
         self.assertEqual(ustr(type(actual_rule)), "<class 'conventional_commit.ConventionalCommit'>")
@@ -137,7 +121,7 @@ class LintConfigTests(BaseTestCase):
         self.assertDictEqual(actual_rule.options, {'types': expected_rule_option})
 
         # Check contrib-body-requires-signed-off-by contrib rule
-        actual_rule = config.get_rule("contrib-body-requires-signed-off-by")
+        actual_rule = config.rules.find_rule("contrib-body-requires-signed-off-by")
         self.assertTrue(actual_rule.is_contrib)
 
         self.assertEqual(ustr(type(actual_rule)), "<class 'signedoff_by.SignedOffBy'>")
@@ -146,8 +130,8 @@ class LintConfigTests(BaseTestCase):
 
         # reset value (this is a different code path)
         config.set_general_option("contrib", "contrib-body-requires-signed-off-by")
-        self.assertEqual(actual_rule, config.get_rule("contrib-body-requires-signed-off-by"))
-        self.assertIsNone(config.get_rule("contrib-title-conventional-commits"))
+        self.assertEqual(actual_rule, config.rules.find_rule("contrib-body-requires-signed-off-by"))
+        self.assertIsNone(config.rules.find_rule("contrib-title-conventional-commits"))
 
         # empty value
         config.set_general_option("contrib", "")
@@ -171,7 +155,7 @@ class LintConfigTests(BaseTestCase):
 
         config.set_general_option("extra-path", self.get_user_rules_path())
         self.assertEqual(config.extra_path, self.get_user_rules_path())
-        actual_rule = config.get_rule('UC1')
+        actual_rule = config.rules.find_rule('UC1')
         self.assertTrue(actual_rule.is_user_defined)
         self.assertEqual(ustr(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
         self.assertEqual(actual_rule.id, 'UC1')
@@ -184,7 +168,7 @@ class LintConfigTests(BaseTestCase):
         # reset value (this is a different code path)
         config.set_general_option("extra-path", self.SAMPLES_DIR)
         self.assertEqual(config.extra_path, self.SAMPLES_DIR)
-        self.assertIsNone(config.get_rule("UC1"))
+        self.assertIsNone(config.rules.find_rule("UC1"))
 
     def test_extra_path_negative(self):
         config = LintConfig()
@@ -254,7 +238,7 @@ class LintConfigTests(BaseTestCase):
         original_rules = config.rules
         config.ignore = ["T1", "T2"]
         self.assertEqual(config.ignore, ["T1", "T2"])
-        self.assertListEqual(config.rules, original_rules)
+        self.assertSequenceEqual(config.rules, original_rules)
 
 
 class LintConfigGeneratorTests(BaseTestCase):
