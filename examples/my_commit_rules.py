@@ -19,7 +19,7 @@ class BodyMaxLineCount(CommitRule):
     # A rule MUST have a human friendly name
     name = "body-max-line-count"
 
-    # A rule MUST have an *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "UC1"
 
     # A rule MAY have an option_spec if its behavior should be configurable.
@@ -41,7 +41,7 @@ class SignedOffBy(CommitRule):
     # A rule MUST have a human friendly name
     name = "body-requires-signed-off-by"
 
-    # A rule MUST have an *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "UC2"
 
     def validate(self, commit):

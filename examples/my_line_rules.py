@@ -23,7 +23,7 @@ class SpecialChars(LineRule):
     # A rule MUST have a human friendly name
     name = "title-no-special-chars"
 
-    # A rule MUST have an *unique* id, we recommend starting with UL (for User-defined Line-rule), but this can
+    # A rule MUST have a *unique* id, we recommend starting with UL (for User-defined Line-rule), but this can
     # really be anything.
     id = "UL1"
 

@@ -28,7 +28,7 @@ class SignedOffBy(CommitRule):
     # A rule MUST have a human friendly name
     name = "body-requires-signed-off-by"
 
-    # A rule MUST have an *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "UC2"
 
     def validate(self, commit):
@@ -94,7 +94,7 @@ class SignedOffBy(CommitRule):
     # A rule MUST have a human friendly name
     name = "body-requires-signed-off-by"
 
-    # A rule MUST have an *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "UC2"
 
     def validate(self, commit):
@@ -119,7 +119,7 @@ class SpecialChars(LineRule):
     # A rule MUST have a human friendly name
     name = "title-no-special-chars"
 
-    # A rule MUST have an *unique* id, we recommend starting with UL (for User-defined Line-rule), but this can
+    # A rule MUST have a *unique* id, we recommend starting with UL (for User-defined Line-rule), but this can
     # really be anything.
     id = "UL1"
 
@@ -228,7 +228,7 @@ class BodyMaxLineCount(CommitRule):
     # A rule MUST have a human friendly name
     name = "body-max-line-count"
 
-    # A rule MUST have an *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "UC1"
 
     # A rule MAY have an option_spec if its behavior should be configurable.
