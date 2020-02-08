@@ -293,7 +293,7 @@ install_virtualenv(){
 }
 
 container_name(){
-    echo "gitlint-python-$1"
+    echo "jorisroovers/gitlint:dev-python-$1"
 }
 
 start_container(){
@@ -337,7 +337,7 @@ install_container(){
     tmp_exit_code=$?
     if [ $tmp_exit_code -gt 0 ]; then
         subtitle "Building container image from python:${python_version_dotted}-stretch..."
-        docker build --build-arg python_version_dotted="$python_version_dotted" -t $container_name .
+        docker build -f Dockerfile.dev --build-arg python_version_dotted="$python_version_dotted" -t $container_name .
         exit_code=$?
     else
         subtitle "Building container image from python:${python_version_dotted}-stretch...SKIP (ALREADY-EXISTS)"
@@ -434,7 +434,7 @@ while [ "$#" -gt 0 ]; do
         --install-container) shift; just_install_container=1;;
         --uninstall-container) shift; just_uninstall_container=1;;
         --all-env) shift; envs="all";;
-        --C|--container) shift; container_enabled=1;;
+        -C|--container) shift; container_enabled=1;;
         --no-coverage)shift; include_coverage=0;;
         *) testargs="$1"; shift;
    esac

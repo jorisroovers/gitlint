@@ -1,17 +1,15 @@
-# Note: development using the local Dockerfile is still work-in-progress
-# Getting started: http://jorisroovers.github.io/gitlint/contributing/
-ARG python_version_dotted
+# User-facing Dockerfile. For development, see Dockerfile.dev and ./run_tests.sh -h
 
-FROM python:${python_version_dotted}-stretch
+# To lint your current working directory:
+# docker run -v $(pwd):/repo jorisroovers/gitlint
 
-RUN apt-get update
-# software-properties-common contains 'add-apt-repository'
-RUN apt-get install -y git silversearcher-ag jq curl
+# With arguments:
+# docker run -v $(pwd):/repo jorisroovers/gitlint --debug --ignore T1
 
-ADD . /gitlint
-WORKDIR /gitlint
+FROM python:3.8-alpine
+ARG GITLINT_VERSION
 
-RUN pip install --ignore-requires-python -r requirements.txt
-RUN pip install --ignore-requires-python -r test-requirements.txt
+RUN apk add git
+RUN pip install gitlint==$GITLINT_VERSION
 
-CMD ["/bin/bash"]
+ENTRYPOINT ["gitlint", "--target", "/repo"]
