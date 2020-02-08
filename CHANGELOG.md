@@ -2,6 +2,8 @@
 
 ## v0.13.0 (next up)
 - Python 3.8 support
+- Python 3.4 no longer supported (it has [reached EOL](https://www.python.org/dev/peps/pep-0429/#id4) and an increasing
+  of gitlint's dependencies have dropped support which makes it hard to maintain).
 
 ## v0.12.0 (2019-07-15) ##
 

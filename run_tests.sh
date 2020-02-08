@@ -13,7 +13,7 @@ help(){
     echo "  -b, --build              Run build tests"
     echo "  -a, --all                Run all tests and checks (unit, integration, pep8, git)"
     echo "  -e, --envs [ENV1],[ENV2] Run tests against specified python environments"
-    echo "                           (envs: 27,34,35,36,37,pypy2,pypy35)."
+    echo "                           (envs: 27,35,36,37,pypy2,pypy35)."
     echo "                           Also works for integration, pep8 and lint tests."
     echo "  -C, --container          Run the specified command in the container for the --envs specified"
     echo "  --all-env                Run all tests against all python environments"
@@ -366,7 +366,7 @@ uninstall_container(){
 
 assert_specific_env(){
     if [ -z "$1" ] || [ "$1" == "default" ]; then
-        fatal "ERROR: Please specify one or more valid python environments using --envs: 27,34,35,36,37,pypy2,pypy35"
+        fatal "ERROR: Please specify one or more valid python environments using --envs: 27,35,36,37,pypy2,pypy35"
         exit 1
     fi
 }
@@ -452,7 +452,7 @@ exit_code=0
 
 # If the users specified 'all', then just replace $envs with the list of all envs
 if [ "$envs" == "all" ]; then
-    envs="27,34,35,36,37,38,pypy2,pypy35"
+    envs="27,35,36,37,38,pypy2,pypy35"
 fi
 original_envs="$envs"
 envs=$(echo "$envs" | tr ',' '\n') # Split the env list on comma so we can loop through it
