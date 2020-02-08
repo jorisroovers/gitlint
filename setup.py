@@ -53,7 +53,6 @@ setup(
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
@@ -72,9 +71,6 @@ setup(
     extras_require={
         ':python_version != "3.4"': [
             'arrow==0.14.2',
-        ],
-        ':python_version == "3.4"': [
-            'arrow==0.13.2',
         ],
         ':sys_platform != "win32"': [
             'sh==1.12.14',
