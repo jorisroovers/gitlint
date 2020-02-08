@@ -41,6 +41,9 @@ brew install gitlint
 
 # Ubuntu
 apt-get install gitlint
+
+# Docker: https://hub.docker.com/r/jorisroovers/gitlint
+docker run -v $(pwd):/repo jorisroovers/gitlint
 ```
 
 ## Usage
