@@ -31,6 +31,9 @@ class Rule(object):
         return self.id == other.id and self.name == other.name and \
                self.options == other.options and self.target == other.target  # noqa
 
+    def __ne__(self, other):
+        return not self.__eq__(other)  # required for py2
+
     def __str__(self):
         return sstr(self)  # pragma: no cover
 
@@ -87,6 +90,9 @@ class RuleViolation(object):
         equal = self.rule_id == other.rule_id and self.message == other.message
         equal = equal and self.content == other.content and self.line_nr == other.line_nr
         return equal
+
+    def __ne__(self, other):
+        return not self.__eq__(other)  # required for py2
 
     def __str__(self):
         return sstr(self)  # pragma: no cover

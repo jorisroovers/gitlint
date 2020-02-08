@@ -107,6 +107,9 @@ class GitCommitMessage(object):
         return isinstance(other, GitCommitMessage) and self.original == other.original and \
                self.full == other.full and self.title == other.title and self.body == other.body  # noqa
 
+    def __ne__(self, other):
+        return not self.__eq__(other)  # required for py2
+
 
 class GitCommit(object):
     """ Class representing a git commit.
@@ -159,6 +162,9 @@ class GitCommit(object):
                self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit and \
                self.is_squash_commit == other.is_squash_commit and self.is_revert_commit == other.is_revert_commit and \
                self.changed_files == other.changed_files  # noqa
+
+    def __ne__(self, other):
+        return not self.__eq__(other)  # required for py2
 
 
 class GitContext(object):
@@ -233,3 +239,6 @@ class GitContext(object):
 
     def __eq__(self, other):
         return isinstance(other, GitContext) and self.commits == other.commits
+
+    def __ne__(self, other):
+        return not self.__eq__(other)  # required for py2

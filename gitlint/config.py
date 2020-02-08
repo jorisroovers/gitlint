@@ -271,6 +271,9 @@ class LintConfig(object):
             self.ignore == other.ignore and \
             self._config_path == other._config_path  # noqa
 
+    def __ne__(self, other):
+        return not self.__eq__(other)  # required for py2
+
     def __str__(self):
         # config-path is not a user exposed variable, so don't print it under the general section
         return_str = u"config-path: {0}\n".format(self._config_path)
@@ -343,6 +346,9 @@ class RuleCollection(object):
 
     def __eq__(self, other):
         return isinstance(other, RuleCollection) and self._rules == other._rules
+
+    def __ne__(self, other):
+        return not self.__eq__(other)  # required for py2
 
     def __len__(self):
         return len(self._rules)
