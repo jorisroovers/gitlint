@@ -1,5 +1,7 @@
 from gitlint.rules import CommitRule, RuleViolation
-from gitlint.options import IntOption
+from gitlint.options import IntOption, ListOption
+from gitlint import utils
+
 
 """
 The classes below are examples of user-defined CommitRules. Commit rules are gitlint rules that
@@ -50,3 +52,36 @@ class SignedOffBy(CommitRule):
                 return
 
         return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By' line", line_nr=1)]
+
+
+class BranchNamingConventions(CommitRule):
+    """ This rule will enforce that a commit is part of a branch that meets certain naming conventions.
+        See GitFlow for real-world example of this: https://nvie.com/posts/a-successful-git-branching-model/
+    """
+
+    # A rule MUST have a human friendly name
+    name = "branch-naming-conventions"
+
+    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    id = "UC3"
+
+    # A rule MAY have an option_spec if its behavior should be configurable.
+    options_spec = [ListOption('branch-prefixes', ["feature/", "hotfix/", "release/"], "Allowed branch prefixes")]
+
+    def validate(self, commit):
+        violations = []
+        allowed_branch_prefixes = self.options['branch-prefixes'].value
+        for branch in commit.branches:
+            valid_branch_name = False
+
+            for allowed_prefix in allowed_branch_prefixes:
+                if branch.startswith(allowed_prefix):
+                    valid_branch_name = True
+                    break
+
+            if not valid_branch_name:
+                msg = "Branch name '{0}' does not start with one of {1}".format(branch,
+                                                                                utils.sstr(allowed_branch_prefixes))
+                violations.append(RuleViolation(self.id, msg, line_nr=1))
+
+        return violations

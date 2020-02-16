@@ -113,12 +113,13 @@ class GitCommitMessage(object):
 
 class GitCommit(object):
     """ Class representing a git commit.
-        A commit consists of: context, message, author name, author email, date, list of changed files
+        A commit consists of: context, message, author name, author email, date, list of parent commit shas,
+        list of changed files, list of branch names.
         In the context of gitlint, only the git context and commit message are required.
     """
 
     def __init__(self, context, message, sha=None, date=None, author_name=None,  # pylint: disable=too-many-arguments
-                 author_email=None, parents=None, changed_files=None):
+                 author_email=None, parents=None, changed_files=None, branches=None):
         self.context = context
         self.message = message
         self.sha = sha
@@ -127,6 +128,7 @@ class GitCommit(object):
         self.author_email = author_email
         self.parents = parents or []  # parent commit hashes
         self.changed_files = changed_files or []
+        self.branches = branches or []
 
     @property
     def is_merge_commit(self):
@@ -237,6 +239,22 @@ class LocalGitCommit(GitCommit):
     @property
     def parents(self):
         return self._try_cache("parents", self._log)
+
+    @property
+    def branches(self):
+        def cache_branches():
+            # We have to parse 'git branch --contains <sha>' instead of 'git for-each-ref' to be compatible with
+            # git versions < 2.7.0
+            # https://stackoverflow.com/questions/45173979/can-i-force-git-branch-contains-tag-to-not-print-the-asterisk
+            branches = _git("branch", "--contains", self.sha, _cwd=self.context.repository_path).split("\n")
+
+            # This means that we need to remove any leading * that indicates the current branch. Note that we can
+            # safely do this since git branches cannot contain '*' anywhere, so if we find an '*' we know it's output
+            # from the git CLI and not part of the branch name. See https://git-scm.com/docs/git-check-ref-format
+            # We also drop the last empty line from the output.
+            self._cache['branches'] = [ustr(branch.replace("*", "").strip()) for branch in branches[:-1]]
+
+        return self._try_cache("branches", cache_branches)
 
     @property
     def is_merge_commit(self):
