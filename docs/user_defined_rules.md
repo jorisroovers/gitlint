@@ -176,6 +176,7 @@ commit.is_fixup_commit  | boolean        | Boolean indicating whether the commit
 commit.is_squash_commit | boolean        | Boolean indicating whether the commit is a squash commit or not.
 commit.parents          | list of string | List of parent commit ```sha```s (only for merge commits).
 commit.changed_files    | list of string | List of files changed in the commit (relative paths).
+commit.branches         | list of string | List of branch names the commit is part of
 commit.context          | object         | Object pointing to the bigger git context that the commit is part of
 commit.context.commits  | list of commit | List of commits in the git context. Note that this might only be the subset of commits that gitlint is acting on, not all commits in the repo.
 
