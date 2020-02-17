@@ -28,34 +28,31 @@ class GitTests(BaseTestCase):
         '_cwd': u"fåke/path"
     }
 
-    # Expected calls to 'git config'
-    expected_git_config_calls = [
-        call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **expected_sh_special_args)
-    ]
-
     @patch('gitlint.git.sh')
     def test_get_latest_commit(self, sh):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
-        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+        sh.git.side_effect = [
             sample_sha,
             u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
             u"cömmit-title\n\ncömmit-body",
+            u"#",  # git config --get core.commentchar
             u"file1.txt\npåth/to/file2.txt\n",
             u"foöbar\n* hürdur\n"
         ]
 
         context = GitContext.from_local_repository(u"fåke/path")
         # assert that commit info was read using git command
-        expected_calls = self.expected_git_config_calls + [
+        expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
             call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
         ]
 
         # Only first 'git log' call should've happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-3])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:-4])
 
         last_commit = context.commits[-1]
         self.assertIsInstance(last_commit, LocalGitCommit)
@@ -87,25 +84,27 @@ class GitTests(BaseTestCase):
     def test_from_local_repository_specific_ref(self, sh):
         sample_sha = "myspecialref"
 
-        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+        sh.git.side_effect = [
             sample_sha,
             u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
             u"cömmit-title\n\ncömmit-body",
+            u"#",  # git config --get core.commentchar
             u"file1.txt\npåth/to/file2.txt\n",
             u"foöbar\n* hürdur\n"
         ]
 
         context = GitContext.from_local_repository(u"fåke/path", sample_sha)
         # assert that commit info was read using git command
-        expected_calls = self.expected_git_config_calls + [
+        expected_calls = [
             call("rev-list", sample_sha, **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
             call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
         ]
 
         # Only first 'git log' call should've happened at this point
-        self.assertEqual(sh.git.mock_calls, expected_calls[:-3])
+        self.assertEqual(sh.git.mock_calls, expected_calls[:-4])
 
         last_commit = context.commits[-1]
         self.assertIsInstance(last_commit, LocalGitCommit)
@@ -137,25 +136,27 @@ class GitTests(BaseTestCase):
     def test_get_latest_commit_merge_commit(self, sh):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
-        sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+        sh.git.side_effect = [
             sample_sha,
             u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc def\n"
             u"Merge \"foo bår commit\"",
+            u"#",  # git config --get core.commentchar
             u"file1.txt\npåth/to/file2.txt\n",
             u"foöbar\n* hürdur\n"
         ]
 
         context = GitContext.from_local_repository(u"fåke/path")
         # assert that commit info was read using git command
-        expected_calls = self.expected_git_config_calls + [
+        expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
             call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
             call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
         ]
 
         # Only first 'git log' call should've happened at this point
-        self.assertEqual(sh.git.mock_calls, expected_calls[:-3])
+        self.assertEqual(sh.git.mock_calls, expected_calls[:-4])
 
         last_commit = context.commits[-1]
         self.assertIsInstance(last_commit, LocalGitCommit)
@@ -189,25 +190,27 @@ class GitTests(BaseTestCase):
         for commit_type in commit_types:
             sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
-            sh.git.side_effect = self.GIT_CONFIG_SIDE_EFFECTS + [
+            sh.git.side_effect = [
                 sample_sha,
                 u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
                 u"{0}! \"foo bår commit\"".format(commit_type),
+                u"#",  # git config --get core.commentchar
                 u"file1.txt\npåth/to/file2.txt\n",
                 u"foöbar\n* hürdur\n"
             ]
 
             context = GitContext.from_local_repository(u"fåke/path")
             # assert that commit info was read using git command
-            expected_calls = self.expected_git_config_calls + [
+            expected_calls = [
                 call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
                 call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+                call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
                 call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
                 call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
             ]
 
             # Only first 'git log' call should've happened at this point
-            self.assertEqual(sh.git.mock_calls, expected_calls[:-3])
+            self.assertEqual(sh.git.mock_calls, expected_calls[:-4])
 
             last_commit = context.commits[-1]
             self.assertIsInstance(last_commit, LocalGitCommit)

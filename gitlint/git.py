@@ -5,6 +5,7 @@ from gitlint import shell as sh
 # import exceptions separately, this makes it a little easier to mock them out in the unit tests
 from gitlint.shell import CommandNotFound, ErrorReturnCode
 
+from gitlint.cache import PropertyCache, cache
 from gitlint.utils import ustr, sstr
 
 
@@ -177,7 +178,7 @@ class GitCommit(object):
         return not self.__eq__(other)  # required for py2
 
 
-class LocalGitCommit(GitCommit):
+class LocalGitCommit(GitCommit, PropertyCache):
     """ Class representing a git commit that exists in the local git repository.
         This class uses lazy loading: it defers reading information from the local git repository until the associated
         property is accessed for the first time. Properties are then cached for subsequent access.
@@ -187,9 +188,9 @@ class LocalGitCommit(GitCommit):
         startup time and reduces gitlint's memory footprint.
      """
     def __init__(self, context, sha):  # pylint: disable=super-init-not-called
+        PropertyCache.__init__(self)
         self.context = context
         self.sha = sha
-        self._cache = {}
 
     def _log(self):
         """ Does a call to `git log` to determine a bunch of information about the commit. """
@@ -211,14 +212,6 @@ class LocalGitCommit(GitCommit):
 
         self._cache.update({'message': commit_msg_obj, 'author_name': name, 'author_email': email, 'date': commit_date,
                             'parents': commit_parents, 'is_merge_commit': commit_is_merge_commit})
-
-    def _try_cache(self, cache_key, cache_populate_func):
-        """ Tries to get a value from the cache identified by `cache_key`.
-            If no value is found in the cache, do a function call to `cache_populate_func` to populate the cache
-            and then return the value from the cache. """
-        if cache_key not in self._cache:
-            cache_populate_func()
-        return self._cache[cache_key]
 
     @property
     def message(self):
@@ -269,15 +262,20 @@ class LocalGitCommit(GitCommit):
         return self._try_cache("changed_files", cache_changed_files)
 
 
-class GitContext(object):
+class GitContext(PropertyCache):
     """ Class representing the git context in which gitlint is operating: a data object storing information about
     the git repository that gitlint is linting.
     """
 
     def __init__(self, repository_path=None):
+        PropertyCache.__init__(self)
         self.commits = []
         self.repository_path = repository_path
-        self.commentchar = git_commentchar(repository_path)
+
+    @property
+    @cache
+    def commentchar(self):
+        return git_commentchar(self.repository_path)
 
     @staticmethod
     def from_commit_msg(commit_msg_str):
