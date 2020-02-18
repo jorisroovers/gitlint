@@ -76,18 +76,9 @@ handle_test_result(){
 
 run_pep8_check(){
     # FLAKE 8
-    # H307: like imports should be grouped together
-    # H405: multi line docstring summary not separated with an empty line
-    # H803: git title must end with a period
-    # H904: Wrap long lines in parentheses instead of a backslash
-    # H802: git commit title should be under 50 chars
-    # H701: empty localization string
-    FLAKE8_IGNORE="H307,H405,H803,H904,H802,H701"
-    # exclude settings files and virtualenvs
-    FLAKE8_EXCLUDE="*settings.py,*.venv/*.py"
     target=${testargs:-"gitlint qa examples"}
     echo -ne "Running flake8..."
-    RESULT=$(flake8 --extend-ignore=$FLAKE8_IGNORE --max-line-length=120 --exclude=$FLAKE8_EXCLUDE $target)
+    RESULT=$(flake8 $target)
     local exit_code=$?
     handle_test_result $exit_code "$RESULT"
     return $exit_code
