@@ -34,7 +34,7 @@ class GitTests(BaseTestCase):
 
         sh.git.side_effect = [
             sample_sha,
-            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"cömmit-title\n\ncömmit-body",
             u"#",  # git config --get core.commentchar
             u"file1.txt\npåth/to/file2.txt\n",
@@ -86,7 +86,7 @@ class GitTests(BaseTestCase):
 
         sh.git.side_effect = [
             sample_sha,
-            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"cömmit-title\n\ncömmit-body",
             u"#",  # git config --get core.commentchar
             u"file1.txt\npåth/to/file2.txt\n",
@@ -138,7 +138,7 @@ class GitTests(BaseTestCase):
 
         sh.git.side_effect = [
             sample_sha,
-            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc def\n"
+            u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc def\n"
             u"Merge \"foo bår commit\"",
             u"#",  # git config --get core.commentchar
             u"file1.txt\npåth/to/file2.txt\n",
@@ -192,7 +192,7 @@ class GitTests(BaseTestCase):
 
             sh.git.side_effect = [
                 sample_sha,
-                u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+                u"test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
                 u"{0}! \"foo bår commit\"".format(commit_type),
                 u"#",  # git config --get core.commentchar
                 u"file1.txt\npåth/to/file2.txt\n",

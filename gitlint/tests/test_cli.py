@@ -71,9 +71,10 @@ class CLITests(BaseTestCase):
         """ Test for basic simple linting functionality """
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360",
-            u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title\n\ncommït-body",
             u"#",  # git config --get core.commentchar
+
             u"file1.txt\npåth/to/file2.txt\n"
         ]
 
@@ -92,12 +93,12 @@ class CLITests(BaseTestCase):
             "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01 :00\x00åbc\n"
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title1\n\ncommït-body1",
             u"#",  # git config --get core.commentchar
-            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
+            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             u"commït-title2\n\ncommït-body2",
-            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             u"commït-title3\n\ncommït-body3",
         ]
 
@@ -117,12 +118,12 @@ class CLITests(BaseTestCase):
             "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title1\n\ncommït-body1",
             u"#",  # git config --get core.commentchar
-            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
+            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
-            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             u"commït-title3.\n\ncommït-body3",
         ]
 
@@ -144,14 +145,14 @@ class CLITests(BaseTestCase):
             "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title1\n\ncommït-body1",
             u"#",  # git config --get core.commentchar
-            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 01:00\x00åbc\n"
+            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             # Normally T3 violation (trailing punctuation), but this commit is ignored because of
             # config below
             u"commït-title2.\n\ncommït-body2\n",
-            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00åbc\n"
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             # Normally T1 and B5 violations, now only T1 because we're ignoring B5 in config below
             u"commït-title3.\n\ncommït-body3 foo",
         ]
@@ -184,7 +185,7 @@ class CLITests(BaseTestCase):
         """ Test for ignoring stdin when --ignore-stdin flag is enabled"""
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360",
-            u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 01:00\x00åbc\n"
+            u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title\n\ncommït-body",
             u"#",  # git config --get core.commentchar
             u"file1.txt\npåth/to/file2.txt\n"
@@ -261,12 +262,12 @@ class CLITests(BaseTestCase):
             "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 01:00\x00abc\n"
+            u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00abc\n"
             u"commït-title1\n\ncommït-body1",
             u"#",
-            u"test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 01:00\x00abc\n"
+            u"test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00abc\n"
             u"commït-title2.\n\ncommït-body2",
-            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 01:00\x00abc\n"
+            u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00abc\n"
             u"föo\nbar",
         ]
 

@@ -63,7 +63,7 @@ class ConfigTests(BaseTestCase):
         config_path = self.get_sample_path("config/gitlintconfig")
         output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
 
-        expected_date = git("log", "-1", "--pretty=%ai", _cwd=self.tmp_git_repo)
+        expected_date = git("log", "-1", "--pretty=%ai", _tty_out=False, _cwd=self.tmp_git_repo)
         expected_date = arrow.get(str(expected_date), "YYYY-MM-DD HH:mm:ss Z").datetime
         expected_gitlint_version = gitlint("--version").replace("gitlint, version ", "").replace("\n", "")
         expected_git_version = git("--version").replace("\n", "")

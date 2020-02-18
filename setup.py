@@ -67,11 +67,9 @@ setup(
     ],
     install_requires=[
         'Click==7.0',
+        'arrow==0.15.5',
     ],
     extras_require={
-        ':python_version != "3.4"': [
-            'arrow==0.14.2',
-        ],
         ':sys_platform != "win32"': [
             'sh==1.12.14',
         ],
