@@ -52,7 +52,7 @@ class GitTests(BaseTestCase):
         ]
 
         # Only first 'git log' call should've happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-4])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:1])
 
         last_commit = context.commits[-1]
         self.assertIsInstance(last_commit, LocalGitCommit)
@@ -70,11 +70,11 @@ class GitTests(BaseTestCase):
         self.assertFalse(last_commit.is_revert_commit)
 
         # First 2 'git log' calls should've happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-2])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
         # 'git diff-tree' should have happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-1])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
         self.assertListEqual(last_commit.branches, [u"foöbar", u"hürdur"])
         # All expected calls should've happened at this point
@@ -104,7 +104,7 @@ class GitTests(BaseTestCase):
         ]
 
         # Only first 'git log' call should've happened at this point
-        self.assertEqual(sh.git.mock_calls, expected_calls[:-4])
+        self.assertEqual(sh.git.mock_calls, expected_calls[:1])
 
         last_commit = context.commits[-1]
         self.assertIsInstance(last_commit, LocalGitCommit)
@@ -122,11 +122,11 @@ class GitTests(BaseTestCase):
         self.assertFalse(last_commit.is_revert_commit)
 
         # First 2 'git log' calls should've happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-2])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
         # 'git diff-tree' should have happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-1])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
         self.assertListEqual(last_commit.branches, [u"foöbar", u"hürdur"])
         # All expected calls should've happened at this point
@@ -156,7 +156,7 @@ class GitTests(BaseTestCase):
         ]
 
         # Only first 'git log' call should've happened at this point
-        self.assertEqual(sh.git.mock_calls, expected_calls[:-4])
+        self.assertEqual(sh.git.mock_calls, expected_calls[:1])
 
         last_commit = context.commits[-1]
         self.assertIsInstance(last_commit, LocalGitCommit)
@@ -174,11 +174,11 @@ class GitTests(BaseTestCase):
         self.assertFalse(last_commit.is_revert_commit)
 
         # First 2 'git log' calls should've happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-2])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
         # 'git diff-tree' should have happened at this point
-        self.assertListEqual(sh.git.mock_calls, expected_calls[:-1])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
         self.assertListEqual(last_commit.branches, [u"foöbar", u"hürdur"])
         # All expected calls should've happened at this point
@@ -224,7 +224,7 @@ class GitTests(BaseTestCase):
             self.assertListEqual(last_commit.parents, [u"åbc"])
 
             # First 2 'git log' calls should've happened at this point
-            self.assertEqual(sh.git.mock_calls, expected_calls[:-2])
+            self.assertEqual(sh.git.mock_calls, expected_calls[:3])
 
             # Asserting that squash and fixup are correct
             for type in commit_types:
@@ -237,7 +237,7 @@ class GitTests(BaseTestCase):
 
             self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
             # 'git diff-tree' should have happened at this point
-            self.assertListEqual(sh.git.mock_calls, expected_calls[:-1])
+            self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
             self.assertListEqual(last_commit.branches, [u"foöbar", u"hürdur"])
             # All expected calls should've happened at this point
@@ -541,3 +541,27 @@ class GitTests(BaseTestCase):
         self.assertEqual(message.body, ["", u"Bödy 1", "Body 2"])
         self.assertEqual(message.full, u"Tïtle\n\nBödy 1\nBody 2")
         self.assertEqual(message.original, u"Tïtle\n\nBödy 1\näCömment\nBody 2")
+
+    @patch('gitlint.git.sh')
+    def test_gitcontext(self, sh):
+
+        sh.git.side_effect = [
+            u"#",  # git config --get core.commentchar
+            u"\nfoöbar\n"
+        ]
+
+        expected_calls = [
+            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
+            call("rev-parse", "--abbrev-ref", "HEAD", **self.expected_sh_special_args)
+        ]
+
+        context = GitContext(u"fåke/path")
+        self.assertEqual(sh.git.mock_calls, [])
+
+        # gitcontext.comment_branch
+        self.assertEqual(context.commentchar, u"#")
+        self.assertEqual(sh.git.mock_calls, expected_calls[0:1])
+
+        # gitcontext.current_branch
+        self.assertEqual(context.current_branch, u"foöbar")
+        self.assertEqual(sh.git.mock_calls, expected_calls)

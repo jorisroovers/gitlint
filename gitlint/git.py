@@ -277,6 +277,12 @@ class GitContext(PropertyCache):
     def commentchar(self):
         return git_commentchar(self.repository_path)
 
+    @property
+    @cache
+    def current_branch(self):
+        current_branch = ustr(_git("rev-parse", "--abbrev-ref", "HEAD", _cwd=self.repository_path)).strip()
+        return current_branch
+
     @staticmethod
     def from_commit_msg(commit_msg_str):
         """ Determines git context based on a commit message.
