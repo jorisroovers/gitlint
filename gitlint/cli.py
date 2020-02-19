@@ -49,7 +49,7 @@ def log_system_info():
 
 
 def build_config(  # pylint: disable=too-many-arguments
-        ctx, target, config_path, c, extra_path, ignore, contrib, ignore_stdin, verbose, silent, debug
+        ctx, target, config_path, c, extra_path, ignore, contrib, ignore_stdin, staged, verbose, silent, debug
 ):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     config_builder = LintConfigBuilder()
@@ -87,6 +87,9 @@ def build_config(  # pylint: disable=too-many-arguments
 
         if debug:
             config_builder.set_option('general', 'debug', debug)
+
+        if staged:
+            config_builder.set_option('general', 'staged', staged)
 
         config = config_builder.build()
 
@@ -165,6 +168,7 @@ def build_git_context(lint_config, msg_filename, refspec):
 @click.option('--contrib', default="", help="Contrib rules to enable (comma-separated by id or name).")
 @click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
 @click.option('--ignore-stdin', is_flag=True, help="Ignore any stdin data. Useful for running in CI server.")
+@click.option('--staged', is_flag=True, help="Read staged commit meta-info from the local repository.")
 @click.option('-v', '--verbose', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
@@ -173,7 +177,7 @@ def build_git_context(lint_config, msg_filename, refspec):
 @click.pass_context
 def cli(  # pylint: disable=too-many-arguments
         ctx, target, config, c, commits, extra_path, ignore, contrib,
-        msg_filename, ignore_stdin, verbose, silent, debug,
+        msg_filename, ignore_stdin, staged, verbose, silent, debug,
 ):
     """ Git lint tool, checks your git commit messages for styling issues
 
@@ -189,8 +193,8 @@ def cli(  # pylint: disable=too-many-arguments
 
         # Get the lint config from the commandline parameters and
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
-        config, config_builder = build_config(ctx, target, config, c, extra_path,
-                                              ignore, contrib, ignore_stdin, verbose, silent, debug)
+        config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, contrib,
+                                              ignore_stdin, staged, verbose, silent, debug)
         LOG.debug(u"Configuration\n%s", ustr(config))
 
         ctx.obj = (config, config_builder, commits, msg_filename)

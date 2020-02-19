@@ -80,7 +80,8 @@ Short example ```.gitlint``` file ([full reference](configuration.md)):
 
 ```ini
 [general]
-# Ignore certain rules (comma-separated list), you can reference them by their id or by their full name
+# Ignore certain rules (comma-separated list), you can reference them by
+# their id or by their full name
 ignore=body-is-missing,T3
 
 # Ignore any data send to gitlint via stdin
@@ -129,6 +130,7 @@ Options:
   --contrib TEXT           Contrib rules to enable (comma-separated by id or name).
   --msg-filename FILENAME  Path to a file containing a commit-msg.
   --ignore-stdin           Ignore any stdin data. Useful for running in CI server.
+  --staged                 Read staged commit meta-info from the local repository.
   -v, --verbose            Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]
   -s, --silent             Silent mode (no output). Takes precedence over -v, -vv, -vvv.
   -d, --debug              Enable debugging output.

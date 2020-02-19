@@ -29,6 +29,10 @@
 # Ignore any data send to gitlint via stdin
 # ignore-stdin=true
 
+# Fetch additional meta-data from the local repository when manually passing a 
+# commit message to gitlint via stdin or --commit-msg. Disabled by default.
+# staged=true
+
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
 

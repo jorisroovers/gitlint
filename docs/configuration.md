@@ -33,10 +33,12 @@ The block below shows a sample ```.gitlint``` file. Details about rule config op
 # Use 'gitlint generate-config' to generate a config file with all possible options
 # All these sections are optional, edit this file as you like.
 [general]
-# Ignore certain rules (comma-separated list), you can reference them by their id or by their full name
+# Ignore certain rules (comma-separated list), you can reference them by their
+# id or by their full name
 ignore=title-trailing-punctuation, T3
 
-# verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
+# verbosity should be a value between 1 and 3, the commandline -v flags take
+# precedence over this
 verbosity = 2
 
 # By default gitlint will ignore merge commits. Set to 'false' to disable.
@@ -53,6 +55,10 @@ ignore-squash-commits=true
 
 # Ignore any data send to gitlint via stdin
 ignore-stdin=true
+
+# Fetch additional meta-data from the local repository when manually passing a 
+# commit message to gitlint via stdin or --commit-msg. Disabled by default.
+staged=true
 
 # Enable debug mode (prints more output). Disabled by default.
 debug=true
@@ -180,3 +186,4 @@ target                | (empty)       | >= 0.8.0         |  ```--target=/home/jo
 extra-path            | (empty)       | >= 0.8.0         |  ```--extra-path=/home/joe/rules/```                   | Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 contrib               | (empty)       | >= 0.12.0        | ```--contrib=contrib-title-conventional-commits,CC1``` | [Contrib rules](contrib_rules) to enable.
 ignore-stdin          | false         | >= 0.12.0        | ```--ignore-stdin```                                   | Ignore any stdin data. Useful for running in CI server.
+staged                | false         | >= 0.13.0        | ```--staged```                                         | Fetch additional meta-data from the local repository when manually passing a commit message to gitlint via stdin or ```--commit-msg```.
