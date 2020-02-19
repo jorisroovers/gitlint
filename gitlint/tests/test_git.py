@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-
 import copy
 import datetime
 import os
 
 import dateutil
+
+import arrow
 
 try:
     # python 2.x
@@ -16,8 +17,8 @@ except ImportError:
 from gitlint.shell import ErrorReturnCode, CommandNotFound
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, LocalGitCommit, GitCommitMessage, GitContextError, \
-    GitNotInstalledError, git_commentchar, git_hooks_dir
+from gitlint.git import GitContext, GitCommit, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage, \
+     GitContextError, GitNotInstalledError, git_commentchar, git_hooks_dir
 
 
 class GitTests(BaseTestCase):
@@ -246,8 +247,7 @@ class GitTests(BaseTestCase):
             sh.git.reset_mock()
 
     @patch('gitlint.git.sh')
-    @patch("gitlint.git.git_commentchar")
-    def test_get_latest_commit_command_not_found(self, _, sh):
+    def test_get_latest_commit_command_not_found(self, sh):
         sh.git.side_effect = CommandNotFound("git")
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
@@ -258,8 +258,7 @@ class GitTests(BaseTestCase):
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
 
     @patch('gitlint.git.sh')
-    @patch("gitlint.git.git_commentchar")
-    def test_get_latest_commit_git_error(self, _, sh):
+    def test_get_latest_commit_git_error(self, sh):
         # Current directory not a git repo
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
@@ -457,6 +456,62 @@ class GitTests(BaseTestCase):
             for type in commit_types:
                 attr = "is_" + type + "_commit"
                 self.assertEqual(getattr(commit, attr), commit_type == type)
+
+    @patch('gitlint.git.sh')
+    @patch('arrow.now')
+    def test_staged_commit(self, now, sh):
+        # StagedLocalGitCommit()
+
+        sh.git.side_effect = [
+            u"#",                               # git config --get core.commentchar
+            u"test åuthor\n",                   # git config --get user.name
+            u"test-emåil@foo.com\n",            # git config --get user.email
+            u"my-brånch\n",                     # git rev-parse --abbrev-ref HEAD
+            u"file1.txt\npåth/to/file2.txt\n",
+        ]
+        now.side_effect = [arrow.get("2020-02-19T12:18:46.675182+01:00")]
+
+        # We use a fixup commit, just to test a non-default path
+        context = GitContext.from_staged_commit(u"fixup! Foōbar 123\n\ncömmit-body\n", u"fåke/path")
+
+        # git calls we're expexting
+        expected_calls = [
+            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
+            call('config', '--get', 'user.name', **self.expected_sh_special_args),
+            call('config', '--get', 'user.email', **self.expected_sh_special_args),
+            call("rev-parse", "--abbrev-ref", "HEAD", **self.expected_sh_special_args),
+            call("diff", "--staged", "--name-only", "-r", **self.expected_sh_special_args)
+        ]
+
+        last_commit = context.commits[-1]
+        self.assertIsInstance(last_commit, StagedLocalGitCommit)
+        self.assertIsNone(last_commit.sha, None)
+        self.assertEqual(last_commit.message.title, u"fixup! Foōbar 123")
+        self.assertEqual(last_commit.message.body, ["", u"cömmit-body"])
+        # Only `git config --get core.commentchar` should've happened up until this point
+        self.assertListEqual(sh.git.mock_calls, expected_calls[0:1])
+
+        self.assertEqual(last_commit.author_name, u"test åuthor")
+        self.assertListEqual(sh.git.mock_calls, expected_calls[0:2])
+
+        self.assertEqual(last_commit.author_email, u"test-emåil@foo.com")
+        self.assertListEqual(sh.git.mock_calls, expected_calls[0:3])
+
+        self.assertEqual(last_commit.date, datetime.datetime(2020, 2, 19, 12, 18, 46,
+                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+        now.assert_called_once()
+
+        self.assertListEqual(last_commit.parents, [])
+        self.assertFalse(last_commit.is_merge_commit)
+        self.assertTrue(last_commit.is_fixup_commit)
+        self.assertFalse(last_commit.is_squash_commit)
+        self.assertFalse(last_commit.is_revert_commit)
+
+        self.assertListEqual(last_commit.branches, [u"my-brånch"])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[0:4])
+
+        self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
+        self.assertListEqual(sh.git.mock_calls, expected_calls[0:5])
 
     def test_gitcommit_equality(self):
         # Test simple equality case

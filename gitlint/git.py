@@ -8,6 +8,10 @@ from gitlint.shell import CommandNotFound, ErrorReturnCode
 from gitlint.cache import PropertyCache, cache
 from gitlint.utils import ustr, sstr
 
+# For now, the git date format we use is fixed, but technically this format is determined by `git config log.date`
+# We should fix this at some point :-)
+GIT_TIMEFORMAT = "YYYY-MM-DD HH:mm:ss Z"
+
 
 class GitContextError(Exception):
     """ Exception indicating there is an issue with the git context """
@@ -205,7 +209,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
         # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
         # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
         # http://stackoverflow.com/a/30696682/381010
-        commit_date = arrow.get(ustr(date), "YYYY-MM-DD HH:mm:ss Z").datetime
+        commit_date = arrow.get(ustr(date), GIT_TIMEFORMAT).datetime
 
         # Create Git commit object with the retrieved info
         commit_msg_obj = GitCommitMessage.from_full_message(self.context, commit_msg)
@@ -262,6 +266,51 @@ class LocalGitCommit(GitCommit, PropertyCache):
         return self._try_cache("changed_files", cache_changed_files)
 
 
+class StagedLocalGitCommit(GitCommit, PropertyCache):
+    """ Class representing a git commit that has been staged, but not committed.
+
+        Other than the commit message itself (and changed files), a lot of information is actually not known at staging
+        time, since the commit hasn't happened yet. However, we can make educated guesses based on existing repository
+        information.
+    """
+
+    def __init__(self, context, commit_message):  # pylint: disable=super-init-not-called
+        PropertyCache.__init__(self)
+        self.context = context
+        self.message = commit_message
+        self.sha = None
+        self.parents = []  # Not really possible to determine before a commit
+
+    @property
+    @cache
+    def author_name(self):
+        return ustr(_git("config", "--get", "user.name", _cwd=self.context.repository_path)).strip()
+
+    @property
+    @cache
+    def author_email(self):
+        return ustr(_git("config", "--get", "user.email", _cwd=self.context.repository_path)).strip()
+
+    @property
+    @cache
+    def date(self):
+        # We don't know the actual commit date yet, but we make a pragmatic trade-off here by providing the current date
+        # We get current date from arrow, reformat in git date format, then re-interpret it as a date.
+        # This ensure we capture the same precision and timezone information that git does.
+        return arrow.get(arrow.now().format(GIT_TIMEFORMAT), GIT_TIMEFORMAT).datetime
+
+    @property
+    @cache
+    def branches(self):
+        # We don't know the branch this commit will be part of yet, but we're pragmatic here and just return the
+        # current branch, as for all intents and purposes, this will be what the user is looking for.
+        return [self.context.current_branch]
+
+    @property
+    def changed_files(self):
+        return _git("diff", "--staged", "--name-only", "-r", _cwd=self.context.repository_path).split()
+
+
 class GitContext(PropertyCache):
     """ Class representing the git context in which gitlint is operating: a data object storing information about
     the git repository that gitlint is linting.
@@ -290,9 +339,19 @@ class GitContext(PropertyCache):
         """
         context = GitContext()
         commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg_str)
-
         commit = GitCommit(context, commit_msg_obj)
+        context.commits.append(commit)
+        return context
 
+    @staticmethod
+    def from_staged_commit(commit_msg_str, repository_path):
+        """ Determines git context based on a commit message that is a staged commit for a local git repository.
+        :param commit_msg_str: Full git commit message.
+        :param repository_path: Path to the git repository to retrieve the context from
+        """
+        context = GitContext(repository_path=repository_path)
+        commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg_str)
+        commit = StagedLocalGitCommit(context, commit_msg_obj)
         context.commits.append(commit)
         return context
 
