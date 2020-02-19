@@ -81,4 +81,19 @@ def ustr(obj):
         else:
             return str(obj)
 
+
+def sstr(obj):
+    """ Python 2 and 3 utility method that converts an obj to a DEFAULT_ENCODING encoded string in python 2
+    and to unicode in python 3.
+    Especially useful for implementing __str__ methods in python 2: http://stackoverflow.com/a/1307210/381010"""
+    if sys.version_info[0] == 2:
+        # For lists in python2, remove unicode string representation characters.
+        # i.e. ensure lists are printed as ['a', 'b'] and not [u'a', u'b']
+        if type(obj) in [list]:
+            return [sstr(item) for item in obj] # pragma: no cover # noqa
+
+        return unicode(obj).encode(DEFAULT_ENCODING)  # pragma: no cover # noqa
+    else:
+        return obj  # pragma: no cover
+
 ########################################################################################################################

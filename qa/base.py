@@ -4,10 +4,14 @@
 
 import io
 import os
+import platform
 import shutil
+import sys
 import tempfile
 from datetime import datetime
 from uuid import uuid4
+
+import arrow
 
 try:
     # python 2.x
@@ -16,7 +20,7 @@ except ImportError:
     # python 3.x
     from unittest import TestCase
 
-from qa.shell import git, RunningCommand
+from qa.shell import git, gitlint, RunningCommand
 from qa.utils import DEFAULT_ENCODING, ustr
 
 
@@ -81,6 +85,13 @@ class BaseTestCase(TestCase):
 
         return tmp_git_repo
 
+    @staticmethod
+    def create_file(parent_dir):
+        """ Creates a file inside a passed directory. Returns filename."""
+        test_filename = u"test-fïle-" + str(uuid4())
+        io.open(os.path.join(parent_dir, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
+        return test_filename
+
     def _create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):
         """ Creates a simple commit with an empty test file.
             :param message: Commit message for the commit. """
@@ -96,8 +107,7 @@ class BaseTestCase(TestCase):
             environment.update(env)
 
         # Create file and add to git
-        test_filename = u"test-fïle-" + str(uuid4())
-        io.open(os.path.join(git_repo, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
+        test_filename = self.create_file(git_repo)
         git("add", test_filename, _cwd=git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
         if not ok_code:
@@ -112,7 +122,7 @@ class BaseTestCase(TestCase):
         # Not using a context manager to avoid unneccessary identation in test code
         tmpfile, tmpfilepath = tempfile.mkstemp()
         self.tmpfiles.append(tmpfilepath)
-        with os.fdopen(tmpfile, "w") as f:
+        with io.open(tmpfile, "w", encoding=DEFAULT_ENCODING) as f:
             f.write(content)
         return tmpfilepath
 
@@ -145,3 +155,22 @@ class BaseTestCase(TestCase):
         if variable_dict:
             expected = expected.format(**variable_dict)
         return expected
+
+    @staticmethod
+    def get_system_info_dict():
+        """ Returns a dict with items related to system values logged by `gitlint --debug` """
+        expected_gitlint_version = gitlint("--version").replace("gitlint, version ", "").replace("\n", "")
+        expected_git_version = git("--version").replace("\n", "")
+        return {'platform': platform.platform(), 'python_version': sys.version,
+                'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
+                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB}
+
+    def get_debug_vars_last_commit(self):
+        """ Returns a dict with items related to `gitlint --debug` output for the last commit. """
+        commit_sha = self.get_last_commit_hash()
+        expected_date = git("log", "-1", "--pretty=%ai", _tty_out=False, _cwd=self.tmp_git_repo)
+        expected_date = arrow.get(str(expected_date), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD HH:mm:ss Z")
+
+        expected_kwargs = self.get_system_info_dict()
+        expected_kwargs.update({'target': self.tmp_git_repo, 'commit_sha': commit_sha, 'commit_date': expected_date})
+        return expected_kwargs

@@ -152,15 +152,18 @@ class GitCommit(object):
         return self.message.title.startswith(u"Revert")
 
     def __unicode__(self):
-        format_str = u"--- Commit Message ----\n%s\n" + \
-                     u"--- Meta info ---------\n" + \
-                     u"Author: %s <%s>\nDate:   %s\n" + \
-                     u"is-merge-commit:  %s\nis-fixup-commit:  %s\n" + \
-                     u"is-squash-commit: %s\nis-revert-commit: %s\n" + \
-                     u"-----------------------"  # pragma: no cover
-        return format_str % (ustr(self.message), self.author_name, self.author_email, self.date,
+        format_str = (u"--- Commit Message ----\n%s\n"
+                      u"--- Meta info ---------\n"
+                      u"Author: %s <%s>\nDate:   %s\n"
+                      u"is-merge-commit:  %s\nis-fixup-commit:  %s\n"
+                      u"is-squash-commit: %s\nis-revert-commit: %s\n"
+                      u"Branches: %s\n"
+                      u"Changed Files: %s\n"
+                      u"-----------------------")  # pragma: no cover
+        date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
+        return format_str % (ustr(self.message), self.author_name, self.author_email, date_str,
                              self.is_merge_commit, self.is_fixup_commit, self.is_squash_commit,
-                             self.is_revert_commit)  # pragma: no cover
+                             self.is_revert_commit, sstr(self.branches), sstr(self.changed_files))  # pragma: no cover
 
     def __str__(self):
         return sstr(self.__unicode__())  # pragma: no cover

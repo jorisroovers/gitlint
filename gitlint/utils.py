@@ -98,7 +98,7 @@ def sstr(obj):
         # For lists in python2, remove unicode string representation characters.
         # i.e. ensure lists are printed as ['a', 'b'] and not [u'a', u'b']
         if type(obj) in [list]:
-            return [unicode(item).encode(DEFAULT_ENCODING) for item in obj] # pragma: no cover # noqa
+            return [sstr(item) for item in obj] # pragma: no cover # noqa
 
         return unicode(obj).encode(DEFAULT_ENCODING)  # pragma: no cover # noqa
     else:

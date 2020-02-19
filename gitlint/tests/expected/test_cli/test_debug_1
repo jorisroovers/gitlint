@@ -60,11 +60,13 @@ commït-title1
 commït-body1
 --- Meta info ---------
 Author: test åuthor1 <test-email1@föo.com>
-Date:   2016-12-03 15:28:15+01:00
+Date:   2016-12-03 15:28:15 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
 is-squash-commit: False
 is-revert-commit: False
+Branches: ['commit-1-branch-1', 'commit-1-branch-2']
+Changed Files: ['commit-1/file-1', 'commit-1/file-2']
 -----------------------
 DEBUG: gitlint.lint Linting commit 25053ccec5e28e1bb8f7551fdbb5ab213ada2401
 DEBUG: gitlint.lint Commit Object
@@ -74,11 +76,13 @@ commït-title2.
 commït-body2
 --- Meta info ---------
 Author: test åuthor2 <test-email2@föo.com>
-Date:   2016-12-04 15:28:15+01:00
+Date:   2016-12-04 15:28:15 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
 is-squash-commit: False
 is-revert-commit: False
+Branches: ['commit-2-branch-1', 'commit-2-branch-2']
+Changed Files: ['commit-2/file-1', 'commit-2/file-2']
 -----------------------
 DEBUG: gitlint.lint Linting commit 4da2656b0dadc76c7ee3fd0243a96cb64007f125
 DEBUG: gitlint.lint Commit Object
@@ -87,10 +91,12 @@ föo
 bar
 --- Meta info ---------
 Author: test åuthor3 <test-email3@föo.com>
-Date:   2016-12-05 15:28:15+01:00
+Date:   2016-12-05 15:28:15 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
 is-squash-commit: False
 is-revert-commit: False
+Branches: ['commit-3-branch-1', 'commit-3-branch-2']
+Changed Files: ['commit-3/file-1', 'commit-3/file-2']
 -----------------------
 DEBUG: gitlint.cli Exit Code = 6
