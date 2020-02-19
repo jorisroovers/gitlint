@@ -1,22 +1,22 @@
 DEBUG: gitlint.cli To report issues, please visit https://github.com/jorisroovers/gitlint/issues
 DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
-DEBUG: gitlint.cli Git version: {git_version}
+DEBUG: gitlint.cli Git version: git version 1.2.3
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
 DEBUG: gitlint.cli Configuration
-config-path: {config_path}
+config-path: None
 [GENERAL]
 extra-path: None
 contrib: []
-ignore: title-trailing-punctuation,B2
+ignore: 
 ignore-merge-commits: True
 ignore-fixup-commits: True
 ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False
-staged: False
-verbosity: 2
+staged: True
+verbosity: 3
 debug: True
 target: {target}
 [RULES]
@@ -27,17 +27,17 @@ target: {target}
      ignore=all
      regex=None
   T1: title-max-length
-     line-length=20
+     line-length=72
   T2: title-trailing-whitespace
   T6: title-leading-whitespace
   T3: title-trailing-punctuation
   T4: title-hard-tab
   T5: title-must-not-contain-word
-     words=WIP,thåt
+     words=WIP
   T7: title-match-regex
      regex=.*
   B1: body-max-line-length
-     line-length=30
+     line-length=80
   B5: body-min-length
      min-length=20
   B6: body-is-missing
@@ -50,28 +50,21 @@ target: {target}
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
-DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.
+DEBUG: gitlint.cli Fetching additional meta-data from staged commit
+DEBUG: gitlint.cli Attempting to read from --msg-filename.
 DEBUG: gitlint.cli Linting 1 commit(s)
-DEBUG: gitlint.lint Linting commit {commit_sha}
+DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
-WIP: Thïs is a title thåt is a bit longer.
-Content on the second line
-This line of the body is here because we need it
-
+WIP: msg-filename tïtle
 --- Meta info ---------
-Author: gitlint-test-user <gitlint@test.com>
-Date:   {commit_date}
+Author: föo user <föo@bar.com>
+Date:   2020-02-19 12:18:46 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
 is-squash-commit: False
 is-revert-commit: False
-Branches: ['master']
-Changed Files: {changed_files}
+Branches: ['my-branch']
+Changed Files: ['commit-1/file-1', 'commit-1/file-2']
 -----------------------
-1: T1 Title exceeds max length (42>20)
-1: T5 Title contains the word 'WIP' (case-insensitive)
-1: T5 Title contains the word 'thåt' (case-insensitive)
-2: B4 Second line is not empty
-3: B1 Line exceeds max length (48>30)
-DEBUG: gitlint.cli Exit Code = 5
+DEBUG: gitlint.cli Exit Code = 2

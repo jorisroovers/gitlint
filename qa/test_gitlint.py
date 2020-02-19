@@ -139,13 +139,13 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_violations_1"))
 
     def test_msg_filename(self):
-        tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename test.")
+        tmp_commit_msg_file = self.create_tmpfile(u"WIP: msg-fïlename test.")
         output = gitlint("--msg-filename", tmp_commit_msg_file, _tty_in=True, _ok_code=[3])
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_1"))
 
     def test_msg_filename_no_tty(self):
         """ Make sure --msg-filename option also works with no TTY attached """
-        tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename NO TTY test.")
+        tmp_commit_msg_file = self.create_tmpfile(u"WIP: msg-fïlename NO TTY test.")
 
         # We need to set _err_to_out explicitly for sh to merge stdout and stderr output in case there's
         # no TTY attached to STDIN

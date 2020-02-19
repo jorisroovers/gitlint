@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
-import platform
-import sys
-
-import arrow
-
-from qa.shell import git, gitlint
+from qa.shell import gitlint
 from qa.base import BaseTestCase
+from qa.utils import sstr
 
 
 class ConfigTests(BaseTestCase):
@@ -58,18 +54,10 @@ class ConfigTests(BaseTestCase):
     def test_config_from_file_debug(self):
         commit_msg = u"WIP: Thïs is a title thåt is a bit longer.\nContent on the second line\n" + \
                      "This line of the body is here because we need it"
-        self._create_simple_commit(commit_msg)
-        commit_sha = self.get_last_commit_hash()
+        filename = self._create_simple_commit(commit_msg)
         config_path = self.get_sample_path("config/gitlintconfig")
         output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
 
-        expected_date = git("log", "-1", "--pretty=%ai", _tty_out=False, _cwd=self.tmp_git_repo)
-        expected_date = arrow.get(str(expected_date), "YYYY-MM-DD HH:mm:ss Z").datetime
-        expected_gitlint_version = gitlint("--version").replace("gitlint, version ", "").replace("\n", "")
-        expected_git_version = git("--version").replace("\n", "")
-
-        expected_kwargs = {'platform': platform.platform(), 'python_version': sys.version,
-                           'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
-                           'GITLINT_USE_SH_LIB': self.GITLINT_USE_SH_LIB, 'config_path': config_path,
-                           'target': self.tmp_git_repo, 'commit_sha': commit_sha, 'commit_date': expected_date}
+        expected_kwargs = self.get_debug_vars_last_commit()
+        expected_kwargs.update({'config_path': config_path, 'changed_files': sstr([filename])})
         self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_debug_1", expected_kwargs))

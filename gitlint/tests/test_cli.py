@@ -8,6 +8,8 @@ import platform
 import shutil
 import tempfile
 
+import arrow
+
 try:
     # python 2.x
     from StringIO import StringIO
@@ -60,6 +62,12 @@ class CLITests(BaseTestCase):
     def tearDown(self):
         self.git_version_path.stop()
 
+    @staticmethod
+    def get_system_info_dict():
+        """ Returns a dict with items related to system values logged by `gitlint --debug` """
+        return {'platform': platform.platform(), "python_version": sys.version, 'gitlint_version': __version__,
+                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB, 'target': os.path.realpath(os.getcwd())}
+
     def test_version(self):
         """ Test for --version option """
         result = self.cli.invoke(cli.cli, ["--version"])
@@ -74,7 +82,7 @@ class CLITests(BaseTestCase):
             u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title\n\ncommït-body",
             u"#",  # git config --get core.commentchar
-
+            u"commit-1-branch-1\ncommit-1-branch-2\n",
             u"file1.txt\npåth/to/file2.txt\n"
         ]
 
@@ -95,11 +103,19 @@ class CLITests(BaseTestCase):
             # git log --pretty <FORMAT> <SHA>
             u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title1\n\ncommït-body1",
-            u"#",  # git config --get core.commentchar
+            u"#",                                           # git config --get core.commentchar
+            u"commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            u"commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             u"commït-title2\n\ncommït-body2",
+            u"commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
+            u"commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             u"commït-title3\n\ncommït-body3",
+            u"commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
+            u"commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -120,11 +136,19 @@ class CLITests(BaseTestCase):
             # git log --pretty <FORMAT> <SHA>
             u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title1\n\ncommït-body1",
-            u"#",  # git config --get core.commentchar
-            u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
+            u"#",                                           # git config --get core.commentchar
+            u"commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            u"commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
+            u"test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             u"commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
+            u"commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
+            u"commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             u"commït-title3.\n\ncommït-body3",
+            u"commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
+            u"commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -147,14 +171,22 @@ class CLITests(BaseTestCase):
             # git log --pretty <FORMAT> <SHA>
             u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title1\n\ncommït-body1",
-            u"#",  # git config --get core.commentchar
+            u"#",                                           # git config --get core.commentchar
+            u"commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            u"commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             u"test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             # Normally T3 violation (trailing punctuation), but this commit is ignored because of
             # config below
             u"commït-title2.\n\ncommït-body2\n",
+            u"commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
+            u"commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             # Normally T1 and B5 violations, now only T1 because we're ignoring B5 in config below
             u"commït-title3.\n\ncommït-body3 foo",
+            u"commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
+            u"commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -179,6 +211,19 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
+    @patch('gitlint.cli.get_stdin_data', return_value=u'WIP: tïtle \n')
+    def test_input_stream_debug(self, _):
+        """ Test for linting when a message is passed via stdin, and debug is enabled.
+            This tests specifically that git commit meta is not fetched when not passing --staged """
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--debug"])
+            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_input_stream_debug_1"))
+            self.assertEqual(result.exit_code, 3)
+            self.assertEqual(result.output, "")
+            expected_kwargs = self.get_system_info_dict()
+            expected_logs = self.get_expected('test_cli/test_input_stream_debug_2', expected_kwargs)
+            self.assert_logged(expected_logs)
+
     @patch('gitlint.cli.get_stdin_data', return_value="Should be ignored\n")
     @patch('gitlint.git.sh')
     def test_lint_ignore_stdin(self, sh, stdin_data):
@@ -187,8 +232,9 @@ class CLITests(BaseTestCase):
             "6f29bf81a8322a04071bb794666e48c443a90360",
             u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             u"commït-title\n\ncommït-body",
-            u"#",  # git config --get core.commentchar
-            u"file1.txt\npåth/to/file2.txt\n"
+            u"#",                                       # git config --get core.commentchar
+            u"commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
+            u"file1.txt\npåth/to/file2.txt\n"           # git diff-tree
         ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -198,6 +244,58 @@ class CLITests(BaseTestCase):
 
         # Assert that we didn't even try to get the stdin data
         self.assertEqual(stdin_data.call_count, 0)
+
+    @patch('gitlint.cli.get_stdin_data', return_value=u'WIP: tïtle \n')
+    @patch('arrow.now', return_value=arrow.get("2020-02-19T12:18:46.675182+01:00"))
+    @patch('gitlint.git.sh')
+    def test_lint_staged_stdin(self, sh, _, __):
+        """ Test for ignoring stdin when --ignore-stdin flag is enabled"""
+
+        sh.git.side_effect = [
+            u"#",                                         # git config --get core.commentchar
+            u"föo user\n",                                # git config --get user.name
+            u"föo@bar.com\n",                             # git config --get user.email
+            u"my-branch\n",                               # git rev-parse --abbrev-ref HEAD (=current branch)
+            u"commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
+        ]
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--debug", "--staged"])
+            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_staged_stdin_1"))
+            self.assertEqual(result.exit_code, 3)
+            self.assertEqual(result.output, "")
+
+            expected_kwargs = self.get_system_info_dict()
+            expected_logs = self.get_expected('test_cli/test_lint_staged_stdin_2', expected_kwargs)
+            self.assert_logged(expected_logs)
+
+    @patch('arrow.now', return_value=arrow.get("2020-02-19T12:18:46.675182+01:00"))
+    @patch('gitlint.git.sh')
+    def test_lint_staged_msg_filename(self, sh, _):
+        """ Test for ignoring stdin when --ignore-stdin flag is enabled"""
+
+        sh.git.side_effect = [
+            u"#",                                         # git config --get core.commentchar
+            u"föo user\n",                                # git config --get user.name
+            u"föo@bar.com\n",                             # git config --get user.email
+            u"my-branch\n",                               # git rev-parse --abbrev-ref HEAD (=current branch)
+            u"commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
+        ]
+
+        with tempdir() as tmpdir:
+            msg_filename = os.path.join(tmpdir, "msg")
+            with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
+                f.write(u"WIP: msg-filename tïtle\n")
+
+            with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+                result = self.cli.invoke(cli.cli, ["--debug", "--staged", "--msg-filename", msg_filename])
+                self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_staged_msg_filename_1"))
+                self.assertEqual(result.exit_code, 2)
+                self.assertEqual(result.output, "")
+
+                expected_kwargs = self.get_system_info_dict()
+                expected_logs = self.get_expected('test_cli/test_lint_staged_msg_filename_2', expected_kwargs)
+                self.assert_logged(expected_logs)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
     def test_msg_filename(self, _):
@@ -264,11 +362,17 @@ class CLITests(BaseTestCase):
             # git log --pretty <FORMAT> <SHA>
             u"test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00abc\n"
             u"commït-title1\n\ncommït-body1",
-            u"#",
+            u"#",                                         # git config --get core.commentchar
+            u"commit-1-branch-1\ncommit-1-branch-2\n",    # git branch --contains <sha>
+            u"commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
             u"test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00abc\n"
             u"commït-title2.\n\ncommït-body2",
+            u"commit-2-branch-1\ncommit-2-branch-2\n",    # git branch --contains <sha>
+            u"commit-2/file-1\ncommit-2/file-2\n",        # git diff-tree
             u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00abc\n"
             u"föo\nbar",
+            u"commit-3-branch-1\ncommit-3-branch-2\n",     # git branch --contains <sha>
+            u"commit-3/file-1\ncommit-3/file-2\n",         # git diff-tree
         ]
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -283,9 +387,8 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 6)
 
-            expected_kwargs = {'platform': platform.platform(), "python_version": sys.version,
-                               'gitlint_version': __version__, 'config_path': config_path,
-                               'GITLINT_USE_SH_LIB': self.GITLINT_USE_SH_LIB, 'target': os.path.realpath(os.getcwd())}
+            expected_kwargs = self.get_system_info_dict()
+            expected_kwargs.update({'config_path': config_path})
             expected_logs = self.get_expected('test_cli/test_debug_1', expected_kwargs)
             self.assert_logged(expected_logs)
 

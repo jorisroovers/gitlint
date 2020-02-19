@@ -133,19 +133,26 @@ def get_stdin_data():
 
 def build_git_context(lint_config, msg_filename, refspec):
     """ Builds a git context based on passed parameters and order of precedence """
+
+    # Determine which GitContext method to use if a custom message is passed
+    from_commit_msg = GitContext.from_commit_msg
+    if lint_config.staged:
+        LOG.debug("Fetching additional meta-data from staged commit")
+        from_commit_msg = lambda message: GitContext.from_staged_commit(message, lint_config.target)  # noqa
+
     # Order of precedence:
     # 1. Any data specified via --msg-filename
     if msg_filename:
         LOG.debug("Attempting to read from --msg-filename.")
-        return GitContext.from_commit_msg(ustr(msg_filename.read()))
+        return from_commit_msg(ustr(msg_filename.read()))
 
     # 2. Any data sent to stdin (unless stdin is being ignored)
     if not lint_config.ignore_stdin:
         stdin_input = get_stdin_data()
         if stdin_input:
-            LOG.debug("Stdin data: %r", stdin_input)
+            LOG.debug("Stdin data: '%s'", stdin_input)
             LOG.debug("Stdin detected and not ignored. Will be used as input.")
-            return GitContext.from_commit_msg(stdin_input)
+            return from_commit_msg(stdin_input)
 
     # 3. Fallback to reading from local repository
     LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
