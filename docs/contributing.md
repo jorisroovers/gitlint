@@ -81,6 +81,7 @@ python setup.py --long-description | rst2html.py > output.html
 # Documentation #
 Outside the vagrant box (on your host machine):
 ```bash
+pip install -r doc-requirements.txt # install doc requirements
 mkdocs serve
 ```
 

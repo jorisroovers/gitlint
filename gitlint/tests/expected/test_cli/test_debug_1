@@ -15,6 +15,7 @@ ignore-fixup-commits: True
 ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False
+staged: False
 verbosity: 1
 debug: True
 target: {target}

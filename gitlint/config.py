@@ -76,6 +76,7 @@ class LintConfig(object):
         self._config_path = None
         ignore_stdin_description = "Ignore any stdin data. Useful for running in CI server."
         self._ignore_stdin = options.BoolOption('ignore-stdin', False, ignore_stdin_description)
+        self._staged = options.BoolOption('staged', False, "Read staged commit meta-info from the local repository.")
 
     @property
     def target(self):
@@ -160,6 +161,15 @@ class LintConfig(object):
     @handle_option_error
     def ignore_stdin(self, value):
         return self._ignore_stdin.set(value)
+
+    @property
+    def staged(self):
+        return self._staged.value
+
+    @staged.setter
+    @handle_option_error
+    def staged(self, value):
+        return self._staged.set(value)
 
     @property
     def extra_path(self):
@@ -267,6 +277,7 @@ class LintConfig(object):
             self.ignore_squash_commits == other.ignore_squash_commits and \
             self.ignore_revert_commits == other.ignore_revert_commits and \
             self.ignore_stdin == other.ignore_stdin and \
+            self.staged == other.staged and \
             self.debug == other.debug and \
             self.ignore == other.ignore and \
             self._config_path == other._config_path  # noqa
@@ -286,6 +297,7 @@ class LintConfig(object):
         return_str += u"ignore-squash-commits: {0}\n".format(self.ignore_squash_commits)
         return_str += u"ignore-revert-commits: {0}\n".format(self.ignore_revert_commits)
         return_str += u"ignore-stdin: {0}\n".format(self.ignore_stdin)
+        return_str += u"staged: {0}\n".format(self.staged)
         return_str += u"verbosity: {0}\n".format(self.verbosity)
         return_str += u"debug: {0}\n".format(self.debug)
         return_str += u"target: {0}\n".format(self.target)

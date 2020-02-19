@@ -51,7 +51,10 @@ class LintConfigTests(BaseTestCase):
         self.assertTrue(config.ignore_merge_commits)
         self.assertTrue(config.ignore_fixup_commits)
         self.assertTrue(config.ignore_squash_commits)
+        self.assertTrue(config.ignore_revert_commits)
 
+        self.assertFalse(config.ignore_stdin)
+        self.assertFalse(config.staged)
         self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
         active_rule_classes = tuple(type(rule) for rule in config.rules)
@@ -88,6 +91,14 @@ class LintConfigTests(BaseTestCase):
         # debug
         config.set_general_option("debug", "true")
         self.assertTrue(config.debug)
+
+        # ignore-stdin
+        config.set_general_option("ignore-stdin", "true")
+        self.assertTrue(config.debug)
+
+        # staged
+        config.set_general_option("staged", "true")
+        self.assertTrue(config.staged)
 
         # target
         config.set_general_option("target", self.SAMPLES_DIR)
@@ -194,7 +205,7 @@ class LintConfigTests(BaseTestCase):
         with self.assertRaisesRegex(LintConfigError, "'_config_path' is not a valid gitlint option"):
             config.set_general_option("_config_path", u"bår")
 
-        # invalid verbosity`
+        # invalid verbosity
         incorrect_values = [-1, u"föo"]
         for value in incorrect_values:
             expected_msg = u"Option 'verbosity' must be a positive integer (current value: '{0}')".format(value)
@@ -220,9 +231,12 @@ class LintConfigTests(BaseTestCase):
         # invalid ignore -> not here because ignore is a ListOption which converts everything to a string before
         # splitting which means it it will accept just about everything
 
-        # invalid debug
-        with self.assertRaisesRegex(LintConfigError, "Option 'debug' must be either 'true' or 'false'"):
-            config.debug = u"föobar"
+        # invalid boolean options
+        for attribute in ['debug', 'staged', 'ignore_stdin']:
+            option_name = attribute.replace("_", "-")
+            with self.assertRaisesRegex(LintConfigError,
+                                        "Option '{0}' must be either 'true' or 'false'".format(option_name)):
+                setattr(config, attribute, u"föobar")
 
         # extra-path has its own negative test
 
