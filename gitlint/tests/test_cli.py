@@ -298,6 +298,13 @@ class CLITests(BaseTestCase):
                 self.assert_logged(expected_logs)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
+    def test_lint_staged_negative(self, _):
+        result = self.cli.invoke(cli.cli, ["--staged"])
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+        self.assertEqual(result.output, (u"Error: The 'staged' option (--staged) can only be used when using "
+                                         u"'--msg-filename' or when piping data to gitlint via stdin.\n"))
+
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     def test_msg_filename(self, _):
         expected_output = u"3: B6 Body message is missing\n"
 

@@ -29,6 +29,11 @@ click.UsageError.exit_code = USAGE_ERROR_CODE
 LOG = logging.getLogger(__name__)
 
 
+class GitLintUsageError(Exception):
+    """ Exception indicating there is an issue with how gitlint is used. """
+    pass
+
+
 def setup_logging():
     """ Setup gitlint logging """
     root_log = logging.getLogger("gitlint")
@@ -49,54 +54,50 @@ def log_system_info():
 
 
 def build_config(  # pylint: disable=too-many-arguments
-        ctx, target, config_path, c, extra_path, ignore, contrib, ignore_stdin, staged, verbose, silent, debug
+        target, config_path, c, extra_path, ignore, contrib, ignore_stdin, staged, verbose, silent, debug
 ):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     config_builder = LintConfigBuilder()
-    try:
-        # Config precedence:
-        # First, load default config or config from configfile
-        if config_path:
-            config_builder.set_from_config_file(config_path)
-        elif os.path.exists(DEFAULT_CONFIG_FILE):
-            config_builder.set_from_config_file(DEFAULT_CONFIG_FILE)
+    # Config precedence:
+    # First, load default config or config from configfile
+    if config_path:
+        config_builder.set_from_config_file(config_path)
+    elif os.path.exists(DEFAULT_CONFIG_FILE):
+        config_builder.set_from_config_file(DEFAULT_CONFIG_FILE)
 
-        # Then process any commandline configuration flags
-        config_builder.set_config_from_string_list(c)
+    # Then process any commandline configuration flags
+    config_builder.set_config_from_string_list(c)
 
-        # Finally, overwrite with any convenience commandline flags
-        if ignore:
-            config_builder.set_option('general', 'ignore', ignore)
+    # Finally, overwrite with any convenience commandline flags
+    if ignore:
+        config_builder.set_option('general', 'ignore', ignore)
 
-        if contrib:
-            config_builder.set_option('general', 'contrib', contrib)
+    if contrib:
+        config_builder.set_option('general', 'contrib', contrib)
 
-        if ignore_stdin:
-            config_builder.set_option('general', 'ignore-stdin', ignore_stdin)
+    if ignore_stdin:
+        config_builder.set_option('general', 'ignore-stdin', ignore_stdin)
 
-        if silent:
-            config_builder.set_option('general', 'verbosity', 0)
-        elif verbose > 0:
-            config_builder.set_option('general', 'verbosity', verbose)
+    if silent:
+        config_builder.set_option('general', 'verbosity', 0)
+    elif verbose > 0:
+        config_builder.set_option('general', 'verbosity', verbose)
 
-        if extra_path:
-            config_builder.set_option('general', 'extra-path', extra_path)
+    if extra_path:
+        config_builder.set_option('general', 'extra-path', extra_path)
 
-        if target:
-            config_builder.set_option('general', 'target', target)
+    if target:
+        config_builder.set_option('general', 'target', target)
 
-        if debug:
-            config_builder.set_option('general', 'debug', debug)
+    if debug:
+        config_builder.set_option('general', 'debug', debug)
 
-        if staged:
-            config_builder.set_option('general', 'staged', staged)
+    if staged:
+        config_builder.set_option('general', 'staged', staged)
 
-        config = config_builder.build()
+    config = config_builder.build()
 
-        return config, config_builder
-    except LintConfigError as e:
-        click.echo(u"Config Error: {0}".format(ustr(e)))
-    ctx.exit(CONFIG_ERROR_CODE)  # return CONFIG_ERROR_CODE on config error
+    return config, config_builder
 
 
 def get_stdin_data():
@@ -154,6 +155,10 @@ def build_git_context(lint_config, msg_filename, refspec):
             LOG.debug("Stdin detected and not ignored. Will be used as input.")
             return from_commit_msg(stdin_input)
 
+    if lint_config.staged:
+        raise GitLintUsageError(u"The 'staged' option (--staged) can only be used when using '--msg-filename' or "
+                                u"when piping data to gitlint via stdin.")
+
     # 3. Fallback to reading from local repository
     LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
     return GitContext.from_local_repository(lint_config.target, refspec)
@@ -200,7 +205,7 @@ def cli(  # pylint: disable=too-many-arguments
 
         # Get the lint config from the commandline parameters and
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
-        config, config_builder = build_config(ctx, target, config, c, extra_path, ignore, contrib,
+        config, config_builder = build_config(target, config, c, extra_path, ignore, contrib,
                                               ignore_stdin, staged, verbose, silent, debug)
         LOG.debug(u"Configuration\n%s", ustr(config))
 
@@ -213,6 +218,12 @@ def cli(  # pylint: disable=too-many-arguments
     except GitContextError as e:
         click.echo(ustr(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
+    except GitLintUsageError as e:
+        click.echo(u"Error: {0}".format(ustr(e)))
+        ctx.exit(USAGE_ERROR_CODE)
+    except LintConfigError as e:
+        click.echo(u"Config Error: {0}".format(ustr(e)))
+        ctx.exit(CONFIG_ERROR_CODE)
 
 
 @cli.command("lint")
