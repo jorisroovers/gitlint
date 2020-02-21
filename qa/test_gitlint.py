@@ -12,7 +12,7 @@ class IntegrationTests(BaseTestCase):
 
     def test_successful(self):
         # Test for STDIN with and without a TTY attached
-        self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
+        self.create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _err_to_out=True)
         self.assertEqualStdout(output, "")
 
@@ -22,19 +22,19 @@ class IntegrationTests(BaseTestCase):
 
         # Different commentchar (Note: tried setting this to a special unicode char, but git doesn't like that)
         git("config", "--add", "core.commentchar", "$", _cwd=self.tmp_git_repo)
-        self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit\n$after commentchar\t ignored")
+        self.create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit\n$after commentchar\t ignored")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _err_to_out=True)
         self.assertEqualStdout(output, "")
 
     def test_successful_merge_commit(self):
         # Create branch on master
-        self._create_simple_commit(u"Cömmit on master\n\nSimple bödy")
+        self.create_simple_commit(u"Cömmit on master\n\nSimple bödy")
 
         # Create test branch, add a commit and determine the commit hash
         git("checkout", "-b", "test-branch", _cwd=self.tmp_git_repo)
         git("checkout", "test-branch", _cwd=self.tmp_git_repo)
         commit_title = u"Commit on test-brånch with a pretty long title that will cause issues when merging"
-        self._create_simple_commit(u"{0}\n\nSïmple body".format(commit_title))
+        self.create_simple_commit(u"{0}\n\nSïmple body".format(commit_title))
         hash = self.get_last_commit_hash()
 
         # Checkout master and merge the commit
@@ -55,7 +55,7 @@ class IntegrationTests(BaseTestCase):
 
     def test_fixup_commit(self):
         # Create a normal commit and assert that it has a violation
-        test_filename = self._create_simple_commit(u"Cömmit on WIP master\n\nSimple bödy that is long enough")
+        test_filename = self.create_simple_commit(u"Cömmit on WIP master\n\nSimple bödy that is long enough")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
         expected = u"1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
         self.assertEqualStdout(output, expected)
@@ -85,7 +85,7 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, expected)
 
     def test_revert_commit(self):
-        self._create_simple_commit(u"WIP: Cömmit on master.\n\nSimple bödy")
+        self.create_simple_commit(u"WIP: Cömmit on master.\n\nSimple bödy")
         hash = self.get_last_commit_hash()
         git("revert", hash, _cwd=self.tmp_git_repo)
 
@@ -102,7 +102,7 @@ class IntegrationTests(BaseTestCase):
 
     def test_squash_commit(self):
         # Create a normal commit and assert that it has a violation
-        test_filename = self._create_simple_commit(u"Cömmit on WIP master\n\nSimple bödy that is long enough")
+        test_filename = self.create_simple_commit(u"Cömmit on WIP master\n\nSimple bödy that is long enough")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
         expected = u"1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
         self.assertEqualStdout(output, expected)
@@ -134,7 +134,7 @@ class IntegrationTests(BaseTestCase):
 
     def test_violations(self):
         commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
-        self._create_simple_commit(commit_msg)
+        self.create_simple_commit(commit_msg)
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_violations_1"))
 

@@ -53,7 +53,7 @@ target: {target}
 DEBUG: gitlint.cli Fetching additional meta-data from staged commit
 DEBUG: gitlint.cli Stdin data: 'WIP: Pïpe test.
 '
-DEBUG: gitlint.cli Stdin detected and not ignored. Will be used as input.
+DEBUG: gitlint.cli Stdin detected and not ignored. Using as input.
 DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
 DEBUG: gitlint.lint Commit Object

@@ -51,7 +51,7 @@ target: {target}
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli Fetching additional meta-data from staged commit
-DEBUG: gitlint.cli Attempting to read from --msg-filename.
+DEBUG: gitlint.cli Using --msg-filename.
 DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
 DEBUG: gitlint.lint Commit Object

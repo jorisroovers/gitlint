@@ -29,7 +29,7 @@ class StdInTests(BaseTestCase):
             $ echo -n "" | gitlint
         """
         commit_msg = u"WIP: This ïs a title.\nContent on the sëcond line"
-        self._create_simple_commit(commit_msg)
+        self.create_simple_commit(commit_msg)
 
         # We need to set _err_to_out explicitly for sh to merge stdout and stderr output in case there's
         # no TTY attached to STDIN

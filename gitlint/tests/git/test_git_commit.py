@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import copy
 import datetime
-import os
 
 import dateutil
 
@@ -14,14 +13,11 @@ except ImportError:
     # python 3.x
     from unittest.mock import patch, call  # pylint: disable=no-name-in-module, import-error
 
-from gitlint.shell import ErrorReturnCode, CommandNotFound
-
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage, \
-     GitContextError, GitNotInstalledError, git_commentchar, git_hooks_dir
+from gitlint.git import GitContext, GitCommit, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
 
 
-class GitTests(BaseTestCase):
+class GitCommitTests(BaseTestCase):
 
     # Expected special_args passed to 'sh'
     expected_sh_special_args = {
@@ -245,40 +241,6 @@ class GitTests(BaseTestCase):
             self.assertListEqual(sh.git.mock_calls, expected_calls)
 
             sh.git.reset_mock()
-
-    @patch('gitlint.git.sh')
-    def test_get_latest_commit_command_not_found(self, sh):
-        sh.git.side_effect = CommandNotFound("git")
-        expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
-                       "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
-        with self.assertRaisesRegex(GitNotInstalledError, expected_msg):
-            GitContext.from_local_repository(u"fåke/path")
-
-        # assert that commit message was read using git command
-        sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
-
-    @patch('gitlint.git.sh')
-    def test_get_latest_commit_git_error(self, sh):
-        # Current directory not a git repo
-        err = b"fatal: Not a git repository (or any of the parent directories): .git"
-        sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
-
-        with self.assertRaisesRegex(GitContextError, u"fåke/path is not a git repository."):
-            GitContext.from_local_repository(u"fåke/path")
-
-        # assert that commit message was read using git command
-        sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
-        sh.git.reset_mock()
-
-        err = b"fatal: Random git error"
-        sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
-
-        expected_msg = u"An error occurred while executing 'git log -1 --pretty=%H': {0}".format(err)
-        with self.assertRaisesRegex(GitContextError, expected_msg):
-            GitContext.from_local_repository(u"fåke/path")
-
-        # assert that commit message was read using git command
-        sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
 
     @patch("gitlint.git.git_commentchar")
     def test_from_commit_msg_full(self, commentchar):
@@ -513,19 +475,24 @@ class GitTests(BaseTestCase):
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
         self.assertListEqual(sh.git.mock_calls, expected_calls[0:5])
 
+    def test_gitcommitmessage_equality(self):
+        commit_message1 = GitCommitMessage(GitContext(), u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
+        attrs = ['original', 'full', 'title', 'body']
+        self.object_equality_test(commit_message1, attrs, {"context": commit_message1.context})
+
     def test_gitcommit_equality(self):
         # Test simple equality case
         now = datetime.datetime.utcnow()
         context1 = GitContext()
         commit_message1 = GitCommitMessage(context1, u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
         commit1 = GitCommit(context1, commit_message1, u"shä", now, u"Jöhn Smith", u"jöhn.smith@test.com", None,
-                            [u"föo/bar"])
+                            [u"föo/bar"], [u"brånch1", u"brånch2"])
         context1.commits = [commit1]
 
         context2 = GitContext()
         commit_message2 = GitCommitMessage(context2, u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
         commit2 = GitCommit(context2, commit_message1, u"shä", now, u"Jöhn Smith", u"jöhn.smith@test.com", None,
-                            [u"föo/bar"])
+                            [u"föo/bar"], [u"brånch1", u"brånch2"])
         context2.commits = [commit2]
 
         self.assertEqual(context1, context2)
@@ -535,18 +502,9 @@ class GitTests(BaseTestCase):
         # Check that objects are unequal when changing a single attribute
         kwargs = {'message': commit1.message, 'sha': commit1.sha, 'date': commit1.date,
                   'author_name': commit1.author_name, 'author_email': commit1.author_email, 'parents': commit1.parents,
-                  'changed_files': commit1.changed_files}
+                  'changed_files': commit1.changed_files, 'branches': commit1.branches}
 
-        for attr in kwargs:
-            kwargs_copy = copy.deepcopy(kwargs)
-            clone = GitCommit(context=commit1.context, **kwargs_copy)
-            self.assertEqual(commit1, clone)
-
-            # Change attribute and assert commits are different (via both attribute set and ctor)
-            setattr(clone, attr, u"föo")
-            self.assertNotEqual(commit1, clone)
-            kwargs_copy[attr] = u"föo"
-            self.assertNotEqual(commit1, GitCommit(context=commit1.context, **kwargs_copy))
+        self.object_equality_test(commit1, kwargs.keys(), {"context": commit1.context})
 
         # Check that the is_* attributes that are affected by the commit message affect equality
         special_messages = {'is_merge_commit': u"Merge: foöbar", 'is_fixup_commit': u"fixup! foöbar",
@@ -561,31 +519,6 @@ class GitTests(BaseTestCase):
             clone2.message = GitCommitMessage.from_full_message(context1, u"foöbar")
             self.assertNotEqual(clone1, clone2)
 
-    @patch("gitlint.git._git")
-    def test_git_commentchar(self, git):
-        git.return_value.exit_code = 1
-        self.assertEqual(git_commentchar(), "#")
-
-        git.return_value.exit_code = 0
-        git.return_value.__str__ = lambda _: u"ä"
-        git.return_value.__unicode__ = lambda _: u"ä"
-        self.assertEqual(git_commentchar(), u"ä")
-
-        git.return_value = ';\n'
-        self.assertEqual(git_commentchar(os.path.join(u"/föo", u"bar")), ';')
-
-        git.assert_called_with("config", "--get", "core.commentchar", _ok_code=[0, 1],
-                               _cwd=os.path.join(u"/föo", u"bar"))
-
-    @patch("gitlint.git._git")
-    def test_git_hooks_dir(self, git):
-        hooks_dir = os.path.join(u"föo", ".git", "hooks")
-        git.return_value.__str__ = lambda _: hooks_dir + "\n"
-        git.return_value.__unicode__ = lambda _: hooks_dir + "\n"
-        self.assertEqual(git_hooks_dir(u"/blä"), os.path.abspath(os.path.join(u"/blä", hooks_dir)))
-
-        git.assert_called_once_with("rev-parse", "--git-path", "hooks", _cwd=u"/blä")
-
     @patch("gitlint.git.git_commentchar")
     def test_commit_msg_custom_commentchar(self, patched):
         patched.return_value = u"ä"
@@ -596,27 +529,3 @@ class GitTests(BaseTestCase):
         self.assertEqual(message.body, ["", u"Bödy 1", "Body 2"])
         self.assertEqual(message.full, u"Tïtle\n\nBödy 1\nBody 2")
         self.assertEqual(message.original, u"Tïtle\n\nBödy 1\näCömment\nBody 2")
-
-    @patch('gitlint.git.sh')
-    def test_gitcontext(self, sh):
-
-        sh.git.side_effect = [
-            u"#",  # git config --get core.commentchar
-            u"\nfoöbar\n"
-        ]
-
-        expected_calls = [
-            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
-            call("rev-parse", "--abbrev-ref", "HEAD", **self.expected_sh_special_args)
-        ]
-
-        context = GitContext(u"fåke/path")
-        self.assertEqual(sh.git.mock_calls, [])
-
-        # gitcontext.comment_branch
-        self.assertEqual(context.commentchar, u"#")
-        self.assertEqual(sh.git.mock_calls, expected_calls[0:1])
-
-        # gitcontext.current_branch
-        self.assertEqual(context.current_branch, u"foöbar")
-        self.assertEqual(sh.git.mock_calls, expected_calls)

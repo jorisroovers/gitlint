@@ -50,8 +50,8 @@ class HookTests(BaseTestCase):
 
     def test_commit_hook_continue(self):
         self.responses = ["y"]
-        test_filename = self._create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
-                                                   out=self._interact, tty_in=True)
+        test_filename = self.create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
+                                                  out=self._interact, tty_in=True)
 
         # Determine short commit-msg hash, needed to determine expected output
         short_hash = git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
@@ -72,8 +72,8 @@ class HookTests(BaseTestCase):
 
     def test_commit_hook_abort(self):
         self.responses = ["n"]
-        test_filename = self._create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
-                                                   out=self._interact, ok_code=1, tty_in=True)
+        test_filename = self.create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
+                                                  out=self._interact, ok_code=1, tty_in=True)
         git("rm", "-f", test_filename, _cwd=self.tmp_git_repo)
 
         # Determine short commit-msg hash, needed to determine expected output
@@ -93,8 +93,8 @@ class HookTests(BaseTestCase):
     def test_commit_hook_edit(self):
         self.responses = ["e", "y"]
         env = {"EDITOR": ":"}
-        test_filename = self._create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
-                                                   out=self._interact, env=env, tty_in=True)
+        test_filename = self.create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",
+                                                  out=self._interact, env=env, tty_in=True)
         git("rm", "-f", test_filename, _cwd=self.tmp_git_repo)
 
         short_hash = git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
@@ -130,7 +130,7 @@ class HookTests(BaseTestCase):
             ```
         """
         tmp_git_repo = self.create_tmp_git_repo()
-        self._create_simple_commit(u"Simple title\n\nContënt in the body", git_repo=tmp_git_repo)
+        self.create_simple_commit(u"Simple title\n\nContënt in the body", git_repo=tmp_git_repo)
 
         worktree_dir = self.generate_temp_path()
         self.tmp_git_repos.append(worktree_dir)  # make sure we clean up the worktree afterwards

@@ -16,10 +16,10 @@ class CommitsTests(BaseTestCase):
     def test_successful(self):
         """ Test linting multiple commits without violations """
         git("checkout", "-b", "test-branch-commits-base", _cwd=self.tmp_git_repo)
-        self._create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
+        self.create_simple_commit(u"Sïmple title\n\nSimple bödy describing the commit")
         git("checkout", "-b", "test-branch-commits", _cwd=self.tmp_git_repo)
-        self._create_simple_commit(u"Sïmple title2\n\nSimple bödy describing the commit2")
-        self._create_simple_commit(u"Sïmple title3\n\nSimple bödy describing the commit3")
+        self.create_simple_commit(u"Sïmple title2\n\nSimple bödy describing the commit2")
+        self.create_simple_commit(u"Sïmple title3\n\nSimple bödy describing the commit3")
         output = gitlint("--commits", "test-branch-commits-base...test-branch-commits",
                          _cwd=self.tmp_git_repo, _tty_in=True)
         self.assertEqualStdout(output, "")
@@ -27,12 +27,12 @@ class CommitsTests(BaseTestCase):
     def test_violations(self):
         """ Test linting multiple commits with violations """
         git("checkout", "-b", "test-branch-commits-violations-base", _cwd=self.tmp_git_repo)
-        self._create_simple_commit(u"Sïmple title.\n")
+        self.create_simple_commit(u"Sïmple title.\n")
         git("checkout", "-b", "test-branch-commits-violations", _cwd=self.tmp_git_repo)
 
-        self._create_simple_commit(u"Sïmple title2.\n")
+        self.create_simple_commit(u"Sïmple title2.\n")
         commit_sha1 = self.get_last_commit_hash()[:10]
-        self._create_simple_commit(u"Sïmple title3.\n")
+        self.create_simple_commit(u"Sïmple title3.\n")
         commit_sha2 = self.get_last_commit_hash()[:10]
         output = gitlint("--commits", "test-branch-commits-violations-base...test-branch-commits-violations",
                          _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
@@ -43,11 +43,11 @@ class CommitsTests(BaseTestCase):
 
     def test_lint_single_commit(self):
         """ Tests `gitlint --commits <sha>` """
-        self._create_simple_commit(u"Sïmple title.\n")
-        self._create_simple_commit(u"Sïmple title2.\n")
+        self.create_simple_commit(u"Sïmple title.\n")
+        self.create_simple_commit(u"Sïmple title2.\n")
         commit_sha = self.get_last_commit_hash()
         refspec = "{0}^...{0}".format(commit_sha)
-        self._create_simple_commit(u"Sïmple title3.\n")
+        self.create_simple_commit(u"Sïmple title3.\n")
         output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
         expected = (u"1: T3 Title has trailing punctuation (.): \"Sïmple title2.\"\n" +
                     u"3: B6 Body message is missing\n")
@@ -61,7 +61,7 @@ class CommitsTests(BaseTestCase):
             echo "WIP: Pïpe test." | gitlint --staged --debug
         """
         # Create a commit first, before we stage changes. This ensures the repo is properly initialized.
-        self._create_simple_commit(u"Sïmple title.\n")
+        self.create_simple_commit(u"Sïmple title.\n")
 
         # Add some files, stage them: they should show up in the debug output as changed file
         filename1 = self.create_file(self.tmp_git_repo)
@@ -95,7 +95,7 @@ class CommitsTests(BaseTestCase):
             gitlint --msg-filename /tmp/my-commit-msg --staged --debug
         """
         # Create a commit first, before we stage changes. This ensures the repo is properly initialized.
-        self._create_simple_commit(u"Sïmple title.\n")
+        self.create_simple_commit(u"Sïmple title.\n")
 
         # Add some files, stage them: they should show up in the debug output as changed file
         filename1 = self.create_file(self.tmp_git_repo)
@@ -128,9 +128,9 @@ class CommitsTests(BaseTestCase):
     def test_lint_head(self):
         """ Testing whether we can also recognize special refs like 'HEAD' """
         tmp_git_repo = self.create_tmp_git_repo()
-        self._create_simple_commit(u"Sïmple title.\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
-        self._create_simple_commit(u"Sïmple title", git_repo=tmp_git_repo)
-        self._create_simple_commit(u"WIP: Sïmple title\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
+        self.create_simple_commit(u"Sïmple title.\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
+        self.create_simple_commit(u"Sïmple title", git_repo=tmp_git_repo)
+        self.create_simple_commit(u"WIP: Sïmple title\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
         output = gitlint("--commits", "HEAD", _cwd=tmp_git_repo, _tty_in=True, _ok_code=[3])
         revlist = git("rev-list", "HEAD", _tty_in=True, _cwd=tmp_git_repo).split()
 
@@ -143,14 +143,14 @@ class CommitsTests(BaseTestCase):
         """ Tests multiple commits of which some rules get igonored because of ignore-* rules """
         # Create repo and some commits
         tmp_git_repo = self.create_tmp_git_repo()
-        self._create_simple_commit(u"Sïmple title.\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
+        self.create_simple_commit(u"Sïmple title.\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)
         # Normally, this commit will give T3 (trailing-punctuation), T5 (WIP) and B5 (bod-too-short) violations
         # But in this case only B5 because T3 and T5 are being ignored because of config
-        self._create_simple_commit(u"Release: WIP tïtle.\n\nShort", git_repo=tmp_git_repo)
+        self.create_simple_commit(u"Release: WIP tïtle.\n\nShort", git_repo=tmp_git_repo)
         # In the following 2 commits, the T3 violations are as normal
-        self._create_simple_commit(
+        self.create_simple_commit(
             u"Sïmple WIP title3.\n\nThis is \ta relëase commit\nMore info", git_repo=tmp_git_repo)
-        self._create_simple_commit(u"Sïmple title4.\n\nSimple bödy describing the commit4", git_repo=tmp_git_repo)
+        self.create_simple_commit(u"Sïmple title4.\n\nSimple bödy describing the commit4", git_repo=tmp_git_repo)
         revlist = git("rev-list", "HEAD", _tty_in=True, _cwd=tmp_git_repo).split()
 
         config_path = self.get_sample_path("config/ignore-release-commits")

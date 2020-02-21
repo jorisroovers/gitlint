@@ -144,7 +144,7 @@ def build_git_context(lint_config, msg_filename, refspec):
     # Order of precedence:
     # 1. Any data specified via --msg-filename
     if msg_filename:
-        LOG.debug("Attempting to read from --msg-filename.")
+        LOG.debug("Using --msg-filename.")
         return from_commit_msg(ustr(msg_filename.read()))
 
     # 2. Any data sent to stdin (unless stdin is being ignored)
@@ -152,7 +152,7 @@ def build_git_context(lint_config, msg_filename, refspec):
         stdin_input = get_stdin_data()
         if stdin_input:
             LOG.debug("Stdin data: '%s'", stdin_input)
-            LOG.debug("Stdin detected and not ignored. Will be used as input.")
+            LOG.debug("Stdin detected and not ignored. Using as input.")
             return from_commit_msg(stdin_input)
 
     if lint_config.staged:
@@ -160,7 +160,7 @@ def build_git_context(lint_config, msg_filename, refspec):
                                 u"when piping data to gitlint via stdin.")
 
     # 3. Fallback to reading from local repository
-    LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Attempting to read from the local repo.")
+    LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Using the local repo.")
     return GitContext.from_local_repository(lint_config.target, refspec)
 
 

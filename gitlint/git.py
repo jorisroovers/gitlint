@@ -109,8 +109,8 @@ class GitCommitMessage(object):
         return self.__str__()  # pragma: no cover
 
     def __eq__(self, other):
-        return isinstance(other, GitCommitMessage) and self.original == other.original and \
-               self.full == other.full and self.title == other.title and self.body == other.body  # noqa
+        return (isinstance(other, GitCommitMessage) and self.original == other.original
+                and self.full == other.full and self.title == other.title and self.body == other.body)  # noqa
 
     def __ne__(self, other):
         return not self.__eq__(other)  # required for py2
@@ -173,13 +173,13 @@ class GitCommit(object):
 
     def __eq__(self, other):
         # skip checking the context as context refers back to this obj, this will trigger a cyclic dependency
-        return isinstance(other, GitCommit) and self.message == other.message and \
-               self.sha == other.sha and self.author_name == other.author_name and \
-               self.author_email == other.author_email and \
-               self.date == other.date and self.parents == other.parents and \
-               self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit and \
-               self.is_squash_commit == other.is_squash_commit and self.is_revert_commit == other.is_revert_commit and \
-               self.changed_files == other.changed_files  # noqa
+        return (isinstance(other, GitCommit) and self.message == other.message
+                and self.sha == other.sha and self.author_name == other.author_name
+                and self.author_email == other.author_email
+                and self.date == other.date and self.parents == other.parents
+                and self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit
+                and self.is_squash_commit == other.is_squash_commit and self.is_revert_commit == other.is_revert_commit
+                and self.changed_files == other.changed_files and self.branches == other.branches) # noqa
 
     def __ne__(self, other):
         return not self.__eq__(other)  # required for py2
@@ -383,7 +383,9 @@ class GitContext(PropertyCache):
         return context
 
     def __eq__(self, other):
-        return isinstance(other, GitContext) and self.commits == other.commits
+        return (isinstance(other, GitContext) and self.commits == other.commits
+                and self.repository_path == other.repository_path
+                and self.commentchar == other.commentchar and self.current_branch == other.current_branch)  # noqa
 
     def __ne__(self, other):
         return not self.__eq__(other)  # required for py2

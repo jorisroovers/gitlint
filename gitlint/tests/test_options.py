@@ -7,7 +7,7 @@ from gitlint.options import IntOption, BoolOption, StrOption, ListOption, PathOp
 
 
 class RuleOptionTests(BaseTestCase):
-    def test_option_equals(self):
+    def test_option_equality(self):
         # 2 options are equal if their name, value and description match
         option1 = IntOption("test-option", 123, u"Test Dëscription")
         option2 = IntOption("test-option", 123, u"Test Dëscription")

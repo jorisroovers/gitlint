@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import copy
 import io
 import logging
 import os
@@ -125,6 +128,34 @@ class BaseTestCase(unittest.TestCase):
         """
         return super(BaseTestCase, self).assertRaisesRegex(expected_exception, re.escape(expected_regex),
                                                            *args, **kwargs)
+
+    def object_equality_test(self, obj, attr_list, ctor_kwargs=None):
+        """ Helper function to easily implement object equality tests.
+            Creates an object clone for every passed attribute and checks for (in)equality
+            of the original object with the clone based on those attributes' values.
+            This function assumes all attributes in `attr_list` can be passed to the ctor of `obj.__class__`.
+        """
+        if not ctor_kwargs:
+            ctor_kwargs = {}
+
+        attr_kwargs = {}
+        for attr in attr_list:
+            attr_kwargs[attr] = getattr(obj, attr)
+
+        # For every attr, clone the object and assert the clone and the original object are equal
+        # Then, change the current attr and assert objects are unequal
+        for attr in attr_list:
+            attr_kwargs_copy = copy.deepcopy(attr_kwargs)
+            attr_kwargs_copy.update(ctor_kwargs)
+            clone = obj.__class__(**attr_kwargs_copy)
+            self.assertEqual(obj, clone)
+
+            # Change attribute and assert objects are different (via both attribute set and ctor)
+            setattr(clone, attr, u"föo")
+            self.assertNotEqual(obj, clone)
+            attr_kwargs_copy[attr] = u"föo"
+
+            self.assertNotEqual(obj, obj.__class__(**attr_kwargs_copy))
 
 
 class LogCapture(logging.Handler):

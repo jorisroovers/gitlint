@@ -46,6 +46,7 @@ To run tests:
 ./run_tests.sh                       # run unit tests and print test coverage
 ./run_test.sh gitlint/tests/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
+./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
 ./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
 ./run_tests.sh --build               # Run build tests (=build python package)
 ./run_tests.sh --pep8                # pep8 checks
@@ -53,6 +54,8 @@ To run tests:
 ./run_tests.sh --git                 # inception: run gitlint against itself
 ./run_tests.sh --lint                # run pylint checks
 ./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
+
+
 ```
 
 The ```Vagrantfile``` comes with ```virtualenv```s for python 2.7, 3.5, 3.6, 3.7 and pypy2.
