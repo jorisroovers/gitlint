@@ -9,7 +9,9 @@ nav:
     - Contrib Rules: contrib_rules.md
     - User Defined Rules: user_defined_rules.md
     - Contributing: contributing.md
+    - Changelog: https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md
 
 markdown_extensions: [admonition]
 theme: readthedocs
 strict: true
+extra_css: [extra.css]

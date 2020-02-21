@@ -197,6 +197,19 @@ Name                  | gitlint version   | Default                      | Descr
 regex                 | >= 0.10.0         | None                         |  Regex to match against commit title. On match, the commit will be ignored.
 ignore                | >= 0.10.0         | all                          |  Comma-seperated list of rule names or ids to ignore when this rule is matched.
 
+### Examples
+
+#### .gitlint
+
+```ini
+# Match commit titles starting with Release
+# For those commits, ignore title-max-length and body-min-length rules
+[ignore-by-title]
+regex=^Release(.*)
+ignore=title-max-length,body-min-length
+# ignore all rules by setting ignore to 'all'
+# ignore=all
+```
 
 ## I2: ignore-by-body ##
 
@@ -211,3 +224,20 @@ Name                  | gitlint version   | Default                      | Descr
 ----------------------|-------------------|------------------------------|----------------------------------
 regex                 | >= 0.10.0         | None                         |  Regex to match against each line of the body. On match, the commit will be ignored.
 ignore                | >= 0.10.0         | all                          |  Comma-seperated list of rule names or ids to ignore when this rule is matched.
+
+### Examples
+
+#### .gitlint
+
+```ini
+# Ignore all commits with a commit message body with a line that contains 'release'
+[ignore-by-body]
+regex=(.*)release(.*)
+ignore=all
+
+# For matching commits, only ignore rules T1, body-min-length, B6.
+# You can use both names as well as ids to refer to other rules.
+[ignore-by-body]
+regex=(.*)release(.*)
+ignore=T1,body-min-length,B6
+```

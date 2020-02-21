@@ -1,6 +1,6 @@
 # Edit this file as you like.
 #
-# All these sections are optional. Each section with the exception of general represents
+# All these sections are optional. Each section with the exception of [general] represents
 # one rule and each key in it is an option for that specific rule.
 #
 # Rules and sections can be referenced by their full name or by id. For example
@@ -14,16 +14,10 @@
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
 # verbosity = 2
 
-# By default gitlint will ignore merge commits. Set to 'false' to disable.
+# By default gitlint will ignore merge, revert, fixup and squash commits. 
 # ignore-merge-commits=true
-
-# By default gitlint will ignore revert commits. Set to 'false' to disable.
 # ignore-revert-commits=true
-
-# By default gitlint will ignore fixup commits. Set to 'false' to disable.
 # ignore-fixup-commits=true
-
-# By default gitlint will ignore squash commits. Set to 'false' to disable.
 # ignore-squash-commits=true
 
 # Ignore any data send to gitlint via stdin
@@ -44,6 +38,8 @@
 # See http://jorisroovers.github.io/gitlint/user_defined_rules for details
 # extra-path=examples/
 
+# This is an example of how to configure the "title-max-length" rule and
+# set the line-length it enforces to 80
 # [title-max-length]
 # line-length=50
 
@@ -88,7 +84,7 @@
 # Ignore certain rules for commits of which the title matches a regex
 # E.g. Match commit titles that start with "Release"
 # regex=^Release(.*)
-#
+
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
 # ignore=T1,body-min-length
@@ -102,6 +98,9 @@
 # Use 'all' to ignore all rules
 # ignore=T1,body-min-length
 
+# This is a contrib rule - a community contributed rule. These are disabled by default.
+# You need to explicitly enable them one-by-one by adding them to the "contrib" option
+# under [general] section above.
 # [contrib-title-conventional-commits]
 # Specify allowed commit types. For details see: https://www.conventionalcommits.org/
 # types = bugfix,user-story,epic
