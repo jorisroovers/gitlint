@@ -4,7 +4,7 @@ _Introduced in gitlint v0.12.0_
 Contrib rules are community-**contrib**uted rules that are disabled by default, but can be enabled through configuration.
 
 Contrib rules are meant to augment default gitlint behavior by providing users with rules for common use-cases without
-forcing these rules on all gitlint users. In addition, Contrib rules enable re-usability so that users don't have to
+forcing these rules on all gitlint users. This also means that users don't have to
 re-implement these commonly used rules themselves as [user-defined](user_defined_rules) rules.
 
 To enable certain contrib rules, you can use the ```--contrib``` flag.
@@ -24,7 +24,10 @@ Same thing using a ```.gitlint``` file:
 
 ```ini
 [general]
+# You HAVE to add the rule here to enable it, only configuring (such as below)
+# does NOT enable it.
 contrib=contrib-title-conventional-commits,CC1
+
 
 [contrib-title-conventional-commits]
 # Specify allowed commit types. For details see: https://www.conventionalcommits.org/

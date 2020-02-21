@@ -190,12 +190,21 @@ run_stats(){
     echo "    First commit: $(git log --pretty="%aD" $(git rev-list --max-parents=0 HEAD))"
     echo "    Contributors: $(git log --format='%aN' | sort -u | wc -l | tr -d ' ')"
     echo "    Releases (tags): $(git tag --list | wc -l | tr -d ' ')"
+    latest_tag=$(git tag --sort=creatordate | tail -n 1)
+    echo "    Latest Release (tag): $latest_tag"
+    echo "    Commits since $latest_tag: $(git log --format=oneline HEAD...$latest_tag | wc -l | tr -d ' ')"
+    echo "    Line changes since $latest_tag: $(git diff --shortstat $latest_tag)"
     # PyPi API: https://pypistats.org/api/
     echo "*** PyPi ***"
-    stats=$(curl -s https://pypistats.org/api/packages/gitlint/recent)
-    echo "    Last Month: $(echo $stats | jq .data.last_month)"
-    echo "    Last Week: $(echo $stats | jq .data.last_week)"
-    echo "    Last Day: $(echo $stats | jq .data.last_day)"
+    info=$(curl -Ls https://pypi.python.org/pypi/gitlint/json)
+    echo "    Current version: $(echo $info | jq -r .info.version)"
+    echo "*** PyPi (Downloads) ***"
+    overall_stats=$(curl -s https://pypistats.org/api/packages/gitlint/overall)
+    recent_stats=$(curl -s https://pypistats.org/api/packages/gitlint/recent)
+    echo "    Last 6 Months: $(echo $overall_stats | jq -r '.data[].downloads' | awk '{sum+=$1} END {print sum}')"
+    echo "    Last Month: $(echo $recent_stats | jq .data.last_month)"
+    echo "    Last Week: $(echo $recent_stats | jq .data.last_week)"
+    echo "    Last Day: $(echo $recent_stats | jq .data.last_day)"
 }
 
 clean(){
