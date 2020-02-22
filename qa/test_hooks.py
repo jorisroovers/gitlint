@@ -21,6 +21,11 @@ class HookTests(BaseTestCase):
         self.response_index = 0
         self.githook_output = []
 
+        # The '--staged' flag used in the commit-msg hook fetches additional information from the underlying
+        # git repo which means there already needs to be a commit in the repo
+        # (as gitlint --staged doesn't work against empty repos)
+        self.create_simple_commit(u"Commït Title\n\nCommit Body explaining commit.")
+
         # install git commit-msg hook and assert output
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
         expected_installed = u"Successfully installed gitlint commit-msg hook in %s/.git/hooks/commit-msg\n" % \
@@ -54,12 +59,12 @@ class HookTests(BaseTestCase):
                                                   out=self._interact, tty_in=True)
 
         # Determine short commit-msg hash, needed to determine expected output
-        short_hash = git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
+        short_hash = self.get_last_commit_short_hash()
 
         expected_output = self._violations()
         expected_output += ["Continue with commit anyways (this keeps the current commit message)? " +
                             "[y(es)/n(no)/e(dit)] " +
-                            u"[master (root-commit) %s] WIP: This ïs a title. Contënt on the second line\n"
+                            u"[master %s] WIP: This ïs a title. Contënt on the second line\n"
                             % short_hash,
                             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
                             u" create mode 100644 %s\n" % test_filename]
