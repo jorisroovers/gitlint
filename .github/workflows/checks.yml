@@ -1,0 +1,112 @@
+name: Tests and Checks
+
+on: [push]
+
+jobs:
+  checks:
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8, pypy2, pypy3]
+        os: ["macos-latest", "ubuntu-latest"]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r test-requirements.txt
+
+      - name: Unit Tests
+        run: ./run_tests.sh
+
+      - name: Coveralls 1
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: coveralls
+
+      - name: Integration Tests
+        run: ./run_tests.sh -i
+
+      - name: Integration Tests (GITLINT_USE_SH_LIB=0)
+        env:
+          GITLINT_USE_SH_LIB: 0
+        run: ./run_tests.sh -i
+
+      - name: PEP8
+        run: ./run_tests.sh -p
+
+      - name: PyLint
+        run: ./run_tests.sh -l
+
+      - name: Build tests
+        run: ./run_tests.sh --build
+
+      # Coveralls GH Action currently doesn't support current non-LCOV reporting format
+      # For now,  still using Travis for unit test coverage reporting
+      # https://github.com/coverallsapp/github-action/issues/30
+      # - name: Coveralls
+      #   uses: coverallsapp/github-action@master
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Gitlint check
+        run: ./run_tests.sh -g
+
+  windows-checks:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.5]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: "Upgrade pip on Python 3"
+        if: matrix.python-version == '3.5'
+        run: python -m pip install --upgrade pip
+
+      - name: Install requirements
+        run: |
+          pip install -r requirements.txt
+          pip install -r test-requirements.txt
+
+      - name: gitlint --version
+        run: gitlint --version
+
+      - name: Tests (sanity)
+        run: pytest -rw -s "gitlint\tests\cli\test_cli.py::CLITests::test_lint"
+
+      - name: Tests (ignore test_cli.py)
+        run: pytest --ignore gitlint\tests\cli\test_cli.py -rw -s gitlint
+
+      - name: Tests (test_cli.py only - continue-on-error:true)
+        run: pytest -rw -s gitlint\tests\cli\test_cli.py
+        continue-on-error: true # Known to fail at this point
+
+      - name: Tests (all - continue-on-error:true)
+        run: pytest -rw -s gitlint
+        continue-on-error: true # Known to fail at this point
+
+      - name: Integration tests (continue-on-error:true)
+        run: pytest -rw -s qa
+        continue-on-error: true # Known to fail at this point
+
+      - name: PEP8
+        run: flake8 gitlint qa examples
+
+      - name: PyLint
+        run: pylint gitlint qa --rcfile=".pylintrc" -r n
+
+      - name: Gitlint check
+        run: gitlint --debug

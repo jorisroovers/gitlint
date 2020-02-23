@@ -7,10 +7,10 @@ import sys
 from qa.utils import ustr, USE_SH_LIB
 
 if USE_SH_LIB:
-    from sh import git, echo, gitlint  # pylint: disable=unused-import,no-name-in-module
+    from sh import git, echo, gitlint  # pylint: disable=unused-import,no-name-in-module,import-error
 
     # import exceptions separately, this makes it a little easier to mock them out in the unit tests
-    from sh import CommandNotFound, ErrorReturnCode, RunningCommand
+    from sh import CommandNotFound, ErrorReturnCode, RunningCommand  # pylint: disable=import-error
 else:
 
     class CommandNotFound(Exception):
