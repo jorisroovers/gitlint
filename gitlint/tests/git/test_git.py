@@ -56,6 +56,39 @@ class GitTests(BaseTestCase):
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
 
+    @patch('gitlint.git.sh')
+    def test_git_no_commits_error(self, sh):
+        # No commits: returned by 'git log'
+        err = b"fatal: your current branch 'master' does not have any commits yet"
+
+        sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
+
+        expected_msg = u"Current branch has no commits. Gitlint requires at least one commit to function."
+        with self.assertRaisesRegex(GitContextError, expected_msg):
+            GitContext.from_local_repository(u"fåke/path")
+
+        # assert that commit message was read using git command
+        sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
+        sh.git.reset_mock()
+
+        # Unknown reference 'HEAD' commits: returned by 'git rev-parse'
+        err = (b"HEAD"
+               b"fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree."
+               b"Use '--' to separate paths from revisions, like this:"
+               b"'git <command> [<revision>...] -- [<file>...]'")
+
+        sh.git.side_effect = [
+            u"#\n",  # git config --get core.commentchar
+            ErrorReturnCode("rev-parse --abbrev-ref HEAD", b"", err)
+        ]
+
+        with self.assertRaisesRegex(GitContextError, expected_msg):
+            context = GitContext.from_commit_msg(u"test")
+            context.current_branch
+
+        # assert that commit message was read using git command
+        sh.git.assert_called_with("rev-parse", "--abbrev-ref", "HEAD", _tty_out=False, _cwd=None)
+
     @patch("gitlint.git._git")
     def test_git_commentchar(self, git):
         git.return_value.exit_code = 1

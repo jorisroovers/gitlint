@@ -2,7 +2,7 @@
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 import io
 import os
-from qa.shell import git, gitlint
+from qa.shell import echo, git, gitlint
 from qa.base import BaseTestCase
 from qa.utils import DEFAULT_ENCODING
 
@@ -156,3 +156,16 @@ class IntegrationTests(BaseTestCase):
                          _tty_in=False, _err_to_out=True, _ok_code=[3])
 
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_no_tty_1"))
+
+    def test_git_errors(self):
+        # Repo has no commits: caused by `git log`
+        empty_git_repo = self.create_tmp_git_repo()
+        output = gitlint(_cwd=empty_git_repo, _tty_in=True, _ok_code=[self.GIT_CONTEXT_ERROR_CODE])
+
+        expected = u"Current branch has no commits. Gitlint requires at least one commit to function.\n"
+        self.assertEqualStdout(output, expected)
+
+        # Repo has no commits: caused by `git rev-parse`
+        output = gitlint(echo(u"WIP: Pïpe test."), "--staged", _cwd=empty_git_repo, _tty_in=False,
+                         _err_to_out=True, _ok_code=[self.GIT_CONTEXT_ERROR_CODE])
+        self.assertEqualStdout(output, expected)

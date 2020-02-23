@@ -33,6 +33,7 @@ class BaseTestCase(TestCase):
     tmp_git_repo = None
 
     GITLINT_USE_SH_LIB = os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]")
+    GIT_CONTEXT_ERROR_CODE = 254
 
     @classmethod
     def setUpClass(cls):

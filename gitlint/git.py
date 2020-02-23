@@ -41,8 +41,12 @@ def _git(*command_parts, **kwargs):
         raise GitNotInstalledError()
     except ErrorReturnCode as e:  # Something went wrong while executing the git command
         error_msg = e.stderr.strip()
-        if '_cwd' in git_kwargs and b"not a git repository" in error_msg.lower():
+        error_msg_lower = error_msg.lower()
+        if '_cwd' in git_kwargs and b"not a git repository" in error_msg_lower:
             error_msg = u"{0} is not a git repository.".format(git_kwargs['_cwd'])
+        elif (b"does not have any commits yet" in error_msg_lower or
+              b"ambiguous argument 'head': unknown revision" in error_msg_lower):
+            raise GitContextError(u"Current branch has no commits. Gitlint requires at least one commit to function.")
         else:
             error_msg = u"An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
         raise GitContextError(error_msg)
