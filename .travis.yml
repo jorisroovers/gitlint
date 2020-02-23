@@ -1,3 +1,7 @@
+# Note: we're migrating to using github actions for CI. This file will be deleted soon-ish.
+# See .github/workflows
+# We do currently still reply on Travis for unit test coverage reporting because of:
+# https://github.com/coverallsapp/github-action/issues/30
 language: python
 matrix:
   allow_failures:
@@ -26,27 +30,10 @@ matrix:
       env: GITLINT_USE_SH_LIB=0
       os: linux
 
-      # Windows
-      # Travis doesn't support python on windows yet:
-      # https://travis-ci.community/t/python-support-on-windows
-      # Unit tests are known to have issues on windows: https://github.com/jorisroovers/gitlint/issues/92
-      # For now, we just run a few simple sanity tests
-      # - python: "3.7"
-      #   os: windows
-      #   script:
-      #     - pytest -rw -s gitlint\tests\test_cli.py::CLITests::test_lint
-      #     - gitlint --version
-      #     - gitlint
-
 install:
   - "pip install -r requirements.txt"
   - "pip install -r test-requirements.txt"
 script:
  - "./run_tests.sh"
- - "./run_tests.sh --integration"
- - "./run_tests.sh --build"
- - "./run_tests.sh --pep8"
- - "./run_tests.sh --lint"
- - "./run_tests.sh --git"
 after_success:
   - coveralls

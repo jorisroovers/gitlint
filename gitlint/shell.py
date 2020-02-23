@@ -10,9 +10,9 @@ import sys
 from gitlint.utils import ustr, USE_SH_LIB
 
 if USE_SH_LIB:
-    from sh import git  # pylint: disable=unused-import
+    from sh import git  # pylint: disable=unused-import,import-error
     # import exceptions separately, this makes it a little easier to mock them out in the unit tests
-    from sh import CommandNotFound, ErrorReturnCode
+    from sh import CommandNotFound, ErrorReturnCode  # pylint: disable=import-error
 else:
 
     class CommandNotFound(Exception):
