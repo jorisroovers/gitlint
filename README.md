@@ -1,7 +1,6 @@
 # gitlint: [jorisroovers.github.io/gitlint](http://jorisroovers.github.io/gitlint/) #
 
 [![Tests](https://github.com/jorisroovers/gitlint/workflows/Tests%20and%20Checks/badge.svg)](https://github.com/jorisroovers/gitlint/actions?query=workflow%3A%22Tests+and+Checks%22)
-[![Coverage Status](https://coveralls.io/repos/jorisroovers/gitlint/badge.svg?branch=master&service=github)](https://coveralls.io/github/jorisroovers/gitlint?branch=master)
 [![PyPi Package](https://img.shields.io/pypi/v/gitlint.png)](https://pypi.python.org/pypi/gitlint)
 ![Supported Python Versions](https://img.shields.io/pypi/pyversions/gitlint.svg)
 

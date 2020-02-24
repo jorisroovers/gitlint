@@ -26,10 +26,11 @@ jobs:
       - name: Unit Tests
         run: ./run_tests.sh
 
-      - name: Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: coveralls
+      # Coveralls integration doesn't properly work at this point, also see below
+      # - name: Coveralls
+      #   env:
+      #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      #   run: coveralls
 
       - name: Integration Tests
         run: ./run_tests.sh -i
