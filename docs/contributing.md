@@ -14,10 +14,10 @@ that's open to a lot of change and input.
 When contributing code, please consider all the parts that are typically required:
 
 - [Unit tests](https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests) (automatically
-  [enforced by Travis](https://travis-ci.org/jorisroovers/gitlint)). Please consider writing
+  [enforced by CI](https://github.com/jorisroovers/gitlint/actions)). Please consider writing
   new ones for your functionality, not only updating existing ones to make the build pass.
 - [Integration tests](https://github.com/jorisroovers/gitlint/tree/master/qa) (also automatically
-  [enforced by Travis](https://travis-ci.org/jorisroovers/gitlint)). Again, please consider writing new ones
+  [enforced by CI](https://github.com/jorisroovers/gitlint/actions)). Again, please consider writing new ones
   for your functionality, not only updating existing ones to make the build pass.
 - [Documentation](https://github.com/jorisroovers/gitlint/tree/master/docs)
 

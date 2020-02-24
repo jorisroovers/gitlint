@@ -211,9 +211,9 @@ pre-commit run gitlint --hook-stage commit-msg --commit-msg-filename .git/COMMIT
 By default, when just running ```gitlint``` without additional parameters, gitlint lints the last commit in the current
 working directory.
 
-This makes it easy to use gitlint in a CI environment (Jenkins, TravisCI, pre-commit, CircleCI, Gitlab, etc).
+This makes it easy to use gitlint in a CI environment (Jenkins, TravisCI, Github Actions, pre-commit, CircleCI, Gitlab, etc).
 In fact, this is exactly what we do ourselves: on every commit,
-[we run gitlint as part of our travisCI tests](https://github.com/jorisroovers/gitlint/blob/v0.7.1/run_tests.sh#L62-L65).
+[we run gitlint as part of our CI checks](https://github.com/jorisroovers/gitlint/blob/v0.12.0/run_tests.sh#L133-L134).
 This will cause the build to fail when we submit a bad commit message.
 
 Alternatively, gitlint will also lint any commit message that you feed it via stdin like so:
