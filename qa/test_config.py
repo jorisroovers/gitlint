@@ -52,12 +52,16 @@ class ConfigTests(BaseTestCase):
         self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_1"))
 
     def test_config_from_file_debug(self):
-        commit_msg = u"WIP: Thïs is a title thåt is a bit longer.\nContent on the second line\n" + \
-                     "This line of the body is here because we need it"
-        filename = self.create_simple_commit(commit_msg)
-        config_path = self.get_sample_path("config/gitlintconfig")
-        output = gitlint("--config", config_path, "--debug", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
+        # Test bot on existing and new repo (we've had a bug in the past that was unique to empty repos)
+        repos = [self.tmp_git_repo, self.create_tmp_git_repo()]
+        for target_repo in repos:
+            commit_msg = u"WIP: Thïs is a title thåt is a bit longer.\nContent on the second line\n" + \
+                        "This line of the body is here because we need it"
+            filename = self.create_simple_commit(commit_msg, git_repo=target_repo)
+            config_path = self.get_sample_path("config/gitlintconfig")
+            output = gitlint("--config", config_path, "--debug", _cwd=target_repo, _tty_in=True, _ok_code=[5])
 
-        expected_kwargs = self.get_debug_vars_last_commit()
-        expected_kwargs.update({'config_path': config_path, 'changed_files': sstr([filename])})
-        self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_debug_1", expected_kwargs))
+            expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
+            expected_kwargs.update({'config_path': config_path, 'changed_files': sstr([filename])})
+            self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_debug_1",
+                                                             expected_kwargs))

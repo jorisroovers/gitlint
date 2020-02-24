@@ -267,7 +267,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
     @property
     def changed_files(self):
         def cache_changed_files():
-            self._cache['changed_files'] = _git("diff-tree", "--no-commit-id", "--name-only", "-r",
+            self._cache['changed_files'] = _git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root",
                                                 self.sha, _cwd=self.context.repository_path).split()
 
         return self._try_cache("changed_files", cache_changed_files)

@@ -44,7 +44,8 @@ class GitCommitTests(BaseTestCase):
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
+                 **self.expected_sh_special_args),
             call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
         ]
 
@@ -96,7 +97,8 @@ class GitCommitTests(BaseTestCase):
             call("rev-list", sample_sha, **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
+                 **self.expected_sh_special_args),
             call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
         ]
 
@@ -148,7 +150,8 @@ class GitCommitTests(BaseTestCase):
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
+                 **self.expected_sh_special_args),
             call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
         ]
 
@@ -202,7 +205,8 @@ class GitCommitTests(BaseTestCase):
                 call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
                 call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
                 call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-                call('diff-tree', '--no-commit-id', '--name-only', '-r', sample_sha, **self.expected_sh_special_args),
+                call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
+                     **self.expected_sh_special_args),
                 call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
             ]
 

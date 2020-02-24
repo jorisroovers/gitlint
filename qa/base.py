@@ -166,12 +166,13 @@ class BaseTestCase(TestCase):
                 'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
                 'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB}
 
-    def get_debug_vars_last_commit(self):
+    def get_debug_vars_last_commit(self, git_repo=None):
         """ Returns a dict with items related to `gitlint --debug` output for the last commit. """
-        commit_sha = self.get_last_commit_hash()
-        expected_date = git("log", "-1", "--pretty=%ai", _tty_out=False, _cwd=self.tmp_git_repo)
+        target_repo = git_repo if git_repo else self.tmp_git_repo
+        commit_sha = self.get_last_commit_hash(git_repo=target_repo)
+        expected_date = git("log", "-1", "--pretty=%ai", _tty_out=False, _cwd=target_repo)
         expected_date = arrow.get(str(expected_date), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD HH:mm:ss Z")
 
         expected_kwargs = self.get_system_info_dict()
-        expected_kwargs.update({'target': self.tmp_git_repo, 'commit_sha': commit_sha, 'commit_date': expected_date})
+        expected_kwargs.update({'target': target_repo, 'commit_sha': commit_sha, 'commit_date': expected_date})
         return expected_kwargs
