@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../extra.css" rel="stylesheet">
   
   <script>
     // Current page data
@@ -120,6 +121,11 @@
             <li class="toctree-l1">
 		
     <a class="" href="../contributing/">Contributing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md">Changelog</a>
 	    </li>
           
         </ul>
@@ -766,6 +772,17 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 </tr>
 </tbody>
 </table>
+<h3 id="examples">Examples</h3>
+<h4 id="gitlint">.gitlint</h4>
+<pre><code class="ini"># Match commit titles starting with Release
+# For those commits, ignore title-max-length and body-min-length rules
+[ignore-by-title]
+regex=^Release(.*)
+ignore=title-max-length,body-min-length
+# ignore all rules by setting ignore to 'all'
+# ignore=all
+</code></pre>
+
 <h2 id="i2-ignore-by-body">I2: ignore-by-body</h2>
 <table>
 <thead>
@@ -810,6 +827,19 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 </tr>
 </tbody>
 </table>
+<h3 id="examples_1">Examples</h3>
+<h4 id="gitlint_1">.gitlint</h4>
+<pre><code class="ini"># Ignore all commits with a commit message body with a line that contains 'release'
+[ignore-by-body]
+regex=(.*)release(.*)
+ignore=all
+
+# For matching commits, only ignore rules T1, body-min-length, B6.
+# You can use both names as well as ids to refer to other rules.
+[ignore-by-body]
+regex=(.*)release(.*)
+ignore=T1,body-min-length,B6
+</code></pre>
               
             </div>
           </div>

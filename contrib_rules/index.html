@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  <link href="../extra.css" rel="stylesheet">
   
   <script>
     // Current page data
@@ -98,6 +99,11 @@
     <a class="" href="../contributing/">Contributing</a>
 	    </li>
           
+            <li class="toctree-l1">
+		
+    <a class="" href="https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md">Changelog</a>
+	    </li>
+          
         </ul>
       </div>
       &nbsp;
@@ -137,7 +143,7 @@
 <p><em>Introduced in gitlint v0.12.0</em></p>
 <p>Contrib rules are community-<strong>contrib</strong>uted rules that are disabled by default, but can be enabled through configuration.</p>
 <p>Contrib rules are meant to augment default gitlint behavior by providing users with rules for common use-cases without
-forcing these rules on all gitlint users. In addition, Contrib rules enable re-usability so that users don't have to
+forcing these rules on all gitlint users. This also means that users don't have to
 re-implement these commonly used rules themselves as <a href="user_defined_rules">user-defined</a> rules.</p>
 <p>To enable certain contrib rules, you can use the <code>--contrib</code> flag.</p>
 <pre><code class="sh">$ cat examples/commit-message-1 | gitlint --contrib contrib-title-conventional-commits,CC1
@@ -153,7 +159,10 @@ re-implement these commonly used rules themselves as <a href="user_defined_rules
 
 <p>Same thing using a <code>.gitlint</code> file:</p>
 <pre><code class="ini">[general]
+# You HAVE to add the rule here to enable it, only configuring (such as below)
+# does NOT enable it.
 contrib=contrib-title-conventional-commits,CC1
+
 
 [contrib-title-conventional-commits]
 # Specify allowed commit types. For details see: https://www.conventionalcommits.org/
