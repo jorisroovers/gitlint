@@ -1,18 +1,21 @@
 # Changelog #
 
-## v0.13.0 (Soon, Feb 2020)
+## v0.13.0 (2020-02-25)
 
 - **Behavior Change**: Revert Commits are now recognized and ignored by default ([#99](https://github.com/jorisroovers/gitlint/issues/99))
-   This behavior can be changed using the ```ignore-revert-commits```option in your ```.gitlint``` file.
-- ```--staged``` flag: gitlint can now detect meta-data (such as author details, changed files, etc) of staged/pre- commits. Useful when you use [gitlint's commit-msg hook](https://jorisroovers.github.io/gitlint/#using-gitlint-as-a-commit-msg-hook) or [precommit](https://jorisroovers.github.io/gitlint/#using-gitlint-through-pre-commit) ([#105](https://github.com/jorisroovers/gitlint/issues/105))
+- ```--staged``` flag: gitlint can now detect meta-data (such as author details, changed files, etc) of staged/pre-commits. Useful when you use [gitlint's commit-msg hook](https://jorisroovers.github.io/gitlint/#using-gitlint-as-a-commit-msg-hook) or [precommit](https://jorisroovers.github.io/gitlint/#using-gitlint-through-pre-commit) ([#105](https://github.com/jorisroovers/gitlint/issues/105))
 - New branch properties on ```GitCommit``` and ```GitContext```, useful when writing your own user-defined rules: ```commit.branches``` and ```commit.context.current_branch``` ([#108](https://github.com/jorisroovers/gitlint/issues/108))
 - Python 3.8 support
 - Python 3.4 no longer supported. Python 3.4 has [reached EOL](https://www.python.org/dev/peps/pep-0429/#id4) and an increasing
   of gitlint's dependencies have dropped support which makes it hard to maintain.
 - Improved Windows support: better unicode handling. [Issues remain](https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows) but the basic functionality works.
-- Improved `-debug` output
+- Bugfixes:
+  - Gitlint no longer crashes when acting on empty repositories (this only occurred in specific circumstances).
+  - Changed files are now better detected in repos that only have a root commit
+- Improved performance and memory (gitlint now caches git properties) 
+- Improved `--debug` output
 - Improved documentation
-- Under-the-hood: caching of git properties (improved memory usage, speed), dependencies updated, unit and integration test improvements.
+- Under-the-hood: dependencies updated, unit and integration test improvements, migrated from TravisCI to Github Actions.
 
 ## v0.12.0 (2019-07-15) ##
 
