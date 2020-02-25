@@ -86,17 +86,17 @@ jobs:
         run: gitlint --version
 
       - name: Tests (sanity)
-        run: pytest -rw -s "gitlint\tests\cli\test_cli.py::CLITests::test_lint"
+        run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py::CLITests::test_lint"
 
       - name: Tests (ignore test_cli.py)
         run: pytest --ignore gitlint\tests\cli\test_cli.py -rw -s gitlint
 
       - name: Tests (test_cli.py only - continue-on-error:true)
-        run: pytest -rw -s gitlint\tests\cli\test_cli.py
+        run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py"
         continue-on-error: true # Known to fail at this point
 
       - name: Tests (all - continue-on-error:true)
-        run: pytest -rw -s gitlint
+        run: tools\windows\run_tests.bat
         continue-on-error: true # Known to fail at this point
 
       - name: Integration tests (continue-on-error:true)
