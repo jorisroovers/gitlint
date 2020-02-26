@@ -109,6 +109,10 @@ run_integration_tests(){
     # virtualenv's python binary path.
     export GIT_EXEC_PATH="$PATH"
 
+    echo ""
+    gitlint --version
+    echo -e "Using $(which gitlint)\n"
+
     # py.test -s => print standard output (i.e. show print statement output)
     #         -rw => print warnings
     target=${testargs:-"qa/"}
@@ -256,12 +260,12 @@ install_virtualenv(){
 
     # For pypy: custom path + fetch from the web if not installed (=distro agnostic)
     if [[ $version == *"pypy2"* ]]; then
-        python_binary="/opt/pypy2.7-v7.1.1-linux64/bin/pypy"
+        python_binary="/opt/pypy2.7-v7.3.0-linux64/bin/pypy"
         if [ ! -f $python_binary ]; then
             assert_root "Must be root to install pypy2.7, use sudo"
             title "### DOWNLOADING PYPY2 ($pypy_archive) ###"
             pushd "/opt"
-            pypy_archive="pypy2.7-v7.1.1-linux64.tar.bz2"
+            pypy_archive="pypy2.7-v7.3.0-linux64.tar.bz2"
             wget "https://bitbucket.org/pypy/pypy/downloads/$pypy_archive"
             title "### EXTRACTING PYPY TARBALL ($pypy_archive) ###"
             tar xvf $pypy_archive
@@ -373,7 +377,17 @@ assert_specific_env(){
 
 switch_env(){
     if [ "$1" != "default" ]; then
+        # If we activated a virtualenv within this script, deactivate it
         deactivate 2> /dev/null # deactivate any active environment
+
+        # If this script was run from within an existing virtualenv, manually remove the current VIRTUAL_ENV from the
+        # current path. This ensures that our PATH is clean of that virtualenv.
+        # Note that the 'deactivate' function from the virtualenv is not available here unless the script was invoked
+        # as 'source ./run_tests.sh').
+        # Thanks internet stranger! https://unix.stackexchange.com/a/496050/38465
+        if [ ! -z "$VIRTUAL_ENV" ]; then
+            export PATH=$(echo $PATH | tr ":" "\n" | grep -v "$VIRTUAL_ENV" | tr "\n" ":");
+        fi
         set -e # Let's error out if you try executing against a non-existing env
         source "/vagrant/.venv${1}/bin/activate"
         set +e

@@ -1,5 +1,10 @@
 # Changelog #
 
+## v0.13.1 (2020-02-26)
+
+- Patch to enable `--staged` flag for pre-commit.
+- Minor doc updates ([#109](https://github.com/jorisroovers/gitlint/issues/109))
+
 ## v0.13.0 (2020-02-25)
 
 - **Behavior Change**: Revert Commits are now recognized and ignored by default ([#99](https://github.com/jorisroovers/gitlint/issues/99))
