@@ -359,6 +359,18 @@ framework.  Simply add the configuration to your <code>.pre-commit-config.yaml</
 <pre><code class="sh">pre-commit run gitlint --hook-stage commit-msg --commit-msg-filename .git/COMMIT_EDITMSG
 </code></pre>
 
+<p>In case you want to change gitlint's behavior, you should either use a <code>.gitlint</code> file
+(see <a href="configuration/">Configuration</a>) or modify the gitlint invocation in
+your <code>.pre-commit-config.yaml</code> file like so:</p>
+<pre><code class="yaml">-   repo: https://github.com/jorisroovers/gitlint
+    rev:  # Fill in a tag / sha here
+    hooks:
+    -   id: gitlint
+        stages: [commit-msg]
+        entry: gitlint
+        args: [--contrib=CT1, --msg-filename]
+</code></pre>
+
 <h1 id="using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</h1>
 <p>By default, when just running <code>gitlint</code> without additional parameters, gitlint lints the last commit in the current
 working directory.</p>
@@ -534,5 +546,5 @@ to 252.</p>
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-02-25 15:43:37
+Build Date UTC : 2020-02-26 09:08:51
 -->
