@@ -206,6 +206,18 @@ To manually trigger gitlint using ```pre-commit``` for your last commit message,
 pre-commit run gitlint --hook-stage commit-msg --commit-msg-filename .git/COMMIT_EDITMSG
 ```
 
+In case you want to change gitlint's behavior, you should either use a `.gitlint` file
+(see [Configuration](configuration.md)) or modify the gitlint invocation in
+your `.pre-commit-config.yaml` file like so:
+```yaml
+-   repo: https://github.com/jorisroovers/gitlint
+    rev:  # Fill in a tag / sha here
+    hooks:
+    -   id: gitlint
+        stages: [commit-msg]
+        entry: gitlint
+        args: [--contrib=CT1, --msg-filename]
+```
 
 # Using gitlint in a CI environment ##
 By default, when just running ```gitlint``` without additional parameters, gitlint lints the last commit in the current
