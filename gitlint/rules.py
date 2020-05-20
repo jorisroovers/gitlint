@@ -235,6 +235,13 @@ class TitleRegexMatches(LineRule):
             violation_msg = u"Title does not match regex ({0})".format(regex)
             return [RuleViolation(self.id, violation_msg, title)]
 
+    def validate(self, title, _commit):
+        regex = self.options['regex'].value
+        pattern = re.compile(regex, re.UNICODE)
+        if not pattern.search(title):
+            violation_msg = u"Title does not match regex ({0})".format(regex)
+            return [RuleViolation(self.id, violation_msg, title)]
+
 
 class BodyMaxLineLength(MaxLineLength):
     name = "body-max-line-length"
@@ -307,6 +314,19 @@ class BodyChangedFileMention(CommitRule):
                     violation_message = u"Body does not mention changed file '{0}'".format(needs_mentioned_file)
                     violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))
         return violations if violations else None
+
+class BodyRegexMatches(LineRule):
+    name = "body-match-regex"
+    id = "B8"
+    target = CommitMessageBody
+    options_spec = [StrOption('regex', ".*", "Regex the body should match")]
+
+    def validate(self, commit):
+        regex = self.options['regex'].value
+        pattern = re.compile(regex, re.UNICODE)
+        if not pattern.search(commit.message.body):
+            violation_msg = u"Body does not match regex ({0})".format(regex)
+            return [RuleViolation(self.id, violation_msg, title)]
 
 
 class AuthorValidEmail(CommitRule):
