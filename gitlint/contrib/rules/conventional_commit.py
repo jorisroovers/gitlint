@@ -17,7 +17,7 @@ class ConventionalCommit(LineRule):
     options_spec = [
         ListOption(
             "types",
-            ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test", "revert"],
+            ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test", "revert", "ci", "build"],
             "Comma separated list of allowed commit types.",
         )
     ]
