@@ -121,7 +121,7 @@ run_integration_tests(){
 
 run_git_check(){
     echo -ne "Running gitlint...${RED}"
-    RESULT=$(gitlint 2>&1)
+    RESULT=$(gitlint $testargs 2>&1)
     local exit_code=$?
     handle_test_result $exit_code "$RESULT"
     # FUTURE: check if we use str() function: egrep -nriI "( |\(|\[)+str\(" gitlint | egrep -v "\w*#(.*)"
