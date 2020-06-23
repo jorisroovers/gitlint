@@ -1,6 +1,6 @@
 name: Tests and Checks
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   checks:
@@ -11,6 +11,8 @@ jobs:
         os: ["macos-latest", "ubuntu-latest"]
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
       - name: Setup python
         uses: actions/setup-python@v1
@@ -58,7 +60,7 @@ jobs:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Gitlint check
-        run: ./run_tests.sh -g
+        run: ./run_tests.sh -g --debug
 
   windows-checks:
     runs-on: windows-latest
@@ -67,6 +69,8 @@ jobs:
         python-version: [2.7, 3.5]
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
       - name: Setup python
         uses: actions/setup-python@v1
