@@ -1,0 +1,2 @@
+1: T1 Title exceeds max length (27>5): "WIP: Test hook config tïtle"
+1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: Test hook config tïtle"

@@ -92,8 +92,8 @@ jobs:
       - name: Tests (sanity)
         run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py::CLITests::test_lint"
 
-      - name: Tests (ignore test_cli.py)
-        run: pytest --ignore gitlint\tests\cli\test_cli.py -rw -s gitlint
+      - name: Tests (ignore cli\*)
+        run: pytest --ignore gitlint\tests\cli -rw -s gitlint
 
       - name: Tests (test_cli.py only - continue-on-error:true)
         run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py"

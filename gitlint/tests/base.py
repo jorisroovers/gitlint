@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import contextlib
 import copy
 import io
 import logging
 import os
 import re
+import shutil
+import sys
+import tempfile
 
 try:
     # python 2.x
@@ -57,6 +61,15 @@ class BaseTestCase(unittest.TestCase):
         logging.getLogger('gitlint').propagate = False
 
     @staticmethod
+    @contextlib.contextmanager
+    def tempdir():
+        tmpdir = tempfile.mkdtemp()
+        try:
+            yield tmpdir
+        finally:
+            shutil.rmtree(tmpdir)
+
+    @staticmethod
     def get_sample_path(filename=""):
         # Don't join up empty files names because this will add a trailing slash
         if filename == "":
@@ -71,6 +84,15 @@ class BaseTestCase(unittest.TestCase):
         with io.open(sample_path, encoding=DEFAULT_ENCODING) as content:
             sample = ustr(content.read())
         return sample
+
+    @staticmethod
+    def patch_input(side_effect):
+        """ Patches the built-in input() with a provided side-effect """
+        module_path = "builtins.input"
+        if sys.version_info[0] == 2:
+            module_path = "__builtin__.raw_input"
+        patched_module = patch(module_path, side_effect=side_effect)
+        return patched_module
 
     @staticmethod
     def get_expected(filename="", variable_dict=None):

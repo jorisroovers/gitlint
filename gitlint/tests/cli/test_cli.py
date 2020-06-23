@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import contextlib
+
 import io
 import os
 import sys
 import platform
-import shutil
-import tempfile
 
 import arrow
 
@@ -32,15 +30,6 @@ from gitlint.tests.base import BaseTestCase
 from gitlint import cli
 from gitlint import __version__
 from gitlint.utils import DEFAULT_ENCODING
-
-
-@contextlib.contextmanager
-def tempdir():
-    tmpdir = tempfile.mkdtemp()
-    try:
-        yield tmpdir
-    finally:
-        shutil.rmtree(tmpdir)
 
 
 class CLITests(BaseTestCase):
@@ -281,7 +270,7 @@ class CLITests(BaseTestCase):
             u"commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
         ]
 
-        with tempdir() as tmpdir:
+        with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "msg")
             with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
                 f.write(u"WIP: msg-filename tïtle\n")
@@ -307,7 +296,7 @@ class CLITests(BaseTestCase):
     def test_msg_filename(self, _):
         expected_output = u"3: B6 Body message is missing\n"
 
-        with tempdir() as tmpdir:
+        with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "msg")
             with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
                 f.write(u"Commït title\n")

@@ -2,12 +2,19 @@
 """
 This module implements a shim for the 'sh' library, mainly for use on Windows (sh is not supported on Windows).
 We might consider removing the 'sh' dependency alltogether in the future, but 'sh' does provide a few
-capabilities wrt dealing with more edge-case environments on *nix systems that might be useful.
+capabilities wrt dealing with more edge-case environments on *nix systems that are useful.
 """
 
 import subprocess
 import sys
 from gitlint.utils import ustr, USE_SH_LIB
+
+
+def shell(cmd):
+    """ Convenience function that opens a given command in a shell. Does not use 'sh' library. """
+    p = subprocess.Popen(cmd, shell=True)
+    p.communicate()
+
 
 if USE_SH_LIB:
     from sh import git  # pylint: disable=unused-import,import-error
@@ -21,7 +28,7 @@ else:
 
     class ShResult(object):
         """ Result wrapper class. We use this to more easily migrate from using https://amoffat.github.io/sh/ to using
-        the builtin subprocess. module """
+        the builtin subprocess module """
 
         def __init__(self, full_cmd, stdout, stderr='', exitcode=0):
             self.full_cmd = full_cmd
@@ -51,7 +58,7 @@ else:
             no_command_error = FileNotFoundError  # noqa pylint: disable=undefined-variable
 
         pipe = subprocess.PIPE
-        popen_kwargs = {'stdout': pipe, 'stderr': pipe, 'shell': kwargs['_tty_out']}
+        popen_kwargs = {'stdout': pipe, 'stderr': pipe, 'shell': kwargs.get('_tty_out', False)}
         if '_cwd' in kwargs:
             popen_kwargs['cwd'] = kwargs['_cwd']
 

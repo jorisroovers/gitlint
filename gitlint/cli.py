@@ -19,9 +19,11 @@ from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
 from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
+from gitlint.shell import shell
 from gitlint.utils import ustr, LOG_FORMAT
 
 DEFAULT_CONFIG_FILE = ".gitlint"
+DEFAULT_COMMIT_MSG_EDITOR = "vim"
 
 # Since we use the return code to denote the amount of errors, we need to change the default click usage error code
 click.UsageError.exit_code = USAGE_ERROR_CODE
@@ -212,7 +214,7 @@ def cli(  # pylint: disable=too-many-arguments
                                               ignore_stdin, staged, verbose, silent, debug)
         LOG.debug(u"Configuration\n%s", ustr(config))
 
-        ctx.obj = (config, config_builder, commits, msg_filename)
+        ctx.obj = [config, config_builder, commits, msg_filename, None]
 
         # If no subcommand is specified, then just lint
         if ctx.invoked_subcommand is None:
@@ -238,6 +240,9 @@ def lint(ctx):
     msg_filename = ctx.obj[3]
 
     gitcontext = build_git_context(lint_config, msg_filename, refspec)
+    # Set gitcontext in the click context, so we can use it in command that are ran after this
+    # in particular, this is used by run-hook
+    ctx.obj[4] = gitcontext
 
     number_of_commits = len(gitcontext.commits)
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
@@ -313,6 +318,72 @@ def uninstall_hook(ctx):
     except hooks.GitHookInstallerError as e:
         click.echo(ustr(e), err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
+
+
+@cli.command("run-hook")
+@click.pass_context
+def run_hook(ctx):
+    """ Runs the gitlint commit-msg hook. """
+
+    exit_code = 1
+    while exit_code > 0:
+        try:
+            click.echo(u"gitlint: checking commit message...")
+            ctx.invoke(lint)
+            click.echo(u"gitlint: " + click.style("OK", fg='green') + u" (no violations in commit message)")
+        except click.exceptions.Exit as e:
+            click.echo(u"-----------------------------------------------")
+            click.echo(u"gitlint: " + click.style("Your commit message contains the above violations.", fg='red'))
+
+            value = None
+            while value not in ["y", "n", "e"]:
+                click.echo("Continue with commit anyways (this keeps the current commit message)? "
+                           "[y(es)/n(no)/e(dit)] ", nl=False)
+
+                # Ideally, we'd want to use click.getchar() or click.prompt() to get user's input here instead of
+                # input(). However, those functions currently don't support getting answers from stdin.
+                # This wouldn't be a huge issue since this is unlikely to occur in the real world,
+                # were it not that we use a stdin to pipe answers into gitlint in our integration tests.
+                # If that ever changes, we can revisit this.
+                # Related click pointers:
+                # - https://github.com/pallets/click/issues/1370
+                # - https://github.com/pallets/click/pull/1372
+                # - From https://click.palletsprojects.com/en/7.x/utils/#getting-characters-from-terminal
+                #   Note that this function will always read from the terminal, even if stdin is instead a pipe.
+                #
+                # We also need a to use raw_input() in Python2 as input() is unsafe (and raw_input() doesn't exist in
+                # Python3). See https://stackoverflow.com/a/4960216/381010
+                input_func = input
+                if sys.version_info[0] == 2:
+                    input_func = raw_input  # noqa pylint: disable=undefined-variable
+
+                value = input_func()
+
+            if value == "y":
+                LOG.debug("run-hook: commit message accepted")
+                ctx.exit(0)
+            elif value == "e":
+                LOG.debug("run-hook: editing commit message")
+                msg_filename = ctx.obj[3]
+                if msg_filename:
+                    msg_filename.seek(0)
+                    editor = os.environ.get("EDITOR", DEFAULT_COMMIT_MSG_EDITOR)
+                    msg_filename_path = os.path.realpath(msg_filename.name)
+                    LOG.debug("run-hook: %s %s", editor, msg_filename_path)
+                    shell([editor, msg_filename_path])
+                else:
+                    click.echo(u"Editing only possible when --msg-filename is specified.")
+                    ctx.exit(e.exit_code)
+            elif value == "n":
+                LOG.debug("run-hook: commit message declined")
+                click.echo(u"Commit aborted.")
+                click.echo(u"Your commit message: ")
+                click.echo(u"-----------------------------------------------")
+                click.echo(ctx.obj[4].commits[0].message.full)
+                click.echo(u"-----------------------------------------------")
+                ctx.exit(e.exit_code)
+
+            exit_code = e.exit_code
 
 
 @cli.command("generate-config")
