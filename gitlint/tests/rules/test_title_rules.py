@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import TitleMaxLength, TitleTrailingWhitespace, TitleHardTab, TitleMustNotContainWord, \
-    TitleTrailingPunctuation, TitleLeadingWhitespace, TitleRegexMatches, RuleViolation
+    TitleTrailingPunctuation, TitleLeadingWhitespace, TitleRegexMatches, RuleViolation, TitleMinLength
 
 
 class TitleRuleTests(BaseTestCase):
@@ -151,4 +151,26 @@ class TitleRuleTests(BaseTestCase):
         rule = TitleRegexMatches({'regex': u"^UÅ[0-9]*"})
         violations = rule.validate(commit.message.title, commit)
         expected_violation = RuleViolation("T7", u"Title does not match regex (^UÅ[0-9]*)", u"US1234: åbc")
+        self.assertListEqual(violations, [expected_violation])
+
+    def test_min_line_length(self):
+        rule = TitleMinLength()
+
+        # assert no error
+        violation = rule.validate(u"å" * 72, None)
+        self.assertIsNone(violation)
+
+        # assert error on line length > 72
+        expected_violation = RuleViolation("T8", "Title is too short (4<5)", u"å" * 4, 1)
+        violations = rule.validate(u"å" * 4, None)
+        self.assertListEqual(violations, [expected_violation])
+
+        # set line length to 3, and check no violation on length 4
+        rule = TitleMinLength({'min-length': 3})
+        violations = rule.validate(u"å" * 4, None)
+        self.assertIsNone(violations)
+
+        # assert raise on 2
+        expected_violation = RuleViolation("T8", "Title is too short (2<3)", u"å" * 2, 1)
+        violations = rule.validate(u"å" * 2, None)
         self.assertListEqual(violations, [expected_violation])
