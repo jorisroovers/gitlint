@@ -63,6 +63,8 @@ virtualenv
 # Vagrant
 .vagrant
 
-
 # mkdocs
 site/
+
+# pyenv
+.python-version
