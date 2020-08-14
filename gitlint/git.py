@@ -1,4 +1,6 @@
+import logging
 import os
+
 import arrow
 
 from gitlint import shell as sh
@@ -11,6 +13,8 @@ from gitlint.utils import ustr, sstr
 # For now, the git date format we use is fixed, but technically this format is determined by `git config log.date`
 # We should fix this at some point :-)
 GIT_TIMEFORMAT = "YYYY-MM-DD HH:mm:ss Z"
+
+LOG = logging.getLogger(__name__)
 
 
 class GitContextError(Exception):
@@ -30,6 +34,7 @@ def _git(*command_parts, **kwargs):
     git_kwargs = {'_tty_out': False}
     git_kwargs.update(kwargs)
     try:
+        LOG.debug(sstr(command_parts))
         result = sh.git(*command_parts, **git_kwargs)  # pylint: disable=unexpected-keyword-arg
         # If we reach this point and the result has an exit_code that is larger than 0, this means that we didn't
         # get an exception (which is the default sh behavior for non-zero exit codes) and so the user is expecting

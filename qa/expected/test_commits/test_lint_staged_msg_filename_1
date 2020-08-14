@@ -1,9 +1,11 @@
 DEBUG: gitlint.cli To report issues, please visit https://github.com/jorisroovers/gitlint/issues
 DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
+DEBUG: gitlint.git ('--version',)
 DEBUG: gitlint.cli Git version: {git_version}
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
+DEBUG: gitlint.cli DEFAULT_ENCODING: {DEFAULT_ENCODING}
 DEBUG: gitlint.cli Configuration
 config-path: None
 [GENERAL]
@@ -52,8 +54,13 @@ target: {target}
 
 DEBUG: gitlint.cli Fetching additional meta-data from staged commit
 DEBUG: gitlint.cli Using --msg-filename.
+DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
+DEBUG: gitlint.git ('config', '--get', 'user.name')
+DEBUG: gitlint.git ('config', '--get', 'user.email')
+DEBUG: gitlint.git ('rev-parse', '--abbrev-ref', 'HEAD')
+DEBUG: gitlint.git ('diff', '--staged', '--name-only', '-r')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 WIP: from fïle test.

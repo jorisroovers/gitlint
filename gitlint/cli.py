@@ -26,7 +26,9 @@ DEFAULT_CONFIG_FILE = ".gitlint"
 # Since we use the return code to denote the amount of errors, we need to change the default click usage error code
 click.UsageError.exit_code = USAGE_ERROR_CODE
 
-LOG = logging.getLogger(__name__)
+# We don't use logging.getLogger(__main__) here because that will cause DEBUG output to be lost
+# when invoking gitlint as a python module (python -m gitlint.cli)
+LOG = logging.getLogger("gitlint.cli")
 
 
 class GitLintUsageError(Exception):
@@ -51,6 +53,7 @@ def log_system_info():
     LOG.debug("Git version: %s", git_version())
     LOG.debug("Gitlint version: %s", gitlint.__version__)
     LOG.debug("GITLINT_USE_SH_LIB: %s", os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]"))
+    LOG.debug("DEFAULT_ENCODING: %s", gitlint.utils.DEFAULT_ENCODING)
 
 
 def build_config(  # pylint: disable=too-many-arguments

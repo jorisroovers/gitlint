@@ -164,7 +164,7 @@ class BaseTestCase(TestCase):
         expected_git_version = git("--version").replace("\n", "")
         return {'platform': platform.platform(), 'python_version': sys.version,
                 'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
-                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB}
+                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB, 'DEFAULT_ENCODING': DEFAULT_ENCODING}
 
     def get_debug_vars_last_commit(self, git_repo=None):
         """ Returns a dict with items related to `gitlint --debug` output for the last commit. """

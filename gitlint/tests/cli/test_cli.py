@@ -64,7 +64,8 @@ class CLITests(BaseTestCase):
     def get_system_info_dict():
         """ Returns a dict with items related to system values logged by `gitlint --debug` """
         return {'platform': platform.platform(), "python_version": sys.version, 'gitlint_version': __version__,
-                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB, 'target': os.path.realpath(os.getcwd())}
+                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB, 'target': os.path.realpath(os.getcwd()),
+                'DEFAULT_ENCODING': DEFAULT_ENCODING}
 
     def test_version(self):
         """ Test for --version option """

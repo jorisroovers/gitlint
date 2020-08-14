@@ -1,9 +1,11 @@
 DEBUG: gitlint.cli To report issues, please visit https://github.com/jorisroovers/gitlint/issues
 DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
+DEBUG: gitlint.git ('--version',)
 DEBUG: gitlint.cli Git version: {git_version}
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
+DEBUG: gitlint.cli DEFAULT_ENCODING: {DEFAULT_ENCODING}
 DEBUG: gitlint.cli Configuration
 config-path: {config_path}
 [GENERAL]
@@ -51,8 +53,13 @@ target: {target}
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Using the local repo.
+DEBUG: gitlint.git ('log', '-1', '--pretty=%H')
 DEBUG: gitlint.cli Linting 1 commit(s)
+DEBUG: gitlint.git ('log', '{commit_sha}', '-1', '--pretty=%aN%x00%aE%x00%ai%x00%P%n%B')
+DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.lint Linting commit {commit_sha}
+DEBUG: gitlint.git ('branch', '--contains', '{commit_sha}')
+DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', '{commit_sha}')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 WIP: Thïs is a title thåt is a bit longer.
