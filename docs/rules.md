@@ -14,6 +14,7 @@ T4    | title-hard-tab              | >= 0.1.0          | Title cannot contain h
 T5    | title-must-not-contain-word | >= 0.1.0          | Title cannot contain certain words (default: "WIP")
 T6    | title-leading-whitespace    | >= 0.4.0          | Title cannot have leading whitespace (space or tab)
 T7    | title-match-regex           | >= 0.5.0          | Title must match a given regex (default: .*)
+T8    | title-max-length            | >=                | Title length must be &gt; 5 chars.
 B1    | body-max-line-length        | >= 0.1.0          | Lines in the body must be &lt; 80 chars
 B2    | body-trailing-whitespace    | >= 0.1.0          | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | >= 0.1.0          | Body cannot contain hard tab characters (\t)
@@ -81,6 +82,12 @@ T6    | title-leading-whitespace    | >= 0.4          | Title cannot have leadin
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T7    | title-match-regex           | >= 0.5          | Title must match a given regex (default: .*)
+
+## T8: title-min-length ##
+
+ID    | Name                        | gitlint version | Description
+------|-----------------------------|-----------------|-------------------------------------------
+T1    | title-min-length            | >=              | Title length must be &gt; 5 chars.
 
 
 ### Options ###

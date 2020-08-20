@@ -160,7 +160,7 @@ class TitleRuleTests(BaseTestCase):
         violation = rule.validate(u"å" * 72, None)
         self.assertIsNone(violation)
 
-        # assert error on line length > 72
+        # assert error on line length < 5
         expected_violation = RuleViolation("T8", "Title is too short (4<5)", u"å" * 4, 1)
         violations = rule.validate(u"å" * 4, None)
         self.assertListEqual(violations, [expected_violation])
@@ -173,4 +173,9 @@ class TitleRuleTests(BaseTestCase):
         # assert raise on 2
         expected_violation = RuleViolation("T8", "Title is too short (2<3)", u"å" * 2, 1)
         violations = rule.validate(u"å" * 2, None)
+        self.assertListEqual(violations, [expected_violation])
+
+        # assert raise on empty title
+        expected_violation = RuleViolation("T8", "Title is too short (0<3)", "", 1)
+        violations = rule.validate("", None)
         self.assertListEqual(violations, [expected_violation])

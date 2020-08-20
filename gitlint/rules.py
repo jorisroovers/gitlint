@@ -245,7 +245,7 @@ class TitleMinLength(LineRule):
     def validate(self, title, _commit):
         min_length = self.options['min-length'].value
         actual_length = len(title)
-        if 0 < actual_length < min_length:
+        if actual_length < min_length:
             violation_message = "Title is too short ({0}<{1})".format(actual_length, min_length)
             return [RuleViolation(self.id, violation_message, title, 1)]
 
