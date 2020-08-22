@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+
 from gitlint.rules import LineRule, RuleViolation, CommitMessageTitle
 from gitlint.options import ListOption
 
 """
+Full details on user-defined rules: https://jorisroovers.com/gitlint/user_defined_rules
+
 The SpecialChars class below is an example of a user-defined LineRule. Line rules are gitlint rules that only act on a
 single line at once. Once the rule is discovered, gitlint will automatically take care of applying this rule
 against each line of the commit message title or body (whether it is applied to the title or body is determined by the

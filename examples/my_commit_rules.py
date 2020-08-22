@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption, ListOption
 from gitlint import utils
 
 
 """
+Full details on user-defined rules: https://jorisroovers.com/gitlint/user_defined_rules
+
 The classes below are examples of user-defined CommitRules. Commit rules are gitlint rules that
 act on the entire commit at once. Once the rules are discovered, gitlint will automatically take care of applying them
 to the entire commit. This happens exactly once per commit.

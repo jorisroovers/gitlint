@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.14.0 (TBD) ##
+- [User-defined Configuration Rules](TODO) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
+- Breaking: User-defined rule id's can no longer start with 'I', as those are reserved for built-in gitlint ignore rules.
+
 ## v0.13.1 (2020-02-26)
 
 - Patch to enable `--staged` flag for pre-commit.

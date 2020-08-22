@@ -111,9 +111,17 @@ class UserRuleTests(BaseTestCase):
             def validate(self):
                 pass
 
+        class MyConfigurationRuleClass(rules.ConfigurationRule):
+            id = 'UC3'
+            name = u'my-cönfiguration-rule'
+
+            def apply(self):
+                pass
+
         # Just assert that no error is raised
         self.assertIsNone(assert_valid_rule_class(MyLineRuleClass))
         self.assertIsNone(assert_valid_rule_class(MyCommitRuleClass))
+        self.assertIsNone(assert_valid_rule_class(MyConfigurationRuleClass))
 
     def test_assert_valid_rule_class_negative(self):
         # general test to make sure that incorrect rules will raise an exception
@@ -127,8 +135,8 @@ class UserRuleTests(BaseTestCase):
         class MyRuleClass(object):
             pass
 
-        expected_msg = "User-defined rule class 'MyRuleClass' must extend from gitlint.rules.LineRule " + \
-                       "or gitlint.rules.CommitRule"
+        expected_msg = "User-defined rule class 'MyRuleClass' must extend from gitlint.rules.LineRule, " + \
+                       "gitlint.rules.CommitRule or gitlint.rules.ConfigurationRule"
         with self.assertRaisesRegex(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
@@ -147,9 +155,9 @@ class UserRuleTests(BaseTestCase):
             assert_valid_rule_class(MyRuleClass)
 
         # Rule ids must not start with one of the reserved id letters
-        for letter in ["T", "R", "B", "M"]:
+        for letter in ["T", "R", "B", "M", "I"]:
             MyRuleClass.id = letter + "1"
-            expected_msg = "The id '{0}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M"
+            expected_msg = "The id '{0}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
             with self.assertRaisesRegex(UserRuleError, expected_msg.format(letter)):
                 assert_valid_rule_class(MyRuleClass)
 
@@ -185,18 +193,36 @@ class UserRuleTests(BaseTestCase):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_validate(self):
-        class MyRuleClass(rules.LineRule):
-            id = "UC1"
+
+        baseclasses = [rules.LineRule, rules.CommitRule]
+        for clazz in baseclasses:
+            class MyRuleClass(clazz):
+                id = "UC1"
+                name = u"my-rüle-class"
+
+            with self.assertRaisesRegex(UserRuleError,
+                                        "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+                assert_valid_rule_class(MyRuleClass)
+
+            # validate attribute - not a method
+            MyRuleClass.validate = u"föo"
+            with self.assertRaisesRegex(UserRuleError,
+                                        "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+                assert_valid_rule_class(MyRuleClass)
+
+    def test_assert_valid_rule_class_negative_apply(self):
+        class MyRuleClass(rules.ConfigurationRule):
+            id = "UCR1"
             name = u"my-rüle-class"
 
         with self.assertRaisesRegex(UserRuleError,
-                                    "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+                                    "User-defined Configuration rule class 'MyRuleClass' must have an 'apply' method"):
             assert_valid_rule_class(MyRuleClass)
 
         # validate attribute - not a method
         MyRuleClass.validate = u"föo"
         with self.assertRaisesRegex(UserRuleError,
-                                    "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+                                    "User-defined Configuration rule class 'MyRuleClass' must have an 'apply' method"):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_target(self):
