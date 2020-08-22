@@ -169,6 +169,17 @@ def build_git_context(lint_config, msg_filename, refspec):
     return GitContext.from_local_repository(lint_config.target, refspec)
 
 
+class ContextObj(object):
+    """ Simple class to hold data that is passed between Click commands via the Click context. """
+
+    def __init__(self, config, config_builder, refspec, msg_filename, gitcontext=None):
+        self.config = config
+        self.config_builder = config_builder
+        self.refspec = refspec
+        self.msg_filename = msg_filename
+        self.gitcontext = gitcontext
+
+
 @click.group(invoke_without_command=True, context_settings={'max_content_width': 120},
              epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
 @click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
@@ -214,7 +225,7 @@ def cli(  # pylint: disable=too-many-arguments
                                               ignore_stdin, staged, verbose, silent, debug)
         LOG.debug(u"Configuration\n%s", ustr(config))
 
-        ctx.obj = [config, config_builder, commits, msg_filename, None]
+        ctx.obj = ContextObj(config, config_builder, commits, msg_filename)
 
         # If no subcommand is specified, then just lint
         if ctx.invoked_subcommand is None:
@@ -235,14 +246,14 @@ def cli(  # pylint: disable=too-many-arguments
 @click.pass_context
 def lint(ctx):
     """ Lints a git repository [default command] """
-    lint_config = ctx.obj[0]
-    refspec = ctx.obj[2]
-    msg_filename = ctx.obj[3]
+    lint_config = ctx.obj.config
+    refspec = ctx.obj.refspec
+    msg_filename = ctx.obj.msg_filename
 
     gitcontext = build_git_context(lint_config, msg_filename, refspec)
     # Set gitcontext in the click context, so we can use it in command that are ran after this
     # in particular, this is used by run-hook
-    ctx.obj[4] = gitcontext
+    ctx.obj.gitcontext = gitcontext
 
     number_of_commits = len(gitcontext.commits)
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
@@ -253,7 +264,7 @@ def lint(ctx):
         ctx.exit(0)
 
     LOG.debug(u'Linting %d commit(s)', number_of_commits)
-    general_config_builder = ctx.obj[1]
+    general_config_builder = ctx.obj.config_builder
     last_commit = gitcontext.commits[-1]
 
     # Let's get linting!
@@ -295,9 +306,8 @@ def lint(ctx):
 def install_hook(ctx):
     """ Install gitlint as a git commit-msg hook. """
     try:
-        lint_config = ctx.obj[0]
-        hooks.GitHookInstaller.install_commit_msg_hook(lint_config)
-        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)
+        hooks.GitHookInstaller.install_commit_msg_hook(ctx.obj.config)
+        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
         click.echo(u"Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
@@ -310,9 +320,8 @@ def install_hook(ctx):
 def uninstall_hook(ctx):
     """ Uninstall gitlint commit-msg hook. """
     try:
-        lint_config = ctx.obj[0]
-        hooks.GitHookInstaller.uninstall_commit_msg_hook(lint_config)
-        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)
+        hooks.GitHookInstaller.uninstall_commit_msg_hook(ctx.obj.config)
+        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
         click.echo(u"Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
@@ -364,7 +373,7 @@ def run_hook(ctx):
                 ctx.exit(0)
             elif value == "e":
                 LOG.debug("run-hook: editing commit message")
-                msg_filename = ctx.obj[3]
+                msg_filename = ctx.obj.msg_filename
                 if msg_filename:
                     msg_filename.seek(0)
                     editor = os.environ.get("EDITOR", DEFAULT_COMMIT_MSG_EDITOR)
@@ -379,7 +388,7 @@ def run_hook(ctx):
                 click.echo(u"Commit aborted.")
                 click.echo(u"Your commit message: ")
                 click.echo(u"-----------------------------------------------")
-                click.echo(ctx.obj[4].commits[0].message.full)
+                click.echo(ctx.obj.gitcontext.commits[0].message.full)
                 click.echo(u"-----------------------------------------------")
                 ctx.exit(e.exit_code)
 
