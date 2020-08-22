@@ -2,4 +2,5 @@
 1: UC1 GitContext.current_branch: master
 1: UC1 GitContext.commentchar: #
 1: UC2 GitCommit.branches: ['master']
-2: B4 Second line is not empty: "Content on the second line"
+1: UC2 GitCommit.custom_prop: foöbar
+4: B2 Line has trailing whitespace: "{repo-path} "

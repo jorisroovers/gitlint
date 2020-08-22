@@ -214,7 +214,7 @@ gitlint -c general.verbosity=1 # Set specific level
 gitlint -c general.verbosity=0 # Same as --silent
 ```
 ```ini
-.gitlint
+# .gitlint
 [general]
 verbosity=2
 ```
