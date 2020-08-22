@@ -20,7 +20,7 @@ from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerat
 from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.shell import shell
-from gitlint.utils import ustr, LOG_FORMAT
+from gitlint.utils import ustr, LOG_FORMAT, IS_PY2
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 DEFAULT_COMMIT_MSG_EDITOR = "vim"
@@ -354,7 +354,7 @@ def run_hook(ctx):
                 # We also need a to use raw_input() in Python2 as input() is unsafe (and raw_input() doesn't exist in
                 # Python3). See https://stackoverflow.com/a/4960216/381010
                 input_func = input
-                if sys.version_info[0] == 2:
+                if IS_PY2:
                     input_func = raw_input  # noqa pylint: disable=undefined-variable
 
                 value = input_func()

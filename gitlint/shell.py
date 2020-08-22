@@ -6,8 +6,7 @@ capabilities wrt dealing with more edge-case environments on *nix systems that a
 """
 
 import subprocess
-import sys
-from gitlint.utils import ustr, USE_SH_LIB
+from gitlint.utils import ustr, IS_PY2, USE_SH_LIB
 
 
 def shell(cmd):
@@ -52,7 +51,7 @@ else:
         return _exec(*args, **kwargs)
 
     def _exec(*args, **kwargs):
-        if sys.version_info[0] == 2:
+        if IS_PY2:
             no_command_error = OSError  # noqa pylint: disable=undefined-variable,invalid-name
         else:
             no_command_error = FileNotFoundError  # noqa pylint: disable=undefined-variable

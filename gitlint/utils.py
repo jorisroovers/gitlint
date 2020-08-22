@@ -24,6 +24,16 @@ def platform_is_windows():
 PLATFORM_IS_WINDOWS = platform_is_windows()
 
 ########################################################################################################################
+# IS_PY2
+
+
+def is_py2():
+    return sys.version_info[0] == 2
+
+
+IS_PY2 = is_py2()
+
+########################################################################################################################
 # USE_SH_LIB
 # Determine whether to use the `sh` library
 # On windows we won't want to use the sh library since it's not supported - instead we'll use our own shell module.
@@ -76,7 +86,7 @@ DEFAULT_ENCODING = getpreferredencoding()
 
 def ustr(obj):
     """ Python 2 and 3 utility method that converts an obj to unicode in python 2 and to a str object in python 3"""
-    if sys.version_info[0] == 2:
+    if IS_PY2:
         # If we are getting a string, then do an explicit decode
         # else, just call the unicode method of the object
         if type(obj) in [str, basestring]:  # pragma: no cover # noqa
@@ -94,7 +104,7 @@ def sstr(obj):
     """ Python 2 and 3 utility method that converts an obj to a DEFAULT_ENCODING encoded string in python 2
     and to unicode in python 3.
     Especially useful for implementing __str__ methods in python 2: http://stackoverflow.com/a/1307210/381010"""
-    if sys.version_info[0] == 2:
+    if IS_PY2:
         # For lists and tuples in python2, remove unicode string representation characters.
         # i.e. ensure lists are printed as ['a', 'b'] and not [u'a', u'b']
         if type(obj) in [list]:

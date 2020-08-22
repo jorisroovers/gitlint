@@ -7,7 +7,6 @@ import logging
 import os
 import re
 import shutil
-import sys
 import tempfile
 
 try:
@@ -25,7 +24,7 @@ except ImportError:
     from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
 
 from gitlint.git import GitContext
-from gitlint.utils import ustr, LOG_FORMAT, DEFAULT_ENCODING
+from gitlint.utils import ustr, IS_PY2, LOG_FORMAT, DEFAULT_ENCODING
 
 
 # unittest2's assertRaisesRegex doesn't do unicode comparison.
@@ -89,7 +88,7 @@ class BaseTestCase(unittest.TestCase):
     def patch_input(side_effect):
         """ Patches the built-in input() with a provided side-effect """
         module_path = "builtins.input"
-        if sys.version_info[0] == 2:
+        if IS_PY2:
             module_path = "__builtin__.raw_input"
         patched_module = patch(module_path, side_effect=side_effect)
         return patched_module
