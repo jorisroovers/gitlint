@@ -103,7 +103,7 @@ class LintTests(BaseTestCase):
         self.assertListEqual(violations, expected)
 
     def test_lint_meta(self):
-        """ Lint sample2 but also add some metadata to the commit so we that get's linted as well """
+        """ Lint sample2 but also add some metadata to the commit so we that gets linted as well """
         linter = GitLinter(LintConfig())
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
         gitcontext.commits[0].author_email = u"foo bår"
@@ -149,6 +149,25 @@ class LintTests(BaseTestCase):
                                   u"Just a title contåining WIP", 1)]
 
         self.assertListEqual(violations, expected)
+
+        # Test ignoring body lines
+        lint_config = LintConfig()
+        linter = GitLinter(lint_config)
+        lint_config.set_rule_option("I3", "regex", u"(.*)tråiling(.*)")
+        violations = linter.lint(self.gitcommit(self.get_sample("commit_message/sample1")))
+        expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
+                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
+                           RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
+                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
+                           RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
+                           RuleViolation("B1", "Line exceeds max length (135>80)",
+                                         "This is the first line of the commit message body and it is meant to test " +
+                                         "a line that exceeds the maximum line length of 80 characters.", 3),
+                           RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t", 4),
+                           RuleViolation("B3", "Line contains hard tab characters (\\t)",
+                                         "This line has a trailing tab.\t", 4)]
+
+        self.assertListEqual(violations, expected_errors)
 
     def test_lint_special_commit(self):
         for commit_type in ["merge", "revert", "squash", "fixup"]:

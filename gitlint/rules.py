@@ -366,3 +366,23 @@ class IgnoreByBody(ConfigurationRule):
                 self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
                 # No need to check other lines if we found a match
                 return
+
+
+class IgnoreBodyLines(ConfigurationRule):
+    name = "ignore-body-lines"
+    id = "I3"
+    options_spec = [StrOption('regex', None, "Regex matching lines of the body that should be ignored")]
+
+    def apply(self, _, commit):
+        body_line_regex = re.compile(self.options['regex'].value, re.UNICODE)
+
+        new_body = []
+        for line in commit.message.body:
+            if body_line_regex.match(line):
+                debug_msg = u"Ignoring line '%s' because it matches '%s'"
+                self.log.debug(debug_msg, line, self.options['regex'].value)
+            else:
+                new_body.append(line)
+
+        commit.message.body = new_body
+        commit.message.full = u"\n".join([commit.message.title] + new_body)

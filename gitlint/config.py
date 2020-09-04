@@ -44,6 +44,7 @@ class LintConfig(object):
     # Default tuple of rule classes (tuple because immutable).
     default_rule_classes = (rules.IgnoreByTitle,
                             rules.IgnoreByBody,
+                            rules.IgnoreBodyLines,
                             rules.TitleMaxLength,
                             rules.TitleTrailingWhitespace,
                             rules.TitleLeadingWhitespace,

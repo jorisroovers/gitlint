@@ -24,6 +24,8 @@ B7    | body-changed-file-mention   | >= 0.4.0          | Body must contain refe
 M1    | author-valid-email          | >= 0.9.0          | Author email address must be a valid email address
 I1    | ignore-by-title             | >= 0.10.0         | Ignore a commit based on matching its title
 I2    | ignore-by-body              | >= 0.10.0         | Ignore a commit based on matching its body
+I3    | ignore-body-lines           | >= 0.14.0         | Ignore certain lines in a commit body that match a regex
+
 
 ## T1: title-max-length ##
 
@@ -87,7 +89,7 @@ T7    | title-match-regex           | >= 0.5          | Title must match a given
 
 Name           | gitlint version | Default | Description
 ---------------|-----------------|---------|----------------------------------
-regex          | >= 0.5          | .*      | [Python-style regular expression](https://docs.python.org/3.5/library/re.html) that the title should match.
+regex          | >= 0.5          | .*      | [Python regex](https://docs.python.org/library/re.html) that the title should match.
 
 ## B1: body-max-line-length   ##
 
@@ -176,7 +178,7 @@ M1    |  author-valid-email         | >= 0.8.3        | Author email address mus
 
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
-regex                 | >= 0.9.0          | ```[^@ ]+@[^@ ]+\.[^@ ]+```  |  Regex the commit author email address is matched against
+regex                 | >= 0.9.0          | ```[^@ ]+@[^@ ]+\.[^@ ]+```  |  [Python regex](https://docs.python.org/library/re.html) the commit author email address is matched against
 
 
 !!! note
@@ -194,8 +196,8 @@ I1    |  ignore-by-title            | >= 0.10.0       | Ignore a commit based on
 
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
-regex                 | >= 0.10.0         | None                         |  Regex to match against commit title. On match, the commit will be ignored.
-ignore                | >= 0.10.0         | all                          |  Comma-seperated list of rule names or ids to ignore when this rule is matched.
+regex                 | >= 0.10.0         | None                         |  [Python regex](https://docs.python.org/library/re.html) to match against commit title. On match, the commit will be ignored.
+ignore                | >= 0.10.0         | all                          |  Comma-separated list of rule names or ids to ignore when this rule is matched.
 
 ### Examples
 
@@ -222,8 +224,8 @@ I2    |  ignore-by-body             | >= 0.10.0       | Ignore a commit based on
 
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
-regex                 | >= 0.10.0         | None                         |  Regex to match against each line of the body. On match, the commit will be ignored.
-ignore                | >= 0.10.0         | all                          |  Comma-seperated list of rule names or ids to ignore when this rule is matched.
+regex                 | >= 0.10.0         | None                         |  [Python regex](https://docs.python.org/library/re.html) to match against each line of the body. On match, the commit will be ignored.
+ignore                | >= 0.10.0         | all                          |  Comma-separated list of rule names or ids to ignore when this rule is matched.
 
 ### Examples
 
@@ -240,4 +242,35 @@ ignore=all
 [ignore-by-body]
 regex=(.*)release(.*)
 ignore=T1,body-min-length,B6
+```
+
+## I3: ignore-body-lines
+
+ID    | Name                        | gitlint version | Description
+------|-----------------------------|-----------------|-------------------------------------------
+I3    |  ignore-body-lines          | >= 0.14.0    | Ignore certain lines in a commit body that match a regex.
+
+
+### Options
+
+Name                  | gitlint version   | Default                      | Description
+----------------------|-------------------|------------------------------|----------------------------------
+regex                 | >= 0.14.0         | None                         |  [Python regex](https://docs.python.org/library/re.html) to match against each line of the body. On match, that line will be ignored by gitlint (the rest of the body will still be linted).
+
+### Examples
+
+#### .gitlint
+
+```ini
+# Ignore all lines that start with 'Co-Authored-By'
+[ignore-body-lines]
+regex=^Co-Authored-By
+
+# Ignore lines that start with 'Co-Authored-By' or with 'Signed-Off-By'
+[ignore-body-lines]
+regex=(^Co-Authored-By)|(^Signed-Off-By)
+
+# Ignore lines that contain 'foobar'
+[ignore-body-lines]
+regex=(.*)foobar(.*)
 ```

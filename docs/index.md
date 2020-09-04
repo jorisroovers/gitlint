@@ -305,7 +305,7 @@ general ```ignore-merge-commits```, ```ignore-revert-commits```,  ```ignore-fixu
 # Ignoring commits ##
 _Introduced in gitlint v0.10.0_
 
-You can configure gitlint to ignore specific commits.
+You can configure gitlint to ignore specific commits or parts of a commit.
 
 One way to do this, is to by [adding a gitline-ignore line to your commit message](configuration.md#commit-specific-config).
 
@@ -328,11 +328,26 @@ regex=(.*)release(.*)
 ignore=all
 ```
 
+If you just want to ignore certain lines in a commit, you can do that using the
+[ignore-body-lines](rules.md#i3-ignore-body-lines) rule.
+
+```ini
+# Ignore all lines that start with 'Co-Authored-By'
+[ignore-body-lines]
+regex=^Co-Authored-By
+```
+
 !!! note
 
-    Right now it's not possible to write user-defined ignore rules to handle more complex use-cases.
-    This is however something that we'd like to implement in a future version. If this is something you're interested in
-    please let us know by [opening an issue](https://github.com/jorisroovers/gitlint/issues).
+    If you want to implement more complex ignore rules according to your own logic, you can do so using [user-defined
+    configuration rules](user_defined_rules.md#configuration-rules).
+
+!!! warning
+
+    When ignoring specific lines, gitlint will no longer be aware of them while applying other rules.
+    This can sometimes be confusing for end-users, especially as line numbers of violations will typically no longer
+    match line numbers in the original commit message. Make sure to educate your users accordingly.
+
 
 # Exit codes ##
 Gitlint uses the exit code as a simple way to indicate the number of violations found.

@@ -67,5 +67,40 @@ class ConfigurationRuleTests(BaseTestCase):
         rule.apply(config, commit)
         self.assertEqual(config, expected_config)
 
-        expected_log_message = u"DEBUG: gitlint.rules Ignoring commit because of rule 'I1': " + \
+        expected_log_message = u"DEBUG: gitlint.rules Ignoring commit because of rule 'I2': " + \
             u"Commit message line ' a relëase body' matches the regex '(.*)relëase(.*)', ignoring rules: T1,B2"
+        self.assert_log_contains(expected_log_message)
+
+    def test_ignore_body_lines(self):
+        commit1 = self.gitcommit(u"Tïtle\n\nThis is\n a relëase body\n line")
+        commit2 = self.gitcommit(u"Tïtle\n\nThis is\n a relëase body\n line")
+
+        # no regex specified, commit and config should remain identical
+        rule = rules.IgnoreBodyLines()
+        config = LintConfig()
+        rule.apply(config, commit1)
+        self.assertEqual(commit1, commit2)
+        self.assertEqual(config, LintConfig())
+        self.assert_logged([])  # log should be empty
+
+        # Matching regex
+        rule = rules.IgnoreBodyLines({"regex": u"(.*)relëase(.*)"})
+        config = LintConfig()
+        rule.apply(config, commit1)
+        # Our modified commit should be identical to a commit that doesn't contain the specific line
+        expected_commit = self.gitcommit(u"Tïtle\n\nThis is\n line")
+        # The original message isn't touched by this rule, this way we always have a way to reference back to it,
+        # so assert it's not modified by setting it to the same as commit1
+        expected_commit.message.original = commit1.message.original
+        self.assertEqual(commit1, expected_commit)
+        self.assertEqual(config, LintConfig())  # config shouldn't have been modified
+        self.assert_log_contains(u"DEBUG: gitlint.rules Ignoring line ' a relëase body' because it " +
+                                 u"matches '(.*)relëase(.*)'")
+
+        # Non-Matching regex: no changes expected
+        commit1 = self.gitcommit(u"Tïtle\n\nThis is\n a relëase body\n line")
+        rule = rules.IgnoreBodyLines({"regex": u"(.*)föobar(.*)"})
+        config = LintConfig()
+        rule.apply(config, commit1)
+        self.assertEqual(commit1, commit2)
+        self.assertEqual(config, LintConfig())  # config shouldn't have been modified
