@@ -6,9 +6,6 @@ import re
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption
 from gitlint.utils import sstr
 
-LOG = logging.getLogger(__name__)
-logging.basicConfig()
-
 
 class Rule(object):
     """ Class representing gitlint rules. """
@@ -16,6 +13,7 @@ class Rule(object):
     id = None
     name = None
     target = None
+    _log = None
 
     def __init__(self, opts=None):
         if not opts:
@@ -26,6 +24,13 @@ class Rule(object):
             actual_option = opts.get(op_spec.name)
             if actual_option is not None:
                 self.options[op_spec.name].set(actual_option)
+
+    @property
+    def log(self):
+        if not self._log:
+            self._log = logging.getLogger(__name__)
+            logging.basicConfig()
+        return self._log
 
     def __eq__(self, other):
         return self.id == other.id and self.name == other.name and \
@@ -339,7 +344,7 @@ class IgnoreByTitle(ConfigurationRule):
             message = u"Commit title '{0}' matches the regex '{1}', ignoring rules: {2}"
             message = message.format(commit.message.title, self.options['regex'].value, self.options['ignore'].value)
 
-            LOG.debug("Ignoring commit because of rule '%s': %s", self.id, message)
+            self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
 
 
 class IgnoreByBody(ConfigurationRule):
@@ -358,6 +363,6 @@ class IgnoreByBody(ConfigurationRule):
                 message = u"Commit message line '{0}' matches the regex '{1}', ignoring rules: {2}"
                 message = message.format(line, self.options['regex'].value, self.options['ignore'].value)
 
-                LOG.debug("Ignoring commit because of rule '%s': %s", self.id, message)
+                self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
                 # No need to check other lines if we found a match
                 return

@@ -13,6 +13,11 @@ class RuleTests(BaseTestCase):
             setattr(rule, attr, u"åbc")
             self.assertNotEqual(Rule(), rule)
 
+    def test_rule_log(self):
+        rule = Rule()
+        rule.log.debug(u"Tēst message")
+        self.assert_log_contains(u"DEBUG: gitlint.rules Tēst message")
+
     def test_rule_violation_equality(self):
         violation1 = RuleViolation(u"ïd1", u"My messåge", u"My cöntent", 1)
         self.object_equality_test(violation1, ["rule_id", "message", "content", "line_nr"])

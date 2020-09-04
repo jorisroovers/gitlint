@@ -39,6 +39,7 @@ class ReleaseConfigurationRule(ConfigurationRule):
     options_spec = [IntOption('custom-verbosity', 2, "Gitlint verbosity for release commits")]
 
     def apply(self, config, commit):
+        self.log.debug("ReleaseConfigurationRule: This line will be visible when running `gitlint --debug`")
 
         # If the commit title starts with 'Release', we want to modify
         # how all subsequent rules interpret that commit
