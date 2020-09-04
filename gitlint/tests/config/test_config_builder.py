@@ -88,12 +88,13 @@ class LintConfigBuilderTests(BaseTestCase):
         # bad config file load
         foo_path = self.get_sample_path(u"föo")
         expected_error_msg = u"Invalid file path: {0}".format(foo_path)
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config_builder.set_from_config_file(foo_path)
 
         # error during file parsing
         path = self.get_sample_path("config/no-sections")
         expected_error_msg = u"File contains no section headers."
+        # We only match the start of the message here, since the exact message can vary depending on platform
         with self.assertRaisesRegex(LintConfigError, expected_error_msg):
             config_builder.set_from_config_file(path)
 
@@ -102,7 +103,7 @@ class LintConfigBuilderTests(BaseTestCase):
         config_builder = LintConfigBuilder()
         config_builder.set_from_config_file(path)
         expected_error_msg = u"No such rule 'föobar'"
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config_builder.build()
 
         # non-existing general option
@@ -110,7 +111,7 @@ class LintConfigBuilderTests(BaseTestCase):
         config_builder = LintConfigBuilder()
         config_builder.set_from_config_file(path)
         expected_error_msg = u"'foo' is not a valid gitlint option"
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config_builder.build()
 
         # non-existing option
@@ -118,7 +119,7 @@ class LintConfigBuilderTests(BaseTestCase):
         config_builder = LintConfigBuilder()
         config_builder.set_from_config_file(path)
         expected_error_msg = u"Rule 'title-max-length' has no option 'föobar'"
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config_builder.build()
 
         # invalid option value
@@ -127,7 +128,7 @@ class LintConfigBuilderTests(BaseTestCase):
         config_builder.set_from_config_file(path)
         expected_error_msg = u"'föo' is not a valid value for option 'title-max-length.line-length'. " + \
                              u"Option 'line-length' must be a positive integer (current value: 'föo')."
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config_builder.build()
 
     def test_set_config_from_string_list(self):
@@ -150,27 +151,27 @@ class LintConfigBuilderTests(BaseTestCase):
 
         # assert error on incorrect rule - this happens at build time
         config_builder.set_config_from_string_list([u"föo.bar=1"])
-        with self.assertRaisesRegex(LintConfigError, u"No such rule 'föo'"):
+        with self.assertRaisesMessage(LintConfigError, u"No such rule 'föo'"):
             config_builder.build()
 
         # no equal sign
         expected_msg = u"'föo.bar' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegex(LintConfigError, expected_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_msg):
             config_builder.set_config_from_string_list([u"föo.bar"])
 
         # missing value
         expected_msg = u"'föo.bar=' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegex(LintConfigError, expected_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_msg):
             config_builder.set_config_from_string_list([u"föo.bar="])
 
         # space instead of equal sign
         expected_msg = u"'föo.bar 1' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegex(LintConfigError, expected_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_msg):
             config_builder.set_config_from_string_list([u"föo.bar 1"])
 
         # no period between rule and option names
         expected_msg = u"'föobar=1' is an invalid configuration option. Use '<rule>.<option>=<value>'"
-        with self.assertRaisesRegex(LintConfigError, expected_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_msg):
             config_builder.set_config_from_string_list([u'föobar=1'])
 
     def test_rebuild_config(self):

@@ -30,18 +30,18 @@ class LintConfigTests(BaseTestCase):
 
         # non-existing rule
         expected_error_msg = u"No such rule 'föobar'"
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config.set_rule_option(u'föobar', u'lïne-length', 60)
 
         # non-existing option
         expected_error_msg = u"Rule 'title-max-length' has no option 'föobar'"
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config.set_rule_option('title-max-length', u'föobar', 60)
 
         # invalid option value
         expected_error_msg = u"'föo' is not a valid value for option 'title-max-length.line-length'. " + \
                              u"Option 'line-length' must be a positive integer (current value: 'föo')."
-        with self.assertRaisesRegex(LintConfigError, expected_error_msg):
+        with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config.set_rule_option('title-max-length', 'line-length', u"föo")
 
     def test_set_general_option(self):
@@ -151,14 +151,14 @@ class LintConfigTests(BaseTestCase):
     def test_contrib_negative(self):
         config = LintConfig()
         # non-existent contrib rule
-        with self.assertRaisesRegex(LintConfigError, u"No contrib rule with id or name 'föo' found."):
+        with self.assertRaisesMessage(LintConfigError, u"No contrib rule with id or name 'föo' found."):
             config.contrib = u"contrib-title-conventional-commits,föo"
 
         # UserRuleError, RuleOptionError should be re-raised as LintConfigErrors
         side_effects = [rules.UserRuleError(u"üser-rule"), options.RuleOptionError(u"rüle-option")]
         for side_effect in side_effects:
             with patch('gitlint.config.rule_finder.find_rule_classes', side_effect=side_effect):
-                with self.assertRaisesRegex(LintConfigError, ustr(side_effect)):
+                with self.assertRaisesMessage(LintConfigError, ustr(side_effect)):
                     config.contrib = u"contrib-title-conventional-commits"
 
     def test_extra_path(self):
@@ -185,36 +185,36 @@ class LintConfigTests(BaseTestCase):
         config = LintConfig()
         regex = u"Option extra-path must be either an existing directory or file (current value: 'föo/bar')"
         # incorrect extra_path
-        with self.assertRaisesRegex(LintConfigError, regex):
+        with self.assertRaisesMessage(LintConfigError, regex):
             config.extra_path = u"föo/bar"
 
         # extra path contains classes with errors
-        with self.assertRaisesRegex(LintConfigError,
-                                    "User-defined rule class 'MyUserLineRule' must have a 'validate' method"):
+        with self.assertRaisesMessage(LintConfigError,
+                                      "User-defined rule class 'MyUserLineRule' must have a 'validate' method"):
             config.extra_path = self.get_sample_path("user_rules/incorrect_linerule")
 
     def test_set_general_option_negative(self):
         config = LintConfig()
 
         # Note that we shouldn't test whether we can set unicode because python just doesn't allow unicode attributes
-        with self.assertRaisesRegex(LintConfigError, "'foo' is not a valid gitlint option"):
+        with self.assertRaisesMessage(LintConfigError, "'foo' is not a valid gitlint option"):
             config.set_general_option("foo", u"bår")
 
         # try setting _config_path, this is a real attribute of LintConfig, but the code should prevent it from
         # being set
-        with self.assertRaisesRegex(LintConfigError, "'_config_path' is not a valid gitlint option"):
+        with self.assertRaisesMessage(LintConfigError, "'_config_path' is not a valid gitlint option"):
             config.set_general_option("_config_path", u"bår")
 
         # invalid verbosity
         incorrect_values = [-1, u"föo"]
         for value in incorrect_values:
             expected_msg = u"Option 'verbosity' must be a positive integer (current value: '{0}')".format(value)
-            with self.assertRaisesRegex(LintConfigError, expected_msg):
+            with self.assertRaisesMessage(LintConfigError, expected_msg):
                 config.verbosity = value
 
         incorrect_values = [4]
         for value in incorrect_values:
-            with self.assertRaisesRegex(LintConfigError, "Option 'verbosity' must be set between 0 and 3"):
+            with self.assertRaisesMessage(LintConfigError, "Option 'verbosity' must be set between 0 and 3"):
                 config.verbosity = value
 
         # invalid ignore_xxx_commits
@@ -224,8 +224,8 @@ class LintConfigTests(BaseTestCase):
         for attribute in ignore_attributes:
             for value in incorrect_values:
                 option_name = attribute.replace("_", "-")
-                with self.assertRaisesRegex(LintConfigError,
-                                            "Option '{0}' must be either 'true' or 'false'".format(option_name)):
+                with self.assertRaisesMessage(LintConfigError,
+                                              "Option '{0}' must be either 'true' or 'false'".format(option_name)):
                     setattr(config, attribute, value)
 
         # invalid ignore -> not here because ignore is a ListOption which converts everything to a string before
@@ -234,15 +234,15 @@ class LintConfigTests(BaseTestCase):
         # invalid boolean options
         for attribute in ['debug', 'staged', 'ignore_stdin']:
             option_name = attribute.replace("_", "-")
-            with self.assertRaisesRegex(LintConfigError,
-                                        "Option '{0}' must be either 'true' or 'false'".format(option_name)):
+            with self.assertRaisesMessage(LintConfigError,
+                                          "Option '{0}' must be either 'true' or 'false'".format(option_name)):
                 setattr(config, attribute, u"föobar")
 
         # extra-path has its own negative test
 
         # invalid target
-        with self.assertRaisesRegex(LintConfigError,
-                                    u"Option target must be an existing directory (current value: 'föo/bar')"):
+        with self.assertRaisesMessage(LintConfigError,
+                                      u"Option target must be an existing directory (current value: 'föo/bar')"):
             config.target = u"föo/bar"
 
     def test_ignore_independent_from_rules(self):

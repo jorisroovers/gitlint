@@ -92,7 +92,7 @@ class UserRuleTests(BaseTestCase):
             find_rule_classes(user_rule_path)
 
     def test_find_rule_classes_nonexisting_path(self):
-        with self.assertRaisesRegex(UserRuleError, u"Invalid extra-path: föo/bar"):
+        with self.assertRaisesMessage(UserRuleError, u"Invalid extra-path: föo/bar"):
             find_rule_classes(u"föo/bar")
 
     def test_assert_valid_rule_class(self):
@@ -126,8 +126,8 @@ class UserRuleTests(BaseTestCase):
     def test_assert_valid_rule_class_negative(self):
         # general test to make sure that incorrect rules will raise an exception
         user_rule_path = self.get_sample_path("user_rules/incorrect_linerule")
-        with self.assertRaisesRegex(UserRuleError,
-                                    "User-defined rule class 'MyUserLineRule' must have a 'validate' method"):
+        with self.assertRaisesMessage(UserRuleError,
+                                      "User-defined rule class 'MyUserLineRule' must have a 'validate' method"):
             find_rule_classes(user_rule_path)
 
     def test_assert_valid_rule_class_negative_parent(self):
@@ -137,7 +137,7 @@ class UserRuleTests(BaseTestCase):
 
         expected_msg = "User-defined rule class 'MyRuleClass' must extend from gitlint.rules.LineRule, " + \
                        "gitlint.rules.CommitRule or gitlint.rules.ConfigurationRule"
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_id(self):
@@ -146,19 +146,19 @@ class UserRuleTests(BaseTestCase):
 
         # Rule class must have an id
         expected_msg = "User-defined rule class 'MyRuleClass' must have an 'id' attribute"
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # Rule ids must be non-empty
         MyRuleClass.id = ""
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # Rule ids must not start with one of the reserved id letters
         for letter in ["T", "R", "B", "M", "I"]:
             MyRuleClass.id = letter + "1"
             expected_msg = "The id '{0}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
-            with self.assertRaisesRegex(UserRuleError, expected_msg.format(letter)):
+            with self.assertRaisesMessage(UserRuleError, expected_msg.format(letter)):
                 assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_name(self):
@@ -167,12 +167,12 @@ class UserRuleTests(BaseTestCase):
 
         # Rule class must have an name
         expected_msg = "User-defined rule class 'MyRuleClass' must have a 'name' attribute"
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # Rule names must be non-empty
         MyRuleClass.name = ""
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_option_spec(self):
@@ -184,12 +184,12 @@ class UserRuleTests(BaseTestCase):
         MyRuleClass.options_spec = u"föo"
         expected_msg = "The options_spec attribute of user-defined rule class 'MyRuleClass' must be a list " + \
                        "of gitlint.options.RuleOption"
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # option_spec is a list, but not of gitlint options
         MyRuleClass.options_spec = [u"föo", 123]  # pylint: disable=bad-option-value,redefined-variable-type
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_validate(self):
@@ -200,14 +200,14 @@ class UserRuleTests(BaseTestCase):
                 id = "UC1"
                 name = u"my-rüle-class"
 
-            with self.assertRaisesRegex(UserRuleError,
-                                        "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+            with self.assertRaisesMessage(UserRuleError,
+                                          "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
                 assert_valid_rule_class(MyRuleClass)
 
             # validate attribute - not a method
             MyRuleClass.validate = u"föo"
-            with self.assertRaisesRegex(UserRuleError,
-                                        "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+            with self.assertRaisesMessage(UserRuleError,
+                                          "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
                 assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_apply(self):
@@ -215,14 +215,13 @@ class UserRuleTests(BaseTestCase):
             id = "UCR1"
             name = u"my-rüle-class"
 
-        with self.assertRaisesRegex(UserRuleError,
-                                    "User-defined Configuration rule class 'MyRuleClass' must have an 'apply' method"):
+        expected_msg = "User-defined Configuration rule class 'MyRuleClass' must have an 'apply' method"
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # validate attribute - not a method
         MyRuleClass.validate = u"föo"
-        with self.assertRaisesRegex(UserRuleError,
-                                    "User-defined Configuration rule class 'MyRuleClass' must have an 'apply' method"):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_target(self):
@@ -236,12 +235,12 @@ class UserRuleTests(BaseTestCase):
         # no target
         expected_msg = "The target attribute of the user-defined LineRule class 'MyRuleClass' must be either " + \
                        "gitlint.rules.CommitMessageTitle or gitlint.rules.CommitMessageBody"
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # invalid target
         MyRuleClass.target = u"föo"
-        with self.assertRaisesRegex(UserRuleError, expected_msg):
+        with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # valid target, no exception should be raised

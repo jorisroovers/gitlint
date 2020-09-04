@@ -150,6 +150,24 @@ class BaseTestCase(unittest.TestCase):
         return super(BaseTestCase, self).assertRaisesRegex(expected_exception, re.escape(expected_regex),
                                                            *args, **kwargs)
 
+    @contextlib.contextmanager
+    def assertRaisesMessage(self, expected_exception, expected_msg):  # pylint: disable=invalid-name
+        """ Asserts an exception has occurred with a given error message """
+        try:
+            yield
+        except expected_exception as exc:
+            exception_msg = ustr(exc)
+            if exception_msg != expected_msg:
+                error = "Right exception, wrong message:\n      got: {0}\n expected: {1}"
+                raise self.fail(error.format(exception_msg, expected_msg))
+            # else: everything is fine, just return
+            return
+        except Exception as exc:
+            raise self.fail("Expected '{0}' got '{1}'".format(expected_exception.__name__, exc.__class__.__name__))
+
+        # No exception raised while we expected one
+        raise self.fail("Expected to raise {0}, didn't get an exception at all".format(expected_exception.__name__))
+
     def object_equality_test(self, obj, attr_list, ctor_kwargs=None):
         """ Helper function to easily implement object equality tests.
             Creates an object clone for every passed attribute and checks for (in)equality

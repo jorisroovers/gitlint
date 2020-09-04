@@ -27,7 +27,7 @@ class GitTests(BaseTestCase):
         sh.git.side_effect = CommandNotFound("git")
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
-        with self.assertRaisesRegex(GitNotInstalledError, expected_msg):
+        with self.assertRaisesMessage(GitNotInstalledError, expected_msg):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command
@@ -39,7 +39,7 @@ class GitTests(BaseTestCase):
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
-        with self.assertRaisesRegex(GitContextError, u"fåke/path is not a git repository."):
+        with self.assertRaisesMessage(GitContextError, u"fåke/path is not a git repository."):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command
@@ -50,7 +50,7 @@ class GitTests(BaseTestCase):
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
         expected_msg = u"An error occurred while executing 'git log -1 --pretty=%H': {0}".format(err)
-        with self.assertRaisesRegex(GitContextError, expected_msg):
+        with self.assertRaisesMessage(GitContextError, expected_msg):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command
@@ -64,7 +64,7 @@ class GitTests(BaseTestCase):
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
         expected_msg = u"Current branch has no commits. Gitlint requires at least one commit to function."
-        with self.assertRaisesRegex(GitContextError, expected_msg):
+        with self.assertRaisesMessage(GitContextError, expected_msg):
             GitContext.from_local_repository(u"fåke/path")
 
         # assert that commit message was read using git command
@@ -82,7 +82,7 @@ class GitTests(BaseTestCase):
             ErrorReturnCode("rev-parse --abbrev-ref HEAD", b"", err)
         ]
 
-        with self.assertRaisesRegex(GitContextError, expected_msg):
+        with self.assertRaisesMessage(GitContextError, expected_msg):
             context = GitContext.from_commit_msg(u"test")
             context.current_branch
 

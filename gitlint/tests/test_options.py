@@ -31,12 +31,12 @@ class RuleOptionTests(BaseTestCase):
 
         # error on negative int when not allowed
         expected_error = u"Option 'test-name' must be a positive integer (current value: '-123')"
-        with self.assertRaisesRegex(RuleOptionError, expected_error):
+        with self.assertRaisesMessage(RuleOptionError, expected_error):
             option.set(-123)
 
         # error on non-int value
         expected_error = u"Option 'test-name' must be a positive integer (current value: 'foo')"
-        with self.assertRaisesRegex(RuleOptionError, expected_error):
+        with self.assertRaisesMessage(RuleOptionError, expected_error):
             option.set("foo")
 
         # no error on negative value when allowed and negative int is passed
@@ -46,7 +46,7 @@ class RuleOptionTests(BaseTestCase):
 
         # error on non-int value when negative int is allowed
         expected_error = u"Option 'test-name' must be an integer (current value: 'foo')"
-        with self.assertRaisesRegex(RuleOptionError, expected_error):
+        with self.assertRaisesMessage(RuleOptionError, expected_error):
             option.set("foo")
 
     def test_str_option(self):
@@ -84,7 +84,7 @@ class RuleOptionTests(BaseTestCase):
         # error on incorrect value
         incorrect_values = [1, -1, "foo", u"bår", ["foo"], {'foo': "bar"}]
         for value in incorrect_values:
-            with self.assertRaisesRegex(RuleOptionError, "Option 'test-name' must be either 'true' or 'false'"):
+            with self.assertRaisesMessage(RuleOptionError, "Option 'test-name' must be either 'true' or 'false'"):
                 option.set(value)
 
     def test_list_option(self):
@@ -141,19 +141,19 @@ class RuleOptionTests(BaseTestCase):
 
         # set to int
         expected = u"Option test-directory must be an existing directory (current value: '1234')"
-        with self.assertRaisesRegex(RuleOptionError, expected):
+        with self.assertRaisesMessage(RuleOptionError, expected):
             option.set(1234)
 
         # set to non-existing directory
         non_existing_path = os.path.join(u"/föo", u"bar")
         expected = u"Option test-directory must be an existing directory (current value: '{0}')"
-        with self.assertRaisesRegex(RuleOptionError, expected.format(non_existing_path)):
+        with self.assertRaisesMessage(RuleOptionError, expected.format(non_existing_path)):
             option.set(non_existing_path)
 
         # set to a file, should raise exception since option.type = dir
         sample_path = self.get_sample_path(os.path.join("commit_message", "sample1"))
         expected = u"Option test-directory must be an existing directory (current value: '{0}')".format(sample_path)
-        with self.assertRaisesRegex(RuleOptionError, expected):
+        with self.assertRaisesMessage(RuleOptionError, expected):
             option.set(sample_path)
 
         # set option.type = file, file should now be accepted, directories not
@@ -162,7 +162,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, sample_path)
         expected = u"Option test-directory must be an existing file (current value: '{0}')".format(
             self.get_sample_path())
-        with self.assertRaisesRegex(RuleOptionError, expected):
+        with self.assertRaisesMessage(RuleOptionError, expected):
             option.set(self.get_sample_path())
 
         # set option.type = both, files and directories should now be accepted
@@ -175,5 +175,5 @@ class RuleOptionTests(BaseTestCase):
         # Expect exception if path type is invalid
         option.type = u'föo'
         expected = u"Option test-directory type must be one of: 'file', 'dir', 'both' (current: 'föo')"
-        with self.assertRaisesRegex(RuleOptionError, expected):
+        with self.assertRaisesMessage(RuleOptionError, expected):
             option.set("haha")
