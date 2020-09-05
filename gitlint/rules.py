@@ -336,13 +336,18 @@ class IgnoreByTitle(ConfigurationRule):
                     StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
 
     def apply(self, config, commit):
+        # If no regex is specified, immediately return
+        if not self.options['regex'].value:
+            return
+
         title_regex = re.compile(self.options['regex'].value, re.UNICODE)
 
         if title_regex.match(commit.message.title):
             config.ignore = self.options['ignore'].value
 
             message = u"Commit title '{0}' matches the regex '{1}', ignoring rules: {2}"
-            message = message.format(commit.message.title, self.options['regex'].value, self.options['ignore'].value)
+            message = message.format(commit.message.title, self.options['regex'].value,
+                                     self.options['ignore'].value)
 
             self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
 
@@ -354,6 +359,10 @@ class IgnoreByBody(ConfigurationRule):
                     StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
 
     def apply(self, config, commit):
+        # If no regex is specified, immediately return
+        if not self.options['regex'].value:
+            return
+
         body_line_regex = re.compile(self.options['regex'].value, re.UNICODE)
 
         for line in commit.message.body:
@@ -374,6 +383,10 @@ class IgnoreBodyLines(ConfigurationRule):
     options_spec = [StrOption('regex', None, "Regex matching lines of the body that should be ignored")]
 
     def apply(self, _, commit):
+        # If no regex is specified, immediately return
+        if not self.options['regex'].value:
+            return
+
         body_line_regex = re.compile(self.options['regex'].value, re.UNICODE)
 
         new_body = []

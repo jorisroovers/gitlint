@@ -29,6 +29,10 @@ class RuleOptionTests(BaseTestCase):
         option.set(456)
         self.assertEqual(option.value, 456)
 
+        # set to None
+        option.set(None)
+        self.assertEqual(option.value, None)
+
         # error on negative int when not allowed
         expected_error = u"Option 'test-name' must be a positive integer (current value: '-123')"
         with self.assertRaisesMessage(RuleOptionError, expected_error):
@@ -68,6 +72,10 @@ class RuleOptionTests(BaseTestCase):
         option.set(-123)
         self.assertEqual(option.value, "-123")
 
+        # None value
+        option.set(None)
+        self.assertEqual(option.value, None)
+
     def test_boolean_option(self):
         # normal behavior
         option = BoolOption("test-name", "true", "Test Description")
@@ -82,7 +90,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, True)
 
         # error on incorrect value
-        incorrect_values = [1, -1, "foo", u"bår", ["foo"], {'foo': "bar"}]
+        incorrect_values = [1, -1, "foo", u"bår", ["foo"], {'foo': "bar"}, None]
         for value in incorrect_values:
             with self.assertRaisesMessage(RuleOptionError, "Option 'test-name' must be either 'true' or 'false'"):
                 option.set(value)
@@ -99,6 +107,10 @@ class RuleOptionTests(BaseTestCase):
         # set list
         option.set([u"foo", u"bår", u"test"])
         self.assertListEqual(option.value, [u"foo", u"bår", u"test"])
+
+        # None
+        option.set(None)
+        self.assertIsNone(option.value)
 
         # empty string
         option.set("")
@@ -138,6 +150,10 @@ class RuleOptionTests(BaseTestCase):
         # re-set value
         option.set(self.SAMPLES_DIR)
         self.assertEqual(option.value, self.SAMPLES_DIR)
+
+        # set to None
+        option.set(None)
+        self.assertIsNone(option.value)
 
         # set to int
         expected = u"Option test-directory must be an existing directory (current value: '1234')"

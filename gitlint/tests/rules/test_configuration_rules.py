@@ -75,13 +75,14 @@ class ConfigurationRuleTests(BaseTestCase):
         commit1 = self.gitcommit(u"Tïtle\n\nThis is\n a relëase body\n line")
         commit2 = self.gitcommit(u"Tïtle\n\nThis is\n a relëase body\n line")
 
-        # no regex specified, commit and config should remain identical
+        # no regex specified, nothing should have happened:
+        # commit and config should remain identical, log should be empty
         rule = rules.IgnoreBodyLines()
         config = LintConfig()
         rule.apply(config, commit1)
         self.assertEqual(commit1, commit2)
         self.assertEqual(config, LintConfig())
-        self.assert_logged([])  # log should be empty
+        self.assert_logged([])
 
         # Matching regex
         rule = rules.IgnoreBodyLines({"regex": u"(.*)relëase(.*)"})

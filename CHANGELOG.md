@@ -7,6 +7,9 @@
 - **New Rule**: `ignore-body-lines` allows users to
 [ignore parts of a commit](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
 the lines in a commit message body. ([#126](https://github.com/jorisroovers/gitlint/issues/126)).
+- Bugfixes:
+  -  Options can now actually be set to None (from code) to make them optional.
+  -  Ignore rules no longer have "None" as default regex, but an empty regex - effectively disabling them by default (as intended).
 
 ## v0.13.1 (2020-02-26)
 
