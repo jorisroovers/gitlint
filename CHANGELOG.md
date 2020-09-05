@@ -11,6 +11,9 @@ the lines in a commit message body. ([#126](https://github.com/jorisroovers/gitl
   -  Options can now actually be set to None (from code) to make them optional.
   -  Ignore rules no longer have "None" as default regex, but an empty regex - effectively disabling them by default (as intended).
 
+-  New `RegexOption` rule option type for use in user-defined rules. By using the `RegexOption`, regular expressions are pre-validated at gitlint startup and compiled only once which is much more efficient compared when linting multiple commits.
+
+
 ## v0.13.1 (2020-02-26)
 
 - Patch to enable `--staged` flag for pre-commit.

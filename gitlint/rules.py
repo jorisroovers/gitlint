@@ -3,7 +3,7 @@ import copy
 import logging
 import re
 
-from gitlint.options import IntOption, BoolOption, StrOption, ListOption
+from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RegexOption
 from gitlint.utils import sstr
 
 
@@ -131,10 +131,10 @@ class TrailingWhiteSpace(LineRule):
     name = "trailing-whitespace"
     id = "R2"
     violation_message = "Line has trailing whitespace"
+    pattern = re.compile(r"\s$", re.UNICODE)
 
     def validate(self, line, _commit):
-        pattern = re.compile(r"\s$", re.UNICODE)
-        if pattern.search(line):
+        if self.pattern.search(line):
             return [RuleViolation(self.id, self.violation_message, line)]
 
 
@@ -231,13 +231,15 @@ class TitleRegexMatches(LineRule):
     name = "title-match-regex"
     id = "T7"
     target = CommitMessageTitle
-    options_spec = [StrOption('regex', ".*", "Regex the title should match")]
+    options_spec = [RegexOption('regex', ".*", "Regex the title should match")]
 
     def validate(self, title, _commit):
-        regex = self.options['regex'].value
-        pattern = re.compile(regex, re.UNICODE)
-        if not pattern.search(title):
-            violation_msg = u"Title does not match regex ({0})".format(regex)
+        # If no regex is specified, immediately return
+        if not self.options['regex'].value:
+            return
+
+        if not self.options['regex'].value.search(title):
+            violation_msg = u"Title does not match regex ({0})".format(self.options['regex'].value.pattern)
             return [RuleViolation(self.id, violation_msg, title)]
 
 
@@ -317,22 +319,21 @@ class BodyChangedFileMention(CommitRule):
 class AuthorValidEmail(CommitRule):
     name = "author-valid-email"
     id = "M1"
-    options_spec = [StrOption('regex', r"[^@ ]+@[^@ ]+\.[^@ ]+", "Regex that author email address should match")]
+    options_spec = [RegexOption('regex', r"[^@ ]+@[^@ ]+\.[^@ ]+", "Regex that author email address should match")]
 
     def validate(self, commit):
-        # Note that unicode is allowed in email addresses
-        # See http://stackoverflow.com/questions/3844431
-        # /are-email-addresses-allowed-to-contain-non-alphanumeric-characters
-        email_regex = re.compile(self.options['regex'].value, re.UNICODE)
+        # If no regex is specified, immediately return
+        if not self.options['regex'].value:
+            return
 
-        if commit.author_email and not email_regex.match(commit.author_email):
+        if commit.author_email and not self.options['regex'].value.match(commit.author_email):
             return [RuleViolation(self.id, "Author email for commit is invalid", commit.author_email)]
 
 
 class IgnoreByTitle(ConfigurationRule):
     name = "ignore-by-title"
     id = "I1"
-    options_spec = [StrOption('regex', None, "Regex matching the titles of commits this rule should apply to"),
+    options_spec = [RegexOption('regex', None, "Regex matching the titles of commits this rule should apply to"),
                     StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
 
     def apply(self, config, commit):
@@ -340,13 +341,11 @@ class IgnoreByTitle(ConfigurationRule):
         if not self.options['regex'].value:
             return
 
-        title_regex = re.compile(self.options['regex'].value, re.UNICODE)
-
-        if title_regex.match(commit.message.title):
+        if self.options['regex'].value.match(commit.message.title):
             config.ignore = self.options['ignore'].value
 
             message = u"Commit title '{0}' matches the regex '{1}', ignoring rules: {2}"
-            message = message.format(commit.message.title, self.options['regex'].value,
+            message = message.format(commit.message.title, self.options['regex'].value.pattern,
                                      self.options['ignore'].value)
 
             self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
@@ -355,7 +354,7 @@ class IgnoreByTitle(ConfigurationRule):
 class IgnoreByBody(ConfigurationRule):
     name = "ignore-by-body"
     id = "I2"
-    options_spec = [StrOption('regex', None, "Regex matching lines of the body of commits this rule should apply to"),
+    options_spec = [RegexOption('regex', None, "Regex matching lines of the body of commits this rule should apply to"),
                     StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
 
     def apply(self, config, commit):
@@ -363,14 +362,12 @@ class IgnoreByBody(ConfigurationRule):
         if not self.options['regex'].value:
             return
 
-        body_line_regex = re.compile(self.options['regex'].value, re.UNICODE)
-
         for line in commit.message.body:
-            if body_line_regex.match(line):
+            if self.options['regex'].value.match(line):
                 config.ignore = self.options['ignore'].value
 
                 message = u"Commit message line '{0}' matches the regex '{1}', ignoring rules: {2}"
-                message = message.format(line, self.options['regex'].value, self.options['ignore'].value)
+                message = message.format(line, self.options['regex'].value.pattern, self.options['ignore'].value)
 
                 self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
                 # No need to check other lines if we found a match
@@ -380,20 +377,18 @@ class IgnoreByBody(ConfigurationRule):
 class IgnoreBodyLines(ConfigurationRule):
     name = "ignore-body-lines"
     id = "I3"
-    options_spec = [StrOption('regex', None, "Regex matching lines of the body that should be ignored")]
+    options_spec = [RegexOption('regex', None, "Regex matching lines of the body that should be ignored")]
 
     def apply(self, _, commit):
         # If no regex is specified, immediately return
         if not self.options['regex'].value:
             return
 
-        body_line_regex = re.compile(self.options['regex'].value, re.UNICODE)
-
         new_body = []
         for line in commit.message.body:
-            if body_line_regex.match(line):
+            if self.options['regex'].value.match(line):
                 debug_msg = u"Ignoring line '%s' because it matches '%s'"
-                self.log.debug(debug_msg, line, self.options['regex'].value)
+                self.log.debug(debug_msg, line, self.options['regex'].value.pattern)
             else:
                 new_body.append(line)
 

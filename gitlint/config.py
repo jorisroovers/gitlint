@@ -371,8 +371,12 @@ class RuleCollection(object):
         for rule in self._rules.values():
             return_str += u"  {0}: {1}\n".format(rule.id, rule.name)
             for option_name, option_value in sorted(rule.options.items()):
-                if isinstance(option_value.value, list):
+                if option_value.value is None:
+                    option_val_repr = None
+                elif isinstance(option_value.value, list):
                     option_val_repr = ",".join(option_value.value)
+                elif isinstance(option_value, options.RegexOption):
+                    option_val_repr = option_value.value.pattern
                 else:
                     option_val_repr = option_value.value
                 return_str += u"     {0}={1}\n".format(option_name, option_val_repr)

@@ -276,13 +276,14 @@ As `options_spec` is a list, you can obviously have multiple options per rule. T
 
 Gitlint supports a variety of different option types, all can be imported from `gitlint.options`:
 
-Option Class    | Use for
-----------------|--------------
-StrOption       | Strings
-IntOption       | Integers. `IntOption` takes an optional `allow_negative` parameter if you want to allow negative integers.
-BoolOption      | Booleans. Valid values: `true`, `false`. Case-insensitive.
-ListOption      | List of strings. Comma separated.
-PathOption      | Directory or file path. Takes an optional `type` parameter for specifying path type (`file`, `dir` (=default) or `both`).
+Option Class      | Use for
+------------------|--------------
+`StrOption `      | Strings
+`IntOption`       | Integers. `IntOption` takes an optional `allow_negative` parameter if you want to allow negative integers.
+`BoolOption`      | Booleans. Valid values: `true`, `false`. Case-insensitive.
+`ListOption`      | List of strings. Comma separated.
+`PathOption`      | Directory or file path. Takes an optional `type` parameter for specifying path type (`file`, `dir` (=default) or `both`).
+`RegexOption`     | String representing a [Python-style regex](https://docs.python.org/library/re.html) - compiled and validated before rules are applied.
 
 !!! note
     Gitlint currently does not support options for all possible types (e.g. float, list of int, etc).
