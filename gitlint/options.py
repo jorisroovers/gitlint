@@ -1,5 +1,6 @@
 from abc import abstractmethod
 import os
+import re
 
 from gitlint.utils import ustr, sstr
 
@@ -138,3 +139,21 @@ class PathOption(RuleOption):
             raise RuleOptionError(error_msg)
 
         self.value = os.path.realpath(value)
+
+
+class RegexOption(RuleOption):
+
+    @allow_none
+    def set(self, value):
+        try:
+            self.value = re.compile(value, re.UNICODE)
+        except (re.error, TypeError) as exc:
+            raise RuleOptionError("Invalid regular expression: '{0}'".format(exc))
+
+    def __deepcopy__(self, _):
+        # copy.deepcopy() - used in rules.py - doesn't support copying regex objects prior to Python 3.7
+        # To work around this, we have to implement this __deepcopy__ magic method
+        # Relevant SO thread:
+        # https://stackoverflow.com/questions/6279305/typeerror-cannot-deepcopy-this-pattern-object
+        value = None if self.value is None else self.value.pattern
+        return RegexOption(self.name, value, self.description)
