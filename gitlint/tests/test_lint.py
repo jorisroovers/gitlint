@@ -185,6 +185,31 @@ class LintTests(BaseTestCase):
             violations = linter.lint(commit)
             self.assertTrue(len(violations) > 0)
 
+    def test_lint_regex_body(self):
+        """ Additional test for title-match-regex, body-match-regex"""
+        commit = self.gitcommit(self.get_sample("commit_message/no-violations"))
+        lintconfig = LintConfig()
+        linter = GitLinter(lintconfig)
+        violations = linter.lint(commit)
+        # No violations by default
+        self.assertListEqual(violations, [])
+
+        # Matching regexes shouldn't be a problem
+        rule_regexes = [("title-match-regex", u"Tïtle$"), ("body-match-regex", u"Sïgned-Off-By: (.*)$")]
+        for rule_regex in rule_regexes:
+            lintconfig.set_rule_option(rule_regex[0], "regex", rule_regex[1])
+            violations = linter.lint(commit)
+            self.assertListEqual(violations, [])
+
+        # Non-matching regexes should return violations
+        rule_regexes = [("title-match-regex", ), ("body-match-regex",)]
+        lintconfig.set_rule_option("title-match-regex", "regex", u"^Tïtle")
+        lintconfig.set_rule_option("body-match-regex", "regex", u"Sügned-Off-By: (.*)$")
+        expected_violations = [RuleViolation("T7", u"Title does not match regex (^Tïtle)", u"Normal Commit Tïtle", 1),
+                               RuleViolation("B8", u"Body does not match regex (Sügned-Off-By: (.*)$)", None, 6)]
+        violations = linter.lint(commit)
+        self.assertListEqual(violations, expected_violations)
+
     def test_print_violations(self):
         violations = [RuleViolation("RULE_ID_1", u"Error Messåge 1", "Violating Content 1", None),
                       RuleViolation("RULE_ID_2", "Error Message 2", u"Violåting Content 2", 2)]

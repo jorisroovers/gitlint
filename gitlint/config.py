@@ -59,6 +59,7 @@ class LintConfig(object):
                             rules.BodyHardTab,
                             rules.BodyFirstLineEmpty,
                             rules.BodyChangedFileMention,
+                            rules.BodyRegexMatches,
                             rules.AuthorValidEmail)
 
     def __init__(self):
