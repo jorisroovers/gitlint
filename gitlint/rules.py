@@ -107,7 +107,7 @@ class RuleViolation(object):
                                                self.content)  # pragma: no cover
 
     def __repr__(self):
-        return self.__str__()  # pragma: no cover
+        return self.__unicode__()  # pragma: no cover
 
 
 class UserRuleError(Exception):
@@ -314,6 +314,34 @@ class BodyChangedFileMention(CommitRule):
                     violation_message = u"Body does not mention changed file '{0}'".format(needs_mentioned_file)
                     violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))
         return violations if violations else None
+
+
+class BodyRegexMatches(CommitRule):
+    name = "body-match-regex"
+    id = "B8"
+    options_spec = [RegexOption('regex', None, "Regex the body should match")]
+
+    def validate(self, commit):
+        # If no regex is specified, immediately return
+        if not self.options['regex'].value:
+            return
+
+        # We intentionally ignore the first line in the body as that's the empty line after the title,
+        # which most users are not going to expect to be part of the body when matching a regex.
+        # If this causes contention, we can always introduce an option to change the behavior in a backward-
+        # compatible way.
+        body_lines = commit.message.body[1:] if len(commit.message.body) > 1 else []
+
+        # Similarly, the last line is often empty, this has to do with how git returns commit messages
+        # User's won't expect this, so prune it off by default
+        if body_lines and body_lines[-1] == "":
+            body_lines.pop()
+
+        full_body = "\n".join(body_lines)
+
+        if not self.options['regex'].value.search(full_body):
+            violation_msg = u"Body does not match regex ({0})".format(self.options['regex'].value.pattern)
+            return [RuleViolation(self.id, violation_msg, None, len(commit.message.body) + 1)]
 
 
 class AuthorValidEmail(CommitRule):

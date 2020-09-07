@@ -50,8 +50,7 @@
 # words=wip
 
 # [title-match-regex]
-# python like regex (https://docs.python.org/2/library/re.html) that the
-# commit-msg title must be matched to.
+# python-style regex that the commit-msg title must match
 # Note that the regex can contradict with other rules if not used correctly
 # (e.g. title-must-not-contain-word).
 # regex=^US[0-9]*
@@ -74,9 +73,13 @@
 # it in the commit message.
 # files=gitlint/rules.py,README.md
 
+# [body-match-regex]
+# python-style regex that the commit-msg body must match.
+# E.g. body must end in My-Commit-Tag: foo
+# regex=My-Commit-Tag: foo$
+
 # [author-valid-email]
-# python like regex (https://docs.python.org/2/library/re.html) that the
-# commit author email address should be matched to
+# python-style regex that the commit author email address must match.
 # For example, use the following regex if you only want to allow email addresses from foo.com
 # regex=[^@]+@foo.com
 
@@ -97,6 +100,11 @@
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
 # ignore=T1,body-min-length
+
+# [ignore-body-lines]
+# Ignore certain lines in a commit body that match a regex.
+# E.g. Ignore all lines that start with 'Co-Authored-By'
+# regex=^Co-Authored-By
 
 # This is a contrib rule - a community contributed rule. These are disabled by default.
 # You need to explicitly enable them one-by-one by adding them to the "contrib" option

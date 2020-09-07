@@ -4,11 +4,12 @@
 - [User-defined Configuration Rules](TODO) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
 - Users can now use `self.log.debug("my message")` for debugging purposes in their user-defined rules
 - Breaking: User-defined rule id's can no longer start with 'I', as those are reserved for built-in gitlint ignore rules.
-- **New Rule**: `ignore-body-lines` allows users to
+- **New Rule**: [ignore-body-lines](TODO) allows users to
 [ignore parts of a commit](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
 the lines in a commit message body. ([#126](https://github.com/jorisroovers/gitlint/issues/126)).
+- **New Rule**: [body-match-regex](TODO) allows users to enforce that the commit-msg body matches a given regex.
 - Bugfixes:
-  -  Options can now actually be set to None (from code) to make them optional.
+  -  Options can now actually be set to `None` (from code) to make them optional.
   -  Ignore rules no longer have "None" as default regex, but an empty regex - effectively disabling them by default (as intended).
 
 -  New `RegexOption` rule option type for use in user-defined rules. By using the `RegexOption`, regular expressions are pre-validated at gitlint startup and compiled only once which is much more efficient compared when linting multiple commits.

@@ -161,6 +161,31 @@ Name                  | gitlint version | Default      | Description
 files                 | >= 0.4          | (empty)      |  Comma-separated list of files that need to an explicit mention in the commit message in case they are changed.
 
 
+## B8: body-match-regex   ##
+
+ID    | Name                        | gitlint version | Description
+------|-----------------------------|-----------------|-------------------------------------------
+B8    | body-match-regex            | >= 0.14         | Body must match a given regex
+
+### Options ###
+
+Name                  | gitlint version | Default      | Description
+----------------------|-----------------|--------------|----------------------------------
+regex                 | >= 0.14         | None         |  [Python regex](https://docs.python.org/library/re.html) that the title should match.
+
+### Examples
+
+#### .gitlint
+
+```ini
+# Ensure the body ends with Reviewed-By: <some value>
+[body-match-regex]
+regex=Reviewed-By:(.*)$
+
+# Ensure body contains the word "Foo" somewhere
+[body-match-regex]
+regex=(*.)Foo(.*)
+```
 
 ## M1: author-valid-email   ##
 
