@@ -9,7 +9,7 @@ your interest!
 We maintain a [loose roadmap on our wiki](https://github.com/jorisroovers/gitlint/wiki/Roadmap), but
 that's open to a lot of change and input.
 
-# Guidelines
+## Guidelines
 
 When contributing code, please consider all the parts that are typically required:
 
@@ -25,24 +25,31 @@ Since we want to maintain a high standard of quality, all of these things will h
 can make it as part of a release. If you can already include them as part of your PR, it's a huge timesaver for us
 and it's likely that your PR will be merged and released a lot sooner. Thanks!
 
-# Development #
+!!! Important
+    **On the topic of releases**: Gitlint releases typically go out when there's either enough new features and fixes
+    to make it worthwhile or when there's a critical fix for a bug that fundamentally breaks gitlint. While the amount
+    of overhead of doing a release isn't huge, it's also not zero. In practice this means that it might take weeks
+    or months before merged code actually gets released - we know that can be frustrating but please understand it's
+    a well-considered trade-off based on available time.
+
+## Development
 
 There is a Vagrantfile in this repository that can be used for development.
-```bash
+```sh
 vagrant up
 vagrant ssh
 ```
 
 Or you can choose to use your local environment:
 
-```bash
+```sh
 virtualenv .venv
 pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
 python setup.py develop
 ```
 
 To run tests:
-```bash
+```sh
 ./run_tests.sh                       # run unit tests and print test coverage
 ./run_test.sh gitlint/tests/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
@@ -54,16 +61,14 @@ To run tests:
 ./run_tests.sh --git                 # inception: run gitlint against itself
 ./run_tests.sh --lint                # run pylint checks
 ./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
-
-
 ```
 
-The ```Vagrantfile``` comes with ```virtualenv```s for python 2.7, 3.5, 3.6, 3.7 and pypy2.
+The `Vagrantfile` comes with `virtualenv`s for python 2.7, 3.5, 3.6, 3.7 and pypy2.
 You can easily run tests against specific python environments by using the following commands *inside* of the Vagrant VM:
-```
+```sh
 ./run_tests.sh --envs 27               # Run the unit tests against Python 2.7
 ./run_tests.sh --envs 27,35,pypy2      # Run the unit tests against Python 2.7, Python 3.5 and Pypy2
-./run_tests.sh --envs 27,35 --pep8     # Run pep8 checks against Python 2.7 and Python 3.5 (also works for ```--git```, ```--integration```, ```--pep8```, ```--stats``` and ```--lint```).
+./run_tests.sh --envs 27,35 --pep8     # Run pep8 checks against Python 2.7 and Python 3.5 (also works for --git, --integration, --pep8, --stats and --lint.
 ./run_tests.sh --envs all --all        # Run all tests against all environments
 ./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
 ```
@@ -71,29 +76,29 @@ You can easily run tests against specific python environments by using the follo
 !!! important
     Gitlint commits and pull requests are gated on all of our tests and checks.
 
-# Packaging #
+## Packaging
 
 To see the package description in HTML format
-```
+```sh
 pip install docutils
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 python setup.py --long-description | rst2html.py > output.html
 ```
 
-# Documentation #
+## Documentation
 We use [mkdocs](https://www.mkdocs.org/) for generating our documentation from markdown.
 
 To use it, do the following outside of the vagrant box (on your host machine):
-```bash
+```sh
 pip install -r doc-requirements.txt # install doc requirements
 mkdocs serve
 ```
 
 Then access the documentation website on your host machine on [http://localhost:8000]().
 
-# Tools #
-We keep a small set of scripts in the ```tools/``` directory:
+## Tools
+We keep a small set of scripts in the `tools/` directory:
 
 ```sh
 tools/create-test-repo.sh            # Create a test git repo in your /tmp directory
@@ -101,7 +106,7 @@ tools/windows/create-test-repo.bat   # Windows: create git test repo
 tools/windows/run_tests.bat          # Windows run unit tests
 ```
 
-# Contrib rules
+## Contrib rules
 Since gitlint 0.12.0, we support [Contrib rules](../contrib_rules): community contributed rules that are part of gitlint
 itself. Thanks for considering to add a new one to gitlint!
 
@@ -116,7 +121,7 @@ Then, we suggest taking the following approach to add a Contrib rule:
 5. **Create a Pull Request**: code review typically requires a bit of back and forth. Thanks for your contribution!
 
 
-## Contrib rule requirements
+### Contrib rule requirements
 If you follow the steps above and follow the existing gitlint conventions wrt naming things, you should already be fairly close to done.
 
 In case you're looking for a slightly more formal spec, here's what gitlint requires of Contrib rules.

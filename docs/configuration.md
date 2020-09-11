@@ -1,21 +1,21 @@
 # Configuration
 Gitlint can be configured through different means.
 
-# Config files #
-You can modify gitlint's behavior by adding a ```.gitlint``` file to your git repository.
+## The .gitlint file
+You can modify gitlint's behavior by adding a `.gitlint` file to your git repository.
 
-Generate a default ```.gitlint``` config file by running:
-```bash
+Generate a default `.gitlint` config file by running:
+```sh
 gitlint generate-config
 ```
 You can also use a different config file like so:
 
-```bash
+```sh
 gitlint --config myconfigfile.ini 
 ```
 
-The block below shows a sample ```.gitlint``` file. Details about rule config options can be found on the
-[Rules](rules.md) page, details about the ```[general]``` section can be found in the
+The block below shows a sample `.gitlint` file. Details about rule config options can be found on the
+[Rules](rules.md) page, details about the `[general]` section can be found in the
 [General Configuration](configuration.md#general-configuration) section of this page.
 
 ```ini
@@ -99,6 +99,11 @@ ignore-merge-commits=false
 # it in the commit message.
 files=gitlint/rules.py,README.md
 
+[body-match-regex]
+# python-style regex that the commit-msg body must match.
+# E.g. body must end in My-Commit-Tag: foo
+regex=My-Commit-Tag: foo$
+
 [author-valid-email]
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit author email address should be matched to
@@ -123,6 +128,11 @@ ignore=T1,body-min-length
 # Use 'all' to ignore all rules
 ignore=T1,body-min-length
 
+[ignore-body-lines]
+# Ignore certain lines in a commit body that match a regex.
+# E.g. Ignore all lines that start with 'Co-Authored-By'
+regex=^Co-Authored-By
+
 # This is a contrib rule - a community contributed rule. These are disabled by default.
 # You need to explicitly enable them one-by-one by adding them to the "contrib" option
 # under [general] section above.
@@ -131,20 +141,20 @@ ignore=T1,body-min-length
 types = bugfix,user-story,epic
 ```
 
-# Commandline config #
+## Commandline config
 
-You can also use one or more ```-c``` flags like so:
+You can also use one or more `-c` flags like so:
 
 ```
 $ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
 ```
-The generic config flag format is ```-c <rule>.<option>=<value>``` and supports all the same rules and options which
-you can also use in a ```.gitlint``` config file.
+The generic config flag format is `-c <rule>.<option>=<value>` and supports all the same rules and options which
+you can also use in a `.gitlint` config file.
 
-# Commit specific config #
+## Commit specific config
 
 You can also configure gitlint by adding specific lines to your commit message.
-For now, we only support ignoring commits by adding ```gitlint-ignore: all``` to the commit
+For now, we only support ignoring commits by adding `gitlint-ignore: all` to the commit
 message like so:
 
 ```
@@ -154,7 +164,7 @@ I want gitlint to ignore this entire commit message.
 gitlint-ignore: all
 ```
 
-```gitlint-ignore: all``` can occur on any line, as long as it is at the start of the line.
+`gitlint-ignore: all` can occur on any line, as long as it is at the start of the line.
 
 You can also specify specific rules to be ignored as follows: 
 ```
@@ -166,35 +176,35 @@ gitlint-ignore: T1, body-hard-tab
 
 
 
-# Configuration precedence #
+## Configuration precedence
 gitlint configuration is applied in the following order of precedence:
 
-1. Commit specific config (e.g.: ```gitlint-ignore: all``` in the commit message)
+1. Commit specific config (e.g.: `gitlint-ignore: all` in the commit message)
 2. Configuration Rules (e.g.: [ignore-by-title](/rules/#i1-ignore-by-title))
-3. Commandline convenience flags (e.g.:  ```-vv```, ```--silent```, ```--ignore```)
-4. Commandline configuration flags (e.g.: ```-c title-max-length=123```)
-5. Configuration file (local ```.gitlint``` file, or file specified using ```-C```/```--config```)
+3. Commandline convenience flags (e.g.:  `-vv`, `--silent`, `--ignore`)
+4. Commandline configuration flags (e.g.: `-c title-max-length=123`)
+5. Configuration file (local `.gitlint` file, or file specified using `-C`/`--config`)
 6. Default gitlint config
 
-# General Options
+## General Options
 Below we outline all configuration options that modify gitlint's overall behavior. These options can be specified
-using commandline flags or in ```[general]``` section in a ```.gitlint``` configuration file.
+using commandline flags or in `[general]` section in a `.gitlint` configuration file.
 
-## silent
+### silent
 
 Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
 
 Default value  |  gitlint version | commandline flag  
 ---------------|------------------|-------------------
- false         | >= 0.1.0         | ```--silent```
+ false         | >= 0.1.0         | `--silent`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --silent
 ```
 
-## verbosity
+### verbosity
 
 Amount of output gitlint will show when printing errors.
 
@@ -203,7 +213,7 @@ Default value  |  gitlint version | commandline flag
  3             | >= 0.1.0         | `-v`
 
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint -vvv                   # default     (level 3)
@@ -219,7 +229,7 @@ gitlint -c general.verbosity=0 # Same as --silent
 verbosity=2
 ```
 
-## ignore-merge-commits
+### ignore-merge-commits
 
 Whether or not to ignore merge commits.
 
@@ -227,7 +237,7 @@ Default value  |  gitlint version | commandline flag
 ---------------|------------------|-------------------
  true          | >= 0.7.0         | Not Available
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint -c general.ignore-merge-commits=false
@@ -238,7 +248,7 @@ gitlint -c general.ignore-merge-commits=false
 ignore-merge-commits=false
 ```
 
-## ignore-revert-commits
+### ignore-revert-commits
 
 Whether or not to ignore revert commits.
 
@@ -246,7 +256,7 @@ Default value  |  gitlint version | commandline flag
 ---------------|------------------|-------------------
  true          | >= 0.13.0        | Not Available
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint -c general.ignore-revert-commits=false
@@ -257,7 +267,7 @@ gitlint -c general.ignore-revert-commits=false
 ignore-revert-commits=false
 ```
 
-## ignore-fixup-commits
+### ignore-fixup-commits
 
 Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
 
@@ -265,7 +275,7 @@ Default value  |  gitlint version | commandline flag
 ---------------|------------------|-------------------
  true          | >= 0.9.0         | Not Available
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint -c general.ignore-fixup-commits=false
@@ -276,7 +286,7 @@ gitlint -c general.ignore-fixup-commits=false
 ignore-fixup-commits=false
 ```
 
-## ignore-squash-commits
+### ignore-squash-commits
 
 Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
 
@@ -284,7 +294,7 @@ Default value  |  gitlint version | commandline flag
 ---------------|------------------|-------------------
  true          | >= 0.9.0         | Not Available
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint -c general.ignore-squash-commits=false
@@ -295,7 +305,7 @@ gitlint -c general.ignore-squash-commits=false
 ignore-squash-commits=false
 ```
 
-## ignore
+### ignore
 
 Comma separated list of rules to ignore (by name or id).
 
@@ -303,7 +313,7 @@ Default value              |  gitlint version | commandline flag
 ---------------------------|------------------|-------------------
  [] (=empty list)          | >= 0.1.0         | `--ignore`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --ignore=body-min-length              # ignore single rule
@@ -316,7 +326,7 @@ gitlint -c general.ignore=T1,body-min-length  # different way of doing the same
 ignore=T1,body-min-length
 ```
 
-## debug
+### debug
 
 Enable debugging output.
 
@@ -324,7 +334,7 @@ Default value  |  gitlint version | commandline flag
 ---------------|------------------|-------------------
  false         | >= 0.7.1         | `--debug`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --debug
@@ -332,7 +342,7 @@ gitlint --debug
 # gitlint -c general.debug=true
 ```
 
-## target
+### target
 
 Target git repository gitlint should be linting against.
 
@@ -340,7 +350,7 @@ Default value              |  gitlint version | commandline flag
 ---------------------------|------------------|-------------------
  (empty)                   | >= 0.8.0         | `--target`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --target=/home/joe/myrepo/
@@ -352,7 +362,7 @@ gitlint -c general.target=/home/joe/myrepo/  # different way of doing the same
 target=/home/joe/myrepo/
 ```
 
-## extra-path
+### extra-path
 
 Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 
@@ -360,7 +370,7 @@ Default value              |  gitlint version | commandline flag
 ---------------------------|------------------|-------------------
  (empty)                   | >= 0.8.0         | `--extra-path`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --extra-path=/home/joe/rules/
@@ -372,7 +382,7 @@ gitlint -c general.extra-path=/home/joe/rules/  # different way of doing the sam
 extra-path=/home/joe/rules/
 ```
 
-## contrib
+### contrib
 
 [Contrib rules](contrib_rules) to enable.
 
@@ -380,7 +390,7 @@ Default value              |  gitlint version | commandline flag
 ---------------------------|------------------|-------------------
  (empty)                   | >= 0.12.0        | `--contrib`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --contrib=contrib-title-conventional-commits,CC1
@@ -391,7 +401,7 @@ gitlint -c general.contrib=contrib-title-conventional-commits,CC1  # different w
 [general]
 contrib=contrib-title-conventional-commits,CC1
 ```
-## ignore-stdin
+### ignore-stdin
 
 Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
 
@@ -399,7 +409,7 @@ Default value  |  gitlint version | commandline flag
 ---------------|------------------|-------------------
  false         | >= 0.12.0        | `--ignore-stdin`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --ignore-stdin
@@ -411,15 +421,15 @@ gitlint -c general.ignore-stdin=true # different way of doing the same
 ignore-stdin=true
 ```
 
-## staged
+### staged
 
-Fetch additional meta-data from the local `repository when manually passing a commit message to gitlint via stdin or ```--commit-msg```.
+Fetch additional meta-data from the local `repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
 
 Default value  |  gitlint version | commandline flag  
 ---------------|------------------|-------------------
  false         | >= 0.13.0        | `--staged`
 
-### Examples
+#### Examples
 ```sh
 # CLI
 gitlint --staged

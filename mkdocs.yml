@@ -12,6 +12,11 @@ nav:
     - Changelog: https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md
 
 markdown_extensions: [admonition]
-theme: readthedocs
+theme: 
+    name: readthedocs
+    navigation_depth: 2
 strict: true
-extra_css: [extra.css]
+extra_css: 
+    - extra.css
+extra_javascript:
+    - extra.js

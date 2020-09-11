@@ -7,7 +7,7 @@ In a nutshell, use `--extra-path /home/joe/myextensions` to point gitlint to a `
 for python files containing gitlint rule classes. You can also specify a single python module, ie
 `--extra-path /home/joe/my_rules.py`.
 
-```bash
+```sh
 cat examples/commit-message-1 | gitlint --extra-path examples/
 # Example output of a user-defined Signed-Off-By rule
 1: UC2 Body does not contain a 'Signed-Off-By Line' 
@@ -51,7 +51,7 @@ As always, `--extra-path` can also be set by adding it under the `[general]` sec
 
 If you want to check whether your rules are properly discovered by gitlint, you can use the `--debug` flag:
 
-```bash
+```sh
 $ gitlint --debug --extra-path examples/
 # [output cut for brevity]
   UC1: body-max-line-count
@@ -66,7 +66,7 @@ $ gitlint --debug --extra-path examples/
     [examples](https://github.com/jorisroovers/gitlint/tree/master/examples) directory and modify it to your needs.
     The remainder of this page contains the technical details, mostly for reference.
 
-# Line and Commit Rules ##
+## Line and Commit Rules
 The `SignedOffBy` class above was an example of a user-defined `CommitRule`. Commit rules are gitlint rules that
 act on the entire commit at once. Once the rules are discovered, gitlint will automatically take care of applying them
 to the entire commit. This happens exactly once per commit.
@@ -82,7 +82,7 @@ that should only be done once per commit.
 While every `LineRule` can be implemented as a `CommitRule`, it's usually easier and more concise to go with a `LineRule` if
 that fits your needs.
 
-## Examples ##
+### Examples
 
 In terms of code, writing your own `CommitRule` or `LineRule` is very similar.
 The only 2 differences between a `CommitRule` and a `LineRule` are the parameters of the `validate(...)` method and the extra
@@ -168,7 +168,7 @@ Options are not unique to `LineRule`s, they can also be used by `CommitRule`s an
 [Options](user_defined_rules.md#options) section below.
 
 
-# The commit object ##
+## The commit object
 Both `CommitRule`s and `LineRule`s take a `commit` object in their `validate(...)` methods.
 The table below outlines the various attributes of that commit object that can be used during validation.
 
@@ -195,7 +195,7 @@ commit.context.current_branch  | string         | Name of the currently active b
 commit.context.repository_path | string         | Absolute path pointing to the git repository being linted
 commit.context.commits         | object[]       | List of commits gitlint is acting on, NOT all commits in the repo.
 
-# Violations ##
+## Violations
 In order to let gitlint know that there is a violation in the commit being linted, users should have the `validate(...)`
 method in their rules return a list of `RuleViolation`s.
 
@@ -231,7 +231,7 @@ The parameters of this `RuleViolation` can be directly mapped onto gitlint's out
 
 ![How Rule violations map to gitlint output](images/RuleViolation.png)
 
-# Options ##
+## Options
 
 In order to make your own rules configurable, you can add an optional `options_spec` attribute to your rule class
 (supported for both `LineRule` and `CommitRule`).
@@ -290,7 +290,7 @@ Option Class      | Use for
     [We could use a hand getting those implemented](contributing.md)!
 
 
-# Configuration Rules
+## Configuration Rules
 
 Configuration rules are special rules that are applied once per commit and *BEFORE* any other rules are run.
 Configuration rules are meant to dynamically change gitlint's configuration and/or the commit that is about to be
@@ -371,7 +371,7 @@ For all available properties and methods on the `config` object, have a look at 
 properties or methods starting with an underscore, as those are subject to change.
 
 
-# Rule requirements ##
+## Rule requirements
 
 As long as you stick with simple rules that are similar to the sample user-defined rules (see the
 [examples](https://github.com/jorisroovers/gitlint/blob/master/examples/my_commit_rules.py) directory), gitlint
@@ -381,7 +381,7 @@ you might run into some issues if you don't follow the conventions that gitlint 
 While the [rule finding source-code](https://github.com/jorisroovers/gitlint/blob/master/gitlint/rule_finder.py) is the
 ultimate source of truth, here are some of the requirements that gitlint enforces.
 
-## Rule class requirements ###
+### Rule class requirements
 
 - Rules **must** extend from  `LineRule`, `CommitRule` or `ConfigurationRule`
 - Rule classes **must** have `id` and `name` string attributes. The `options_spec` is optional,
@@ -395,7 +395,7 @@ ultimate source of truth, here are some of the requirements that gitlint enforce
 - Rules **should** have a case-insensitive unique id as only one rule can exist with a given id. While gitlint does not
   enforce this, having multiple rules with the same id might lead to unexpected or undeterministic behavior.
 
-## extra-path requirements ###
+### extra-path requirements
 - If  `extra-path` is a directory, it does **not** need to be a proper python package, i.e. it doesn't require an `__init__.py` file.
 - Python files containing user-defined rules must have a `.py` extension. Files with a different extension will be ignored.
 - The `extra-path` will be searched non-recursively, i.e. all rule classes must be present at the top level `extra-path` directory.

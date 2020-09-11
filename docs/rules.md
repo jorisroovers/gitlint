@@ -1,4 +1,4 @@
-# Overview #
+# Overview
 
 The table below shows an overview of all gitlint's built-in rules.
 Note that you can also [write your own user-defined rule](user_defined_rules.md) in case you don't find
@@ -13,7 +13,7 @@ T3    | title-trailing-punctuation  | >= 0.1.0          | Title cannot have trai
 T4    | title-hard-tab              | >= 0.1.0          | Title cannot contain hard tab characters (\t)
 T5    | title-must-not-contain-word | >= 0.1.0          | Title cannot contain certain words (default: "WIP")
 T6    | title-leading-whitespace    | >= 0.4.0          | Title cannot have leading whitespace (space or tab)
-T7    | title-match-regex           | >= 0.5.0          | Title must match a given regex (default: .*)
+T7    | title-match-regex           | >= 0.5.0          | Title must match a given regex (default: None)
 B1    | body-max-line-length        | >= 0.1.0          | Lines in the body must be &lt; 80 chars
 B2    | body-trailing-whitespace    | >= 0.1.0          | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | >= 0.1.0          | Body cannot contain hard tab characters (\t)
@@ -21,109 +21,159 @@ B4    | body-first-line-empty       | >= 0.1.0          | First line of the body
 B5    | body-min-length             | >= 0.4.0          | Body length must be at least 20 characters
 B6    | body-is-missing             | >= 0.4.0          | Body message must be specified
 B7    | body-changed-file-mention   | >= 0.4.0          | Body must contain references to certain files if those files are changed in the last commit
+B8    | body-match-regex            | >= 0.14.0         | Title must match a given regex (default: None)
 M1    | author-valid-email          | >= 0.9.0          | Author email address must be a valid email address
 I1    | ignore-by-title             | >= 0.10.0         | Ignore a commit based on matching its title
 I2    | ignore-by-body              | >= 0.10.0         | Ignore a commit based on matching its body
 I3    | ignore-body-lines           | >= 0.14.0         | Ignore certain lines in a commit body that match a regex
 
 
-## T1: title-max-length ##
+## T1: title-max-length
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T1    | title-max-length            | >= 0.1          | Title length must be &lt; 72 chars.
 
-### Options ###
+### Options
 
 Name           | gitlint version | Default | Description
 ---------------|-----------------|---------|----------------------------------
 line-length    | >= 0.2          | 72      |  Maximum allowed title length
 
-## T2: title-trailing-whitespace ##
+### Examples
+
+#### .gitlint
+
+```ini
+# Titles should be max 72 chars
+[title-max-length]
+line-length=72
+
+# It's the 21st century, titles can be 120 chars long
+[title-max-length]
+line-length=120
+```
+
+## T2: title-trailing-whitespace
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T2    | title-trailing-whitespace   | >= 0.1          | Title cannot have trailing whitespace (space or tab)
 
 
-## T3: title-trailing-punctuation ##
+## T3: title-trailing-punctuation
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T3    | title-trailing-punctuation  | >= 0.1          | Title cannot have trailing punctuation (?:!.,;)
 
 
-## T4: title-hard-tab    ##
+## T4: title-hard-tab
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T4    | title-hard-tab              | >= 0.1          | Title cannot contain hard tab characters (\t)
 
 
-## T5: title-must-not-contain-word   ##
+## T5: title-must-not-contain-word
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T5    | title-must-not-contain-word | >= 0.1          | Title cannot contain certain words (default: "WIP")
 
-### Options ###
+### Options
 
 Name           | gitlint version | Default | Description
 ---------------|-----------------|---------|----------------------------------
 words          | >= 0.3          | WIP     | Comma-separated list of words that should not be used in the title. Matching is case insensitive
 
-## T6: title-leading-whitespace   ##
+### Examples
+
+#### .gitlint
+
+```ini
+# Ensure the title doesn't contain swear words
+[title-must-not-contain-word]
+words=crap,darn,damn
+```
+
+## T6: title-leading-whitespace
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T6    | title-leading-whitespace    | >= 0.4          | Title cannot have leading whitespace (space or tab)
 
-## T7: title-match-regex   ##
+## T7: title-match-regex
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 T7    | title-match-regex           | >= 0.5          | Title must match a given regex (default: .*)
 
 
-### Options ###
+### Options
 
 Name           | gitlint version | Default | Description
 ---------------|-----------------|---------|----------------------------------
 regex          | >= 0.5          | .*      | [Python regex](https://docs.python.org/library/re.html) that the title should match.
 
-## B1: body-max-line-length   ##
+### Examples
+
+#### .gitlint
+
+```ini
+# Ensure every title starts with a user-story like US123
+[title-match-regex]
+regex=^US[1-9][0-9]*
+```
+
+
+## B1: body-max-line-length
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 B1    | body-max-line-length        | >= 0.1          | Lines in the body must be &lt; 80 chars
 
-### Options ###
+### Options
 
 Name           | gitlint version | Default | Description
 ---------------|-----------------|---------|----------------------------------
 line-length    | >= 0.2          | 80      |  Maximum allowed line length in the commit message body
 
-## B2: body-trailing-whitespace   ##
+### Examples
+
+#### .gitlint
+
+```ini
+# It's the 21st century, lines can be 120 chars long
+[body-max-line-length]
+line-length=120
+
+# Your tool prefers 72
+[body-max-line-length]
+line-length=72
+```
+
+## B2: body-trailing-whitespace
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 B2    | body-trailing-whitespace    | >= 0.1          | Body cannot have trailing whitespace (space or tab)
 
 
-## B3: body-hard-tab   ##
+## B3: body-hard-tab
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 B3    | body-hard-tab               | >= 0.1          | Body cannot contain hard tab characters (\t)
 
 
-## B4: body-first-line-empty    ##
+## B4: body-first-line-empty
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 B4    | body-first-line-empty       | >= 0.1          | First line of the body (second line of commit message) must be empty
 
-## B5: body-min-length    ##
+## B5: body-min-length
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
@@ -135,39 +185,63 @@ Name           | gitlint version | Default | Description
 ---------------|-----------------|---------|----------------------------------
 min-length     | >= 0.4          | 20      |  Minimum number of required characters in body
 
-## B6: body-is-missing   ##
+### Examples
+
+#### .gitlint
+
+```ini
+# You want *something* in every commit body, but doesn't have to be as long as 20 chars.
+[body-min-length]
+min-length=5
+
+# You want a more elaborate message in every commit body
+[body-min-length]
+min-length=100
+```
+
+## B6: body-is-missing
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 B6    | body-is-missing             | >= 0.4          | Body message must be specified
 
 
-### Options ###
+### Options
 
 Name                  | gitlint version | Default   | Description
 ----------------------|-----------------|-----------|----------------------------------
 ignore-merge-commits  | >= 0.4          | true      |  Whether this rule should be ignored during merge commits. Allowed values: true,false.
 
-## B7: body-changed-file-mention   ##
+## B7: body-changed-file-mention
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 B7    | body-changed-file-mention   | >= 0.4          | Body must contain references to certain files if those files are changed in the last commit
 
-### Options ###
+### Options
 
 Name                  | gitlint version | Default      | Description
 ----------------------|-----------------|--------------|----------------------------------
 files                 | >= 0.4          | (empty)      |  Comma-separated list of files that need to an explicit mention in the commit message in case they are changed.
 
+### Examples
 
-## B8: body-match-regex   ##
+#### .gitlint
+
+```ini
+# Prevent that certain sensitive files are committed by mistake by forcing users to mention them explicitly if they're
+# deliberately changing them
+[body-changed-file-mention]
+files=generated.xml,secrets.txt,private-key.pem
+```
+
+## B8: body-match-regex
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 B8    | body-match-regex            | >= 0.14         | Body must match a given regex
 
-### Options ###
+### Options
 
 Name                  | gitlint version | Default      | Description
 ----------------------|-----------------|--------------|----------------------------------
@@ -187,7 +261,7 @@ regex=Reviewed-By:(.*)$
 regex=(*.)Foo(.*)
 ```
 
-## M1: author-valid-email   ##
+## M1: author-valid-email
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
@@ -199,25 +273,31 @@ M1    |  author-valid-email         | >= 0.8.3        | Author email address mus
 
 
 
-### Options ###
+### Options
 
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
-regex                 | >= 0.9.0          | ```[^@ ]+@[^@ ]+\.[^@ ]+```  |  [Python regex](https://docs.python.org/library/re.html) the commit author email address is matched against
+regex                 | >= 0.9.0          | `[^@ ]+@[^@ ]+\.[^@ ]+`  |  [Python regex](https://docs.python.org/library/re.html) the commit author email address is matched against
 
 
-!!! note
-    An often recurring use-case is to only allow email addresses from a certain domain. The following regular expression achieves this: ```[^@]+@foo.com```
+### Examples
 
+#### .gitlint
 
-## I1: ignore-by-title ##
+```ini
+# Only allow email addresses from a foo.com domain
+[author-valid-email]
+regex=[^@]+@foo.com
+```
+
+## I1: ignore-by-title
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 I1    |  ignore-by-title            | >= 0.10.0       | Ignore a commit based on matching its title.
 
 
-### Options ###
+### Options
 
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
@@ -238,14 +318,14 @@ ignore=title-max-length,body-min-length
 # ignore=all
 ```
 
-## I2: ignore-by-body ##
+## I2: ignore-by-body
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
 I2    |  ignore-by-body             | >= 0.10.0       | Ignore a commit based on matching its body.
 
 
-### Options ###
+### Options
 
 Name                  | gitlint version   | Default                      | Description
 ----------------------|-------------------|------------------------------|----------------------------------
