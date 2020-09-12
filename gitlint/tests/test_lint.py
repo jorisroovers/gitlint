@@ -16,7 +16,7 @@ except ImportError:
 
 from gitlint.tests.base import BaseTestCase
 from gitlint.lint import GitLinter
-from gitlint.rules import RuleViolation
+from gitlint.rules import RuleViolation, TitleMustNotContainWord
 from gitlint.config import LintConfig, LintConfigBuilder
 
 
@@ -185,8 +185,8 @@ class LintTests(BaseTestCase):
             violations = linter.lint(commit)
             self.assertTrue(len(violations) > 0)
 
-    def test_lint_regex_body(self):
-        """ Additional test for title-match-regex, body-match-regex"""
+    def test_lint_regex_rules(self):
+        """ Additional test for title-match-regex, body-match-regex """
         commit = self.gitcommit(self.get_sample("commit_message/no-violations"))
         lintconfig = LintConfig()
         linter = GitLinter(lintconfig)
@@ -239,3 +239,49 @@ class LintTests(BaseTestCase):
             expected = u"-: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n" + \
                        u"2: RULE_ID_2 Error Message 2: \"Violåting Content 2\"\n"
             self.assertEqual(expected, stderr.getvalue())
+
+    def test_named_rules(self):
+        """ Test that when named rules are present, both them and the original (non-named) rules executed """
+
+        lint_config = LintConfig()
+        for rule_name in [u"my-ïd", u"another-rule-ïd"]:
+            rule_id = TitleMustNotContainWord.id + ":" + rule_name
+            lint_config.rules.add_rule(TitleMustNotContainWord, rule_id)
+            lint_config.set_rule_option(rule_id, "words", [u"Föo"])
+            linter = GitLinter(lint_config)
+
+        violations = [RuleViolation("T5", u"Title contains the word 'WIP' (case-insensitive)", u"WIP: Föo bar", 1),
+                      RuleViolation(u"T5:another-rule-ïd", u"Title contains the word 'Föo' (case-insensitive)",
+                                    u"WIP: Föo bar", 1),
+                      RuleViolation(u"T5:my-ïd", u"Title contains the word 'Föo' (case-insensitive)",
+                                    u"WIP: Föo bar", 1)]
+        self.assertListEqual(violations, linter.lint(self.gitcommit(u"WIP: Föo bar\n\nFoo bår hur dur bla bla")))
+
+    def test_ignore_named_rules(self):
+        """ Test that named rules can be ignored """
+
+        # Add named rule to lint config
+        config_builder = LintConfigBuilder()
+        rule_id = TitleMustNotContainWord.id + u":my-ïd"
+        config_builder.set_option(rule_id, "words", [u"Föo"])
+        lint_config = config_builder.build()
+        linter = GitLinter(lint_config)
+        commit = self.gitcommit(u"WIP: Föo bar\n\nFoo bår hur dur bla bla")
+
+        # By default, we expect both the violations of the regular rule as well as the named rule to show up
+        violations = [RuleViolation("T5", u"Title contains the word 'WIP' (case-insensitive)", u"WIP: Föo bar", 1),
+                      RuleViolation(u"T5:my-ïd", u"Title contains the word 'Föo' (case-insensitive)",
+                                    u"WIP: Föo bar", 1)]
+        self.assertListEqual(violations, linter.lint(commit))
+
+        # ignore regular rule: only named rule violations show up
+        lint_config.ignore = ["T5"]
+        self.assertListEqual(violations[1:], linter.lint(commit))
+
+        # ignore named rule by id: only regular rule violations show up
+        lint_config.ignore = [rule_id]
+        self.assertListEqual(violations[:-1], linter.lint(commit))
+
+        # ignore named rule by name: only regular rule violations show up
+        lint_config.ignore = [TitleMustNotContainWord.name + u":my-ïd"]
+        self.assertListEqual(violations[:-1], linter.lint(commit))

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+import copy
 
 from gitlint.tests.base import BaseTestCase
 
 from gitlint.config import LintConfig, LintConfigBuilder, LintConfigError
+
+from gitlint import rules
 
 
 class LintConfigBuilderTests(BaseTestCase):
@@ -202,3 +205,60 @@ class LintConfigBuilderTests(BaseTestCase):
         # Modify the original and make sure we're not modifying the clone (i.e. check that the copy is a deep copy)
         config_builder.set_option('title-max-length', 'line-length', 120)
         self.assertDictEqual(cloned_builder._config_blueprint, expected)
+
+    def test_named_rules(self):
+        # Store a copy of the default rules from the config, so we can reference it later
+        config_builder = LintConfigBuilder()
+        config = config_builder.build()
+        default_rules = copy.deepcopy(config.rules)
+        self.assertEqual(default_rules, config.rules)  # deepcopy should be equal
+
+        # Add a named rule by setting an option in the config builder that follows the named rule pattern
+        # Assert that whitespace in the rule name is stripped
+        rule_qualifiers = [u'T7:my-extra-rüle', u' T7 :   my-extra-rüle  ', u'\tT7:\tmy-extra-rüle\t',
+                           u'T7:\t\n  \tmy-extra-rüle\t\n\n', u"title-match-regex:my-extra-rüle"]
+        for rule_qualifier in rule_qualifiers:
+            config_builder = LintConfigBuilder()
+            config_builder.set_option(rule_qualifier, 'regex', u"föo")
+
+            expected_rules = copy.deepcopy(default_rules)
+            my_rule = rules.TitleRegexMatches({'regex': u"föo"})
+            my_rule.id = rules.TitleRegexMatches.id + u":my-extra-rüle"
+            my_rule.name = rules.TitleRegexMatches.name + u":my-extra-rüle"
+            expected_rules._rules[u'T7:my-extra-rüle'] = my_rule
+            self.assertEqual(config_builder.build().rules, expected_rules)
+
+            # assert that changing an option on the newly added rule is passed correctly to the RuleCollection
+            # we try this with all different rule qualifiers to ensure they all are normalized and map
+            # to the same rule
+            for other_rule_qualifier in rule_qualifiers:
+                cb = config_builder.clone()
+                cb.set_option(other_rule_qualifier, 'regex', other_rule_qualifier + u"bōr")
+                # before setting the expected rule option value correctly, the RuleCollection should be different
+                self.assertNotEqual(cb.build().rules, expected_rules)
+                # after setting the option on the expected rule, it should be equal
+                my_rule.options['regex'].set(other_rule_qualifier + u"bōr")
+                self.assertEqual(cb.build().rules, expected_rules)
+                my_rule.options['regex'].set(u"wrong")
+
+    def test_named_rules_negative(self):
+        # T7 = title-match-regex
+        # Invalid rule name
+        for invalid_name in ["", " ", "    ", "\t", "\n", u"å b", u"å:b", u"åb:", u":åb"]:
+            config_builder = LintConfigBuilder()
+            config_builder.set_option(u"T7:{0}".format(invalid_name), 'regex', u"tëst")
+            expected_msg = u"The rule-name part in 'T7:{0}' cannot contain whitespace, colons or be empty"
+            with self.assertRaisesMessage(LintConfigError, expected_msg.format(invalid_name)):
+                config_builder.build()
+
+        # Invalid parent rule name
+        config_builder = LintConfigBuilder()
+        config_builder.set_option(u"Ž123:foöbar", u"fåke-option", u"fåke-value")
+        with self.assertRaisesMessage(LintConfigError, u"No such rule 'Ž123' (named rule: 'Ž123:foöbar')"):
+            config_builder.build()
+
+        # Invalid option name (this is the same as with regular rules)
+        config_builder = LintConfigBuilder()
+        config_builder.set_option(u"T7:foöbar", u"blå", u"my-rëgex")
+        with self.assertRaisesMessage(LintConfigError, u"Rule 'T7:foöbar' has no option 'blå'"):
+            config_builder.build()

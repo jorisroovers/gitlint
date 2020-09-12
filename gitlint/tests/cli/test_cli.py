@@ -529,3 +529,18 @@ class CLITests(BaseTestCase):
 
         self.assert_log_contains(u"DEBUG: gitlint.cli No commits in range \"master...HEAD\"")
         self.assertEqual(result.exit_code, 0)
+
+    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: tëst tïtle")
+    def test_named_rules(self, _):
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            config_path = self.get_sample_path(os.path.join("config", "named-rules"))
+            result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_named_rules_1"))
+            self.assertEqual(result.exit_code, 4)
+
+            # Assert debug logs are correct
+            expected_kwargs = self.get_system_info_dict()
+            expected_kwargs.update({'config_path': config_path})
+            expected_logs = self.get_expected('test_cli/test_named_rules_2', expected_kwargs)
+            self.assert_logged(expected_logs)

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from gitlint.rules import CommitRule, RuleViolation, ConfigurationRule
+from gitlint.options import IntOption, StrOption, ListOption
 from gitlint.utils import sstr
 
 
 class GitContextRule(CommitRule):
     """ Rule that tests whether we can correctly access certain gitcontext properties """
-    name = "gitcontext"
+    name = u"gïtcontext"
     id = "UC1"
 
     def validate(self, commit):
@@ -20,7 +21,7 @@ class GitContextRule(CommitRule):
 
 class GitCommitRule(CommitRule):
     """ Rule that tests whether we can correctly access certain commit properties """
-    name = "gitcommit"
+    name = u"gïtcommit"
     id = "UC2"
 
     def validate(self, commit):
@@ -34,7 +35,7 @@ class GitCommitRule(CommitRule):
 
 class GitlintConfigurationRule(ConfigurationRule):
     """ Rule that tests whether we can correctly access the config as well as modify the commit message """
-    name = "gitcommit"
+    name = u"cönfigrule"
     id = "UC3"
 
     def apply(self, config, commit):
@@ -47,3 +48,22 @@ class GitlintConfigurationRule(ConfigurationRule):
 
         # We also ignore some extra rules, proving that we can modify the config
         config.ignore.append("B4")
+
+
+class ConfigurableCommitRule(CommitRule):
+    """ Rule that tests that we can add configuration to user-defined rules """
+    name = u"configürable"
+    id = "UC4"
+
+    options_spec = [IntOption(u"int-öption", 2, u"int-öption description"),
+                    StrOption(u"str-öption", u"föo", u"int-öption description"),
+                    ListOption(u"list-öption", [u"foo", u"bar"], u"list-öption description")]
+
+    def validate(self, _):
+        violations = [
+            RuleViolation(self.id, u"int-öption: {0}".format(self.options[u'int-öption'].value), line_nr=1),
+            RuleViolation(self.id, u"str-öption: {0}".format(self.options[u'str-öption'].value), line_nr=1),
+            RuleViolation(self.id, u"list-öption: {0}".format(sstr(self.options[u'list-öption'].value)), line_nr=1),
+        ]
+
+        return violations

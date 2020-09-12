@@ -1,7 +1,7 @@
 # Changelog #
 
 ## v0.14.0 (TBD) ##
-
+- [Named Rules](TODO) allow users to have multiple instances of the same rule active at the same time. This is useful when you want to enforce the same rule multiple times but with different options.
 - [User-defined Configuration Rules](TODO) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
 - Users can now use `self.log.debug("my message")` for debugging purposes in their user-defined rules
 - Breaking: User-defined rule id's can no longer start with 'I', as those are reserved for built-in gitlint ignore rules.

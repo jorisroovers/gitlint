@@ -1,0 +1,5 @@
+1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: thåt dûr bår"
+1: T5 Title contains the word 'thåt' (case-insensitive): "WIP: thåt dûr bår"
+1: T5:even$more%wôrds Title contains the word 'bår' (case-insensitive): "WIP: thåt dûr bår"
+1: T5:extra-wôrds Title contains the word 'dûr' (case-insensitive): "WIP: thåt dûr bår"
+3: B5 Body message is too short (18<20): "Sïmple commit body"

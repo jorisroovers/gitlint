@@ -339,16 +339,76 @@ If you just want to ignore certain lines in a commit, you can do that using the
 regex=^Co-Authored-By
 ```
 
-!!! note
-
-    If you want to implement more complex ignore rules according to your own logic, you can do so using [user-defined
-    configuration rules](user_defined_rules.md#configuration-rules).
-
 !!! warning
 
     When ignoring specific lines, gitlint will no longer be aware of them while applying other rules.
     This can sometimes be confusing for end-users, especially as line numbers of violations will typically no longer
     match line numbers in the original commit message. Make sure to educate your users accordingly.
+
+!!! note
+
+    If you want to implement more complex ignore rules according to your own logic, you can do so using [user-defined
+    configuration rules](user_defined_rules.md#configuration-rules).
+
+## Named Rules
+
+Introduced in gitlint v0.14.0
+
+Named rules allow you to have multiple of the same rules active at the same time, which allows you to
+enforce the same rule multiple times but with different options. Named rules are so-called because they require an
+additional unique identifier (i.e. the rule *name*) during configuration.
+
+!!! warning
+
+    Named rules is an advanced topic. It's easy to make mistakes by defining conflicting instances of the same rule.
+    For example, by defining 2 `body-max-line-length` rules with different `line-length` options, you obviously create
+    a conflicting situation. Gitlint does not do any resolution of such conflicts, it's up to you to make sure
+    any configuration is non-conflicting. So caution advised!
+    
+Defining a named rule is easy, for example using your `.gitlint` file:
+
+```ini
+# By adding the following section, you will add a second instance of the
+# title-must-not-contain-word (T5) rule (in addition to the one that is enabled
+# by default) with the name 'extra-words'.
+[title-must-not-contain-word:extra-words]
+words=foo,bar
+
+# So the generic form is
+# [<rule-id-or-name>:<your-chosen-name>]
+# Another example, referencing the rule type by id
+[T5:more-words]
+words=hur,dur
+
+# You can add as many additional rules and you can name them whatever you want
+# The only requirement is that names cannot contain whitespace or colons (:)
+[title-must-not-contain-word:This-Can_Be*Whatever$YouWant]
+words=wonderwoman,batman,power ranger
+```
+
+When executing gitlint, you will see the violations from the default `title-must-not-contain-word (T5)` rule, as well as
+the violations caused by the additional Named Rules.
+
+```sh
+$ gitlint 
+1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: foo wonderwoman hur bar"
+1: T5:This-Can_Be*Whatever$YouWant Title contains the word 'wonderwoman' (case-insensitive): "WIP: foo wonderwoman hur bar"
+1: T5:extra-words Title contains the word 'foo' (case-insensitive): "WIP: foo wonderwoman hur bar"
+1: T5:extra-words Title contains the word 'bar' (case-insensitive): "WIP: foo wonderwoman hur bar"
+1: T5:more-words Title contains the word 'hur' (case-insensitive): "WIP: foo wonderwoman hur bar"
+```
+
+Named rules are further treated identical to all other rules in gitlint:
+
+- you can reference by their full name, when e.g. adding them to your `ignore` configuration
+```ini
+# .gitlint file example
+[general]
+ignore=T5:more-words,title-must-not-contain-word:extra-words
+```
+
+- you can use them to instantiate multiple of the same [user-defined rule](user_defined_rules.md)
+- you can configure them using [any of the ways you can configure regular gitlint rules](configuration.md)
 
 
 ## Exit codes
