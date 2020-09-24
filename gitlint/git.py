@@ -313,7 +313,10 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     @property
     @cache
     def author_email(self):
-        return ustr(_git("config", "--get", "user.email", _cwd=self.context.repository_path)).strip()
+        try:
+            return ustr(_git("config", "--get", "user.email", _cwd=self.context.repository_path)).strip()
+        except GitExitCodeError:
+            raise GitContextError("Missing git configuration: please set user.email")
 
     @property
     @cache
