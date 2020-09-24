@@ -157,6 +157,28 @@ class IntegrationTests(BaseTestCase):
 
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_no_tty_1"))
 
+    def test_no_git_name_set(self):
+        """ Ensure we print out a helpful message if user.name is not set """
+        tmp_commit_msg_file = self.create_tmpfile(u"WIP: msg-fïlename NO name test.")
+        # Name is checked before email so this isn't strictly
+        # necessary but seems good for consistency.
+        env = self.create_tmp_git_config(u"[user]\n  email = test-emåil@foo.com\n")
+        output = gitlint("--staged", "--msg-filename", tmp_commit_msg_file,
+                         _ok_code=[self.GIT_CONTEXT_ERROR_CODE],
+                         _env=env)
+        expected = u"Missing git configuration: please set user.name\n"
+        self.assertEqualStdout(output, expected)
+
+    def test_no_git_email_set(self):
+        """ Ensure we print out a helpful message if user.email is not set """
+        tmp_commit_msg_file = self.create_tmpfile(u"WIP: msg-fïlename NO email test.")
+        env = self.create_tmp_git_config(u"[user]\n  name = test åuthor\n")
+        output = gitlint("--staged", "--msg-filename", tmp_commit_msg_file,
+                         _ok_code=[self.GIT_CONTEXT_ERROR_CODE],
+                         _env=env)
+        expected = u"Missing git configuration: please set user.email\n"
+        self.assertEqualStdout(output, expected)
+
     def test_git_errors(self):
         # Repo has no commits: caused by `git log`
         empty_git_repo = self.create_tmp_git_repo()

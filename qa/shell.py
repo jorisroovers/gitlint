@@ -67,6 +67,8 @@ else:
         popen_kwargs = {'stdout': pipe, 'stderr': pipe, 'shell': kwargs.get('_tty_out', False)}
         if '_cwd' in kwargs:
             popen_kwargs['cwd'] = kwargs['_cwd']
+        if '_env' in kwargs:
+            popen_kwargs['env'] = kwargs['_env']
 
         try:
             p = subprocess.Popen(args, **popen_kwargs)
