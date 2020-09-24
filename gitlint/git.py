@@ -29,6 +29,14 @@ class GitNotInstalledError(GitContextError):
             u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git.")
 
 
+class GitExitCodeError(GitContextError):
+    def __init__(self, command, stderr):
+        self.command = command
+        self.stderr = stderr
+        super(GitExitCodeError, self).__init__(
+            u"An error occurred while executing '{0}': {1}".format(command, stderr))
+
+
 def _git(*command_parts, **kwargs):
     """ Convenience function for running git commands. Automatically deals with exceptions and unicode. """
     git_kwargs = {'_tty_out': False}
@@ -49,12 +57,13 @@ def _git(*command_parts, **kwargs):
         error_msg_lower = error_msg.lower()
         if '_cwd' in git_kwargs and b"not a git repository" in error_msg_lower:
             error_msg = u"{0} is not a git repository.".format(git_kwargs['_cwd'])
-        elif (b"does not have any commits yet" in error_msg_lower or
-              b"ambiguous argument 'head': unknown revision" in error_msg_lower):
+            raise GitContextError(error_msg)
+
+        if (b"does not have any commits yet" in error_msg_lower or
+                b"ambiguous argument 'head': unknown revision" in error_msg_lower):
             raise GitContextError(u"Current branch has no commits. Gitlint requires at least one commit to function.")
-        else:
-            error_msg = u"An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
-        raise GitContextError(error_msg)
+
+        raise GitExitCodeError(e.full_cmd, error_msg)
 
 
 def git_version():
