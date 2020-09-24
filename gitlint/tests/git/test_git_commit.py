@@ -14,7 +14,9 @@ except ImportError:
     from unittest.mock import patch, call  # pylint: disable=no-name-in-module, import-error
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
+from gitlint.git import GitContext, GitCommit, GitContextError, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
+from gitlint.shell import ErrorReturnCode
+from gitlint.utils import ustr
 
 
 class GitCommitTests(BaseTestCase):
@@ -478,6 +480,20 @@ class GitCommitTests(BaseTestCase):
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
         self.assertListEqual(sh.git.mock_calls, expected_calls[0:5])
+
+    @patch('gitlint.git.sh')
+    def test_staged_commit_with_missing_username(self, sh):
+        # StagedLocalGitCommit()
+
+        sh.git.side_effect = [
+            u"#",                               # git config --get core.commentchar
+            ErrorReturnCode('git config --get user.name', b"", b""),
+        ]
+
+        expected_msg = "Missing git configuration: please set user.name"
+        with self.assertRaisesMessage(GitContextError, expected_msg):
+            ctx = GitContext.from_staged_commit(u"Foōbar 123\n\ncömmit-body\n", u"fåke/path")
+            [ustr(commit) for commit in ctx.commits]
 
     def test_gitcommitmessage_equality(self):
         commit_message1 = GitCommitMessage(GitContext(), u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
