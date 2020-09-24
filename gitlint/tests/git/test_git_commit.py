@@ -495,6 +495,21 @@ class GitCommitTests(BaseTestCase):
             ctx = GitContext.from_staged_commit(u"Foōbar 123\n\ncömmit-body\n", u"fåke/path")
             [ustr(commit) for commit in ctx.commits]
 
+    @patch('gitlint.git.sh')
+    def test_staged_commit_with_missing_email(self, sh):
+        # StagedLocalGitCommit()
+
+        sh.git.side_effect = [
+            u"#",                               # git config --get core.commentchar
+            u"test åuthor\n",                   # git config --get user.name
+            ErrorReturnCode('git config --get user.name', b"", b""),
+        ]
+
+        expected_msg = "Missing git configuration: please set user.email"
+        with self.assertRaisesMessage(GitContextError, expected_msg):
+            ctx = GitContext.from_staged_commit(u"Foōbar 123\n\ncömmit-body\n", u"fåke/path")
+            [ustr(commit) for commit in ctx.commits]
+
     def test_gitcommitmessage_equality(self):
         commit_message1 = GitCommitMessage(GitContext(), u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
         attrs = ['original', 'full', 'title', 'body']
