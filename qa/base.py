@@ -93,6 +93,13 @@ class BaseTestCase(TestCase):
         io.open(os.path.join(parent_dir, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
         return test_filename
 
+    def create_tmp_git_config(self, contents):
+        """ Creates an environment with the GIT_CONFIG variable set to a file with the given contents. """
+        tmp_config = self.create_tmpfile(contents)
+        env = os.environ.copy()
+        env["GIT_CONFIG"] = tmp_config
+        return env
+
     def create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):
         """ Creates a simple commit with an empty test file.
             :param message: Commit message for the commit. """
