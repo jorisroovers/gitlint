@@ -3,4 +3,7 @@
 1: UC1 GitContext.commentchar: #
 1: UC2 GitCommit.branches: ['master']
 1: UC2 GitCommit.custom_prop: foöbar
+1: UC4 int-öption: 2
+1: UC4 str-öption: föo
+1: UC4 list-öption: ['foo', 'bar']
 4: B2 Line has trailing whitespace: "{repo-path} "

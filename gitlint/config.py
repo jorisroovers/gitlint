@@ -367,7 +367,10 @@ class RuleCollection(object):
     def __len__(self):
         return len(self._rules)
 
-    def __str__(self):
+    def __repr__(self):
+        return self.__unicode__()  # pragma: no cover
+
+    def __unicode__(self):
         return_str = ""
         for rule in self._rules.values():
             return_str += u"  {0}: {1}\n".format(rule.id, rule.name)
@@ -391,13 +394,15 @@ class LintConfigBuilder(object):
     normalized, validated and build. Example usage can be found in gitlint.cli.
     """
 
+    RULE_QUALIFIER_SYMBOL = ":"
+
     def __init__(self):
-        self._config_blueprint = {}
+        self._config_blueprint = OrderedDict()
         self._config_path = None
 
     def set_option(self, section, option_name, option_value):
         if section not in self._config_blueprint:
-            self._config_blueprint[section] = {}
+            self._config_blueprint[section] = OrderedDict()
         self._config_blueprint[section][option_name] = option_value
 
     def set_config_from_commit(self, commit):
@@ -444,10 +449,43 @@ class LintConfigBuilder(object):
         except ConfigParserError as e:
             raise LintConfigError(ustr(e))
 
+    def _add_named_rule(self, config, qualified_rule_name):
+        """ Adds a Named Rule to a given LintConfig object.
+            IMPORTANT: This method does *NOT* overwrite existing Named Rules with the same canonical id.
+        """
+
+        # Split up named rule in its parts: the name/id that specifies the parent rule,
+        # And the name of the rule instance itself
+        rule_name_parts = qualified_rule_name.split(self.RULE_QUALIFIER_SYMBOL, 1)
+        rule_name = rule_name_parts[1].strip()
+        parent_rule_specifier = rule_name_parts[0].strip()
+
+        # assert that the rule name is valid:
+        # - not empty
+        # - no whitespace or colons
+        if rule_name == "" or bool(re.search("\\s|:", rule_name, re.UNICODE)):
+            msg = u"The rule-name part in '{0}' cannot contain whitespace, colons or be empty"
+            raise LintConfigError(msg.format(qualified_rule_name))
+
+        # find parent rule
+        parent_rule = config.rules.find_rule(parent_rule_specifier)
+        if not parent_rule:
+            msg = u"No such rule '{0}' (named rule: '{1}')"
+            raise LintConfigError(msg.format(parent_rule_specifier, qualified_rule_name))
+
+        # Determine canonical id and name by recombining the parent id/name and instance name parts.
+        canonical_id = parent_rule.__class__.id + self.RULE_QUALIFIER_SYMBOL + rule_name
+        canonical_name = parent_rule.__class__.name + self.RULE_QUALIFIER_SYMBOL + rule_name
+
+        # Add the rule to the collection of rules if it's not there already
+        if not config.rules.find_rule(canonical_id):
+            config.rules.add_rule(parent_rule.__class__, canonical_id, {'is_named': True, 'name': canonical_name})
+
+        return canonical_id
+
     def build(self, config=None):
         """ Build a real LintConfig object by normalizing and validating the options that were previously set on this
         factory. """
-
         # If we are passed a config object, then rebuild that object instead of building a new lintconfig object from
         # scratch
         if not config:
@@ -465,6 +503,12 @@ class LintConfigBuilder(object):
             for option_name, option_value in section_dict.items():
                 # Skip over the general section, as we've already done that above
                 if section_name != "general":
+
+                    # If the section name contains a colon (:), then this section is defining a Named Rule
+                    # Which means we need to instantiate that Named Rule in the config.
+                    if self.RULE_QUALIFIER_SYMBOL in section_name:
+                        section_name = self._add_named_rule(config, section_name)
+
                     config.set_rule_option(section_name, option_name, option_value)
 
         return config

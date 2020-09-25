@@ -1,0 +1,8 @@
+[title-must-not-contain-word]
+words=WIP,bögus
+
+[title-must-not-contain-word:extra-wörds]
+words=hür,tëst
+
+[T5:even-more-wörds]
+words=hür,tïtle

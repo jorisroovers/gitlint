@@ -1,0 +1,15 @@
+# Ignore other user-defined rules
+[general]
+ignore=UC1,UC2,UC3,configürable:ignöred
+
+[UC4:föo]
+int-öption=3
+str-öption=föo
+
+[configürable:bår]
+str-öption=bår
+list-öption=bar,list
+
+# The following rule will be ignored
+[configürable:ignöred]
+str-öption=foöbar

@@ -1,0 +1,9 @@
+1: UC4 int-öption: 2
+1: UC4 str-öption: föo
+1: UC4 list-öption: ['foo', 'bar']
+1: UC4:bår int-öption: 2
+1: UC4:bår str-öption: bår
+1: UC4:bår list-öption: ['bar', 'list']
+1: UC4:föo int-öption: 3
+1: UC4:föo str-öption: föo
+1: UC4:föo list-öption: ['foo', 'bar']
