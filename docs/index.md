@@ -13,6 +13,10 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
     have a look at [fit-commit](https://github.com/m1foley/fit-commit) (Ruby),
     [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js) or [commitlint](http://marionebl.github.io/commitlint) (Node.js).
 
+
+!!! important
+    **Gitlint will soon be dropping support for Python 2.7 and Python 3.5 as they [have reached End-Of-Life](https://endoflife.date/python)**.
+
 ## Features
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook). Also [works with pre-commit](#using-gitlint-through-pre-commit).
  - **Easily integrated**: Gitlint is designed to work [with your own scripts or CI system](#using-gitlint-in-a-ci-environment).
@@ -24,7 +28,6 @@ useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
  - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules).
  - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
- - **Broad python version support:** Gitlint supports python versions 2.7, 3.5+, PyPy2 and PyPy3.5.
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
    python code standards (pep8, pylint), good documentation, widely used, proven track record.

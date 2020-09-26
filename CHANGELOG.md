@@ -1,6 +1,7 @@
 # Changelog #
 
 ## v0.14.0 (TBD) ##
+- **IMPORTANT:** Gitlint 0.14.x will be the last gitlint release to support Python 2.7 and Python 3.5, as [both are EOL](https://endoflife.date/python) which makes them hard to keep supporting. 
 - [Named Rules](TODO) allow users to have multiple instances of the same rule active at the same time. This is useful when you want to enforce the same rule multiple times but with different options.
 - [User-defined Configuration Rules](TODO) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
 - Users can now use `self.log.debug("my message")` for debugging purposes in their user-defined rules

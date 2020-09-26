@@ -89,13 +89,15 @@ setup(
     },
 )
 
-# Print a red deprecation warning for python 2.6 users
-if sys.version_info[0] == 2 and sys.version_info[1] <= 6:
-    msg = "\033[31mDEPRECATION: Python 2.6 or below are no longer supported by gitlint or the Python core team." + \
-          "Please upgrade your Python to a later version.\033[0m"
+# Print a red deprecation warning for python < 3.6 users
+if sys.version_info[:2] < (3, 6):
+    msg = "\033[31mDEPRECATION: You're using a python version that has reached end-of-life. " + \
+          "Gitlint does not support Python < 3.5 or < 2.7, and will be dropping support for " + \
+          "Python 2.7 and 3.5 in the next release. " + \
+          "Please upgrade your Python to 3.6 or above.\033[0m"
     print(msg)
 
-# Print a red deprecation warning for python 2.6 users
+# Print a warning message for Windows users
 PLATFORM_IS_WINDOWS = "windows" in platform.system().lower()
 if PLATFORM_IS_WINDOWS:
     msg = "\n\n\n\n\n****************\n" + \
