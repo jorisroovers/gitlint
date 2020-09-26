@@ -231,7 +231,7 @@ class TitleRegexMatches(LineRule):
     name = "title-match-regex"
     id = "T7"
     target = CommitMessageTitle
-    options_spec = [RegexOption('regex', ".*", "Regex the title should match")]
+    options_spec = [RegexOption('regex', None, "Regex the title should match")]
 
     def validate(self, title, _commit):
         # If no regex is specified, immediately return
