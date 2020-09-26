@@ -259,28 +259,23 @@ install_virtualenv(){
     python_binary="/usr/bin/python${version:0:1}.${version:1:1}"
 
     # For pypy: custom path + fetch from the web if not installed (=distro agnostic)
-    if [[ $version == *"pypy2"* ]]; then
-        python_binary="/opt/pypy2.7-v7.3.0-linux64/bin/pypy"
-        if [ ! -f $python_binary ]; then
-            assert_root "Must be root to install pypy2.7, use sudo"
-            title "### DOWNLOADING PYPY2 ($pypy_archive) ###"
-            pushd "/opt"
-            pypy_archive="pypy2.7-v7.3.0-linux64.tar.bz2"
-            wget "https://bitbucket.org/pypy/pypy/downloads/$pypy_archive"
-            title "### EXTRACTING PYPY TARBALL ($pypy_archive) ###"
-            tar xvf $pypy_archive
-            popd
+    if [[ $version == *"pypy"* ]]; then
+        pypy_download_mirror="https://downloads.python.org/pypy"
+        if [[ $version == *"pypy2"* ]]; then
+            pypy_full_version="pypy2.7-v7.3.2-linux64"
+        elif [[ $version == *"pypy36"* ]]; then
+            pypy_full_version="pypy3.6-v7.3.2-linux64"
+        elif [[ $version == *"pypy37"* ]]; then
+            pypy_full_version="pypy3.7-v7.3.2-linux64"
         fi
-    fi
 
-    if [[ $version == *"pypy35"* ]]; then
-        python_binary="/opt/pypy3.5-v7.0.0-linux64/bin/pypy3"
+        python_binary="/opt/$pypy_full_version/bin/pypy"
+        pypy_archive="$pypy_full_version.tar.bz2"
         if [ ! -f $python_binary ]; then
-            assert_root "Must be root to install pypy3.5, use sudo"
-            title "### DOWNLOADING PYPY3 ($pypy_archive) ###"
+            assert_root "Must be root to install $version, use sudo"
+            title "### DOWNLOADING $version ($pypy_archive) ###"
             pushd "/opt"
-            pypy_archive="pypy3.5-v7.0.0-linux64.tar.bz2"
-            wget "https://bitbucket.org/pypy/pypy/downloads/$pypy_archive"
+            wget "$pypy_download_mirror/$pypy_archive"
             title "### EXTRACTING PYPY TARBALL ($pypy_archive) ###"
             tar xvf $pypy_archive
             popd
