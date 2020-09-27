@@ -32,6 +32,15 @@ class MetaRuleTests(BaseTestCase):
                                  [RuleViolation("M1", "Author email for commit is invalid", email)])
 
     def test_author_valid_email_rule_custom_regex(self):
+        # regex=None -> the rule isn't applied
+        rule = AuthorValidEmail()
+        rule.options['regex'].set(None)
+        emailadresses = [u"föo", None, u"hür dür"]
+        for email in emailadresses:
+            commit = self.gitcommit(u"", author_email=email)
+            violations = rule.validate(commit)
+            self.assertIsNone(violations)
+
         # Custom domain
         rule = AuthorValidEmail({'regex': u"[^@]+@bår.com"})
         valid_email_addresses = [

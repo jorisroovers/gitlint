@@ -141,56 +141,64 @@ class UserRuleTests(BaseTestCase):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_id(self):
-        class MyRuleClass(rules.LineRule):
-            pass
 
-        # Rule class must have an id
-        expected_msg = "User-defined rule class 'MyRuleClass' must have an 'id' attribute"
-        with self.assertRaisesMessage(UserRuleError, expected_msg):
-            assert_valid_rule_class(MyRuleClass)
+        for parent_class in [rules.LineRule, rules.CommitRule]:
 
-        # Rule ids must be non-empty
-        MyRuleClass.id = ""
-        with self.assertRaisesMessage(UserRuleError, expected_msg):
-            assert_valid_rule_class(MyRuleClass)
+            class MyRuleClass(parent_class):
+                pass
 
-        # Rule ids must not start with one of the reserved id letters
-        for letter in ["T", "R", "B", "M", "I"]:
-            MyRuleClass.id = letter + "1"
-            expected_msg = "The id '{0}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
-            with self.assertRaisesMessage(UserRuleError, expected_msg.format(letter)):
+            # Rule class must have an id
+            expected_msg = "User-defined rule class 'MyRuleClass' must have an 'id' attribute"
+            with self.assertRaisesMessage(UserRuleError, expected_msg):
                 assert_valid_rule_class(MyRuleClass)
 
+            # Rule ids must be non-empty
+            MyRuleClass.id = ""
+            with self.assertRaisesMessage(UserRuleError, expected_msg):
+                assert_valid_rule_class(MyRuleClass)
+
+            # Rule ids must not start with one of the reserved id letters
+            for letter in ["T", "R", "B", "M", "I"]:
+                MyRuleClass.id = letter + "1"
+                expected_msg = "The id '{0}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
+                with self.assertRaisesMessage(UserRuleError, expected_msg.format(letter)):
+                    assert_valid_rule_class(MyRuleClass)
+
     def test_assert_valid_rule_class_negative_name(self):
-        class MyRuleClass(rules.LineRule):
-            id = "UC1"
+        for parent_class in [rules.LineRule, rules.CommitRule]:
 
-        # Rule class must have an name
-        expected_msg = "User-defined rule class 'MyRuleClass' must have a 'name' attribute"
-        with self.assertRaisesMessage(UserRuleError, expected_msg):
-            assert_valid_rule_class(MyRuleClass)
+            class MyRuleClass(parent_class):
+                id = "UC1"
 
-        # Rule names must be non-empty
-        MyRuleClass.name = ""
-        with self.assertRaisesMessage(UserRuleError, expected_msg):
-            assert_valid_rule_class(MyRuleClass)
+            # Rule class must have an name
+            expected_msg = "User-defined rule class 'MyRuleClass' must have a 'name' attribute"
+            with self.assertRaisesMessage(UserRuleError, expected_msg):
+                assert_valid_rule_class(MyRuleClass)
+
+            # Rule names must be non-empty
+            MyRuleClass.name = ""
+            with self.assertRaisesMessage(UserRuleError, expected_msg):
+                assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_option_spec(self):
-        class MyRuleClass(rules.LineRule):
-            id = "UC1"
-            name = u"my-rüle-class"
 
-        # if set, option_spec must be a list of gitlint options
-        MyRuleClass.options_spec = u"föo"
-        expected_msg = "The options_spec attribute of user-defined rule class 'MyRuleClass' must be a list " + \
-                       "of gitlint.options.RuleOption"
-        with self.assertRaisesMessage(UserRuleError, expected_msg):
-            assert_valid_rule_class(MyRuleClass)
+        for parent_class in [rules.LineRule, rules.CommitRule]:
 
-        # option_spec is a list, but not of gitlint options
-        MyRuleClass.options_spec = [u"föo", 123]  # pylint: disable=bad-option-value,redefined-variable-type
-        with self.assertRaisesMessage(UserRuleError, expected_msg):
-            assert_valid_rule_class(MyRuleClass)
+            class MyRuleClass(parent_class):
+                id = "UC1"
+                name = u"my-rüle-class"
+
+            # if set, option_spec must be a list of gitlint options
+            MyRuleClass.options_spec = u"föo"
+            expected_msg = "The options_spec attribute of user-defined rule class 'MyRuleClass' must be a list " + \
+                "of gitlint.options.RuleOption"
+            with self.assertRaisesMessage(UserRuleError, expected_msg):
+                assert_valid_rule_class(MyRuleClass)
+
+            # option_spec is a list, but not of gitlint options
+            MyRuleClass.options_spec = [u"föo", 123]  # pylint: disable=bad-option-value,redefined-variable-type
+            with self.assertRaisesMessage(UserRuleError, expected_msg):
+                assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_validate(self):
 

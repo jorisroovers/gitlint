@@ -116,7 +116,7 @@ Then, we suggest taking the following approach to add a Contrib rule:
 1. **Write your rule as a [user-defined rule](../user_defined_rules)**. In terms of code, Contrib rules are identical to
    user-defined rules, they just happen to have their code sit within the gitlint codebase itself.
 2. **Add your user-defined rule to gitlint**. You should put your file(s) in the [gitlint/contrib/rules](https://github.com/jorisroovers/gitlint/tree/master/gitlint/contrib/rules) directory.
-3. **Write unit tests**. The gitlint codebase contains [Contrib rule test files you can copy and modify](https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests/contrib).
+3. **Write unit tests**. The gitlint codebase contains [Contrib rule test files you can copy and modify](https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests/contrib/rules).
 4. **Write documentation**. In particular, you should update the [gitlint/docs/contrib_rules.md](https://github.com/jorisroovers/gitlint/blob/master/docs/contrib_rules.md) file with details on your Contrib rule.
 5. **Create a Pull Request**: code review typically requires a bit of back and forth. Thanks for your contribution!
 

@@ -14,6 +14,12 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
+      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
+      # code by temporarily renaming the .git directory. 
+      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
+      - name: Temporarily remove git version control from code
+        run: mv .git ._git
+
       - name: Setup python
         uses: actions/setup-python@v1
         with:
@@ -59,6 +65,10 @@ jobs:
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Re-add git version control so we can run gitlint on itself.
+      - name: Re-add git version control to code
+        run: mv ._git .git
+
       - name: Gitlint check
         run: ./run_tests.sh -g --debug
 
@@ -72,6 +82,12 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
+      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
+      # code by temporarily renaming the .git directory. 
+      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
+      - name: Temporarily remove git version control from code
+        run: Rename-Item .git ._git
+    
       - name: Setup python
         uses: actions/setup-python@v1
         with:
@@ -112,6 +128,10 @@ jobs:
 
       - name: PyLint
         run: pylint gitlint qa --rcfile=".pylintrc" -r n
+
+      # Re-add git version control so we can run gitlint on itself.
+      - name: Re-add git version control to code
+        run: Rename-Item ._git .git
 
       - name: Gitlint check
         run: gitlint --debug

@@ -125,8 +125,8 @@ class CLIHookTests(BaseTestCase):
 
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                 result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
-                self.assertEqual(result.output, self.get_expected('test_cli_hooks/test_hook_no_tty_1_stdout'))
-                self.assertEqual(stderr.getvalue(), self.get_expected("test_cli_hooks/test_hook_no_tty_1_stderr"))
+                self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_no_tty_1_stdout'))
+                self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli_hooks/test_hook_no_tty_1_stderr"))
 
                 # exit code is 1 because aborted (no stdin available)
                 self.assertEqual(result.exit_code, 1)
@@ -151,10 +151,11 @@ class CLIHookTests(BaseTestCase):
 
                     with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                         result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
-                        self.assertEqual(result.output, self.get_expected('test_cli_hooks/test_hook_edit_1_stdout',
+                        self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_edit_1_stdout',
                                                                           {"commit_msg": commit_messages[i]}))
-                        self.assertEqual(stderr.getvalue(), self.get_expected("test_cli_hooks/test_hook_edit_1_stderr",
-                                                                              {"commit_msg": commit_messages[i]}))
+                        expected = self.get_expected("cli/test_cli_hooks/test_hook_edit_1_stderr",
+                                                     {"commit_msg": commit_messages[i]})
+                        self.assertEqual(stderr.getvalue(), expected)
 
                         # exit code = number of violations
                         self.assertEqual(result.exit_code, 2)
@@ -175,8 +176,8 @@ class CLIHookTests(BaseTestCase):
 
                 with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                     result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
-                    self.assertEqual(result.output, self.get_expected('test_cli_hooks/test_hook_no_1_stdout'))
-                    self.assertEqual(stderr.getvalue(), self.get_expected("test_cli_hooks/test_hook_no_1_stderr"))
+                    self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_no_1_stdout'))
+                    self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli_hooks/test_hook_no_1_stderr"))
 
                     # We decided not to keep the commit message: hook returns number of violations (>0)
                     # This will cause git to abort the commit
@@ -193,8 +194,8 @@ class CLIHookTests(BaseTestCase):
 
                 with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                     result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
-                    self.assertEqual(result.output, self.get_expected('test_cli_hooks/test_hook_yes_1_stdout'))
-                    self.assertEqual(stderr.getvalue(), self.get_expected("test_cli_hooks/test_hook_yes_1_stderr"))
+                    self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_yes_1_stdout'))
+                    self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli_hooks/test_hook_yes_1_stderr"))
 
                     # Exit code is 0 because we decide to keep the commit message
                     # This will cause git to keep the commit
@@ -209,8 +210,8 @@ class CLIHookTests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["run-hook"])
-            self.assertEqual(stderr.getvalue(), self.get_expected('test_cli_hooks/test_hook_stdin_1_stderr'))
-            self.assertEqual(result.output, self.get_expected('test_cli_hooks/test_hook_stdin_1_stdout'))
+            self.assertEqual(stderr.getvalue(), self.get_expected('cli/test_cli_hooks/test_hook_stdin_1_stderr'))
+            self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_stdin_1_stdout'))
             # Hook will auto-abort because we're using stdin. Abort = exit code 1
             self.assertEqual(result.exit_code, 1)
 
@@ -222,8 +223,8 @@ class CLIHookTests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-c", "title-max-length.line-length=5", "--ignore", "B6", "run-hook"])
-            self.assertEqual(stderr.getvalue(), self.get_expected('test_cli_hooks/test_hook_config_1_stderr'))
-            self.assertEqual(result.output, self.get_expected('test_cli_hooks/test_hook_config_1_stdout'))
+            self.assertEqual(stderr.getvalue(), self.get_expected('cli/test_cli_hooks/test_hook_config_1_stderr'))
+            self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_config_1_stdout'))
             # Hook will auto-abort because we're using stdin. Abort = exit code 1
             self.assertEqual(result.exit_code, 1)
 
@@ -246,7 +247,8 @@ class CLIHookTests(BaseTestCase):
         with self.patch_input(['e']):
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                 result = self.cli.invoke(cli.cli, ["run-hook"])
-                self.assertEqual(stderr.getvalue(), self.get_expected('test_cli_hooks/test_hook_local_commit_1_stderr'))
-                self.assertEqual(result.output, self.get_expected('test_cli_hooks/test_hook_local_commit_1_stdout'))
+                expected = self.get_expected('cli/test_cli_hooks/test_hook_local_commit_1_stderr')
+                self.assertEqual(stderr.getvalue(), expected)
+                self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_local_commit_1_stdout'))
                 # If we can't edit the message, run-hook follows regular gitlint behavior and exit code = # violations
                 self.assertEqual(result.exit_code, 2)
