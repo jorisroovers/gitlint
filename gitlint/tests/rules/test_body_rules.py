@@ -180,7 +180,9 @@ class BodyRuleTests(BaseTestCase):
         self.assertEqual([expected_violation_2, expected_violation], violations)
 
     def test_body_match_regex(self):
-        commit = self.gitcommit(u"US1234: åbc\nIgnored\nBödy\nFöo\nMy-Commit-Tag: föo")
+        # We intentionally add 2 newlines at the end of our commit message as that's how git will pass the
+        # message. This way we also test that the rule strips off the last line.
+        commit = self.gitcommit(u"US1234: åbc\nIgnored\nBödy\nFöo\nMy-Commit-Tag: föo\n\n")
 
         # assert no violation on default regex (=everything allowed)
         rule = rules.BodyRegexMatches()
@@ -207,7 +209,7 @@ class BodyRuleTests(BaseTestCase):
         # assert violation on non-matching body
         rule = rules.BodyRegexMatches({'regex': u"^Tëst(.*)Foo"})
         violations = rule.validate(commit)
-        expected_violation = rules.RuleViolation("B8", u"Body does not match regex (^Tëst(.*)Foo)", None, 5)
+        expected_violation = rules.RuleViolation("B8", u"Body does not match regex (^Tëst(.*)Foo)", None, 6)
         self.assertListEqual(violations, [expected_violation])
 
         # assert no violation on None regex

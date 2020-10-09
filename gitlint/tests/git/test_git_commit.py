@@ -515,7 +515,12 @@ class GitCommitTests(BaseTestCase):
         attrs = ['original', 'full', 'title', 'body']
         self.object_equality_test(commit_message1, attrs, {"context": commit_message1.context})
 
-    def test_gitcommit_equality(self):
+    @patch("gitlint.git._git")
+    def test_gitcommit_equality(self, git):
+        # git will be called to setup the context (commentchar and current_branch), just return the same value
+        # This only matters to test gitcontext equality, not gitcommit equality
+        git.return_value = u"foöbar"
+
         # Test simple equality case
         now = datetime.datetime.utcnow()
         context1 = GitContext()

@@ -1,12 +1,13 @@
 import codecs
 import locale
-from sys import stdout, stderr, version_info
+from sys import stdout, stderr
+from gitlint.utils import IS_PY2
 
 # For some reason, python 2.x sometimes messes up with printing unicode chars to stdout/stderr
 # This is mostly when there is a mismatch between the terminal encoding and the python encoding.
 # This use-case is primarily triggered when piping input between commands, in particular our integration tests
 # tend to trip over this.
-if version_info[0] == 2:
+if IS_PY2:
     stdout = codecs.getwriter(locale.getpreferredencoding())(stdout)  # pylint: disable=invalid-name
     stderr = codecs.getwriter(locale.getpreferredencoding())(stderr)  # pylint: disable=invalid-name
 

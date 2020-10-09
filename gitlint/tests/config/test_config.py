@@ -254,6 +254,30 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(config.ignore, ["T1", "T2"])
         self.assertSequenceEqual(config.rules, original_rules)
 
+    def test_config_equality(self):
+        self.assertEqual(LintConfig(), LintConfig())
+        self.assertNotEqual(LintConfig(), LintConfigGenerator())
+
+        # Ensure LintConfig are not equal if they differ on their attributes
+        attrs = [("verbosity", 1), ("rules", []), ("ignore_stdin", True), ("debug", True),
+                 ("ignore", ["T1"]), ("staged", True), ("_config_path", self.get_sample_path()),
+                 ("ignore_merge_commits", False), ("ignore_fixup_commits", False),
+                 ("ignore_squash_commits", False), ("ignore_revert_commits", False),
+                 ("extra_path", self.get_sample_path("user_rules")), ("target", self.get_sample_path()),
+                 ("contrib", ["CC1"])]
+        for attr, val in attrs:
+            config = LintConfig()
+            setattr(config, attr, val)
+            self.assertNotEqual(LintConfig(), config)
+
+        # Other attributes don't matter
+        config1 = LintConfig()
+        config2 = LintConfig()
+        config1.foo = u"bår"
+        self.assertEqual(config1, config2)
+        config2.foo = u"dūr"
+        self.assertEqual(config1, config2)
+
 
 class LintConfigGeneratorTests(BaseTestCase):
     @staticmethod

@@ -108,7 +108,7 @@ class CLITests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
-            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_multiple_commits_1"))
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_lint_multiple_commits_1"))
             self.assertEqual(result.exit_code, 3)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
@@ -142,7 +142,7 @@ class CLITests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
             # We expect that the second commit has no failures because of 'gitlint-ignore: T3' in its commit msg body
-            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_multiple_commits_config_1"))
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_lint_multiple_commits_config_1"))
             self.assertEqual(result.exit_code, 3)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
@@ -195,7 +195,7 @@ class CLITests(BaseTestCase):
         """ Test for linting when a message is passed via stdin """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
-            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_input_stream_1"))
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_input_stream_1"))
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
@@ -205,11 +205,11 @@ class CLITests(BaseTestCase):
             This tests specifically that git commit meta is not fetched when not passing --staged """
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--debug"])
-            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_input_stream_debug_1"))
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_input_stream_debug_1"))
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
             expected_kwargs = self.get_system_info_dict()
-            expected_logs = self.get_expected('test_cli/test_input_stream_debug_2', expected_kwargs)
+            expected_logs = self.get_expected('cli/test_cli/test_input_stream_debug_2', expected_kwargs)
             self.assert_logged(expected_logs)
 
     @patch('gitlint.cli.get_stdin_data', return_value="Should be ignored\n")
@@ -249,12 +249,12 @@ class CLITests(BaseTestCase):
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--debug", "--staged"])
-            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_staged_stdin_1"))
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_lint_staged_stdin_1"))
             self.assertEqual(result.exit_code, 3)
             self.assertEqual(result.output, "")
 
             expected_kwargs = self.get_system_info_dict()
-            expected_logs = self.get_expected('test_cli/test_lint_staged_stdin_2', expected_kwargs)
+            expected_logs = self.get_expected('cli/test_cli/test_lint_staged_stdin_2', expected_kwargs)
             self.assert_logged(expected_logs)
 
     @patch('arrow.now', return_value=arrow.get("2020-02-19T12:18:46.675182+01:00"))
@@ -277,12 +277,12 @@ class CLITests(BaseTestCase):
 
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                 result = self.cli.invoke(cli.cli, ["--debug", "--staged", "--msg-filename", msg_filename])
-                self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_lint_staged_msg_filename_1"))
+                self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_lint_staged_msg_filename_1"))
                 self.assertEqual(result.exit_code, 2)
                 self.assertEqual(result.output, "")
 
                 expected_kwargs = self.get_system_info_dict()
-                expected_logs = self.get_expected('test_cli/test_lint_staged_msg_filename_2', expected_kwargs)
+                expected_logs = self.get_expected('cli/test_cli/test_lint_staged_msg_filename_2', expected_kwargs)
                 self.assert_logged(expected_logs)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
@@ -384,7 +384,7 @@ class CLITests(BaseTestCase):
 
             expected_kwargs = self.get_system_info_dict()
             expected_kwargs.update({'config_path': config_path})
-            expected_logs = self.get_expected('test_cli/test_debug_1', expected_kwargs)
+            expected_logs = self.get_expected('cli/test_cli/test_debug_1', expected_kwargs)
             self.assert_logged(expected_logs)
 
     @patch('gitlint.cli.get_stdin_data', return_value=u"Test tïtle\n")
@@ -393,7 +393,7 @@ class CLITests(BaseTestCase):
         # Test extra-path pointing to a directory
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path("user_rules")
-            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"])
+            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path])
             expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
                               "3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
@@ -402,7 +402,7 @@ class CLITests(BaseTestCase):
         # Test extra-path pointing to a file
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             extra_path = self.get_sample_path(os.path.join("user_rules", "my_commit_rules.py"))
-            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path, "--debug"])
+            result = self.cli.invoke(cli.cli, ["--extra-path", extra_path])
             expected_output = u"1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
                               "3: B6 Body message is missing\n"
             self.assertEqual(stderr.getvalue(), expected_output)
@@ -413,7 +413,7 @@ class CLITests(BaseTestCase):
         # Test enabled contrib rules
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--contrib", "contrib-title-conventional-commits,CC1"])
-            expected_output = self.get_expected('test_cli/test_contrib_1')
+            expected_output = self.get_expected('cli/test_cli/test_contrib_1')
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 3)
 
@@ -459,13 +459,14 @@ class CLITests(BaseTestCase):
     @patch('gitlint.cli.get_stdin_data', return_value=False)
     def test_target(self, _):
         """ Test for the --target option """
-        os.environ["LANGUAGE"] = "C"  # Force language to english so we can check for error message
-        result = self.cli.invoke(cli.cli, ["--target", "/tmp"])
-        # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
-        # into account).
-        expected_path = os.path.realpath("/tmp")
-        self.assertEqual(result.output, "%s is not a git repository.\n" % expected_path)
-        self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
+        with self.tempdir() as tmpdir:
+            tmpdir_path = os.path.realpath(tmpdir)
+            os.environ["LANGUAGE"] = "C"  # Force language to english so we can check for error message
+            result = self.cli.invoke(cli.cli, ["--target", tmpdir_path])
+            # We expect gitlint to tell us that /tmp is not a git repo (this proves that it takes the target parameter
+            # into account).
+            self.assertEqual(result.output, "%s is not a git repository.\n" % tmpdir_path)
+            self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
     def test_target_negative(self):
         """ Negative test for the --target option """
@@ -536,11 +537,11 @@ class CLITests(BaseTestCase):
             config_path = self.get_sample_path(os.path.join("config", "named-rules"))
             result = self.cli.invoke(cli.cli, ["--config", config_path, "--debug"])
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), self.get_expected("test_cli/test_named_rules_1"))
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_named_rules_1"))
             self.assertEqual(result.exit_code, 4)
 
             # Assert debug logs are correct
             expected_kwargs = self.get_system_info_dict()
             expected_kwargs.update({'config_path': config_path})
-            expected_logs = self.get_expected('test_cli/test_named_rules_2', expected_kwargs)
+            expected_logs = self.get_expected('cli/test_cli/test_named_rules_2', expected_kwargs)
             self.assert_logged(expected_logs)
