@@ -93,12 +93,18 @@ class BaseTestCase(TestCase):
         io.open(os.path.join(parent_dir, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
         return test_filename
 
+    @staticmethod
+    def create_environment(envvars=None):
+        """ Creates a copy of the current os.environ and adds/overwrites a given set of variables to it """
+        environment = os.environ.copy()
+        if envvars:
+            environment.update(envvars)
+        return environment
+
     def create_tmp_git_config(self, contents):
         """ Creates an environment with the GIT_CONFIG variable set to a file with the given contents. """
         tmp_config = self.create_tmpfile(contents)
-        env = os.environ.copy()
-        env["GIT_CONFIG"] = tmp_config
-        return env
+        return self.create_environment({"GIT_CONFIG": tmp_config})
 
     def create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):
         """ Creates a simple commit with an empty test file.
@@ -110,9 +116,7 @@ class BaseTestCase(TestCase):
         # variables can influence how git runs.
         # This was needed to fix https://github.com/jorisroovers/gitlint/issues/15 as we need to make sure to use
         # the PATH variable that contains the virtualenv's python binary.
-        environment = os.environ
-        if env:
-            environment.update(env)
+        environment = self.create_environment(env)
 
         # Create file and add to git
         test_filename = self.create_file(git_repo)
