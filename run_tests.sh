@@ -461,7 +461,7 @@ exit_code=0
 
 # If the users specified 'all', then just replace $envs with the list of all envs
 if [ "$envs" == "all" ]; then
-    envs="27,35,36,37,38,pypy2,pypy35"
+    envs="27,35,36,37,38,39,pypy2,pypy35"
 fi
 original_envs="$envs"
 envs=$(echo "$envs" | tr ',' '\n') # Split the env list on comma so we can loop through it
