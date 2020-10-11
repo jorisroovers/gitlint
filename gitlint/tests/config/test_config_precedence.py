@@ -31,9 +31,10 @@ class LintConfigPrecedenceTests(BaseTestCase):
         # to more easily test everything
         # Test that the config precedence is followed:
         # 1. commandline convenience flags
-        # 2. commandline -c flags
-        # 3. config file
-        # 4. default config
+        # 2. environment variables
+        # 3. commandline -c flags
+        # 4. config file
+        # 5. default config
         config_path = self.get_sample_path("config/gitlintconfig")
 
         # 1. commandline convenience flags
@@ -42,19 +43,26 @@ class LintConfigPrecedenceTests(BaseTestCase):
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
 
-        # 2. commandline -c flags
+        # 2. environment variables
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path],
+                                     env={"GITLINT_VERBOSITY": "3"})
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
+
+        # 3. commandline -c flags
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path])
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive)\n")
 
-        # 3. config file
+        # 4. config file
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--config", config_path])
             self.assertEqual(result.output, "")
             self.assertEqual(stderr.getvalue(), "1: T5\n")
 
-        # 4. default config
+        # 5. default config
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
             self.assertEqual(result.output, "")

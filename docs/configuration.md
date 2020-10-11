@@ -182,9 +182,10 @@ gitlint configuration is applied in the following order of precedence:
 1. Commit specific config (e.g.: `gitlint-ignore: all` in the commit message)
 2. Configuration Rules (e.g.: [ignore-by-title](/rules/#i1-ignore-by-title))
 3. Commandline convenience flags (e.g.:  `-vv`, `--silent`, `--ignore`)
-4. Commandline configuration flags (e.g.: `-c title-max-length=123`)
-5. Configuration file (local `.gitlint` file, or file specified using `-C`/`--config`)
-6. Default gitlint config
+4. Environment variables (e.g.: `GITLINT_VERBOSITY=3`)
+5. Commandline configuration flags (e.g.: `-c title-max-length=123`)
+6. Configuration file (local `.gitlint` file, or file specified using `-C`/`--config`)
+7. Default gitlint config
 
 ## General Options
 Below we outline all configuration options that modify gitlint's overall behavior. These options can be specified
@@ -194,23 +195,24 @@ using commandline flags or in `[general]` section in a `.gitlint` configuration 
 
 Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- false         | >= 0.1.0         | `--silent`
+Default value  |  gitlint version | commandline flag  | environment variable
+---------------|------------------|-------------------|-----------------------
+`False`        | >= 0.1.0         | `--silent`        | `GITLINT_SILENT`
 
 #### Examples
 ```sh
 # CLI
 gitlint --silent
+GITLINT_SILENT=1 gitlint  # using env variable
 ```
 
 ### verbosity
 
 Amount of output gitlint will show when printing errors.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- 3             | >= 0.1.0         | `-v`
+Default value  |  gitlint version | commandline flag  | environment variable 
+---------------|------------------|-------------------|-----------------------
+3              | >= 0.1.0         | `-v`              | `GITLINT_VERBOSITY`
 
 
 #### Examples
@@ -222,6 +224,7 @@ gitlint -v                     # even less   (level 1)
 gitlint --silent               # no output   (level 0)
 gitlint -c general.verbosity=1 # Set specific level
 gitlint -c general.verbosity=0 # Same as --silent
+GITLINT_VERBOSITY=2 gitlint    # using env variable
 ```
 ```ini
 # .gitlint
@@ -233,9 +236,9 @@ verbosity=2
 
 Whether or not to ignore merge commits.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- true          | >= 0.7.0         | Not Available
+Default value  |  gitlint version | commandline flag  | environment variable  
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.7.0         | Not Available     | Not Available  
 
 #### Examples
 ```sh
@@ -252,9 +255,9 @@ ignore-merge-commits=false
 
 Whether or not to ignore revert commits.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- true          | >= 0.13.0        | Not Available
+Default value  |  gitlint version | commandline flag  | environment variable   
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.13.0        | Not Available     | Not Available  
 
 #### Examples
 ```sh
@@ -271,9 +274,9 @@ ignore-revert-commits=false
 
 Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- true          | >= 0.9.0         | Not Available
+Default value  |  gitlint version | commandline flag  | environment variable  
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.9.0         | Not Available     | Not Available  
 
 #### Examples
 ```sh
@@ -290,9 +293,9 @@ ignore-fixup-commits=false
 
 Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- true          | >= 0.9.0         | Not Available
+Default value  |  gitlint version | commandline flag  | environment variable 
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.9.0         | Not Available     | Not Available  
 
 #### Examples
 ```sh
@@ -309,9 +312,9 @@ ignore-squash-commits=false
 
 Comma separated list of rules to ignore (by name or id).
 
-Default value              |  gitlint version | commandline flag  
----------------------------|------------------|-------------------
- [] (=empty list)          | >= 0.1.0         | `--ignore`
+Default value              |  gitlint version | commandline flag  | environment variable   
+---------------------------|------------------|-------------------|-----------------------
+ [] (=empty list)          | >= 0.1.0         | `--ignore`        | `GITLINT_IGNORE`
 
 #### Examples
 ```sh
@@ -319,6 +322,7 @@ Default value              |  gitlint version | commandline flag
 gitlint --ignore=body-min-length              # ignore single rule
 gitlint --ignore=T1,body-min-length           # ignore multiple rule
 gitlint -c general.ignore=T1,body-min-length  # different way of doing the same
+GITLINT_IGNORE=T1,body-min-length gitlint     # using env variable
 ```
 ```ini
 #.gitlint
@@ -330,14 +334,15 @@ ignore=T1,body-min-length
 
 Enable debugging output.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- false         | >= 0.7.1         | `--debug`
+Default value  |  gitlint version | commandline flag  | environment variable   
+---------------|------------------|-------------------|-----------------------
+ false         | >= 0.7.1         | `--debug`         | `GITLINT_DEBUG`
 
 #### Examples
 ```sh
 # CLI
 gitlint --debug
+GITLINT_DEBUG=1 gitlint # using env variable
 # --debug is special, the following does NOT work
 # gitlint -c general.debug=true
 ```
@@ -346,15 +351,16 @@ gitlint --debug
 
 Target git repository gitlint should be linting against.
 
-Default value              |  gitlint version | commandline flag  
----------------------------|------------------|-------------------
- (empty)                   | >= 0.8.0         | `--target`
+Default value              |  gitlint version | commandline flag  | environment variable   
+---------------------------|------------------|-------------------|-----------------------
+(empty)                    | >= 0.8.0         | `--target`        | `GITLINT_TARGET`
 
 #### Examples
 ```sh
 # CLI
 gitlint --target=/home/joe/myrepo/
 gitlint -c general.target=/home/joe/myrepo/  # different way of doing the same
+GITLINT_TARGET=/home/joe/myrepo/ gitlint     # using env variable
 ```
 ```ini
 #.gitlint
@@ -366,15 +372,16 @@ target=/home/joe/myrepo/
 
 Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 
-Default value              |  gitlint version | commandline flag  
----------------------------|------------------|-------------------
- (empty)                   | >= 0.8.0         | `--extra-path`
+Default value              |  gitlint version | commandline flag  | environment variable   
+---------------------------|------------------|-------------------|-----------------------
+ (empty)                   | >= 0.8.0         | `--extra-path`    | `GITLINT_EXTRA_PATH`
 
 #### Examples
 ```sh
 # CLI
 gitlint --extra-path=/home/joe/rules/
 gitlint -c general.extra-path=/home/joe/rules/  # different way of doing the same
+GITLINT_EXTRA_PATH=/home/joe/rules/ gitlint     # using env variable
 ```
 ```ini
 #.gitlint
@@ -384,17 +391,18 @@ extra-path=/home/joe/rules/
 
 ### contrib
 
-[Contrib rules](contrib_rules) to enable.
+Comma-separated list of [Contrib rules](contrib_rules) to enable (by name or id).
 
-Default value              |  gitlint version | commandline flag  
----------------------------|------------------|-------------------
- (empty)                   | >= 0.12.0        | `--contrib`
+Default value              |  gitlint version | commandline flag  | environment variable   
+---------------------------|------------------|-------------------|-----------------------
+ (empty)                   | >= 0.12.0        | `--contrib`       | `GITLINT_CONTRIB`
 
 #### Examples
 ```sh
 # CLI
 gitlint --contrib=contrib-title-conventional-commits,CC1
 gitlint -c general.contrib=contrib-title-conventional-commits,CC1  # different way of doing the same
+GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint     # using env variable
 ```
 ```ini
 #.gitlint
@@ -405,15 +413,16 @@ contrib=contrib-title-conventional-commits,CC1
 
 Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- false         | >= 0.12.0        | `--ignore-stdin`
+Default value  |  gitlint version | commandline flag  | environment variable   
+---------------|------------------|-------------------|-----------------------
+ false         | >= 0.12.0        | `--ignore-stdin`  | `GITLINT_IGNORE_STDIN`
 
 #### Examples
 ```sh
 # CLI
 gitlint --ignore-stdin
 gitlint -c general.ignore-stdin=true # different way of doing the same
+GITLINT_IGNORE_STDIN=1 gitlint       # using env variable
 ```
 ```ini
 #.gitlint
@@ -425,15 +434,16 @@ ignore-stdin=true
 
 Fetch additional meta-data from the local `repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
 
-Default value  |  gitlint version | commandline flag  
----------------|------------------|-------------------
- false         | >= 0.13.0        | `--staged`
+Default value  |  gitlint version | commandline flag  | environment variable   
+---------------|------------------|-------------------|-----------------------
+ false         | >= 0.13.0        | `--staged`        | `GITLINT_STAGED`
 
 #### Examples
 ```sh
 # CLI
 gitlint --staged
 gitlint -c general.staged=true # different way of doing the same
+GITLINT_STAGED=1 gitlint       # using env variable
 ```
 ```ini
 #.gitlint
