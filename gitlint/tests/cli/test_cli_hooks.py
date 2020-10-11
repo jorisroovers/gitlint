@@ -136,7 +136,7 @@ class CLIHookTests(BaseTestCase):
         """ Test for run-hook subcommand, answering 'e(dit)' after commit-hook """
 
         set_editors = [None, u"myeditor"]
-        expected_editors = [u"vim", u"myeditor"]
+        expected_editors = [u"vim -n", u"myeditor"]
         commit_messages = [u"WIP: höok edit 1", u"WIP: höok edit 2"]
 
         for i in range(0, len(set_editors)):
@@ -160,7 +160,7 @@ class CLIHookTests(BaseTestCase):
                         # exit code = number of violations
                         self.assertEqual(result.exit_code, 2)
 
-                        shell.assert_called_with([expected_editors[i], msg_filename])
+                        shell.assert_called_with(expected_editors[i] + " " + msg_filename)
                         self.assert_log_contains(u"DEBUG: gitlint.cli run-hook: editing commit message")
                         self.assert_log_contains(u"DEBUG: gitlint.cli run-hook: {0} {1}".format(expected_editors[i],
                                                                                                 msg_filename))
@@ -203,22 +203,36 @@ class CLIHookTests(BaseTestCase):
                     self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message accepted")
 
     @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: Test hook stdin tïtle\n")
-    def test_hook_stdin(self, _):
-        """ Test for passing stdin data to run-hook, equivalent of:
-            $ echo "Test hook stdin tïtle" | gitlint run-hook
+    def test_hook_stdin_violations(self, _):
+        """ Test for passing stdin data to run-hook, expecting some violations. Equivalent of:
+            $ echo "WIP: Test hook stdin tïtle" | gitlint run-hook
         """
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["run-hook"])
-            self.assertEqual(stderr.getvalue(), self.get_expected('cli/test_cli_hooks/test_hook_stdin_1_stderr'))
-            self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_stdin_1_stdout'))
+            expected_stderr = self.get_expected('cli/test_cli_hooks/test_hook_stdin_violations_1_stderr')
+            self.assertEqual(stderr.getvalue(), expected_stderr)
+            self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_stdin_violations_1_stdout'))
             # Hook will auto-abort because we're using stdin. Abort = exit code 1
             self.assertEqual(result.exit_code, 1)
+
+    @patch('gitlint.cli.get_stdin_data', return_value=u"Test tïtle\n\nTest bödy that is long enough")
+    def test_hook_stdin_no_violations(self, _):
+        """ Test for passing stdin data to run-hook, expecting *NO* violations, Equivalent of:
+            $ echo -e "Test tïtle\n\nTest bödy that is long enough" | gitlint run-hook
+        """
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["run-hook"])
+            self.assertEqual(stderr.getvalue(), "")  # no errors = no stderr output
+            expected_stdout = self.get_expected('cli/test_cli_hooks/test_hook_stdin_no_violations_1_stdout')
+            self.assertEqual(result.output, expected_stdout)
+            self.assertEqual(result.exit_code, 0)
 
     @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: Test hook config tïtle\n")
     def test_hook_config(self, _):
         """ Test that gitlint still respects config when running run-hook, equivalent of:
-            $ echo "Test hook stdin tïtle" | gitlint -c title-max-length.line-length=5 --ignore B6 run-hook
+            $ echo "WIP: Test hook config tïtle" | gitlint -c title-max-length.line-length=5 --ignore B6 run-hook
         """
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:

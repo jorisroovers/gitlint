@@ -53,6 +53,18 @@ class HookTests(BaseTestCase):
             stdin.put("{0}\n".format(response))
             self.response_index = (self.response_index + 1) % len(self.responses)
 
+    def test_commit_hook_no_violations(self):
+        test_filename = self.create_simple_commit(u"This ïs a title\n\nBody contënt that should work",
+                                                  out=self._interact, tty_in=True)
+
+        short_hash = self.get_last_commit_short_hash()
+        expected_output = ["gitlint: checking commit message...\n",
+                           "gitlint: \x1b[32mOK\x1b[0m (no violations in commit message)\n",
+                           u"[master %s] This ïs a title\n" % short_hash,
+                           " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
+                           u" create mode 100644 %s\n" % test_filename]
+        self.assertListEqual(expected_output, self.githook_output)
+
     def test_commit_hook_continue(self):
         self.responses = ["y"]
         test_filename = self.create_simple_commit(u"WIP: This ïs a title.\nContënt on the second line",

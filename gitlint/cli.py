@@ -23,7 +23,8 @@ from gitlint.shell import shell
 from gitlint.utils import ustr, LOG_FORMAT, IS_PY2
 
 DEFAULT_CONFIG_FILE = ".gitlint"
-DEFAULT_COMMIT_MSG_EDITOR = "vim"
+# -n: disable swap files. This fixes a vim error on windows (E303: Unable to open swap file for <path>)
+DEFAULT_COMMIT_MSG_EDITOR = "vim -n"
 
 # Since we use the return code to denote the amount of errors, we need to change the default click usage error code
 click.UsageError.exit_code = USAGE_ERROR_CODE
@@ -345,8 +346,16 @@ def run_hook(ctx):
         try:
             click.echo(u"gitlint: checking commit message...")
             ctx.invoke(lint)
-            click.echo(u"gitlint: " + click.style("OK", fg='green') + u" (no violations in commit message)")
         except click.exceptions.Exit as e:
+            # Flush stderr andstdout, this resolves an issue with output ordering in Cygwin
+            sys.stderr.flush()
+            sys.stdout.flush()
+
+            exit_code = e.exit_code
+            if exit_code == 0:
+                click.echo(u"gitlint: " + click.style("OK", fg='green') + u" (no violations in commit message)")
+                continue
+
             click.echo(u"-----------------------------------------------")
             click.echo(u"gitlint: " + click.style("Your commit message contains the above violations.", fg='red'))
 
@@ -376,7 +385,7 @@ def run_hook(ctx):
 
             if value == "y":
                 LOG.debug("run-hook: commit message accepted")
-                ctx.exit(0)
+                exit_code = 0
             elif value == "e":
                 LOG.debug("run-hook: editing commit message")
                 msg_filename = ctx.obj.msg_filename
@@ -385,10 +394,10 @@ def run_hook(ctx):
                     editor = os.environ.get("EDITOR", DEFAULT_COMMIT_MSG_EDITOR)
                     msg_filename_path = os.path.realpath(msg_filename.name)
                     LOG.debug("run-hook: %s %s", editor, msg_filename_path)
-                    shell([editor, msg_filename_path])
+                    shell(editor + " " + msg_filename_path)
                 else:
                     click.echo(u"Editing only possible when --msg-filename is specified.")
-                    ctx.exit(e.exit_code)
+                    ctx.exit(exit_code)
             elif value == "n":
                 LOG.debug("run-hook: commit message declined")
                 click.echo(u"Commit aborted.")
@@ -396,9 +405,9 @@ def run_hook(ctx):
                 click.echo(u"-----------------------------------------------")
                 click.echo(ctx.obj.gitcontext.commits[0].message.full)
                 click.echo(u"-----------------------------------------------")
-                ctx.exit(e.exit_code)
+                ctx.exit(exit_code)
 
-            exit_code = e.exit_code
+    ctx.exit(exit_code)
 
 
 @cli.command("generate-config")
