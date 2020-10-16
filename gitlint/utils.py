@@ -1,4 +1,5 @@
 # pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
+import codecs
 import platform
 import sys
 import os
@@ -56,13 +57,14 @@ USE_SH_LIB = use_sh_library()
 def getpreferredencoding():
     """ Modified version of local.getpreferredencoding() that takes into account LC_ALL, LC_CTYPE, LANG env vars
         on windows and falls back to UTF-8. """
-    default_encoding = locale.getpreferredencoding() or "UTF-8"
+    fallback_encoding = "UTF-8"
+    default_encoding = locale.getpreferredencoding() or fallback_encoding
 
     # On Windows, we mimic git/linux by trying to read the LC_ALL, LC_CTYPE, LANG env vars manually
     # (on Linux/MacOS the `getpreferredencoding()` call will take care of this).
     # We fallback to UTF-8
     if PLATFORM_IS_WINDOWS:
-        default_encoding = "UTF-8"
+        default_encoding = fallback_encoding
         for env_var in ["LC_ALL", "LC_CTYPE", "LANG"]:
             encoding = os.environ.get(env_var, False)
             if encoding:
@@ -74,6 +76,15 @@ def getpreferredencoding():
                 else:
                     default_encoding = encoding
                 break
+
+        # We've determined what encoding the user *wants*, let's now check if it's actually a valid encoding on the
+        # system. If not, fallback to UTF-8.
+        # This scenario is fairly common on Windows where git sets LC_CTYPE=C when invoking the commit-msg hook, which
+        # is not a valid encoding in Python on Windows.
+        try:
+            codecs.lookup(default_encoding)
+        except LookupError:
+            default_encoding = fallback_encoding
 
     return default_encoding
 
