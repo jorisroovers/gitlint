@@ -15,7 +15,7 @@ cat examples/commit-message-1 | gitlint --extra-path examples/
 ```
 
 The `SignedOffBy` user-defined `CommitRule` was discovered by gitlint when it scanned
-[examples/gitlint/my_commit_rules.py](https://github.com/jorisroovers/gitlint/blob/master/examples/my_commit_rules.py),
+[examples/gitlint/my_commit_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_commit_rules.py),
 which is part of the examples directory that was passed via `--extra-path`:
 
 ```python
@@ -36,7 +36,7 @@ class SignedOffBy(CommitRule):
     id = "UC2"
 
     def validate(self, commit):
-        self.log.debug("SignedOffBy: This line will be visible when running `gitlint --debug`")
+        self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")
 
         for line in commit.message.body:
             if line.startswith("Signed-Off-By"):
@@ -63,7 +63,7 @@ $ gitlint --debug --extra-path examples/
 
 !!! Note
     In most cases it's really the easiest to just copy an example from the
-    [examples](https://github.com/jorisroovers/gitlint/tree/master/examples) directory and modify it to your needs.
+    [examples](https://github.com/jorisroovers/gitlint/tree/main/examples) directory and modify it to your needs.
     The remainder of this page contains the technical details, mostly for reference.
 
 ## Line and Commit Rules
@@ -72,7 +72,7 @@ act on the entire commit at once. Once the rules are discovered, gitlint will au
 to the entire commit. This happens exactly once per commit.
 
 A `CommitRule` contrasts with a `LineRule`
-(see e.g.: [examples/my_line_rules.py](https://github.com/jorisroovers/gitlint/blob/master/examples/my_line_rules.py))
+(see e.g.: [examples/my_line_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_line_rules.py))
 in that a `CommitRule` is only applied once on an entire commit while a `LineRule` is applied for every line in the commit
 (you can also apply it once to the title using a `target` - see the examples section below).
 
@@ -88,7 +88,7 @@ In terms of code, writing your own `CommitRule` or `LineRule` is very similar.
 The only 2 differences between a `CommitRule` and a `LineRule` are the parameters of the `validate(...)` method and the extra
 `target` attribute that `LineRule` requires.
 
-Consider the following `CommitRule` that can be found in [examples/my_commit_rules.py](https://github.com/jorisroovers/gitlint/blob/master/examples/my_commit_rules.py):
+Consider the following `CommitRule` that can be found in [examples/my_commit_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_commit_rules.py):
 
 ```python
 # -*- coding: utf-8 -*-
@@ -108,16 +108,18 @@ class SignedOffBy(CommitRule):
     id = "UC2"
 
     def validate(self, commit):
+        self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")
+
         for line in commit.message.body:
             if line.startswith("Signed-Off-By"):
-                return []
+                return
 
-        msg = "Body does not contain a 'Signed-Off-By Line'"
+        msg = "Body does not contain a 'Signed-Off-By' line"
         return [RuleViolation(self.id, msg, line_nr=1)]
 ```
 Note the use of the `name` and `id` class attributes and the `validate(...)` method taking a single `commit` parameter.
 
-Contrast this with the following `LineRule` that can be found in [examples/my_line_rules.py](https://github.com/jorisroovers/gitlint/blob/master/examples/my_line_rules.py):
+Contrast this with the following `LineRule` that can be found in [examples/my_line_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_line_rules.py):
 
 ```python
 # -*- coding: utf-8 -*-
@@ -143,15 +145,19 @@ class SpecialChars(LineRule):
     options_spec = [ListOption('special-chars', ['$', '^', '%', '@', '!', '*', '(', ')'],
                                "Comma separated list of characters that should not occur in the title")]
 
-    def validate(self, line, commit):
+    def validate(self, line, _commit):
+        self.log.debug("SpecialChars: This will be visible when running `gitlint --debug`")
+
         violations = []
-        # option values can be accessed via self.options
+        # options can be accessed by looking them up by their name in self.options
         for char in self.options['special-chars'].value:
             if char in line:
-                violation = RuleViolation(self.id, "Title contains the special character '{}'".format(char), line)
+                msg = "Title contains the special character '{0}'".format(char)
+                violation = RuleViolation(self.id, msg, line)
                 violations.append(violation)
 
         return violations
+
 ```
 
 Note the following 2 differences:
@@ -292,6 +298,8 @@ Option Class      | Use for
 
 ## Configuration Rules
 
+_Introduced in gitlint v0.14.0_
+
 Configuration rules are special rules that are applied once per commit and *BEFORE* any other rules are run.
 Configuration rules are meant to dynamically change gitlint's configuration and/or the commit that is about to be
 linted.
@@ -307,7 +315,7 @@ specific circumstances.
     3. Whether you can implement your use-case using a regular Commit or Line user-defined rule (see above).
 
 
-As with other user-defined rules, the easiest way to get started is by copying [`my_configuration.py` from the examples directory](https://github.com/jorisroovers/gitlint/tree/master/examples/my_configuration_rules.py) and modifying it to fit your need.
+As with other user-defined rules, the easiest way to get started is by copying [`my_configuration.py` from the examples directory](https://github.com/jorisroovers/gitlint/tree/main/examples/my_configuration_rules.py) and modifying it to fit your need.
 
 ```python
 # -*- coding: utf-8 -*-
@@ -333,7 +341,7 @@ class ReleaseConfigurationRule(ConfigurationRule):
     options_spec = [IntOption('custom-verbosity', 2, "Gitlint verbosity for release commits")]
 
     def apply(self, config, commit):
-        self.log.debug("ReleaseConfigurationRule: This line will be visible when running `gitlint --debug`")
+        self.log.debug("ReleaseConfigurationRule: This will be visible when running `gitlint --debug`")
 
         # If the commit title starts with 'Release', we want to modify
         # how all subsequent rules interpret that commit
@@ -367,18 +375,18 @@ class ReleaseConfigurationRule(ConfigurationRule):
 ```
 
 For all available properties and methods on the `config` object, have a look at the
-[LintConfig class](https://github.com/jorisroovers/gitlint/blob/master/gitlint/config.py). Please do not use any
+[LintConfig class](https://github.com/jorisroovers/gitlint/blob/main/gitlint/config.py). Please do not use any
 properties or methods starting with an underscore, as those are subject to change.
 
 
 ## Rule requirements
 
 As long as you stick with simple rules that are similar to the sample user-defined rules (see the
-[examples](https://github.com/jorisroovers/gitlint/blob/master/examples/my_commit_rules.py) directory), gitlint
+[examples](https://github.com/jorisroovers/gitlint/blob/main/examples/my_commit_rules.py) directory), gitlint
 should be able to discover and execute them. While clearly you can run any python code you want in your rules,
 you might run into some issues if you don't follow the conventions that gitlint requires.
 
-While the [rule finding source-code](https://github.com/jorisroovers/gitlint/blob/master/gitlint/rule_finder.py) is the
+While the [rule finding source-code](https://github.com/jorisroovers/gitlint/blob/main/gitlint/rule_finder.py) is the
 ultimate source of truth, here are some of the requirements that gitlint enforces.
 
 ### Rule class requirements

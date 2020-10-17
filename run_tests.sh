@@ -190,7 +190,7 @@ run_stats(){
     echo "    Integration Tests: ${nr_integration_tests//[[:space:]]/}"
     echo "*** Git ***"
     echo "    Commits: $(git rev-list --all --count)"
-    echo "    Commits (master): $(git rev-list master --count)"
+    echo "    Commits (main): $(git rev-list main --count)"
     echo "    First commit: $(git log --pretty="%aD" $(git rev-list --max-parents=0 HEAD))"
     echo "    Contributors: $(git log --format='%aN' | sort -u | wc -l | tr -d ' ')"
     echo "    Releases (tags): $(git tag --list | wc -l | tr -d ' ')"

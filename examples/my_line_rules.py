@@ -39,13 +39,14 @@ class SpecialChars(LineRule):
                                "Comma separated list of characters that should not occur in the title")]
 
     def validate(self, line, _commit):
-        self.log.debug("SpecialChars: This line will be visible when running `gitlint --debug`")
+        self.log.debug("SpecialChars: This will be visible when running `gitlint --debug`")
 
         violations = []
         # options can be accessed by looking them up by their name in self.options
         for char in self.options['special-chars'].value:
             if char in line:
-                violation = RuleViolation(self.id, "Title contains the special character '{0}'".format(char), line)
+                msg = "Title contains the special character '{0}'".format(char)
+                violation = RuleViolation(self.id, msg, line)
                 violations.append(violation)
 
         return violations

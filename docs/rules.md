@@ -1,9 +1,12 @@
 # Overview
 
-The table below shows an overview of all gitlint's built-in rules.
-Note that you can also [write your own user-defined rule](user_defined_rules.md) in case you don't find
+The table below shows an overview of all gitlint's built-in rules, with more specific details further down the page.
+
+Gitlint also has [community **contrib**uted rules](contrib_rules.md) which are not listed here as they're disabled by default.
+
+In addition, you can also [write your own user-defined rule](user_defined_rules.md) in case you don't find
 what you're looking for.
-The rest of this page contains details on the available configuration options for each built-in rule.
+
 
 ID    | Name                        | gitlint version   | Description
 ------|-----------------------------|-------------------|-------------------------------------------

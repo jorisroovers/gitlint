@@ -247,7 +247,7 @@ future versions of gitlint might fix this and not require the `--pretty` argumen
 
 _Introduced in gitlint v0.9.0 (experimental in v0.8.0)_
 
-Gitlint allows users to commit a number of commits at once like so:
+Gitlint allows users to lint a number of commits at once like so:
 
 ```sh
 # Lint a specific commit range:
@@ -261,10 +261,8 @@ gitlint --commits "019cf40^...019cf40"
 The `--commits` flag takes a **single** refspec argument or commit range. Basically, any range that is understood
 by [git rev-list](https://git-scm.com/docs/git-rev-list) as a single argument will work.
 
-Prior to v0.8.1 gitlint didn't support this feature. However, older versions of gitlint can still lint a range or set
-of commits at once by creating a simple bash script that pipes the commit messages one by one into gitlint. This
-approach can still be used with newer versions of gitlint in case `--commits` doesn't provide the flexibility you
-are looking for.
+For cases where the `--commits` option doesn't provide the flexibility you need, you can always use a simple shell
+script to lint an arbitrary set of commits, like shown in the example below.
 
 ```sh
 #!/bin/sh
@@ -403,15 +401,15 @@ $ gitlint
 
 Named rules are further treated identical to all other rules in gitlint:
 
-- you can reference by their full name, when e.g. adding them to your `ignore` configuration
+- You can reference them by their full name, when e.g. adding them to your `ignore` configuration
 ```ini
 # .gitlint file example
 [general]
 ignore=T5:more-words,title-must-not-contain-word:extra-words
 ```
 
-- you can use them to instantiate multiple of the same [user-defined rule](user_defined_rules.md)
-- you can configure them using [any of the ways you can configure regular gitlint rules](configuration.md)
+- You can use them to instantiate multiple of the same [user-defined rule](user_defined_rules.md)
+- You can configure them using [any of the ways you can configure regular gitlint rules](configuration.md)
 
 
 ## Exit codes
