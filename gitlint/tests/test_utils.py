@@ -60,19 +60,23 @@ class UtilsTests(BaseTestCase):
         patched_env.get.side_effect = mocked_get
 
         # Assert getpreferredencoding reads env vars in order: LC_ALL, LC_CTYPE, LANG
-        mock_env = {"LC_ALL": u"lc_all_välue", "LC_CTYPE": u"foo", "LANG": u"bar"}
-        self.assertEqual(utils.getpreferredencoding(), u"lc_all_välue")
-        mock_env = {"LC_CTYPE": u"lc_ctype_välue", "LANG": u"hur"}
-        self.assertEqual(utils.getpreferredencoding(), u"lc_ctype_välue")
-        mock_env = {"LANG": u"lang_välue"}
-        self.assertEqual(utils.getpreferredencoding(), u"lang_välue")
+        mock_env = {"LC_ALL": u"ASCII", "LC_CTYPE": u"UTF-16", "LANG": u"CP1251"}
+        self.assertEqual(utils.getpreferredencoding(), u"ASCII")
+        mock_env = {"LC_CTYPE": u"UTF-16", "LANG": u"CP1251"}
+        self.assertEqual(utils.getpreferredencoding(), u"UTF-16")
+        mock_env = {"LANG": u"CP1251"}
+        self.assertEqual(utils.getpreferredencoding(), u"CP1251")
 
         # Assert split on dot
-        mock_env = {"LANG": u"foo.bär"}
-        self.assertEqual(utils.getpreferredencoding(), u"bär")
+        mock_env = {"LANG": u"foo.UTF-16"}
+        self.assertEqual(utils.getpreferredencoding(), u"UTF-16")
 
         # assert default encoding is UTF-8
         mock_env = {}
         self.assertEqual(utils.getpreferredencoding(), "UTF-8")
         mock_env = {"FOO": u"föo"}
         self.assertEqual(utils.getpreferredencoding(), "UTF-8")
+
+        # assert fallback encoding is UTF-8 in case we set an unavailable encoding
+        mock_env = {"LC_ALL": u"foo"}
+        self.assertEqual(utils.getpreferredencoding(), u"UTF-8")
