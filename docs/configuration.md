@@ -25,7 +25,7 @@ The block below shows a sample `.gitlint` file. Details about rule config option
 # one rule and each key in it is an option for that specific rule.
 #
 # Rules and sections can be referenced by their full name or by id. For example
-# section "[body-max-line-length]" could be written as "[B1]". Full section names are
+# section "[body-max-line-length]" could also be written as "[B1]". Full section names are
 # used in here for clarity.
 # Rule reference documentation: http://jorisroovers.github.io/gitlint/rules/
 #
@@ -70,8 +70,8 @@ line-length=80
 
 # Conversely, you can also enforce minimal length of a title with the
 # "title-min-length" rule:
-# [title-min-length]
-# min-length=5
+[title-min-length]
+min-length=5
 
 [title-must-not-contain-word]
 # Comma-separated list of words that should not occur in the title. Matching is case
@@ -112,7 +112,7 @@ regex=My-Commit-Tag: foo$
 [author-valid-email]
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit author email address should be matched to
-# For example, use the following regex if you only want to allow email addresses from foo.com
+# E.g.: For example, use the following regex if you only want to allow email addresses from foo.com
 regex=[^@]+@foo.com
 
 [ignore-by-title]
@@ -237,82 +237,6 @@ GITLINT_VERBOSITY=2 gitlint    # using env variable
 verbosity=2
 ```
 
-### ignore-merge-commits
-
-Whether or not to ignore merge commits.
-
-Default value  |  gitlint version | commandline flag  | environment variable  
----------------|------------------|-------------------|-----------------------
- true          | >= 0.7.0         | Not Available     | Not Available  
-
-#### Examples
-```sh
-# CLI
-gitlint -c general.ignore-merge-commits=false
-```
-```ini
-#.gitlint
-[general]
-ignore-merge-commits=false
-```
-
-### ignore-revert-commits
-
-Whether or not to ignore revert commits.
-
-Default value  |  gitlint version | commandline flag  | environment variable   
----------------|------------------|-------------------|-----------------------
- true          | >= 0.13.0        | Not Available     | Not Available  
-
-#### Examples
-```sh
-# CLI
-gitlint -c general.ignore-revert-commits=false
-```
-```ini
-#.gitlint
-[general]
-ignore-revert-commits=false
-```
-
-### ignore-fixup-commits
-
-Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
-
-Default value  |  gitlint version | commandline flag  | environment variable  
----------------|------------------|-------------------|-----------------------
- true          | >= 0.9.0         | Not Available     | Not Available  
-
-#### Examples
-```sh
-# CLI
-gitlint -c general.ignore-fixup-commits=false
-```
-```ini
-#.gitlint
-[general]
-ignore-fixup-commits=false
-```
-
-### ignore-squash-commits
-
-Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
-
-Default value  |  gitlint version | commandline flag  | environment variable 
----------------|------------------|-------------------|-----------------------
- true          | >= 0.9.0         | Not Available     | Not Available  
-
-#### Examples
-```sh
-# CLI
-gitlint -c general.ignore-squash-commits=false
-```
-```ini
-#.gitlint
-[general]
-ignore-squash-commits=false
-```
-
 ### ignore
 
 Comma separated list of rules to ignore (by name or id).
@@ -414,6 +338,28 @@ GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint     # using env v
 [general]
 contrib=contrib-title-conventional-commits,CC1
 ```
+
+### staged
+
+Fetch additional meta-data from the local `repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
+
+Default value  |  gitlint version | commandline flag  | environment variable   
+---------------|------------------|-------------------|-----------------------
+ false         | >= 0.13.0        | `--staged`        | `GITLINT_STAGED`
+
+#### Examples
+```sh
+# CLI
+gitlint --staged
+gitlint -c general.staged=true # different way of doing the same
+GITLINT_STAGED=1 gitlint       # using env variable
+```
+```ini
+#.gitlint
+[general]
+staged=true
+```
+
 ### ignore-stdin
 
 Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
@@ -435,23 +381,78 @@ GITLINT_IGNORE_STDIN=1 gitlint       # using env variable
 ignore-stdin=true
 ```
 
-### staged
+### ignore-merge-commits
 
-Fetch additional meta-data from the local `repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
+Whether or not to ignore merge commits.
 
-Default value  |  gitlint version | commandline flag  | environment variable   
+Default value  |  gitlint version | commandline flag  | environment variable  
 ---------------|------------------|-------------------|-----------------------
- false         | >= 0.13.0        | `--staged`        | `GITLINT_STAGED`
+ true          | >= 0.7.0         | Not Available     | Not Available  
 
 #### Examples
 ```sh
 # CLI
-gitlint --staged
-gitlint -c general.staged=true # different way of doing the same
-GITLINT_STAGED=1 gitlint       # using env variable
+gitlint -c general.ignore-merge-commits=false
 ```
 ```ini
 #.gitlint
 [general]
-staged=true
+ignore-merge-commits=false
+```
+
+### ignore-revert-commits
+
+Whether or not to ignore revert commits.
+
+Default value  |  gitlint version | commandline flag  | environment variable   
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.13.0        | Not Available     | Not Available  
+
+#### Examples
+```sh
+# CLI
+gitlint -c general.ignore-revert-commits=false
+```
+```ini
+#.gitlint
+[general]
+ignore-revert-commits=false
+```
+
+### ignore-fixup-commits
+
+Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
+
+Default value  |  gitlint version | commandline flag  | environment variable  
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.9.0         | Not Available     | Not Available  
+
+#### Examples
+```sh
+# CLI
+gitlint -c general.ignore-fixup-commits=false
+```
+```ini
+#.gitlint
+[general]
+ignore-fixup-commits=false
+```
+
+### ignore-squash-commits
+
+Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
+
+Default value  |  gitlint version | commandline flag  | environment variable 
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.9.0         | Not Available     | Not Available  
+
+#### Examples
+```sh
+# CLI
+gitlint -c general.ignore-squash-commits=false
+```
+```ini
+#.gitlint
+[general]
+ignore-squash-commits=false
 ```

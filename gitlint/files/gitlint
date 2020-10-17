@@ -4,7 +4,7 @@
 # one rule and each key in it is an option for that specific rule.
 #
 # Rules and sections can be referenced by their full name or by id. For example
-# section "[body-max-line-length]" could be written as "[B1]". Full section names are
+# section "[body-max-line-length]" could also be written as "[B1]". Full section names are
 # used in here for clarity.
 #
 # [general]

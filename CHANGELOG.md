@@ -1,23 +1,36 @@
 # Changelog #
 
-## v0.14.0 (TBD) ##
-- **IMPORTANT:** Gitlint 0.14.x will be the last gitlint release to support Python 2.7 and Python 3.5, as [both are EOL](https://endoflife.date/python) which makes them hard to keep supporting. 
-- [Named Rules](TODO) allow users to have multiple instances of the same rule active at the same time. This is useful when you want to enforce the same rule multiple times but with different options.
-- [User-defined Configuration Rules](TODO) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
+## v0.14.0 (2020-10-24) ##
+
+Contributors:
+Special thanks to all contributors for this release, in particular [@mrshu](https://github.com/mrshu), [@glasserc](https://github.com/glasserc), [@strk](https://github.com/strk), [@chgl](https://github.com/chgl), [@melg8](https://github.com/melg8) and [@sigmavirus24](https://github.com/sigmavirus24).
+
+
+- **IMPORTANT: Gitlint 0.14.x will be the last gitlint release to support Python 2.7 and Python 3.5, as [both are EOL](https://endoflife.date/python) which makes it difficult to keep supporting them.**
 - Python 3.9 support
-- Most general options can now be set through environment variables (e.g. set the `general.ignore` option via `GITLINT_IGNORE=T1,T2`). The list of available environment variables can be found in the [configuration documentation](TODO).
-- Users can now use `self.log.debug("my message")` for debugging purposes in their user-defined rules
-- Breaking: User-defined rule id's can no longer start with 'I', as those are reserved for built-in gitlint ignore rules.
-- **New Rule**: [title-min-length](TODO) enforces a minimum length on titles (default: 5 chars) ([#130](https://github.com/jorisroovers/gitlint/issues/138))
-- **New Rule**: [ignore-body-lines](TODO) allows users to
-[ignore parts of a commit](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
-the lines in a commit message body. ([#126](https://github.com/jorisroovers/gitlint/issues/126)).
-- **New Rule**: [body-match-regex](TODO) allows users to enforce that the commit-msg body matches a given regex ([#130](https://github.com/jorisroovers/gitlint/issues/126))
+- **New Rule**: [title-min-length](http://jorisroovers.github.io/gitlint/rules/#t8-title-min-length) enforces a minimum length on titles (default: 5 chars) ([#138](https://github.com/jorisroovers/gitlint/issues/138))
+- **New Rule**: [body-match-regex](http://jorisroovers.github.io/gitlint/rules/#b8-body-match-regex) allows users to enforce that the commit-msg body matches a given regex ([#130](https://github.com/jorisroovers/gitlint/issues/130))
+- **New Rule**: [ignore-body-lines](http://jorisroovers.github.io/gitlint/rules/#i3-ignore-body-lines) allows users to
+[ignore parts of a commit](http://jorisroovers.github.io/gitlint/gitlint/#ignoring-commits) by matching a regex against
+the lines in a commit message body ([#126](https://github.com/jorisroovers/gitlint/issues/126))
+- [Named Rules](http://jorisroovers.github.io/gitlint/#named-rules) allow users to have multiple instances of the same rule active at the same time. This is useful when you want to enforce the same rule multiple times but with different options ([#113](https://github.com/jorisroovers/gitlint/issues/130), [#66](https://github.com/jorisroovers/gitlint/issues/130))
+- [User-defined Configuration Rules](http://jorisroovers.github.io/gitlint/user_defined_rules/#configuration-rules) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
+- The `commit-msg` hook has been re-written in Python (it contained a lot of Bash before), fixing a number of platform specific issues. Existing users will need to reinstall their hooks (`gitlint uninstall-hook; gitlint install-hook`) to make use of this.
+- Most general options can now be set through environment variables (e.g. set the `general.ignore` option via `GITLINT_IGNORE=T1,T2`). The list of available environment variables can be found in the [configuration documentation](http://jorisroovers.github.io/gitlint/configuration).
+- Users can now use `self.log.debug("my message")` for debugging purposes in their user-defined rules. Debug messages will show up when running `gitlint --debug`.
+- **Breaking**: User-defined rule id's can no longer start with 'I', as those are reserved for [built-in gitlint ignore rules](http://jorisroovers.github.io/gitlint/rules/#i1-ignore-by-title).
+-  New `RegexOption` rule [option type for use in user-defined rules](http://jorisroovers.github.io/gitlint/user_defined_rules/#options). By using the `RegexOption`, regular expressions are pre-validated at gitlint startup and compiled only once which is much more efficient when linting multiple commits.
 - Bugfixes:
-  -  Options can now actually be set to `None` (from code) to make them optional.
-  -  Ignore rules no longer have "None" as default regex, but an empty regex - effectively disabling them by default (as intended).
--  New `RegexOption` rule option type for use in user-defined rules. By using the `RegexOption`, regular expressions are pre-validated at gitlint startup and compiled only once which is much more efficient compared when linting multiple commits.
-- Minor performance improvement: Removed some unneccessary regex matching
+  -  Improved UTF-8 fallback on Windows (ongoing - [#96](https://github.com/jorisroovers/gitlint/issues/96))
+  - Windows users can now use the 'edit' function of the `commit-msg` hook ([#94](https://github.com/jorisroovers/gitlint/issues/94))
+  -  Doc update: Users should use `--ulimit nofile=1024` when invoking gitlint using Docker ([#129](https://github.com/jorisroovers/gitlint/issues/129))
+  - The `commit-msg` hook was broken in Ubuntu's gitlint package due to a python/python3 mismatch ([#127](https://github.com/jorisroovers/gitlint/issues/127))
+  - Better error message when no git username is set ([#149](https://github.com/jorisroovers/gitlint/issues/149))
+  - Options can now actually be set to `None` (from code) to make them optional.
+  -  Ignore rules no longer have `"None"` as default regex, but an empty regex - effectively disabling them by default (as intended).
+- Contrib Rules:
+  - Added 'ci' and 'build' to conventional commit types ([#135](https://github.com/jorisroovers/gitlint/issues/135))
+- Under-the-hood: minor performance improvements (removed some unnecessary regex matching), test improvements, improved debug logging, CI runs on pull requests, PR request template.
 
 ## v0.13.1 (2020-02-26)
 
