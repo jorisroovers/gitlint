@@ -243,6 +243,20 @@ class TitleRegexMatches(LineRule):
             return [RuleViolation(self.id, violation_msg, title)]
 
 
+class TitleMinLength(LineRule):
+    name = "title-min-length"
+    id = "T8"
+    target = CommitMessageTitle
+    options_spec = [IntOption('min-length', 5, "Minimum required title length")]
+
+    def validate(self, title, _commit):
+        min_length = self.options['min-length'].value
+        actual_length = len(title)
+        if actual_length < min_length:
+            violation_message = "Title is too short ({0}<{1})".format(actual_length, min_length)
+            return [RuleViolation(self.id, violation_message, title, 1)]
+
+
 class BodyMaxLineLength(MaxLineLength):
     name = "body-max-line-length"
     id = "B1"

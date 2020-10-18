@@ -39,6 +39,8 @@ target: {target}
      words=WIP,bögus
   T7: title-match-regex
      regex=None
+  T8: title-min-length
+     min-length=5
   B1: body-max-line-length
      line-length=80
   B5: body-min-length

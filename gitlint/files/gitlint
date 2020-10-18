@@ -43,6 +43,11 @@
 # [title-max-length]
 # line-length=50
 
+# Conversely, you can also enforce minimal length of a title with the
+# "title-min-length" rule:
+# [title-min-length]
+# min-length=5
+
 # [title-must-not-contain-word]
 # Comma-separated list of words that should not occur in the title. Matching is case
 # insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING"
