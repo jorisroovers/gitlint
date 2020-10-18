@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption, ListOption
 from gitlint import utils
 
 
 """
+Full details on user-defined rules: https://jorisroovers.com/gitlint/user_defined_rules
+
 The classes below are examples of user-defined CommitRules. Commit rules are gitlint rules that
 act on the entire commit at once. Once the rules are discovered, gitlint will automatically take care of applying them
 to the entire commit. This happens exactly once per commit.
@@ -28,6 +32,8 @@ class BodyMaxLineCount(CommitRule):
     options_spec = [IntOption('max-line-count', 3, "Maximum body line count")]
 
     def validate(self, commit):
+        self.log.debug("BodyMaxLineCount: This line will be visible when running `gitlint --debug`")
+
         line_count = len(commit.message.body)
         max_line_count = self.options['max-line-count'].value
         if line_count > max_line_count:
@@ -47,6 +53,8 @@ class SignedOffBy(CommitRule):
     id = "UC2"
 
     def validate(self, commit):
+        self.log.debug("SignedOffBy: This line will be visible when running `gitlint --debug`")
+
         for line in commit.message.body:
             if line.startswith("Signed-Off-By"):
                 return
@@ -69,6 +77,8 @@ class BranchNamingConventions(CommitRule):
     options_spec = [ListOption('branch-prefixes', ["feature/", "hotfix/", "release/"], "Allowed branch prefixes")]
 
     def validate(self, commit):
+        self.log.debug("BranchNamingConventions: This line will be visible when running `gitlint --debug`")
+
         violations = []
         allowed_branch_prefixes = self.options['branch-prefixes'].value
         for branch in commit.branches:

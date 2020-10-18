@@ -1,0 +1,5 @@
+gitlint: checking commit message...
+-----------------------------------------------
+gitlint: Your commit message contains the above violations.
+Continue with commit anyways (this keeps the current commit message)? [y(es)/n(no)/e(dit)] 
+Aborted!

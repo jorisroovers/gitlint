@@ -3,8 +3,7 @@
 # on gitlint internals for our integration testing framework.
 
 import subprocess
-import sys
-from qa.utils import ustr, USE_SH_LIB
+from qa.utils import ustr, USE_SH_LIB, IS_PY2
 
 if USE_SH_LIB:
     from sh import git, echo, gitlint  # pylint: disable=unused-import,no-name-in-module,import-error
@@ -59,7 +58,7 @@ else:
         return ustr(result)
 
     def _exec(*args, **kwargs):
-        if sys.version_info[0] == 2:
+        if IS_PY2:
             no_command_error = OSError  # noqa pylint: disable=undefined-variable,invalid-name
         else:
             no_command_error = FileNotFoundError  # noqa pylint: disable=undefined-variable
@@ -68,6 +67,8 @@ else:
         popen_kwargs = {'stdout': pipe, 'stderr': pipe, 'shell': kwargs.get('_tty_out', False)}
         if '_cwd' in kwargs:
             popen_kwargs['cwd'] = kwargs['_cwd']
+        if '_env' in kwargs:
+            popen_kwargs['env'] = kwargs['_env']
 
         try:
             p = subprocess.Popen(args, **popen_kwargs)

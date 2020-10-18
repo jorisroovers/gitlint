@@ -178,3 +178,49 @@ class BodyRuleTests(BaseTestCase):
         violations = rule.validate(commit)
         expected_violation_2 = rules.RuleViolation("B7", "Body does not mention changed file 'bar.txt'", None, 4)
         self.assertEqual([expected_violation_2, expected_violation], violations)
+
+    def test_body_match_regex(self):
+        # We intentionally add 2 newlines at the end of our commit message as that's how git will pass the
+        # message. This way we also test that the rule strips off the last line.
+        commit = self.gitcommit(u"US1234: åbc\nIgnored\nBödy\nFöo\nMy-Commit-Tag: föo\n\n")
+
+        # assert no violation on default regex (=everything allowed)
+        rule = rules.BodyRegexMatches()
+        violations = rule.validate(commit)
+        self.assertIsNone(violations)
+
+        # assert no violation on matching regex
+        # (also note that first body line - in between title and rest of body - is ignored)
+        rule = rules.BodyRegexMatches({'regex': u"^Bödy(.*)"})
+        violations = rule.validate(commit)
+        self.assertIsNone(violations)
+
+        # assert we can do end matching (and last empty line is ignored)
+        # (also note that first body line - in between title and rest of body - is ignored)
+        rule = rules.BodyRegexMatches({'regex': u"My-Commit-Tag: föo$"})
+        violations = rule.validate(commit)
+        self.assertIsNone(violations)
+
+        # common use-case: matching that a given line is present
+        rule = rules.BodyRegexMatches({'regex': u"(.*)Föo(.*)"})
+        violations = rule.validate(commit)
+        self.assertIsNone(violations)
+
+        # assert violation on non-matching body
+        rule = rules.BodyRegexMatches({'regex': u"^Tëst(.*)Foo"})
+        violations = rule.validate(commit)
+        expected_violation = rules.RuleViolation("B8", u"Body does not match regex (^Tëst(.*)Foo)", None, 6)
+        self.assertListEqual(violations, [expected_violation])
+
+        # assert no violation on None regex
+        rule = rules.BodyRegexMatches({'regex': None})
+        violations = rule.validate(commit)
+        self.assertIsNone(violations)
+
+        # Assert no issues when there's no body or a weird body variation
+        bodies = [u"åbc", u"åbc\n", u"åbc\nföo\n", u"åbc\n\n", u"åbc\nföo\nblå", u"åbc\nföo\nblå\n"]
+        for body in bodies:
+            commit = self.gitcommit(body)
+            rule = rules.BodyRegexMatches({'regex': ".*"})
+            violations = rule.validate(commit)
+            self.assertIsNone(violations)

@@ -7,15 +7,21 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: [2.7, 3.5, 3.6, 3.7, 3.8, pypy2, pypy3]
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8, 3.9, pypy2, pypy3]
         os: ["macos-latest", "ubuntu-latest"]
     steps:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
+      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
+      # code by temporarily renaming the .git directory. 
+      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
+      - name: Temporarily remove git version control from code
+        run: mv .git ._git
+
       - name: Setup python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -59,6 +65,10 @@ jobs:
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Re-add git version control so we can run gitlint on itself.
+      - name: Re-add git version control to code
+        run: mv ._git .git
+
       - name: Gitlint check
         run: ./run_tests.sh -g --debug
 
@@ -66,19 +76,25 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [2.7, 3.5]
+        python-version: [2.7, 3.6]
     steps:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
+      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
+      # code by temporarily renaming the .git directory. 
+      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
+      - name: Temporarily remove git version control from code
+        run: Rename-Item .git ._git
+    
       - name: Setup python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: "Upgrade pip on Python 3"
-        if: matrix.python-version == '3.5'
+        if: matrix.python-version == '3.6'
         run: python -m pip install --upgrade pip
 
       - name: Install requirements
@@ -92,8 +108,8 @@ jobs:
       - name: Tests (sanity)
         run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py::CLITests::test_lint"
 
-      - name: Tests (ignore test_cli.py)
-        run: pytest --ignore gitlint\tests\cli\test_cli.py -rw -s gitlint
+      - name: Tests (ignore cli\*)
+        run: pytest --ignore gitlint\tests\cli -rw -s gitlint
 
       - name: Tests (test_cli.py only - continue-on-error:true)
         run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py"
@@ -112,6 +128,10 @@ jobs:
 
       - name: PyLint
         run: pylint gitlint qa --rcfile=".pylintrc" -r n
+
+      # Re-add git version control so we can run gitlint on itself.
+      - name: Re-add git version control to code
+        run: Rename-Item ._git .git
 
       - name: Gitlint check
         run: gitlint --debug

@@ -4,6 +4,7 @@ DEBUG: gitlint.cli Python version: {python_version}
 DEBUG: gitlint.cli Git version: git version 1.2.3
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
+DEBUG: gitlint.cli DEFAULT_ENCODING: {DEFAULT_ENCODING}
 DEBUG: gitlint.cli Configuration
 config-path: {config_path}
 [GENERAL]
@@ -26,6 +27,8 @@ target: {target}
   I2: ignore-by-body
      ignore=all
      regex=None
+  I3: ignore-body-lines
+     regex=None
   T1: title-max-length
      line-length=20
   T2: title-trailing-whitespace
@@ -35,7 +38,7 @@ target: {target}
   T5: title-must-not-contain-word
      words=WIP,bögus
   T7: title-match-regex
-     regex=.*
+     regex=None
   B1: body-max-line-length
      line-length=30
   B5: body-min-length
@@ -47,12 +50,19 @@ target: {target}
   B4: body-first-line-empty
   B7: body-changed-file-mention
      files=
+  B8: body-match-regex
+     regex=None
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Using the local repo.
+DEBUG: gitlint.git ('rev-list', 'foo...bar')
 DEBUG: gitlint.cli Linting 3 commit(s)
+DEBUG: gitlint.git ('log', '6f29bf81a8322a04071bb794666e48c443a90360', '-1', '--pretty=%aN%x00%aE%x00%ai%x00%P%n%B')
+DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.lint Linting commit 6f29bf81a8322a04071bb794666e48c443a90360
+DEBUG: gitlint.git ('branch', '--contains', '6f29bf81a8322a04071bb794666e48c443a90360')
+DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', '6f29bf81a8322a04071bb794666e48c443a90360')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 commït-title1
@@ -68,7 +78,10 @@ is-revert-commit: False
 Branches: ['commit-1-branch-1', 'commit-1-branch-2']
 Changed Files: ['commit-1/file-1', 'commit-1/file-2']
 -----------------------
+DEBUG: gitlint.git ('log', '25053ccec5e28e1bb8f7551fdbb5ab213ada2401', '-1', '--pretty=%aN%x00%aE%x00%ai%x00%P%n%B')
 DEBUG: gitlint.lint Linting commit 25053ccec5e28e1bb8f7551fdbb5ab213ada2401
+DEBUG: gitlint.git ('branch', '--contains', '25053ccec5e28e1bb8f7551fdbb5ab213ada2401')
+DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', '25053ccec5e28e1bb8f7551fdbb5ab213ada2401')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 commït-title2.
@@ -84,7 +97,10 @@ is-revert-commit: False
 Branches: ['commit-2-branch-1', 'commit-2-branch-2']
 Changed Files: ['commit-2/file-1', 'commit-2/file-2']
 -----------------------
+DEBUG: gitlint.git ('log', '4da2656b0dadc76c7ee3fd0243a96cb64007f125', '-1', '--pretty=%aN%x00%aE%x00%ai%x00%P%n%B')
 DEBUG: gitlint.lint Linting commit 4da2656b0dadc76c7ee3fd0243a96cb64007f125
+DEBUG: gitlint.git ('branch', '--contains', '4da2656b0dadc76c7ee3fd0243a96cb64007f125')
+DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', '4da2656b0dadc76c7ee3fd0243a96cb64007f125')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 föo

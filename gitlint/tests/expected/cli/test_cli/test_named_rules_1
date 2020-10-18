@@ -1,0 +1,4 @@
+1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: tëst tïtle"
+1: T5:even-more-wörds Title contains the word 'tïtle' (case-insensitive): "WIP: tëst tïtle"
+1: T5:extra-wörds Title contains the word 'tëst' (case-insensitive): "WIP: tëst tïtle"
+3: B6 Body message is missing

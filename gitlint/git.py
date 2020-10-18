@@ -1,4 +1,6 @@
+import logging
 import os
+
 import arrow
 
 from gitlint import shell as sh
@@ -11,6 +13,8 @@ from gitlint.utils import ustr, sstr
 # For now, the git date format we use is fixed, but technically this format is determined by `git config log.date`
 # We should fix this at some point :-)
 GIT_TIMEFORMAT = "YYYY-MM-DD HH:mm:ss Z"
+
+LOG = logging.getLogger(__name__)
 
 
 class GitContextError(Exception):
@@ -25,11 +29,20 @@ class GitNotInstalledError(GitContextError):
             u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git.")
 
 
+class GitExitCodeError(GitContextError):
+    def __init__(self, command, stderr):
+        self.command = command
+        self.stderr = stderr
+        super(GitExitCodeError, self).__init__(
+            u"An error occurred while executing '{0}': {1}".format(command, stderr))
+
+
 def _git(*command_parts, **kwargs):
     """ Convenience function for running git commands. Automatically deals with exceptions and unicode. """
     git_kwargs = {'_tty_out': False}
     git_kwargs.update(kwargs)
     try:
+        LOG.debug(sstr(command_parts))
         result = sh.git(*command_parts, **git_kwargs)  # pylint: disable=unexpected-keyword-arg
         # If we reach this point and the result has an exit_code that is larger than 0, this means that we didn't
         # get an exception (which is the default sh behavior for non-zero exit codes) and so the user is expecting
@@ -44,12 +57,13 @@ def _git(*command_parts, **kwargs):
         error_msg_lower = error_msg.lower()
         if '_cwd' in git_kwargs and b"not a git repository" in error_msg_lower:
             error_msg = u"{0} is not a git repository.".format(git_kwargs['_cwd'])
-        elif (b"does not have any commits yet" in error_msg_lower or
-              b"ambiguous argument 'head': unknown revision" in error_msg_lower):
+            raise GitContextError(error_msg)
+
+        if (b"does not have any commits yet" in error_msg_lower or
+                b"ambiguous argument 'head': unknown revision" in error_msg_lower):
             raise GitContextError(u"Current branch has no commits. Gitlint requires at least one commit to function.")
-        else:
-            error_msg = u"An error occurred while executing '{0}': {1}".format(e.full_cmd, error_msg)
-        raise GitContextError(error_msg)
+
+        raise GitExitCodeError(e.full_cmd, error_msg)
 
 
 def git_version():
@@ -291,12 +305,18 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     @property
     @cache
     def author_name(self):
-        return ustr(_git("config", "--get", "user.name", _cwd=self.context.repository_path)).strip()
+        try:
+            return ustr(_git("config", "--get", "user.name", _cwd=self.context.repository_path)).strip()
+        except GitExitCodeError:
+            raise GitContextError("Missing git configuration: please set user.name")
 
     @property
     @cache
     def author_email(self):
-        return ustr(_git("config", "--get", "user.email", _cwd=self.context.repository_path)).strip()
+        try:
+            return ustr(_git("config", "--get", "user.email", _cwd=self.context.repository_path)).strip()
+        except GitExitCodeError:
+            raise GitContextError("Missing git configuration: please set user.email")
 
     @property
     @cache

@@ -93,6 +93,19 @@ class BaseTestCase(TestCase):
         io.open(os.path.join(parent_dir, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
         return test_filename
 
+    @staticmethod
+    def create_environment(envvars=None):
+        """ Creates a copy of the current os.environ and adds/overwrites a given set of variables to it """
+        environment = os.environ.copy()
+        if envvars:
+            environment.update(envvars)
+        return environment
+
+    def create_tmp_git_config(self, contents):
+        """ Creates an environment with the GIT_CONFIG variable set to a file with the given contents. """
+        tmp_config = self.create_tmpfile(contents)
+        return self.create_environment({"GIT_CONFIG": tmp_config})
+
     def create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):
         """ Creates a simple commit with an empty test file.
             :param message: Commit message for the commit. """
@@ -103,9 +116,7 @@ class BaseTestCase(TestCase):
         # variables can influence how git runs.
         # This was needed to fix https://github.com/jorisroovers/gitlint/issues/15 as we need to make sure to use
         # the PATH variable that contains the virtualenv's python binary.
-        environment = os.environ
-        if env:
-            environment.update(env)
+        environment = self.create_environment(env)
 
         # Create file and add to git
         test_filename = self.create_file(git_repo)
@@ -164,7 +175,7 @@ class BaseTestCase(TestCase):
         expected_git_version = git("--version").replace("\n", "")
         return {'platform': platform.platform(), 'python_version': sys.version,
                 'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
-                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB}
+                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB, 'DEFAULT_ENCODING': DEFAULT_ENCODING}
 
     def get_debug_vars_last_commit(self, git_repo=None):
         """ Returns a dict with items related to `gitlint --debug` output for the last commit. """

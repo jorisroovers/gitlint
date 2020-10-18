@@ -66,7 +66,9 @@ def find_rule_classes(extra_path):
                              if
                              inspect.isclass(clazz) and  # check isclass to ensure clazz.__module__ exists
                              clazz.__module__ == module and  # ignore imported classes
-                             (issubclass(clazz, rules.LineRule) or issubclass(clazz, rules.CommitRule))])
+                             (issubclass(clazz, rules.LineRule) or
+                              issubclass(clazz, rules.CommitRule) or
+                              issubclass(clazz, rules.ConfigurationRule))])
 
         # validate that the rule classes are valid user-defined rules
         for rule_class in rule_classes:
@@ -75,24 +77,27 @@ def find_rule_classes(extra_path):
     return rule_classes
 
 
-def assert_valid_rule_class(clazz, rule_type="User-defined"):
+def assert_valid_rule_class(clazz, rule_type="User-defined"):  # pylint: disable=too-many-branches
     """
     Asserts that a given rule clazz is valid by checking a number of its properties:
-     - Rules must extend from  LineRule or CommitRule
+     - Rules must extend from  LineRule, CommitRule or ConfigurationRule
      - Rule classes must have id and name string attributes.
        The options_spec is optional, but if set, it must be a list of gitlint Options.
      - Rule classes must have a validate method. In case of a CommitRule, validate must take a single commit parameter.
        In case of LineRule, validate must take line and commit as first and second parameters.
      - LineRule classes must have a target class attributes that is set to either
+    - ConfigurationRule classes must have an apply method that take `config` and `commit` as parameters.
        CommitMessageTitle or CommitMessageBody.
-     - Rule id's cannot start with R, T, B or M as these rule ids are reserved for gitlint itself.
+     - Rule id's cannot start with R, T, B, M or I as these rule ids are reserved for gitlint itself.
     """
 
-    # Rules must extend from LineRule or CommitRule
-    if not (issubclass(clazz, rules.LineRule) or issubclass(clazz, rules.CommitRule)):
-        msg = u"{0} rule class '{1}' must extend from {2}.{3} or {2}.{4}"
+    # Rules must extend from LineRule, CommitRule or ConfigurationRule
+    if not (issubclass(clazz, rules.LineRule) or issubclass(clazz, rules.CommitRule)
+            or issubclass(clazz, rules.ConfigurationRule)):
+        msg = u"{0} rule class '{1}' must extend from {2}.{3}, {2}.{4} or {2}.{5}"
         raise rules.UserRuleError(msg.format(rule_type, clazz.__name__, rules.CommitRule.__module__,
-                                             rules.LineRule.__name__, rules.CommitRule.__name__))
+                                             rules.LineRule.__name__, rules.CommitRule.__name__,
+                                             rules.ConfigurationRule.__name__))
 
     # Rules must have an id attribute
     if not hasattr(clazz, 'id') or clazz.id is None or not clazz.id:
@@ -100,8 +105,8 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):
         raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
 
     # Rule id's cannot start with gitlint reserved letters
-    if clazz.id[0].upper() in ['R', 'T', 'B', 'M']:
-        msg = u"The id '{1}' of '{0}' is invalid. Gitlint reserves ids starting with R,T,B,M"
+    if clazz.id[0].upper() in ['R', 'T', 'B', 'M', 'I']:
+        msg = u"The id '{1}' of '{0}' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
         raise rules.UserRuleError(msg.format(clazz.__name__, clazz.id[0]))
 
     # Rules must have a name attribute
@@ -122,11 +127,17 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):
             raise rules.UserRuleError(msg.format(rule_type.lower(), clazz.__name__,
                                                  options.RuleOption.__module__, options.RuleOption.__name__))
 
-    # Rules must have a validate method. We use isroutine() as it's both python 2 and 3 compatible.
-    # For more info see http://stackoverflow.com/a/17019998/381010
-    if not hasattr(clazz, 'validate') or not inspect.isroutine(clazz.validate):
-        msg = u"{0} rule class '{1}' must have a 'validate' method"
-        raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
+    # Line/Commit rules must have a `validate` method
+    # We use isroutine() as it's both python 2 and 3 compatible. Details: http://stackoverflow.com/a/17019998/381010
+    if (issubclass(clazz, rules.LineRule) or issubclass(clazz, rules.CommitRule)):
+        if not hasattr(clazz, 'validate') or not inspect.isroutine(clazz.validate):
+            msg = u"{0} rule class '{1}' must have a 'validate' method"
+            raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
+    # Configuration rules must have an `apply` method
+    elif issubclass(clazz, rules.ConfigurationRule):
+        if not hasattr(clazz, 'apply') or not inspect.isroutine(clazz.apply):
+            msg = u"{0} Configuration rule class '{1}' must have an 'apply' method"
+            raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
 
     # LineRules must have a valid target: rules.CommitMessageTitle or rules.CommitMessageBody
     if issubclass(clazz, rules.LineRule):

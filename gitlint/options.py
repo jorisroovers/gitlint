@@ -1,7 +1,20 @@
 from abc import abstractmethod
 import os
+import re
 
 from gitlint.utils import ustr, sstr
+
+
+def allow_none(func):
+    """ Decorator that sets option value to None if the passed value is None, otherwise calls the regular set method """
+
+    def wrapped(obj, value):
+        if value is None:
+            obj.value = None
+        else:
+            func(obj, value)
+
+    return wrapped
 
 
 class RuleOptionError(Exception):
@@ -43,6 +56,7 @@ class RuleOption(object):
 
 
 class StrOption(RuleOption):
+    @allow_none
     def set(self, value):
         self.value = ustr(value)
 
@@ -59,6 +73,7 @@ class IntOption(RuleOption):
             error_msg = u"Option '{0}' must be a positive integer (current value: '{1}')".format(self.name, value)
         raise RuleOptionError(error_msg)
 
+    @allow_none
     def set(self, value):
         try:
             self.value = int(value)
@@ -70,6 +85,8 @@ class IntOption(RuleOption):
 
 
 class BoolOption(RuleOption):
+
+    # explicit choice to not annotate with @allow_none: Booleans must be False or True, they cannot be unset.
     def set(self, value):
         value = ustr(value).strip().lower()
         if value not in ['true', 'false']:
@@ -81,6 +98,7 @@ class ListOption(RuleOption):
     """ Option that is either a given list or a comma-separated string that can be splitted into a list when being set.
     """
 
+    @allow_none
     def set(self, value):
         if isinstance(value, list):
             the_list = value
@@ -97,6 +115,7 @@ class PathOption(RuleOption):
         self.type = type
         super(PathOption, self).__init__(name, value, description)
 
+    @allow_none
     def set(self, value):
         value = ustr(value)
 
@@ -120,3 +139,21 @@ class PathOption(RuleOption):
             raise RuleOptionError(error_msg)
 
         self.value = os.path.realpath(value)
+
+
+class RegexOption(RuleOption):
+
+    @allow_none
+    def set(self, value):
+        try:
+            self.value = re.compile(value, re.UNICODE)
+        except (re.error, TypeError) as exc:
+            raise RuleOptionError("Invalid regular expression: '{0}'".format(exc))
+
+    def __deepcopy__(self, _):
+        # copy.deepcopy() - used in rules.py - doesn't support copying regex objects prior to Python 3.7
+        # To work around this, we have to implement this __deepcopy__ magic method
+        # Relevant SO thread:
+        # https://stackoverflow.com/questions/6279305/typeerror-cannot-deepcopy-this-pattern-object
+        value = None if self.value is None else self.value.pattern
+        return RegexOption(self.name, value, self.description)

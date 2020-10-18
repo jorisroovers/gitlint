@@ -1,9 +1,11 @@
 DEBUG: gitlint.cli To report issues, please visit https://github.com/jorisroovers/gitlint/issues
 DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
-DEBUG: gitlint.cli Git version: git version 1.2.3
+DEBUG: gitlint.git ('--version',)
+DEBUG: gitlint.cli Git version: {git_version}
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
+DEBUG: gitlint.cli DEFAULT_ENCODING: {DEFAULT_ENCODING}
 DEBUG: gitlint.cli Configuration
 config-path: None
 [GENERAL]
@@ -16,7 +18,7 @@ ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False
 staged: True
-verbosity: 3
+verbosity: 0
 debug: True
 target: {target}
 [RULES]
@@ -25,6 +27,8 @@ target: {target}
      regex=None
   I2: ignore-by-body
      ignore=all
+     regex=None
+  I3: ignore-body-lines
      regex=None
   T1: title-max-length
      line-length=72
@@ -35,7 +39,7 @@ target: {target}
   T5: title-must-not-contain-word
      words=WIP
   T7: title-match-regex
-     regex=.*
+     regex=None
   B1: body-max-line-length
      line-length=80
   B5: body-min-length
@@ -47,26 +51,31 @@ target: {target}
   B4: body-first-line-empty
   B7: body-changed-file-mention
      files=
+  B8: body-match-regex
+     regex=None
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli Fetching additional meta-data from staged commit
-DEBUG: gitlint.cli Stdin data: 'WIP: tïtle 
-'
-DEBUG: gitlint.cli Stdin detected and not ignored. Using as input.
+DEBUG: gitlint.cli Using --msg-filename.
+DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
+DEBUG: gitlint.git ('config', '--get', 'user.name')
+DEBUG: gitlint.git ('config', '--get', 'user.email')
+DEBUG: gitlint.git ('rev-parse', '--abbrev-ref', 'HEAD')
+DEBUG: gitlint.git ('diff', '--staged', '--name-only', '-r')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
-WIP: tïtle 
+WIP: msg-fïlename test.
 --- Meta info ---------
-Author: föo user <föo@bar.com>
-Date:   2020-02-19 12:18:46 +0100
+Author: gitlint-test-user <gitlint@test.com>
+Date:   {date}
 is-merge-commit:  False
 is-fixup-commit:  False
 is-squash-commit: False
 is-revert-commit: False
-Branches: ['my-branch']
-Changed Files: ['commit-1/file-1', 'commit-1/file-2']
+Branches: ['master']
+Changed Files: []
 -----------------------
 DEBUG: gitlint.cli Exit Code = 3

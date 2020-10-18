@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
+
+import re
+
 from qa.shell import gitlint
 from qa.base import BaseTestCase
-from qa.utils import sstr
+from qa.utils import sstr, ustr
 
 
 class ConfigTests(BaseTestCase):
@@ -52,7 +55,7 @@ class ConfigTests(BaseTestCase):
         self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_1"))
 
     def test_config_from_file_debug(self):
-        # Test bot on existing and new repo (we've had a bug in the past that was unique to empty repos)
+        # Test both on existing and new repo (we've had a bug in the past that was unique to empty repos)
         repos = [self.tmp_git_repo, self.create_tmp_git_repo()]
         for target_repo in repos:
             commit_msg = u"WIP: Thïs is a title thåt is a bit longer.\nContent on the second line\n" + \
@@ -65,3 +68,39 @@ class ConfigTests(BaseTestCase):
             expected_kwargs.update({'config_path': config_path, 'changed_files': sstr([filename])})
             self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_debug_1",
                                                              expected_kwargs))
+
+    def test_config_from_env(self):
+        """ Test for configuring gitlint from environment variables """
+
+        # We invoke gitlint, configuring it via env variables, we can check whether gitlint picks these up correctly
+        # by comparing the debug output with what we'd expect
+        target_repo = self.create_tmp_git_repo()
+        commit_msg = u"WIP: Thïs is a title thåt is a bit longer.\nContent on the second line\n" + \
+                     "This line of the body is here because we need it"
+        filename = self.create_simple_commit(commit_msg, git_repo=target_repo)
+        env = self.create_environment({"GITLINT_DEBUG": "1", "GITLINT_VERBOSITY": "2",
+                                       "GITLINT_IGNORE": "T1,T2", "GITLINT_CONTRIB": "CC1,CT1",
+                                       "GITLINT_IGNORE_STDIN": "1", "GITLINT_TARGET": target_repo,
+                                       "GITLINT_COMMITS": self.get_last_commit_hash(git_repo=target_repo)})
+        output = gitlint(_env=env, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
+        expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
+        expected_kwargs.update({'changed_files': sstr([filename])})
+
+        self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_env_1", expected_kwargs))
+
+        # For some env variables, we need a separate test ast they are mutually exclusive with the ones tested above
+        tmp_commit_msg_file = self.create_tmpfile(u"WIP: msg-fïlename test.")
+        env = self.create_environment({"GITLINT_DEBUG": "1", "GITLINT_TARGET": target_repo,
+                                       "GITLINT_SILENT": "1", "GITLINT_STAGED": "1"})
+
+        output = gitlint("--msg-filename", tmp_commit_msg_file,
+                         _env=env, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[3])
+
+        # Extract date from actual output to insert it into the expected output
+        # We have to do this since there's no way for us to deterministically know that date otherwise
+        p = re.compile("Date: (.*)\n", re.UNICODE | re.MULTILINE)
+        result = p.search(ustr(output.stdout))
+        date = result.group(1).strip()
+        expected_kwargs.update({"date": date})
+
+        self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_env_2", expected_kwargs))

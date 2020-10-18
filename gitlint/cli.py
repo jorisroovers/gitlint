@@ -19,14 +19,19 @@ from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
 from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
-from gitlint.utils import ustr, LOG_FORMAT
+from gitlint.shell import shell
+from gitlint.utils import ustr, LOG_FORMAT, IS_PY2
 
 DEFAULT_CONFIG_FILE = ".gitlint"
+# -n: disable swap files. This fixes a vim error on windows (E303: Unable to open swap file for <path>)
+DEFAULT_COMMIT_MSG_EDITOR = "vim -n"
 
 # Since we use the return code to denote the amount of errors, we need to change the default click usage error code
 click.UsageError.exit_code = USAGE_ERROR_CODE
 
-LOG = logging.getLogger(__name__)
+# We don't use logging.getLogger(__main__) here because that will cause DEBUG output to be lost
+# when invoking gitlint as a python module (python -m gitlint.cli)
+LOG = logging.getLogger("gitlint.cli")
 
 
 class GitLintUsageError(Exception):
@@ -51,6 +56,7 @@ def log_system_info():
     LOG.debug("Git version: %s", git_version())
     LOG.debug("Gitlint version: %s", gitlint.__version__)
     LOG.debug("GITLINT_USE_SH_LIB: %s", os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]"))
+    LOG.debug("DEFAULT_ENCODING: %s", gitlint.utils.DEFAULT_ENCODING)
 
 
 def build_config(  # pylint: disable=too-many-arguments
@@ -164,27 +170,44 @@ def build_git_context(lint_config, msg_filename, refspec):
     return GitContext.from_local_repository(lint_config.target, refspec)
 
 
+class ContextObj(object):
+    """ Simple class to hold data that is passed between Click commands via the Click context. """
+
+    def __init__(self, config, config_builder, refspec, msg_filename, gitcontext=None):
+        self.config = config
+        self.config_builder = config_builder
+        self.refspec = refspec
+        self.msg_filename = msg_filename
+        self.gitcontext = gitcontext
+
+
 @click.group(invoke_without_command=True, context_settings={'max_content_width': 120},
              epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
-@click.option('--target', type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
+@click.option('--target', envvar='GITLINT_TARGET',
+              type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               help="Path of the target git repository. [default: current working directory]")
 @click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
               help="Config file location [default: {0}]".format(DEFAULT_CONFIG_FILE))
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
-@click.option('--commits', default=None, help="The range of commits to lint. [default: HEAD]")
-@click.option('-e', '--extra-path', help="Path to a directory or python module with extra user-defined rules",
+@click.option('--commits', envvar='GITLINT_COMMITS', default=None, help="The range of commits to lint. [default: HEAD]")
+@click.option('-e', '--extra-path', envvar='GITLINT_EXTRA_PATH',
+              help="Path to a directory or python module with extra user-defined rules",
               type=click.Path(exists=True, resolve_path=True, readable=True))
-@click.option('--ignore', default="", help="Ignore rules (comma-separated by id or name).")
-@click.option('--contrib', default="", help="Contrib rules to enable (comma-separated by id or name).")
+@click.option('--ignore', envvar='GITLINT_IGNORE', default="", help="Ignore rules (comma-separated by id or name).")
+@click.option('--contrib', envvar='GITLINT_CONTRIB', default="",
+              help="Contrib rules to enable (comma-separated by id or name).")
 @click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
-@click.option('--ignore-stdin', is_flag=True, help="Ignore any stdin data. Useful for running in CI server.")
-@click.option('--staged', is_flag=True, help="Read staged commit meta-info from the local repository.")
-@click.option('-v', '--verbose', count=True, default=0,
+@click.option('--ignore-stdin', envvar='GITLINT_IGNORE_STDIN', is_flag=True,
+              help="Ignore any stdin data. Useful for running in CI server.")
+@click.option('--staged', envvar='GITLINT_STAGED', is_flag=True,
+              help="Read staged commit meta-info from the local repository.")
+@click.option('-v', '--verbose', envvar='GITLINT_VERBOSITY', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
-@click.option('-s', '--silent', help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.", is_flag=True)
-@click.option('-d', '--debug', help="Enable debugging output.", is_flag=True)
+@click.option('-s', '--silent', envvar='GITLINT_SILENT', is_flag=True,
+              help="Silent mode (no output). Takes precedence over -v, -vv, -vvv.")
+@click.option('-d', '--debug', envvar='GITLINT_DEBUG', help="Enable debugging output.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
 def cli(  # pylint: disable=too-many-arguments
@@ -209,7 +232,7 @@ def cli(  # pylint: disable=too-many-arguments
                                               ignore_stdin, staged, verbose, silent, debug)
         LOG.debug(u"Configuration\n%s", ustr(config))
 
-        ctx.obj = (config, config_builder, commits, msg_filename)
+        ctx.obj = ContextObj(config, config_builder, commits, msg_filename)
 
         # If no subcommand is specified, then just lint
         if ctx.invoked_subcommand is None:
@@ -230,11 +253,14 @@ def cli(  # pylint: disable=too-many-arguments
 @click.pass_context
 def lint(ctx):
     """ Lints a git repository [default command] """
-    lint_config = ctx.obj[0]
-    refspec = ctx.obj[2]
-    msg_filename = ctx.obj[3]
+    lint_config = ctx.obj.config
+    refspec = ctx.obj.refspec
+    msg_filename = ctx.obj.msg_filename
 
     gitcontext = build_git_context(lint_config, msg_filename, refspec)
+    # Set gitcontext in the click context, so we can use it in command that are ran after this
+    # in particular, this is used by run-hook
+    ctx.obj.gitcontext = gitcontext
 
     number_of_commits = len(gitcontext.commits)
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
@@ -245,7 +271,7 @@ def lint(ctx):
         ctx.exit(0)
 
     LOG.debug(u'Linting %d commit(s)', number_of_commits)
-    general_config_builder = ctx.obj[1]
+    general_config_builder = ctx.obj.config_builder
     last_commit = gitcontext.commits[-1]
 
     # Let's get linting!
@@ -287,9 +313,8 @@ def lint(ctx):
 def install_hook(ctx):
     """ Install gitlint as a git commit-msg hook. """
     try:
-        lint_config = ctx.obj[0]
-        hooks.GitHookInstaller.install_commit_msg_hook(lint_config)
-        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)
+        hooks.GitHookInstaller.install_commit_msg_hook(ctx.obj.config)
+        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
         click.echo(u"Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
@@ -302,14 +327,87 @@ def install_hook(ctx):
 def uninstall_hook(ctx):
     """ Uninstall gitlint commit-msg hook. """
     try:
-        lint_config = ctx.obj[0]
-        hooks.GitHookInstaller.uninstall_commit_msg_hook(lint_config)
-        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(lint_config)
+        hooks.GitHookInstaller.uninstall_commit_msg_hook(ctx.obj.config)
+        hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
         click.echo(u"Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
         click.echo(ustr(e), err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
+
+
+@cli.command("run-hook")
+@click.pass_context
+def run_hook(ctx):
+    """ Runs the gitlint commit-msg hook. """
+
+    exit_code = 1
+    while exit_code > 0:
+        try:
+            click.echo(u"gitlint: checking commit message...")
+            ctx.invoke(lint)
+        except click.exceptions.Exit as e:
+            # Flush stderr andstdout, this resolves an issue with output ordering in Cygwin
+            sys.stderr.flush()
+            sys.stdout.flush()
+
+            exit_code = e.exit_code
+            if exit_code == 0:
+                click.echo(u"gitlint: " + click.style("OK", fg='green') + u" (no violations in commit message)")
+                continue
+
+            click.echo(u"-----------------------------------------------")
+            click.echo(u"gitlint: " + click.style("Your commit message contains the above violations.", fg='red'))
+
+            value = None
+            while value not in ["y", "n", "e"]:
+                click.echo("Continue with commit anyways (this keeps the current commit message)? "
+                           "[y(es)/n(no)/e(dit)] ", nl=False)
+
+                # Ideally, we'd want to use click.getchar() or click.prompt() to get user's input here instead of
+                # input(). However, those functions currently don't support getting answers from stdin.
+                # This wouldn't be a huge issue since this is unlikely to occur in the real world,
+                # were it not that we use a stdin to pipe answers into gitlint in our integration tests.
+                # If that ever changes, we can revisit this.
+                # Related click pointers:
+                # - https://github.com/pallets/click/issues/1370
+                # - https://github.com/pallets/click/pull/1372
+                # - From https://click.palletsprojects.com/en/7.x/utils/#getting-characters-from-terminal
+                #   Note that this function will always read from the terminal, even if stdin is instead a pipe.
+                #
+                # We also need a to use raw_input() in Python2 as input() is unsafe (and raw_input() doesn't exist in
+                # Python3). See https://stackoverflow.com/a/4960216/381010
+                input_func = input
+                if IS_PY2:
+                    input_func = raw_input  # noqa pylint: disable=undefined-variable
+
+                value = input_func()
+
+            if value == "y":
+                LOG.debug("run-hook: commit message accepted")
+                exit_code = 0
+            elif value == "e":
+                LOG.debug("run-hook: editing commit message")
+                msg_filename = ctx.obj.msg_filename
+                if msg_filename:
+                    msg_filename.seek(0)
+                    editor = os.environ.get("EDITOR", DEFAULT_COMMIT_MSG_EDITOR)
+                    msg_filename_path = os.path.realpath(msg_filename.name)
+                    LOG.debug("run-hook: %s %s", editor, msg_filename_path)
+                    shell(editor + " " + msg_filename_path)
+                else:
+                    click.echo(u"Editing only possible when --msg-filename is specified.")
+                    ctx.exit(exit_code)
+            elif value == "n":
+                LOG.debug("run-hook: commit message declined")
+                click.echo(u"Commit aborted.")
+                click.echo(u"Your commit message: ")
+                click.echo(u"-----------------------------------------------")
+                click.echo(ctx.obj.gitcontext.commits[0].message.full)
+                click.echo(u"-----------------------------------------------")
+                ctx.exit(exit_code)
+
+    ctx.exit(exit_code)
 
 
 @cli.command("generate-config")

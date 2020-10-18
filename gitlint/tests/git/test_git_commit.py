@@ -14,7 +14,9 @@ except ImportError:
     from unittest.mock import patch, call  # pylint: disable=no-name-in-module, import-error
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
+from gitlint.git import GitContext, GitCommit, GitContextError, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
+from gitlint.shell import ErrorReturnCode
+from gitlint.utils import ustr
 
 
 class GitCommitTests(BaseTestCase):
@@ -479,12 +481,46 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(last_commit.changed_files, ["file1.txt", u"påth/to/file2.txt"])
         self.assertListEqual(sh.git.mock_calls, expected_calls[0:5])
 
+    @patch('gitlint.git.sh')
+    def test_staged_commit_with_missing_username(self, sh):
+        # StagedLocalGitCommit()
+
+        sh.git.side_effect = [
+            u"#",                               # git config --get core.commentchar
+            ErrorReturnCode('git config --get user.name', b"", b""),
+        ]
+
+        expected_msg = "Missing git configuration: please set user.name"
+        with self.assertRaisesMessage(GitContextError, expected_msg):
+            ctx = GitContext.from_staged_commit(u"Foōbar 123\n\ncömmit-body\n", u"fåke/path")
+            [ustr(commit) for commit in ctx.commits]
+
+    @patch('gitlint.git.sh')
+    def test_staged_commit_with_missing_email(self, sh):
+        # StagedLocalGitCommit()
+
+        sh.git.side_effect = [
+            u"#",                               # git config --get core.commentchar
+            u"test åuthor\n",                   # git config --get user.name
+            ErrorReturnCode('git config --get user.name', b"", b""),
+        ]
+
+        expected_msg = "Missing git configuration: please set user.email"
+        with self.assertRaisesMessage(GitContextError, expected_msg):
+            ctx = GitContext.from_staged_commit(u"Foōbar 123\n\ncömmit-body\n", u"fåke/path")
+            [ustr(commit) for commit in ctx.commits]
+
     def test_gitcommitmessage_equality(self):
         commit_message1 = GitCommitMessage(GitContext(), u"tëst\n\nfoo", u"tëst\n\nfoo", u"tēst", ["", u"föo"])
         attrs = ['original', 'full', 'title', 'body']
         self.object_equality_test(commit_message1, attrs, {"context": commit_message1.context})
 
-    def test_gitcommit_equality(self):
+    @patch("gitlint.git._git")
+    def test_gitcommit_equality(self, git):
+        # git will be called to setup the context (commentchar and current_branch), just return the same value
+        # This only matters to test gitcontext equality, not gitcommit equality
+        git.return_value = u"foöbar"
+
         # Test simple equality case
         now = datetime.datetime.utcnow()
         context1 = GitContext()

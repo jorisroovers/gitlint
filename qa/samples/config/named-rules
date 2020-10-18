@@ -1,0 +1,8 @@
+[title-must-not-contain-word]
+words=WIP,thåt
+
+[title-must-not-contain-word:extra-wôrds]
+words=hûr,dûr
+
+[title-must-not-contain-word:   even$more%wôrds  ]
+words=fôo,bår

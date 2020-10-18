@@ -1,9 +1,11 @@
 DEBUG: gitlint.cli To report issues, please visit https://github.com/jorisroovers/gitlint/issues
 DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
+DEBUG: gitlint.git ('--version',)
 DEBUG: gitlint.cli Git version: {git_version}
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
+DEBUG: gitlint.cli DEFAULT_ENCODING: {DEFAULT_ENCODING}
 DEBUG: gitlint.cli Configuration
 config-path: None
 [GENERAL]
@@ -26,6 +28,8 @@ target: {target}
   I2: ignore-by-body
      ignore=all
      regex=None
+  I3: ignore-body-lines
+     regex=None
   T1: title-max-length
      line-length=72
   T2: title-trailing-whitespace
@@ -35,7 +39,7 @@ target: {target}
   T5: title-must-not-contain-word
      words=WIP
   T7: title-match-regex
-     regex=.*
+     regex=None
   B1: body-max-line-length
      line-length=80
   B5: body-min-length
@@ -47,6 +51,8 @@ target: {target}
   B4: body-first-line-empty
   B7: body-changed-file-mention
      files=
+  B8: body-match-regex
+     regex=None
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
@@ -54,8 +60,13 @@ DEBUG: gitlint.cli Fetching additional meta-data from staged commit
 DEBUG: gitlint.cli Stdin data: 'WIP: Pïpe test.
 '
 DEBUG: gitlint.cli Stdin detected and not ignored. Using as input.
+DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
+DEBUG: gitlint.git ('config', '--get', 'user.name')
+DEBUG: gitlint.git ('config', '--get', 'user.email')
+DEBUG: gitlint.git ('rev-parse', '--abbrev-ref', 'HEAD')
+DEBUG: gitlint.git ('diff', '--staged', '--name-only', '-r')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 WIP: Pïpe test.

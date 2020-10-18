@@ -12,7 +12,7 @@ import os
 import shutil
 
 from collections import OrderedDict
-from gitlint.utils import ustr, DEFAULT_ENCODING
+from gitlint.utils import ustr, sstr, DEFAULT_ENCODING
 from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
 from gitlint import rule_finder
@@ -44,6 +44,7 @@ class LintConfig(object):
     # Default tuple of rule classes (tuple because immutable).
     default_rule_classes = (rules.IgnoreByTitle,
                             rules.IgnoreByBody,
+                            rules.IgnoreBodyLines,
                             rules.TitleMaxLength,
                             rules.TitleTrailingWhitespace,
                             rules.TitleLeadingWhitespace,
@@ -58,6 +59,7 @@ class LintConfig(object):
                             rules.BodyHardTab,
                             rules.BodyFirstLineEmpty,
                             rules.BodyChangedFileMention,
+                            rules.BodyRegexMatches,
                             rules.AuthorValidEmail)
 
     def __init__(self):
@@ -290,7 +292,7 @@ class LintConfig(object):
         return_str = u"config-path: {0}\n".format(self._config_path)
         return_str += u"[GENERAL]\n"
         return_str += u"extra-path: {0}\n".format(self.extra_path)
-        return_str += u"contrib: {0}\n".format(self.contrib)
+        return_str += u"contrib: {0}\n".format(sstr(self.contrib))
         return_str += u"ignore: {0}\n".format(",".join(self.ignore))
         return_str += u"ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
         return_str += u"ignore-fixup-commits: {0}\n".format(self.ignore_fixup_commits)
@@ -365,13 +367,20 @@ class RuleCollection(object):
     def __len__(self):
         return len(self._rules)
 
-    def __str__(self):
+    def __repr__(self):
+        return self.__unicode__()  # pragma: no cover
+
+    def __unicode__(self):
         return_str = ""
         for rule in self._rules.values():
             return_str += u"  {0}: {1}\n".format(rule.id, rule.name)
             for option_name, option_value in sorted(rule.options.items()):
-                if isinstance(option_value.value, list):
+                if option_value.value is None:
+                    option_val_repr = None
+                elif isinstance(option_value.value, list):
                     option_val_repr = ",".join(option_value.value)
+                elif isinstance(option_value, options.RegexOption):
+                    option_val_repr = option_value.value.pattern
                 else:
                     option_val_repr = option_value.value
                 return_str += u"     {0}={1}\n".format(option_name, option_val_repr)
@@ -385,13 +394,15 @@ class LintConfigBuilder(object):
     normalized, validated and build. Example usage can be found in gitlint.cli.
     """
 
+    RULE_QUALIFIER_SYMBOL = ":"
+
     def __init__(self):
-        self._config_blueprint = {}
+        self._config_blueprint = OrderedDict()
         self._config_path = None
 
     def set_option(self, section, option_name, option_value):
         if section not in self._config_blueprint:
-            self._config_blueprint[section] = {}
+            self._config_blueprint[section] = OrderedDict()
         self._config_blueprint[section][option_name] = option_value
 
     def set_config_from_commit(self, commit):
@@ -438,10 +449,43 @@ class LintConfigBuilder(object):
         except ConfigParserError as e:
             raise LintConfigError(ustr(e))
 
+    def _add_named_rule(self, config, qualified_rule_name):
+        """ Adds a Named Rule to a given LintConfig object.
+            IMPORTANT: This method does *NOT* overwrite existing Named Rules with the same canonical id.
+        """
+
+        # Split up named rule in its parts: the name/id that specifies the parent rule,
+        # And the name of the rule instance itself
+        rule_name_parts = qualified_rule_name.split(self.RULE_QUALIFIER_SYMBOL, 1)
+        rule_name = rule_name_parts[1].strip()
+        parent_rule_specifier = rule_name_parts[0].strip()
+
+        # assert that the rule name is valid:
+        # - not empty
+        # - no whitespace or colons
+        if rule_name == "" or bool(re.search("\\s|:", rule_name, re.UNICODE)):
+            msg = u"The rule-name part in '{0}' cannot contain whitespace, colons or be empty"
+            raise LintConfigError(msg.format(qualified_rule_name))
+
+        # find parent rule
+        parent_rule = config.rules.find_rule(parent_rule_specifier)
+        if not parent_rule:
+            msg = u"No such rule '{0}' (named rule: '{1}')"
+            raise LintConfigError(msg.format(parent_rule_specifier, qualified_rule_name))
+
+        # Determine canonical id and name by recombining the parent id/name and instance name parts.
+        canonical_id = parent_rule.__class__.id + self.RULE_QUALIFIER_SYMBOL + rule_name
+        canonical_name = parent_rule.__class__.name + self.RULE_QUALIFIER_SYMBOL + rule_name
+
+        # Add the rule to the collection of rules if it's not there already
+        if not config.rules.find_rule(canonical_id):
+            config.rules.add_rule(parent_rule.__class__, canonical_id, {'is_named': True, 'name': canonical_name})
+
+        return canonical_id
+
     def build(self, config=None):
         """ Build a real LintConfig object by normalizing and validating the options that were previously set on this
         factory. """
-
         # If we are passed a config object, then rebuild that object instead of building a new lintconfig object from
         # scratch
         if not config:
@@ -459,6 +503,12 @@ class LintConfigBuilder(object):
             for option_name, option_value in section_dict.items():
                 # Skip over the general section, as we've already done that above
                 if section_name != "general":
+
+                    # If the section name contains a colon (:), then this section is defining a Named Rule
+                    # Which means we need to instantiate that Named Rule in the config.
+                    if self.RULE_QUALIFIER_SYMBOL in section_name:
+                        section_name = self._add_named_rule(config, section_name)
+
                     config.set_rule_option(section_name, option_name, option_value)
 
         return config

@@ -7,7 +7,7 @@ Contrib rules are meant to augment default gitlint behavior by providing users w
 forcing these rules on all gitlint users. This also means that users don't have to
 re-implement these commonly used rules themselves as [user-defined](user_defined_rules) rules.
 
-To enable certain contrib rules, you can use the ```--contrib``` flag.
+To enable certain contrib rules, you can use the `--contrib` flag.
 ```sh
 $ cat examples/commit-message-1 | gitlint --contrib contrib-title-conventional-commits,CC1
 1: CC1 Body does not contain a 'Signed-Off-By' line
@@ -20,7 +20,7 @@ $ cat examples/commit-message-1 | gitlint --contrib contrib-title-conventional-c
 3: B1 Line exceeds max length (123>80): "Lines typically need to have a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120."
 ```
 
-Same thing using a ```.gitlint``` file:
+Same thing using a `.gitlint` file:
 
 ```ini
 [general]
@@ -36,7 +36,7 @@ types = bugfix,user-story,epic
 
 You can also configure contrib rules using [any of the other ways to configure gitlint](configuration.md).
 
-# Available Contrib Rules
+## Available Contrib Rules
 
 ID    | Name                                | gitlint version   | Description
 ------|-------------------------------------|------------------ |-------------------------------------------
@@ -63,5 +63,5 @@ ID    | Name                                  | gitlint version    | Description
 CC1   | contrib-requires-signed-off-by        | >= 0.12.0          | Commit body must contain a `Signed-Off-By` line. This means, a line that starts with the `Signed-Off-By` keyword.
 
 
-# Contributing Contrib rules
+## Contributing Contrib rules
 We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the [Contributing](contributing) page on how to get started.
