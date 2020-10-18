@@ -247,7 +247,7 @@ class TitleMinLength(LineRule):
     name = "title-min-length"
     id = "T8"
     target = CommitMessageTitle
-    options_spec = [IntOption('min-length', 5, "Min line length in characters")]
+    options_spec = [IntOption('min-length', 5, "Minimum required title length")]
 
     def validate(self, title, _commit):
         min_length = self.options['min-length'].value

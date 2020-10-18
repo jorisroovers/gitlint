@@ -111,13 +111,6 @@ ID    | Name                        | gitlint version | Description
 T7    | title-match-regex           | >= 0.5          | Title must match a given regex (default: .*)
 
 
-## T8: title-min-length ##
-
-ID    | Name                        | gitlint version | Description
-------|-----------------------------|-----------------|-------------------------------------------
-T1    | title-min-length            | >=              | Title length must be &gt; 5 chars.
-
-
 ### Options
 
 Name           | gitlint version | Default | Description
@@ -134,6 +127,28 @@ regex          | >= 0.5          | .*      | [Python regex](https://docs.python.
 regex=^US[1-9][0-9]*
 ```
 
+## T8: title-min-length ##
+
+ID    | Name                        | gitlint version | Description
+------|-----------------------------|-----------------|-------------------------------------------
+T1    | title-min-length            | >=              | Title length must be &gt; 5 chars.
+
+
+### Options
+
+Name           | gitlint version | Default | Description
+---------------|-----------------|---------|----------------------------------
+min-length     | >= 0.14.0       | 5       |  Minimum required title length
+
+### Examples
+
+#### .gitlint
+
+```ini
+# Titles should be min 3 chars
+[title-min-length]
+min-length=3
+```
 
 ## B1: body-max-line-length
 

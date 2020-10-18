@@ -170,6 +170,11 @@ class TitleRuleTests(BaseTestCase):
         violations = rule.validate(u"å" * 4, None)
         self.assertIsNone(violations)
 
+        # assert no violations on length 3 (this asserts we've implemented a *strict* less than)
+        rule = TitleMinLength({'min-length': 3})
+        violations = rule.validate(u"å" * 3, None)
+        self.assertIsNone(violations)
+
         # assert raise on 2
         expected_violation = RuleViolation("T8", "Title is too short (2<3)", u"å" * 2, 1)
         violations = rule.validate(u"å" * 2, None)
