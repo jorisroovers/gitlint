@@ -52,6 +52,7 @@ class LintConfig(object):
                             rules.TitleHardTab,
                             rules.TitleMustNotContainWord,
                             rules.TitleRegexMatches,
+                            rules.TitleMinLength,
                             rules.BodyMaxLineLength,
                             rules.BodyMinLength,
                             rules.BodyMissing,

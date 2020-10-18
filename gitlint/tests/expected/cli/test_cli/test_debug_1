@@ -39,6 +39,8 @@ target: {target}
      words=WIP,bögus
   T7: title-match-regex
      regex=None
+  T8: title-min-length
+     min-length=5
   B1: body-max-line-length
      line-length=30
   B5: body-min-length
@@ -103,7 +105,7 @@ DEBUG: gitlint.git ('branch', '--contains', '4da2656b0dadc76c7ee3fd0243a96cb6400
 DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', '4da2656b0dadc76c7ee3fd0243a96cb64007f125')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
-föo
+föobar
 bar
 --- Meta info ---------
 Author: test åuthor3 <test-email3@föo.com>

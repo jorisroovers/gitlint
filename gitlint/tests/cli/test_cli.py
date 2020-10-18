@@ -365,7 +365,7 @@ class CLITests(BaseTestCase):
             u"commit-2-branch-1\ncommit-2-branch-2\n",    # git branch --contains <sha>
             u"commit-2/file-1\ncommit-2/file-2\n",        # git diff-tree
             u"test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00abc\n"
-            u"föo\nbar",
+            u"föobar\nbar",
             u"commit-3-branch-1\ncommit-3-branch-2\n",     # git branch --contains <sha>
             u"commit-3/file-1\ncommit-3/file-2\n",         # git diff-tree
         ]

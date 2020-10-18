@@ -8,6 +8,7 @@
 - Most general options can now be set through environment variables (e.g. set the `general.ignore` option via `GITLINT_IGNORE=T1,T2`). The list of available environment variables can be found in the [configuration documentation](TODO).
 - Users can now use `self.log.debug("my message")` for debugging purposes in their user-defined rules
 - Breaking: User-defined rule id's can no longer start with 'I', as those are reserved for built-in gitlint ignore rules.
+- **New Rule**: [title-min-length](TODO) enforces a minimum length on titles (default: 5 chars) ([#130](https://github.com/jorisroovers/gitlint/issues/138))
 - **New Rule**: [ignore-body-lines](TODO) allows users to
 [ignore parts of a commit](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
 the lines in a commit message body. ([#126](https://github.com/jorisroovers/gitlint/issues/126)).

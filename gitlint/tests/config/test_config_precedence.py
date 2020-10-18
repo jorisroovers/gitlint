@@ -25,7 +25,7 @@ class LintConfigPrecedenceTests(BaseTestCase):
     def setUp(self):
         self.cli = CliRunner()
 
-    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP\n\nThis is å test message\n")
+    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP:fö\n\nThis is å test message\n")
     def test_config_precedence(self, _):
         # TODO(jroovers): this test really only test verbosity, we need to do some refactoring to gitlint.cli
         # to more easily test everything
@@ -41,14 +41,14 @@ class LintConfigPrecedenceTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-vvv", "-c", "general.verbosity=2", "--config", config_path])
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
+            self.assertEqual(stderr.getvalue(), u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
 
         # 2. environment variables
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path],
                                      env={"GITLINT_VERBOSITY": "3"})
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
+            self.assertEqual(stderr.getvalue(), u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
 
         # 3. commandline -c flags
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -66,7 +66,7 @@ class LintConfigPrecedenceTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP\"\n")
+            self.assertEqual(stderr.getvalue(), u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
 
     @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: This is å test")
     def test_ignore_precedence(self, get_stdin_data):
