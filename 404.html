@@ -7,18 +7,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
+  
   <link rel="shortcut icon" href="/gitlint/img/favicon.ico">
   <title>Gitlint</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
-  <link rel="stylesheet" href="/gitlint/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="/gitlint/css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="/gitlint/extra.css" rel="stylesheet">
+  <link rel="stylesheet" href="/gitlint/css/theme.css" />
+  <link rel="stylesheet" href="/gitlint/css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="/gitlint/extra.css" rel="stylesheet" />
   
   <script src="/gitlint/js/jquery-2.1.1.min.js" defer></script>
   <script src="/gitlint/js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
@@ -29,6 +30,7 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href="/gitlint/." class="icon icon-home"> Gitlint</a>
         <div role="search">
@@ -39,47 +41,36 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="/gitlint/.">Home</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="/gitlint/configuration/">Configuration</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="/gitlint/rules/">Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="/gitlint/contrib_rules/">Contrib Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="/gitlint/user_defined_rules/">User Defined Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="/gitlint/contributing/">Contributing</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md">Changelog</a>
-	    </li>
-          
-        </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="/gitlint/.">Home</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="/gitlint/configuration/">Configuration</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="/gitlint/rules/">Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="/gitlint/contrib_rules/">Contrib Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="/gitlint/user_defined_rules/">User Defined Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="/gitlint/contributing/">Contributing</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="" href="https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md">Changelog</a>
+                    </li>
+                </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -102,6 +93,7 @@
       
     </li>
   </ul>
+  
   <hr/>
 </div>
           <div role="main">
@@ -125,7 +117,7 @@
     
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -135,7 +127,7 @@
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
           <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
@@ -146,7 +138,13 @@
 </div>
     <script>var base_url = '/gitlint/';</script>
     <script src="/gitlint/js/theme.js" defer></script>
+      <script src="/gitlint/extra.js" defer></script>
       <script src="/gitlint/search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>

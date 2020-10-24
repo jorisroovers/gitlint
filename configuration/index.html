@@ -7,14 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
+  <link rel="canonical" href="http://jorisroovers.github.io/gitlint/configuration/">
   <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Configuration - Gitlint</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
-  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="../extra.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../extra.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -25,7 +26,7 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
@@ -36,6 +37,7 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href=".." class="icon icon-home"> Gitlint</a>
         <div role="search">
@@ -46,98 +48,48 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="..">Home</a>
-	    </li>
-          
-            <li class="toctree-l1 current">
-		
-    <a class="current" href="./">Configuration</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#configuration">Configuration</a></li>
-    
-
-    <li class="toctree-l2"><a href="#config-files">Config files</a></li>
-    
-
-    <li class="toctree-l2"><a href="#commandline-config">Commandline config</a></li>
-    
-
-    <li class="toctree-l2"><a href="#commit-specific-config">Commit specific config</a></li>
-    
-
-    <li class="toctree-l2"><a href="#configuration-precedence">Configuration precedence</a></li>
-    
-
-    <li class="toctree-l2"><a href="#general-options">General Options</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#silent">silent</a></li>
-        
-            <li><a class="toctree-l3" href="#verbosity">verbosity</a></li>
-        
-            <li><a class="toctree-l3" href="#ignore-merge-commits">ignore-merge-commits</a></li>
-        
-            <li><a class="toctree-l3" href="#ignore-revert-commits">ignore-revert-commits</a></li>
-        
-            <li><a class="toctree-l3" href="#ignore-fixup-commits">ignore-fixup-commits</a></li>
-        
-            <li><a class="toctree-l3" href="#ignore-squash-commits">ignore-squash-commits</a></li>
-        
-            <li><a class="toctree-l3" href="#ignore">ignore</a></li>
-        
-            <li><a class="toctree-l3" href="#debug">debug</a></li>
-        
-            <li><a class="toctree-l3" href="#target">target</a></li>
-        
-            <li><a class="toctree-l3" href="#extra-path">extra-path</a></li>
-        
-            <li><a class="toctree-l3" href="#contrib">contrib</a></li>
-        
-            <li><a class="toctree-l3" href="#ignore-stdin">ignore-stdin</a></li>
-        
-            <li><a class="toctree-l3" href="#staged">staged</a></li>
-        
-        </ul>
-    
-
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Configuration</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#the-gitlint-file">The .gitlint file</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#commandline-config">Commandline config</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#commit-specific-config">Commit specific config</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuration-precedence">Configuration precedence</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#general-options">General Options</a>
+    </li>
     </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../rules/">Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../contrib_rules/">Contrib Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../user_defined_rules/">User Defined Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../contributing/">Contributing</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md">Changelog</a>
-	    </li>
-          
-        </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../rules/">Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../contrib_rules/">Contrib Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_defined_rules/">User Defined Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../contributing/">Contributing</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="" href="https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md">Changelog</a>
+                    </li>
+                </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -165,6 +117,7 @@
       
     </li>
   </ul>
+  
   <hr/>
 </div>
           <div role="main">
@@ -172,26 +125,24 @@
               
                 <h1 id="configuration">Configuration</h1>
 <p>Gitlint can be configured through different means.</p>
-<h1 id="config-files">Config files</h1>
+<h2 id="the-gitlint-file">The .gitlint file</h2>
 <p>You can modify gitlint's behavior by adding a <code>.gitlint</code> file to your git repository.</p>
 <p>Generate a default <code>.gitlint</code> config file by running:</p>
-<pre><code class="bash">gitlint generate-config
+<pre><code class="language-sh">gitlint generate-config
 </code></pre>
-
 <p>You can also use a different config file like so:</p>
-<pre><code class="bash">gitlint --config myconfigfile.ini 
+<pre><code class="language-sh">gitlint --config myconfigfile.ini 
 </code></pre>
-
 <p>The block below shows a sample <code>.gitlint</code> file. Details about rule config options can be found on the
 <a href="../rules/">Rules</a> page, details about the <code>[general]</code> section can be found in the
 <a href="./#general-configuration">General Configuration</a> section of this page.</p>
-<pre><code class="ini"># Edit this file as you like.
+<pre><code class="language-ini"># Edit this file as you like.
 #
 # All these sections are optional. Each section with the exception of [general] represents
 # one rule and each key in it is an option for that specific rule.
 #
 # Rules and sections can be referenced by their full name or by id. For example
-# section &quot;[body-max-line-length]&quot; could be written as &quot;[B1]&quot;. Full section names are
+# section &quot;[body-max-line-length]&quot; could also be written as &quot;[B1]&quot;. Full section names are
 # used in here for clarity.
 # Rule reference documentation: http://jorisroovers.github.io/gitlint/rules/
 #
@@ -234,6 +185,11 @@ extra-path=examples/
 [title-max-length]
 line-length=80
 
+# Conversely, you can also enforce minimal length of a title with the
+# &quot;title-min-length&quot; rule:
+[title-min-length]
+min-length=5
+
 [title-must-not-contain-word]
 # Comma-separated list of words that should not occur in the title. Matching is case
 # insensitive. It's fine if the keyword occurs as part of a larger word (so &quot;WIPING&quot;
@@ -265,10 +221,15 @@ ignore-merge-commits=false
 # it in the commit message.
 files=gitlint/rules.py,README.md
 
+[body-match-regex]
+# python-style regex that the commit-msg body must match.
+# E.g. body must end in My-Commit-Tag: foo
+regex=My-Commit-Tag: foo$
+
 [author-valid-email]
 # python like regex (https://docs.python.org/2/library/re.html) that the
 # commit author email address should be matched to
-# For example, use the following regex if you only want to allow email addresses from foo.com
+# E.g.: For example, use the following regex if you only want to allow email addresses from foo.com
 regex=[^@]+@foo.com
 
 [ignore-by-title]
@@ -289,6 +250,11 @@ ignore=T1,body-min-length
 # Use 'all' to ignore all rules
 ignore=T1,body-min-length
 
+[ignore-body-lines]
+# Ignore certain lines in a commit body that match a regex.
+# E.g. Ignore all lines that start with 'Co-Authored-By'
+regex=^Co-Authored-By
+
 # This is a contrib rule - a community contributed rule. These are disabled by default.
 # You need to explicitly enable them one-by-one by adding them to the &quot;contrib&quot; option
 # under [general] section above.
@@ -296,15 +262,13 @@ ignore=T1,body-min-length
 # Specify allowed commit types. For details see: https://www.conventionalcommits.org/
 types = bugfix,user-story,epic
 </code></pre>
-
-<h1 id="commandline-config">Commandline config</h1>
+<h2 id="commandline-config">Commandline config</h2>
 <p>You can also use one or more <code>-c</code> flags like so:</p>
 <pre><code>$ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
 </code></pre>
-
 <p>The generic config flag format is <code>-c &lt;rule&gt;.&lt;option&gt;=&lt;value&gt;</code> and supports all the same rules and options which
 you can also use in a <code>.gitlint</code> config file.</p>
-<h1 id="commit-specific-config">Commit specific config</h1>
+<h2 id="commit-specific-config">Commit specific config</h2>
 <p>You can also configure gitlint by adding specific lines to your commit message.
 For now, we only support ignoring commits by adding <code>gitlint-ignore: all</code> to the commit
 message like so:</p>
@@ -313,7 +277,6 @@ message like so:</p>
 I want gitlint to ignore this entire commit message.
 gitlint-ignore: all
 </code></pre>
-
 <p><code>gitlint-ignore: all</code> can occur on any line, as long as it is at the start of the line.</p>
 <p>You can also specify specific rules to be ignored as follows: </p>
 <pre><code>WIP: This is my commit message
@@ -321,21 +284,21 @@ gitlint-ignore: all
 I want gitlint to ignore this entire commit message.
 gitlint-ignore: T1, body-hard-tab
 </code></pre>
-
-<h1 id="configuration-precedence">Configuration precedence</h1>
+<h2 id="configuration-precedence">Configuration precedence</h2>
 <p>gitlint configuration is applied in the following order of precedence:</p>
 <ol>
 <li>Commit specific config (e.g.: <code>gitlint-ignore: all</code> in the commit message)</li>
 <li>Configuration Rules (e.g.: <a href="/rules/#i1-ignore-by-title">ignore-by-title</a>)</li>
 <li>Commandline convenience flags (e.g.:  <code>-vv</code>, <code>--silent</code>, <code>--ignore</code>)</li>
+<li>Environment variables (e.g.: <code>GITLINT_VERBOSITY=3</code>)</li>
 <li>Commandline configuration flags (e.g.: <code>-c title-max-length=123</code>)</li>
 <li>Configuration file (local <code>.gitlint</code> file, or file specified using <code>-C</code>/<code>--config</code>)</li>
 <li>Default gitlint config</li>
 </ol>
-<h1 id="general-options">General Options</h1>
+<h2 id="general-options">General Options</h2>
 <p>Below we outline all configuration options that modify gitlint's overall behavior. These options can be specified
 using commandline flags or in <code>[general]</code> section in a <code>.gitlint</code> configuration file.</p>
-<h2 id="silent">silent</h2>
+<h3 id="silent">silent</h3>
 <p>Enable silent mode (no output). Use <a href="..#exit-codes">exit</a> code to determine result.</p>
 <table>
 <thead>
@@ -343,22 +306,24 @@ using commandline flags or in <code>[general]</code> section in a <code>.gitlint
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>false</td>
+<td><code>False</code></td>
 <td>&gt;= 0.1.0</td>
 <td><code>--silent</code></td>
+<td><code>GITLINT_SILENT</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint --silent
+GITLINT_SILENT=1 gitlint  # using env variable
 </code></pre>
-
-<h2 id="verbosity">verbosity</h2>
+<h3 id="verbosity">verbosity</h3>
 <p>Amount of output gitlint will show when printing errors.</p>
 <table>
 <thead>
@@ -366,6 +331,7 @@ gitlint --silent
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
@@ -373,137 +339,25 @@ gitlint --silent
 <td>3</td>
 <td>&gt;= 0.1.0</td>
 <td><code>-v</code></td>
+<td><code>GITLINT_VERBOSITY</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_1">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples_1">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint -vvv                   # default     (level 3)
 gitlint -vv                    # less output (level 2)
 gitlint -v                     # even less   (level 1)
 gitlint --silent               # no output   (level 0)
 gitlint -c general.verbosity=1 # Set specific level
 gitlint -c general.verbosity=0 # Same as --silent
+GITLINT_VERBOSITY=2 gitlint    # using env variable
 </code></pre>
-
-<pre><code class="ini">.gitlint
+<pre><code class="language-ini"># .gitlint
 [general]
 verbosity=2
 </code></pre>
-
-<h2 id="ignore-merge-commits">ignore-merge-commits</h2>
-<p>Whether or not to ignore merge commits.</p>
-<table>
-<thead>
-<tr>
-<th>Default value</th>
-<th>gitlint version</th>
-<th>commandline flag</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>true</td>
-<td>&gt;= 0.7.0</td>
-<td>Not Available</td>
-</tr>
-</tbody>
-</table>
-<h3 id="examples_2">Examples</h3>
-<pre><code class="sh"># CLI
-gitlint -c general.ignore-merge-commits=false
-</code></pre>
-
-<pre><code class="ini">#.gitlint
-[general]
-ignore-merge-commits=false
-</code></pre>
-
-<h2 id="ignore-revert-commits">ignore-revert-commits</h2>
-<p>Whether or not to ignore revert commits.</p>
-<table>
-<thead>
-<tr>
-<th>Default value</th>
-<th>gitlint version</th>
-<th>commandline flag</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>true</td>
-<td>&gt;= 0.13.0</td>
-<td>Not Available</td>
-</tr>
-</tbody>
-</table>
-<h3 id="examples_3">Examples</h3>
-<pre><code class="sh"># CLI
-gitlint -c general.ignore-revert-commits=false
-</code></pre>
-
-<pre><code class="ini">#.gitlint
-[general]
-ignore-revert-commits=false
-</code></pre>
-
-<h2 id="ignore-fixup-commits">ignore-fixup-commits</h2>
-<p>Whether or not to ignore <a href="https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt">fixup</a> commits.</p>
-<table>
-<thead>
-<tr>
-<th>Default value</th>
-<th>gitlint version</th>
-<th>commandline flag</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>true</td>
-<td>&gt;= 0.9.0</td>
-<td>Not Available</td>
-</tr>
-</tbody>
-</table>
-<h3 id="examples_4">Examples</h3>
-<pre><code class="sh"># CLI
-gitlint -c general.ignore-fixup-commits=false
-</code></pre>
-
-<pre><code class="ini">#.gitlint
-[general]
-ignore-fixup-commits=false
-</code></pre>
-
-<h2 id="ignore-squash-commits">ignore-squash-commits</h2>
-<p>Whether or not to ignore <a href="https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt">squash</a> commits.</p>
-<table>
-<thead>
-<tr>
-<th>Default value</th>
-<th>gitlint version</th>
-<th>commandline flag</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>true</td>
-<td>&gt;= 0.9.0</td>
-<td>Not Available</td>
-</tr>
-</tbody>
-</table>
-<h3 id="examples_5">Examples</h3>
-<pre><code class="sh"># CLI
-gitlint -c general.ignore-squash-commits=false
-</code></pre>
-
-<pre><code class="ini">#.gitlint
-[general]
-ignore-squash-commits=false
-</code></pre>
-
-<h2 id="ignore">ignore</h2>
+<h3 id="ignore">ignore</h3>
 <p>Comma separated list of rules to ignore (by name or id).</p>
 <table>
 <thead>
@@ -511,6 +365,7 @@ ignore-squash-commits=false
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
@@ -518,22 +373,22 @@ ignore-squash-commits=false
 <td>[] (=empty list)</td>
 <td>&gt;= 0.1.0</td>
 <td><code>--ignore</code></td>
+<td><code>GITLINT_IGNORE</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_6">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples_2">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint --ignore=body-min-length              # ignore single rule
 gitlint --ignore=T1,body-min-length           # ignore multiple rule
 gitlint -c general.ignore=T1,body-min-length  # different way of doing the same
+GITLINT_IGNORE=T1,body-min-length gitlint     # using env variable
 </code></pre>
-
-<pre><code class="ini">#.gitlint
+<pre><code class="language-ini">#.gitlint
 [general]
 ignore=T1,body-min-length
 </code></pre>
-
-<h2 id="debug">debug</h2>
+<h3 id="debug">debug</h3>
 <p>Enable debugging output.</p>
 <table>
 <thead>
@@ -541,6 +396,7 @@ ignore=T1,body-min-length
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
@@ -548,17 +404,18 @@ ignore=T1,body-min-length
 <td>false</td>
 <td>&gt;= 0.7.1</td>
 <td><code>--debug</code></td>
+<td><code>GITLINT_DEBUG</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_7">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples_3">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint --debug
+GITLINT_DEBUG=1 gitlint # using env variable
 # --debug is special, the following does NOT work
 # gitlint -c general.debug=true
 </code></pre>
-
-<h2 id="target">target</h2>
+<h3 id="target">target</h3>
 <p>Target git repository gitlint should be linting against.</p>
 <table>
 <thead>
@@ -566,6 +423,7 @@ gitlint --debug
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
@@ -573,21 +431,21 @@ gitlint --debug
 <td>(empty)</td>
 <td>&gt;= 0.8.0</td>
 <td><code>--target</code></td>
+<td><code>GITLINT_TARGET</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_8">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples_4">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint --target=/home/joe/myrepo/
 gitlint -c general.target=/home/joe/myrepo/  # different way of doing the same
+GITLINT_TARGET=/home/joe/myrepo/ gitlint     # using env variable
 </code></pre>
-
-<pre><code class="ini">#.gitlint
+<pre><code class="language-ini">#.gitlint
 [general]
 target=/home/joe/myrepo/
 </code></pre>
-
-<h2 id="extra-path">extra-path</h2>
+<h3 id="extra-path">extra-path</h3>
 <p>Path where gitlint looks for <a href="../user_defined_rules/">user-defined rules</a>.</p>
 <table>
 <thead>
@@ -595,6 +453,7 @@ target=/home/joe/myrepo/
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
@@ -602,28 +461,29 @@ target=/home/joe/myrepo/
 <td>(empty)</td>
 <td>&gt;= 0.8.0</td>
 <td><code>--extra-path</code></td>
+<td><code>GITLINT_EXTRA_PATH</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_9">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples_5">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint --extra-path=/home/joe/rules/
 gitlint -c general.extra-path=/home/joe/rules/  # different way of doing the same
+GITLINT_EXTRA_PATH=/home/joe/rules/ gitlint     # using env variable
 </code></pre>
-
-<pre><code class="ini">#.gitlint
+<pre><code class="language-ini">#.gitlint
 [general]
 extra-path=/home/joe/rules/
 </code></pre>
-
-<h2 id="contrib">contrib</h2>
-<p><a href="contrib_rules">Contrib rules</a> to enable.</p>
+<h3 id="contrib">contrib</h3>
+<p>Comma-separated list of <a href="contrib_rules">Contrib rules</a> to enable (by name or id).</p>
 <table>
 <thead>
 <tr>
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
@@ -631,57 +491,29 @@ extra-path=/home/joe/rules/
 <td>(empty)</td>
 <td>&gt;= 0.12.0</td>
 <td><code>--contrib</code></td>
+<td><code>GITLINT_CONTRIB</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_10">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples_6">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint --contrib=contrib-title-conventional-commits,CC1
 gitlint -c general.contrib=contrib-title-conventional-commits,CC1  # different way of doing the same
+GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint     # using env variable
 </code></pre>
-
-<pre><code class="ini">#.gitlint
+<pre><code class="language-ini">#.gitlint
 [general]
 contrib=contrib-title-conventional-commits,CC1
 </code></pre>
-
-<h2 id="ignore-stdin">ignore-stdin</h2>
-<p>Ignore any stdin data. Sometimes useful when running gitlint in a CI server.</p>
+<h3 id="staged">staged</h3>
+<p>Fetch additional meta-data from the local <code>repository when manually passing a commit message to gitlint via stdin or</code>--commit-msg`.</p>
 <table>
 <thead>
 <tr>
 <th>Default value</th>
 <th>gitlint version</th>
 <th>commandline flag</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>false</td>
-<td>&gt;= 0.12.0</td>
-<td><code>--ignore-stdin</code></td>
-</tr>
-</tbody>
-</table>
-<h3 id="examples_11">Examples</h3>
-<pre><code class="sh"># CLI
-gitlint --ignore-stdin
-gitlint -c general.ignore-stdin=true # different way of doing the same
-</code></pre>
-
-<pre><code class="ini">#.gitlint
-[general]
-ignore-stdin=true
-</code></pre>
-
-<h2 id="staged">staged</h2>
-<p>Fetch additional meta-data from the local `repository when manually passing a commit message to gitlint via stdin or <code>--commit-msg</code>.</p>
-<table>
-<thead>
-<tr>
-<th>Default value</th>
-<th>gitlint version</th>
-<th>commandline flag</th>
+<th>environment variable</th>
 </tr>
 </thead>
 <tbody>
@@ -689,18 +521,161 @@ ignore-stdin=true
 <td>false</td>
 <td>&gt;= 0.13.0</td>
 <td><code>--staged</code></td>
+<td><code>GITLINT_STAGED</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_12">Examples</h3>
-<pre><code class="sh"># CLI
+<h4 id="examples_7">Examples</h4>
+<pre><code class="language-sh"># CLI
 gitlint --staged
 gitlint -c general.staged=true # different way of doing the same
+GITLINT_STAGED=1 gitlint       # using env variable
 </code></pre>
-
-<pre><code class="ini">#.gitlint
+<pre><code class="language-ini">#.gitlint
 [general]
 staged=true
+</code></pre>
+<h3 id="ignore-stdin">ignore-stdin</h3>
+<p>Ignore any stdin data. Sometimes useful when running gitlint in a CI server.</p>
+<table>
+<thead>
+<tr>
+<th>Default value</th>
+<th>gitlint version</th>
+<th>commandline flag</th>
+<th>environment variable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>false</td>
+<td>&gt;= 0.12.0</td>
+<td><code>--ignore-stdin</code></td>
+<td><code>GITLINT_IGNORE_STDIN</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples_8">Examples</h4>
+<pre><code class="language-sh"># CLI
+gitlint --ignore-stdin
+gitlint -c general.ignore-stdin=true # different way of doing the same
+GITLINT_IGNORE_STDIN=1 gitlint       # using env variable
+</code></pre>
+<pre><code class="language-ini">#.gitlint
+[general]
+ignore-stdin=true
+</code></pre>
+<h3 id="ignore-merge-commits">ignore-merge-commits</h3>
+<p>Whether or not to ignore merge commits.</p>
+<table>
+<thead>
+<tr>
+<th>Default value</th>
+<th>gitlint version</th>
+<th>commandline flag</th>
+<th>environment variable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>true</td>
+<td>&gt;= 0.7.0</td>
+<td>Not Available</td>
+<td>Not Available</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples_9">Examples</h4>
+<pre><code class="language-sh"># CLI
+gitlint -c general.ignore-merge-commits=false
+</code></pre>
+<pre><code class="language-ini">#.gitlint
+[general]
+ignore-merge-commits=false
+</code></pre>
+<h3 id="ignore-revert-commits">ignore-revert-commits</h3>
+<p>Whether or not to ignore revert commits.</p>
+<table>
+<thead>
+<tr>
+<th>Default value</th>
+<th>gitlint version</th>
+<th>commandline flag</th>
+<th>environment variable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>true</td>
+<td>&gt;= 0.13.0</td>
+<td>Not Available</td>
+<td>Not Available</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples_10">Examples</h4>
+<pre><code class="language-sh"># CLI
+gitlint -c general.ignore-revert-commits=false
+</code></pre>
+<pre><code class="language-ini">#.gitlint
+[general]
+ignore-revert-commits=false
+</code></pre>
+<h3 id="ignore-fixup-commits">ignore-fixup-commits</h3>
+<p>Whether or not to ignore <a href="https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt">fixup</a> commits.</p>
+<table>
+<thead>
+<tr>
+<th>Default value</th>
+<th>gitlint version</th>
+<th>commandline flag</th>
+<th>environment variable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>true</td>
+<td>&gt;= 0.9.0</td>
+<td>Not Available</td>
+<td>Not Available</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples_11">Examples</h4>
+<pre><code class="language-sh"># CLI
+gitlint -c general.ignore-fixup-commits=false
+</code></pre>
+<pre><code class="language-ini">#.gitlint
+[general]
+ignore-fixup-commits=false
+</code></pre>
+<h3 id="ignore-squash-commits">ignore-squash-commits</h3>
+<p>Whether or not to ignore <a href="https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt">squash</a> commits.</p>
+<table>
+<thead>
+<tr>
+<th>Default value</th>
+<th>gitlint version</th>
+<th>commandline flag</th>
+<th>environment variable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>true</td>
+<td>&gt;= 0.9.0</td>
+<td>Not Available</td>
+<td>Not Available</td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples_12">Examples</h4>
+<pre><code class="language-sh"># CLI
+gitlint -c general.ignore-squash-commits=false
+</code></pre>
+<pre><code class="language-ini">#.gitlint
+[general]
+ignore-squash-commits=false
 </code></pre>
               
             </div>
@@ -724,7 +699,7 @@ staged=true
     
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -734,7 +709,7 @@ staged=true
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
           <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
@@ -749,7 +724,13 @@ staged=true
 </div>
     <script>var base_url = '..';</script>
     <script src="../js/theme.js" defer></script>
+      <script src="../extra.js" defer></script>
       <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>

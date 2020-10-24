@@ -7,14 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
+  <link rel="canonical" href="http://jorisroovers.github.io/gitlint/rules/">
   <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Rules - Gitlint</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
-  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="../extra.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../extra.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -25,7 +26,7 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
@@ -36,6 +37,7 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href=".." class="icon icon-home"> Gitlint</a>
         <div role="search">
@@ -46,91 +48,78 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="..">Home</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../configuration/">Configuration</a>
-	    </li>
-          
-            <li class="toctree-l1 current">
-		
-    <a class="current" href="./">Rules</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#overview">Overview</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#t1-title-max-length">T1: title-max-length</a></li>
-        
-            <li><a class="toctree-l3" href="#t2-title-trailing-whitespace">T2: title-trailing-whitespace</a></li>
-        
-            <li><a class="toctree-l3" href="#t3-title-trailing-punctuation">T3: title-trailing-punctuation</a></li>
-        
-            <li><a class="toctree-l3" href="#t4-title-hard-tab">T4: title-hard-tab</a></li>
-        
-            <li><a class="toctree-l3" href="#t5-title-must-not-contain-word">T5: title-must-not-contain-word</a></li>
-        
-            <li><a class="toctree-l3" href="#t6-title-leading-whitespace">T6: title-leading-whitespace</a></li>
-        
-            <li><a class="toctree-l3" href="#t7-title-match-regex">T7: title-match-regex</a></li>
-        
-            <li><a class="toctree-l3" href="#b1-body-max-line-length">B1: body-max-line-length</a></li>
-        
-            <li><a class="toctree-l3" href="#b2-body-trailing-whitespace">B2: body-trailing-whitespace</a></li>
-        
-            <li><a class="toctree-l3" href="#b3-body-hard-tab">B3: body-hard-tab</a></li>
-        
-            <li><a class="toctree-l3" href="#b4-body-first-line-empty">B4: body-first-line-empty</a></li>
-        
-            <li><a class="toctree-l3" href="#b5-body-min-length">B5: body-min-length</a></li>
-        
-            <li><a class="toctree-l3" href="#b6-body-is-missing">B6: body-is-missing</a></li>
-        
-            <li><a class="toctree-l3" href="#b7-body-changed-file-mention">B7: body-changed-file-mention</a></li>
-        
-            <li><a class="toctree-l3" href="#m1-author-valid-email">M1: author-valid-email</a></li>
-        
-            <li><a class="toctree-l3" href="#i1-ignore-by-title">I1: ignore-by-title</a></li>
-        
-            <li><a class="toctree-l3" href="#i2-ignore-by-body">I2: ignore-by-body</a></li>
-        
-        </ul>
-    
-
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configuration</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Rules</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#t1-title-max-length">T1: title-max-length</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#t2-title-trailing-whitespace">T2: title-trailing-whitespace</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#t3-title-trailing-punctuation">T3: title-trailing-punctuation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#t4-title-hard-tab">T4: title-hard-tab</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#t5-title-must-not-contain-word">T5: title-must-not-contain-word</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#t6-title-leading-whitespace">T6: title-leading-whitespace</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#t7-title-match-regex">T7: title-match-regex</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#t8-title-min-length">T8: title-min-length</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b1-body-max-line-length">B1: body-max-line-length</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b2-body-trailing-whitespace">B2: body-trailing-whitespace</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b3-body-hard-tab">B3: body-hard-tab</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b4-body-first-line-empty">B4: body-first-line-empty</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b5-body-min-length">B5: body-min-length</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b6-body-is-missing">B6: body-is-missing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b7-body-changed-file-mention">B7: body-changed-file-mention</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#b8-body-match-regex">B8: body-match-regex</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#m1-author-valid-email">M1: author-valid-email</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i1-ignore-by-title">I1: ignore-by-title</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i2-ignore-by-body">I2: ignore-by-body</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#i3-ignore-body-lines">I3: ignore-body-lines</a>
+    </li>
     </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../contrib_rules/">Contrib Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../user_defined_rules/">User Defined Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../contributing/">Contributing</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md">Changelog</a>
-	    </li>
-          
-        </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../contrib_rules/">Contrib Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_defined_rules/">User Defined Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../contributing/">Contributing</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="" href="https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md">Changelog</a>
+                    </li>
+                </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -158,16 +147,17 @@
       
     </li>
   </ul>
+  
   <hr/>
 </div>
           <div role="main">
             <div class="section">
               
                 <h1 id="overview">Overview</h1>
-<p>The table below shows an overview of all gitlint's built-in rules.
-Note that you can also <a href="../user_defined_rules/">write your own user-defined rule</a> in case you don't find
-what you're looking for.
-The rest of this page contains details on the available configuration options for each built-in rule.</p>
+<p>The table below shows an overview of all gitlint's built-in rules, with more specific details further down the page.</p>
+<p>Gitlint also has <a href="../contrib_rules/">community <strong>contrib</strong>uted rules</a> which are not listed here as they're disabled by default.</p>
+<p>In addition, you can also <a href="../user_defined_rules/">write your own user-defined rule</a> in case you don't find
+what you're looking for.</p>
 <table>
 <thead>
 <tr>
@@ -218,7 +208,13 @@ The rest of this page contains details on the available configuration options fo
 <td>T7</td>
 <td>title-match-regex</td>
 <td>&gt;= 0.5.0</td>
-<td>Title must match a given regex (default: .*)</td>
+<td>Title must match a given regex (default: None)</td>
+</tr>
+<tr>
+<td>T8</td>
+<td>title-max-length</td>
+<td>&gt;= 0.14.0</td>
+<td>Title length must be &gt; 5 chars.</td>
 </tr>
 <tr>
 <td>B1</td>
@@ -263,6 +259,12 @@ The rest of this page contains details on the available configuration options fo
 <td>Body must contain references to certain files if those files are changed in the last commit</td>
 </tr>
 <tr>
+<td>B8</td>
+<td>body-match-regex</td>
+<td>&gt;= 0.14.0</td>
+<td>Title must match a given regex (default: None)</td>
+</tr>
+<tr>
 <td>M1</td>
 <td>author-valid-email</td>
 <td>&gt;= 0.9.0</td>
@@ -279,6 +281,12 @@ The rest of this page contains details on the available configuration options fo
 <td>ignore-by-body</td>
 <td>&gt;= 0.10.0</td>
 <td>Ignore a commit based on matching its body</td>
+</tr>
+<tr>
+<td>I3</td>
+<td>ignore-body-lines</td>
+<td>&gt;= 0.14.0</td>
+<td>Ignore certain lines in a commit body that match a regex</td>
 </tr>
 </tbody>
 </table>
@@ -320,6 +328,16 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
+<h3 id="examples">Examples</h3>
+<h4 id="gitlint">.gitlint</h4>
+<pre><code class="language-ini"># Titles should be max 72 chars
+[title-max-length]
+line-length=72
+
+# It's the 21st century, titles can be 120 chars long
+[title-max-length]
+line-length=120
+</code></pre>
 <h2 id="t2-title-trailing-whitespace">T2: title-trailing-whitespace</h2>
 <table>
 <thead>
@@ -415,6 +433,12 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
+<h3 id="examples_1">Examples</h3>
+<h4 id="gitlint_1">.gitlint</h4>
+<pre><code class="language-ini"># Ensure the title doesn't contain swear words
+[title-must-not-contain-word]
+words=crap,darn,damn
+</code></pre>
 <h2 id="t6-title-leading-whitespace">T6: title-leading-whitespace</h2>
 <table>
 <thead>
@@ -468,10 +492,60 @@ The rest of this page contains details on the available configuration options fo
 <td>regex</td>
 <td>&gt;= 0.5</td>
 <td>.*</td>
-<td><a href="https://docs.python.org/3.5/library/re.html">Python-style regular expression</a> that the title should match.</td>
+<td><a href="https://docs.python.org/library/re.html">Python regex</a> that the title should match.</td>
 </tr>
 </tbody>
 </table>
+<h3 id="examples_2">Examples</h3>
+<h4 id="gitlint_2">.gitlint</h4>
+<pre><code class="language-ini"># Ensure every title starts with a user-story like US123
+[title-match-regex]
+regex=^US[1-9][0-9]*
+</code></pre>
+<h2 id="t8-title-min-length">T8: title-min-length</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1</td>
+<td>title-min-length</td>
+<td>&gt;=</td>
+<td>Title length must be &gt; 5 chars.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_3">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>min-length</td>
+<td>&gt;= 0.14.0</td>
+<td>5</td>
+<td>Minimum required title length</td>
+</tr>
+</tbody>
+</table>
+<h3 id="examples_3">Examples</h3>
+<h4 id="gitlint_3">.gitlint</h4>
+<pre><code class="language-ini"># Titles should be min 3 chars
+[title-min-length]
+min-length=3
+</code></pre>
 <h2 id="b1-body-max-line-length">B1: body-max-line-length</h2>
 <table>
 <thead>
@@ -491,7 +565,7 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
-<h3 id="options_3">Options</h3>
+<h3 id="options_4">Options</h3>
 <table>
 <thead>
 <tr>
@@ -510,6 +584,16 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
+<h3 id="examples_4">Examples</h3>
+<h4 id="gitlint_4">.gitlint</h4>
+<pre><code class="language-ini"># It's the 21st century, lines can be 120 chars long
+[body-max-line-length]
+line-length=120
+
+# Your tool prefers 72
+[body-max-line-length]
+line-length=72
+</code></pre>
 <h2 id="b2-body-trailing-whitespace">B2: body-trailing-whitespace</h2>
 <table>
 <thead>
@@ -586,7 +670,7 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
-<h3 id="options_4">Options</h3>
+<h3 id="options_5">Options</h3>
 <table>
 <thead>
 <tr>
@@ -605,6 +689,16 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
+<h3 id="examples_5">Examples</h3>
+<h4 id="gitlint_5">.gitlint</h4>
+<pre><code class="language-ini"># You want *something* in every commit body, but doesn't have to be as long as 20 chars.
+[body-min-length]
+min-length=5
+
+# You want a more elaborate message in every commit body
+[body-min-length]
+min-length=100
+</code></pre>
 <h2 id="b6-body-is-missing">B6: body-is-missing</h2>
 <table>
 <thead>
@@ -624,7 +718,7 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
-<h3 id="options_5">Options</h3>
+<h3 id="options_6">Options</h3>
 <table>
 <thead>
 <tr>
@@ -662,7 +756,7 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
-<h3 id="options_6">Options</h3>
+<h3 id="options_7">Options</h3>
 <table>
 <thead>
 <tr>
@@ -681,6 +775,61 @@ The rest of this page contains details on the available configuration options fo
 </tr>
 </tbody>
 </table>
+<h3 id="examples_6">Examples</h3>
+<h4 id="gitlint_6">.gitlint</h4>
+<pre><code class="language-ini"># Prevent that certain sensitive files are committed by mistake by forcing users to mention them explicitly if they're
+# deliberately changing them
+[body-changed-file-mention]
+files=generated.xml,secrets.txt,private-key.pem
+</code></pre>
+<h2 id="b8-body-match-regex">B8: body-match-regex</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B8</td>
+<td>body-match-regex</td>
+<td>&gt;= 0.14</td>
+<td>Body must match a given regex</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_8">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regex</td>
+<td>&gt;= 0.14</td>
+<td>None</td>
+<td><a href="https://docs.python.org/library/re.html">Python regex</a> that the title should match.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="examples_7">Examples</h3>
+<h4 id="gitlint_7">.gitlint</h4>
+<pre><code class="language-ini"># Ensure the body ends with Reviewed-By: &lt;some value&gt;
+[body-match-regex]
+regex=Reviewed-By:(.*)$
+
+# Ensure body contains the word &quot;Foo&quot; somewhere
+[body-match-regex]
+regex=(*.)Foo(.*)
+</code></pre>
 <h2 id="m1-author-valid-email">M1: author-valid-email</h2>
 <table>
 <thead>
@@ -705,7 +854,7 @@ The rest of this page contains details on the available configuration options fo
 <p>Email addresses are <a href="http://stackoverflow.com/a/201378/381010">notoriously hard to validate and the official email valid spec is often too loose for any real world application</a>.
 Gitlint by default takes a pragmatic approach and requires users to enter email addresses that contain a name, domain and tld and has no spaces.</p>
 </div>
-<h3 id="options_7">Options</h3>
+<h3 id="options_9">Options</h3>
 <table>
 <thead>
 <tr>
@@ -720,14 +869,16 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 <td>regex</td>
 <td>&gt;= 0.9.0</td>
 <td><code>[^@ ]+@[^@ ]+\.[^@ ]+</code></td>
-<td>Regex the commit author email address is matched against</td>
+<td><a href="https://docs.python.org/library/re.html">Python regex</a> the commit author email address is matched against</td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>An often recurring use-case is to only allow email addresses from a certain domain. The following regular expression achieves this: <code>[^@]+@foo.com</code></p>
-</div>
+<h3 id="examples_8">Examples</h3>
+<h4 id="gitlint_8">.gitlint</h4>
+<pre><code class="language-ini"># Only allow email addresses from a foo.com domain
+[author-valid-email]
+regex=[^@]+@foo.com
+</code></pre>
 <h2 id="i1-ignore-by-title">I1: ignore-by-title</h2>
 <table>
 <thead>
@@ -747,7 +898,7 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 </tr>
 </tbody>
 </table>
-<h3 id="options_8">Options</h3>
+<h3 id="options_10">Options</h3>
 <table>
 <thead>
 <tr>
@@ -762,19 +913,19 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 <td>regex</td>
 <td>&gt;= 0.10.0</td>
 <td>None</td>
-<td>Regex to match against commit title. On match, the commit will be ignored.</td>
+<td><a href="https://docs.python.org/library/re.html">Python regex</a> to match against commit title. On match, the commit will be ignored.</td>
 </tr>
 <tr>
 <td>ignore</td>
 <td>&gt;= 0.10.0</td>
 <td>all</td>
-<td>Comma-seperated list of rule names or ids to ignore when this rule is matched.</td>
+<td>Comma-separated list of rule names or ids to ignore when this rule is matched.</td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples">Examples</h3>
-<h4 id="gitlint">.gitlint</h4>
-<pre><code class="ini"># Match commit titles starting with Release
+<h3 id="examples_9">Examples</h3>
+<h4 id="gitlint_9">.gitlint</h4>
+<pre><code class="language-ini"># Match commit titles starting with Release
 # For those commits, ignore title-max-length and body-min-length rules
 [ignore-by-title]
 regex=^Release(.*)
@@ -782,7 +933,6 @@ ignore=title-max-length,body-min-length
 # ignore all rules by setting ignore to 'all'
 # ignore=all
 </code></pre>
-
 <h2 id="i2-ignore-by-body">I2: ignore-by-body</h2>
 <table>
 <thead>
@@ -802,7 +952,7 @@ ignore=title-max-length,body-min-length
 </tr>
 </tbody>
 </table>
-<h3 id="options_9">Options</h3>
+<h3 id="options_11">Options</h3>
 <table>
 <thead>
 <tr>
@@ -817,19 +967,19 @@ ignore=title-max-length,body-min-length
 <td>regex</td>
 <td>&gt;= 0.10.0</td>
 <td>None</td>
-<td>Regex to match against each line of the body. On match, the commit will be ignored.</td>
+<td><a href="https://docs.python.org/library/re.html">Python regex</a> to match against each line of the body. On match, the commit will be ignored.</td>
 </tr>
 <tr>
 <td>ignore</td>
 <td>&gt;= 0.10.0</td>
 <td>all</td>
-<td>Comma-seperated list of rule names or ids to ignore when this rule is matched.</td>
+<td>Comma-separated list of rule names or ids to ignore when this rule is matched.</td>
 </tr>
 </tbody>
 </table>
-<h3 id="examples_1">Examples</h3>
-<h4 id="gitlint_1">.gitlint</h4>
-<pre><code class="ini"># Ignore all commits with a commit message body with a line that contains 'release'
+<h3 id="examples_10">Examples</h3>
+<h4 id="gitlint_10">.gitlint</h4>
+<pre><code class="language-ini"># Ignore all commits with a commit message body with a line that contains 'release'
 [ignore-by-body]
 regex=(.*)release(.*)
 ignore=all
@@ -839,6 +989,58 @@ ignore=all
 [ignore-by-body]
 regex=(.*)release(.*)
 ignore=T1,body-min-length,B6
+</code></pre>
+<h2 id="i3-ignore-body-lines">I3: ignore-body-lines</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I3</td>
+<td>ignore-body-lines</td>
+<td>&gt;= 0.14.0</td>
+<td>Ignore certain lines in a commit body that match a regex.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="options_12">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>regex</td>
+<td>&gt;= 0.14.0</td>
+<td>None</td>
+<td><a href="https://docs.python.org/library/re.html">Python regex</a> to match against each line of the body. On match, that line will be ignored by gitlint (the rest of the body will still be linted).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="examples_11">Examples</h3>
+<h4 id="gitlint_11">.gitlint</h4>
+<pre><code class="language-ini"># Ignore all lines that start with 'Co-Authored-By'
+[ignore-body-lines]
+regex=^Co-Authored-By
+
+# Ignore lines that start with 'Co-Authored-By' or with 'Signed-Off-By'
+[ignore-body-lines]
+regex=(^Co-Authored-By)|(^Signed-Off-By)
+
+# Ignore lines that contain 'foobar'
+[ignore-body-lines]
+regex=(.*)foobar(.*)
 </code></pre>
               
             </div>
@@ -862,7 +1064,7 @@ ignore=T1,body-min-length,B6
     
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -872,7 +1074,7 @@ ignore=T1,body-min-length,B6
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
           <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
@@ -887,7 +1089,13 @@ ignore=T1,body-min-length,B6
 </div>
     <script>var base_url = '..';</script>
     <script src="../js/theme.js" defer></script>
+      <script src="../extra.js" defer></script>
       <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>

@@ -7,14 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Linting for your git commit messages">
   
+  <link rel="canonical" href="http://jorisroovers.github.io/gitlint/">
   <link rel="shortcut icon" href="img/favicon.ico">
-  <title>Home - Gitlint</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <title>Gitlint</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
-  <link rel="stylesheet" href="css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="extra.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="extra.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -25,7 +26,7 @@
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
   <script src="js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
@@ -36,6 +37,7 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href="." class="icon icon-home"> Gitlint</a>
         <div role="search">
@@ -46,97 +48,60 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1 current">
-		
-    <a class="current" href=".">Home</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#intro">Intro</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#features">Features</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l2"><a href="#getting-started">Getting Started</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#installation">Installation</a></li>
-        
-            <li><a class="toctree-l3" href="#usage">Usage</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l2"><a href="#configuration">Configuration</a></li>
-    
-
-    <li class="toctree-l2"><a href="#using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</a></li>
-    
-
-    <li class="toctree-l2"><a href="#using-gitlint-through-pre-commit">Using gitlint through pre-commit</a></li>
-    
-
-    <li class="toctree-l2"><a href="#using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#linting-a-range-of-commits">Linting a range of commits</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l2"><a href="#merge-fixup-and-squash-commits">Merge, fixup and squash commits</a></li>
-    
-
-    <li class="toctree-l2"><a href="#ignoring-commits">Ignoring commits</a></li>
-    
-
-    <li class="toctree-l2"><a href="#exit-codes">Exit codes</a></li>
-    
-
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#features">Features</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-gitlint-through-pre-commit">Using gitlint through pre-commit</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#linting-a-range-of-commits">Linting a range of commits</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#merge-fixup-squash-and-revert-commits">Merge, fixup, squash and revert commits</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ignoring-commits">Ignoring commits</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#named-rules">Named Rules</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#exit-codes">Exit codes</a>
+    </li>
     </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="configuration/">Configuration</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="rules/">Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="contrib_rules/">Contrib Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="user_defined_rules/">User Defined Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="contributing/">Contributing</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md">Changelog</a>
-	    </li>
-          
-        </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="configuration/">Configuration</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="rules/">Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="contrib_rules/">Contrib Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="user_defined_rules/">User Defined Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="contributing/">Contributing</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="" href="https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md">Changelog</a>
+                    </li>
+                </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -164,12 +129,13 @@
       
     </li>
   </ul>
+  
   <hr/>
 </div>
           <div role="main">
             <div class="section">
               
-                <h1 id="intro">Intro</h1>
+                <h1 id="introduction">Introduction</h1>
 <p>Gitlint is a git commit message linter written in python: it checks your commit messages for style.</p>
 <p>Great for use as a <a href="#using-gitlint-as-a-commit-msg-hook">commit-msg git hook</a> or as part of your gating script in a
 <a href=".#using-gitlint-in-a-ci-environment">CI pipeline (e.g. Jenkins)</a>.</p>
@@ -181,6 +147,10 @@
 <p>Also, gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
 have a look at <a href="https://github.com/m1foley/fit-commit">fit-commit</a> (Ruby),
 <a href="https://github.com/clns/node-commit-msg">node-commit-msg</a> (Node.js) or <a href="http://marionebl.github.io/commitlint">commitlint</a> (Node.js).</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>Gitlint will soon be dropping support for Python 2.7 and Python 3.5 as they <a href="https://endoflife.date/python">have reached End-Of-Life</a></strong>.</p>
 </div>
 <h2 id="features">Features</h2>
 <ul>
@@ -194,14 +164,13 @@ useful throughout the years.</li>
 <li><strong>Easily configurable:</strong> Gitlint has sane defaults, but <a href="configuration/">you can also easily customize it to your own liking</a>.</li>
 <li><strong>Community contributed rules</strong>: Conventions that are common but not universal <a href="contrib_rules">can be selectively enabled</a>.</li>
 <li><strong>User-defined rules:</strong> Want to do more then what gitlint offers out of the box? Write your own <a href="user_defined_rules/">user defined rules</a>.</li>
-<li><strong>Broad python version support:</strong> Gitlint supports python versions 2.7, 3.5+, PyPy2 and PyPy3.5.</li>
 <li><strong>Full unicode support:</strong> Lint your Russian, Chinese or Emoji commit messages with ease!</li>
 <li><strong>Production-ready:</strong> Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
    python code standards (pep8, pylint), good documentation, widely used, proven track record.</li>
 </ul>
-<h1 id="getting-started">Getting Started</h1>
-<h2 id="installation">Installation</h2>
-<pre><code class="bash"># Pip is recommended to install the latest version
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="installation">Installation</h3>
+<pre><code class="language-sh"># Pip is recommended to install the latest version
 pip install gitlint
 
 # macOS
@@ -212,11 +181,12 @@ brew install gitlint
 apt-get install gitlint
 
 # Docker: https://hub.docker.com/r/jorisroovers/gitlint
-docker run -v $(pwd):/repo jorisroovers/gitlint
+docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint
+# NOTE: --ulimit is required to work around a limitation in Docker
+# Details: https://github.com/jorisroovers/gitlint/issues/129
 </code></pre>
-
-<h2 id="usage">Usage</h2>
-<pre><code class="sh"># Check the last commit message
+<h3 id="usage">Usage</h3>
+<pre><code class="language-sh"># Check the last commit message
 gitlint
 # Alternatively, pipe a commit message to gitlint:
 cat examples/commit-message-1 | gitlint
@@ -230,9 +200,8 @@ gitlint --commits HEAD
 # To install a gitlint as a commit-msg git hook:
 gitlint install-hook
 </code></pre>
-
 <p>Output example:</p>
-<pre><code class="bash">$ cat examples/commit-message-2 | gitlint
+<pre><code class="language-sh">$ cat examples/commit-message-2 | gitlint
 1: T1 Title exceeds max length (134&gt;80): &quot;This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
 1: T2 Title has trailing whitespace: &quot;This is the title of a commit message that    is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
 1: T4 Title contains hard tab characters (\t): &quot;This is the title of a commit message that  is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  &quot;
@@ -241,15 +210,14 @@ gitlint install-hook
 3: B2 Line has trailing whitespace: &quot;Lines typically need to have   a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. &quot;
 3: B3 Line contains hard tab characters (\t): &quot;Lines typically need to have     a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. &quot;
 </code></pre>
-
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The returned exit code equals the number of errors found. <a href=".#exit-codes">Some exit codes are special</a>.</p>
 </div>
-<h1 id="configuration">Configuration</h1>
+<h2 id="configuration">Configuration</h2>
 <p>For in-depth documentation of general and rule-specific configuration options, have a look at the <a href="configuration/">Configuration</a> and <a href="rules/">Rules</a> pages.</p>
 <p>Short example <code>.gitlint</code> file (<a href="configuration/">full reference</a>):</p>
-<pre><code class="ini">[general]
+<pre><code class="language-ini">[general]
 # Ignore certain rules (comma-separated list), you can reference them by
 # their id or by their full name
 ignore=body-is-missing,T3
@@ -265,9 +233,8 @@ line-length=80
 [B1]
 line-length=123
 </code></pre>
-
 <p>Example use of flags:</p>
-<pre><code class="bash"># Change gitlint's verbosity.
+<pre><code class="language-sh"># Change gitlint's verbosity.
 $ gitlint -v
 # Ignore certain rules
 $ gitlint --ignore body-is-missing,T3
@@ -276,9 +243,8 @@ $ gitlint --debug
 # Load user-defined rules (see http://jorisroovers.github.io/gitlint/user_defined_rules)
 $ gitlint --extra-path /home/joe/mygitlint_rules
 </code></pre>
-
 <p>Other commands and variations:</p>
-<pre><code class="no-highlight">$ gitlint --help
+<pre><code class="language-no-highlight">$ gitlint --help
 Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
@@ -319,16 +285,14 @@ Commands:
 
   When no COMMAND is specified, gitlint defaults to 'gitlint lint'.
 </code></pre>
-
-<h1 id="using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</h1>
+<h2 id="using-gitlint-as-a-commit-msg-hook">Using gitlint as a commit-msg hook</h2>
 <p><em>Introduced in gitlint v0.4.0</em></p>
 <p>You can also install gitlint as a git <code>commit-msg</code> hook so that gitlint checks your commit messages automatically
 after each commit.</p>
-<pre><code class="bash">gitlint install-hook
+<pre><code class="language-sh">gitlint install-hook
 # To remove the hook
 gitlint uninstall-hook
 </code></pre>
-
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Gitlint cannot work together with an existing hook. If you already have a <code>.git/hooks/commit-msg</code>
@@ -337,32 +301,29 @@ uninstall unmodified commit-msg hooks that were installed by gitlint.
 If you're looking to use gitlint in conjunction with other hooks, you should consider
 <a href="#using-gitlint-through-pre-commit">using gitlint with pre-commit</a>.</p>
 </div>
-<h1 id="using-gitlint-through-pre-commit">Using gitlint through <a href="https://pre-commit.com">pre-commit</a></h1>
+<h2 id="using-gitlint-through-pre-commit">Using gitlint through <a href="https://pre-commit.com">pre-commit</a></h2>
 <p><code>gitlint</code> can be configured as a plugin for the <code>pre-commit</code> git hooks
 framework.  Simply add the configuration to your <code>.pre-commit-config.yaml</code>:</p>
-<pre><code class="yaml">-   repo: https://github.com/jorisroovers/gitlint
+<pre><code class="language-yaml">-   repo: https://github.com/jorisroovers/gitlint
     rev:  # Fill in a tag / sha here
     hooks:
     -   id: gitlint
 </code></pre>
-
 <p>You then need to install the pre-commit hook like so:</p>
-<pre><code class="sh">pre-commit install --hook-type commit-msg
+<pre><code class="language-sh">pre-commit install --hook-type commit-msg
 </code></pre>
-
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>It's important that you run <code>pre-commit install --hook-type commit-msg</code>, even if you've already used
 <code>pre-commit install</code> before. <code>pre-commit install</code> does <strong>not</strong> install commit-msg hooks by default!</p>
 </div>
 <p>To manually trigger gitlint using <code>pre-commit</code> for your last commit message, use the following command:</p>
-<pre><code class="sh">pre-commit run gitlint --hook-stage commit-msg --commit-msg-filename .git/COMMIT_EDITMSG
+<pre><code class="language-sh">pre-commit run gitlint --hook-stage commit-msg --commit-msg-filename .git/COMMIT_EDITMSG
 </code></pre>
-
 <p>In case you want to change gitlint's behavior, you should either use a <code>.gitlint</code> file
 (see <a href="configuration/">Configuration</a>) or modify the gitlint invocation in
 your <code>.pre-commit-config.yaml</code> file like so:</p>
-<pre><code class="yaml">-   repo: https://github.com/jorisroovers/gitlint
+<pre><code class="language-yaml">-   repo: https://github.com/jorisroovers/gitlint
     rev:  # Fill in a tag / sha here
     hooks:
     -   id: gitlint
@@ -370,8 +331,7 @@ your <code>.pre-commit-config.yaml</code> file like so:</p>
         entry: gitlint
         args: [--contrib=CT1, --msg-filename]
 </code></pre>
-
-<h1 id="using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</h1>
+<h2 id="using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</h2>
 <p>By default, when just running <code>gitlint</code> without additional parameters, gitlint lints the last commit in the current
 working directory.</p>
 <p>This makes it easy to use gitlint in a CI environment (Jenkins, TravisCI, Github Actions, pre-commit, CircleCI, Gitlab, etc).
@@ -379,32 +339,28 @@ In fact, this is exactly what we do ourselves: on every commit,
 <a href="https://github.com/jorisroovers/gitlint/blob/v0.12.0/run_tests.sh#L133-L134">we run gitlint as part of our CI checks</a>.
 This will cause the build to fail when we submit a bad commit message.</p>
 <p>Alternatively, gitlint will also lint any commit message that you feed it via stdin like so:</p>
-<pre><code class="bash"># lint the last commit message
+<pre><code class="language-sh"># lint the last commit message
 git log -1 --pretty=%B | gitlint
 # lint a specific commit: 62c0519
 git log -1 --pretty=%B 62c0519 | gitlint
 </code></pre>
-
 <p>Note that gitlint requires that you specify <code>--pretty=%B</code> (=only print the log message, not the metadata),
 future versions of gitlint might fix this and not require the <code>--pretty</code> argument.</p>
 <h2 id="linting-a-range-of-commits">Linting a range of commits</h2>
 <p><em>Introduced in gitlint v0.9.0 (experimental in v0.8.0)</em></p>
-<p>Gitlint allows users to commit a number of commits at once like so:</p>
-<pre><code class="bash"># Lint a specific commit range:
+<p>Gitlint allows users to lint a number of commits at once like so:</p>
+<pre><code class="language-sh"># Lint a specific commit range:
 gitlint --commits &quot;019cf40...d6bc75a&quot;
 # You can also use git's special references:
 gitlint --commits &quot;origin..HEAD&quot;
 # Or specify a single specific commit in refspec format, like so:
 gitlint --commits &quot;019cf40^...019cf40&quot;
 </code></pre>
-
 <p>The <code>--commits</code> flag takes a <strong>single</strong> refspec argument or commit range. Basically, any range that is understood
 by <a href="https://git-scm.com/docs/git-rev-list">git rev-list</a> as a single argument will work.</p>
-<p>Prior to v0.8.1 gitlint didn't support this feature. However, older versions of gitlint can still lint a range or set
-of commits at once by creating a simple bash script that pipes the commit messages one by one into gitlint. This
-approach can still be used with newer versions of gitlint in case <code>--commits</code> doesn't provide the flexibility you
-are looking for.</p>
-<pre><code class="bash">#!/bin/bash
+<p>For cases where the <code>--commits</code> option doesn't provide the flexibility you need, you can always use a simple shell
+script to lint an arbitrary set of commits, like shown in the example below.</p>
+<pre><code class="language-sh">#!/bin/sh
 
 for commit in $(git rev-list master); do
     commit_msg=$(git log -1 --pretty=%B $commit)
@@ -413,14 +369,13 @@ for commit in $(git rev-list master); do
     echo &quot;--------&quot;
 done
 </code></pre>
-
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
 This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
 lint a large set of commits. Always use <code>--commits</code> if you can to avoid this performance penalty.</p>
 </div>
-<h1 id="merge-fixup-and-squash-commits">Merge, fixup and squash commits</h1>
+<h2 id="merge-fixup-squash-and-revert-commits">Merge, fixup, squash and revert commits</h2>
 <p><em>Introduced in gitlint v0.7.0 (merge), v0.9.0 (fixup, squash) and v0.13.0 (revert)</em></p>
 <p><strong>Gitlint ignores merge, revert, fixup and squash commits by default.</strong></p>
 <p>For merge and revert commits, the rationale for ignoring them is
@@ -439,15 +394,15 @@ short-lived and not intended to make it into the final commit history. In additi
 general <code>ignore-merge-commits</code>, <code>ignore-revert-commits</code>,  <code>ignore-fixup-commits</code> or
 <code>ignore-squash-commits</code> option to <code>false</code>
 <a href="configuration/">using one of the various ways to configure gitlint</a>.</p>
-<h1 id="ignoring-commits">Ignoring commits</h1>
+<h2 id="ignoring-commits">Ignoring commits</h2>
 <p><em>Introduced in gitlint v0.10.0</em></p>
-<p>You can configure gitlint to ignore specific commits.</p>
+<p>You can configure gitlint to ignore specific commits or parts of a commit.</p>
 <p>One way to do this, is to by <a href="configuration/#commit-specific-config">adding a gitline-ignore line to your commit message</a>.</p>
 <p>If you have a case where you want to ignore a certain type of commits all-together, you can
 use gitlint's <em>ignore</em> rules.
 Here's an example gitlint file that configures gitlint to ignore rules <code>title-max-length</code> and <code>body-min-length</code>
 for all commits with a title starting with <em>"Release"</em>.</p>
-<pre><code class="ini">[ignore-by-title]
+<pre><code class="language-ini">[ignore-by-title]
 # Match commit titles starting with Release
 regex=^Release(.*)
 ignore=title-max-length,body-min-length
@@ -459,14 +414,75 @@ ignore=title-max-length,body-min-length
 regex=(.*)release(.*)
 ignore=all
 </code></pre>
-
+<p>If you just want to ignore certain lines in a commit, you can do that using the
+<a href="rules/#i3-ignore-body-lines">ignore-body-lines</a> rule.</p>
+<pre><code class="language-ini"># Ignore all lines that start with 'Co-Authored-By'
+[ignore-body-lines]
+regex=^Co-Authored-By
+</code></pre>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When ignoring specific lines, gitlint will no longer be aware of them while applying other rules.
+This can sometimes be confusing for end-users, especially as line numbers of violations will typically no longer
+match line numbers in the original commit message. Make sure to educate your users accordingly.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Right now it's not possible to write user-defined ignore rules to handle more complex use-cases.
-This is however something that we'd like to implement in a future version. If this is something you're interested in
-please let us know by <a href="https://github.com/jorisroovers/gitlint/issues">opening an issue</a>.</p>
+<p>If you want to implement more complex ignore rules according to your own logic, you can do so using <a href="user_defined_rules/#configuration-rules">user-defined
+configuration rules</a>.</p>
 </div>
-<h1 id="exit-codes">Exit codes</h1>
+<h2 id="named-rules">Named Rules</h2>
+<p>Introduced in gitlint v0.14.0</p>
+<p>Named rules allow you to have multiple of the same rules active at the same time, which allows you to
+enforce the same rule multiple times but with different options. Named rules are so-called because they require an
+additional unique identifier (i.e. the rule <em>name</em>) during configuration.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Named rules is an advanced topic. It's easy to make mistakes by defining conflicting instances of the same rule.
+For example, by defining 2 <code>body-max-line-length</code> rules with different <code>line-length</code> options, you obviously create
+a conflicting situation. Gitlint does not do any resolution of such conflicts, it's up to you to make sure
+any configuration is non-conflicting. So caution advised!</p>
+</div>
+<p>Defining a named rule is easy, for example using your <code>.gitlint</code> file:</p>
+<pre><code class="language-ini"># By adding the following section, you will add a second instance of the
+# title-must-not-contain-word (T5) rule (in addition to the one that is enabled
+# by default) with the name 'extra-words'.
+[title-must-not-contain-word:extra-words]
+words=foo,bar
+
+# So the generic form is
+# [&lt;rule-id-or-name&gt;:&lt;your-chosen-name&gt;]
+# Another example, referencing the rule type by id
+[T5:more-words]
+words=hur,dur
+
+# You can add as many additional rules and you can name them whatever you want
+# The only requirement is that names cannot contain whitespace or colons (:)
+[title-must-not-contain-word:This-Can_Be*Whatever$YouWant]
+words=wonderwoman,batman,power ranger
+</code></pre>
+<p>When executing gitlint, you will see the violations from the default <code>title-must-not-contain-word (T5)</code> rule, as well as
+the violations caused by the additional Named Rules.</p>
+<pre><code class="language-sh">$ gitlint 
+1: T5 Title contains the word 'WIP' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
+1: T5:This-Can_Be*Whatever$YouWant Title contains the word 'wonderwoman' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
+1: T5:extra-words Title contains the word 'foo' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
+1: T5:extra-words Title contains the word 'bar' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
+1: T5:more-words Title contains the word 'hur' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
+</code></pre>
+<p>Named rules are further treated identical to all other rules in gitlint:</p>
+<ul>
+<li>You can reference them by their full name, when e.g. adding them to your <code>ignore</code> configuration</li>
+</ul>
+<pre><code class="language-ini"># .gitlint file example
+[general]
+ignore=T5:more-words,title-must-not-contain-word:extra-words
+</code></pre>
+<ul>
+<li>You can use them to instantiate multiple of the same <a href="user_defined_rules/">user-defined rule</a></li>
+<li>You can configure them using <a href="configuration/">any of the ways you can configure regular gitlint rules</a></li>
+</ul>
+<h2 id="exit-codes">Exit codes</h2>
 <p>Gitlint uses the exit code as a simple way to indicate the number of violations found.
 Some exit codes are used to indicate special errors as indicated in the table below.</p>
 <p>Because of these special error codes and the fact that
@@ -516,7 +532,7 @@ to 252.</p>
     
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -526,7 +542,7 @@ to 252.</p>
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
           <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
@@ -539,12 +555,18 @@ to 252.</p>
 </div>
     <script>var base_url = '.';</script>
     <script src="js/theme.js" defer></script>
+      <script src="extra.js" defer></script>
       <script src="search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>
 
 <!--
-MkDocs version : 1.0.4
-Build Date UTC : 2020-02-26 09:08:51
+MkDocs version : 1.1.2
+Build Date UTC : 2020-10-24 09:22:37.863481+00:00
 -->

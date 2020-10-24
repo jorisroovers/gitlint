@@ -7,14 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   
+  <link rel="canonical" href="http://jorisroovers.github.io/gitlint/contributing/">
   <link rel="shortcut icon" href="../img/favicon.ico">
   <title>Contributing - Gitlint</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
-  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-  <link href="../extra.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../extra.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -25,7 +26,7 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
   
 </head>
@@ -36,6 +37,7 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
         <a href=".." class="icon icon-home"> Gitlint</a>
         <div role="search">
@@ -46,77 +48,50 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="..">Home</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../configuration/">Configuration</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../rules/">Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../contrib_rules/">Contrib Rules</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../user_defined_rules/">User Defined Rules</a>
-	    </li>
-          
-            <li class="toctree-l1 current">
-		
-    <a class="current" href="./">Contributing</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#contributing">Contributing</a></li>
-    
-
-    <li class="toctree-l2"><a href="#guidelines">Guidelines</a></li>
-    
-
-    <li class="toctree-l2"><a href="#development">Development</a></li>
-    
-
-    <li class="toctree-l2"><a href="#packaging">Packaging</a></li>
-    
-
-    <li class="toctree-l2"><a href="#documentation">Documentation</a></li>
-    
-
-    <li class="toctree-l2"><a href="#tools">Tools</a></li>
-    
-
-    <li class="toctree-l2"><a href="#contrib-rules">Contrib rules</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#contrib-rule-requirements">Contrib rule requirements</a></li>
-        
-        </ul>
-    
-
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../configuration/">Configuration</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../rules/">Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../contrib_rules/">Contrib Rules</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../user_defined_rules/">User Defined Rules</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Contributing</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#development">Development</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#packaging">Packaging</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#tools">Tools</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#contrib-rules">Contrib rules</a>
+    </li>
     </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="https://github.com/jorisroovers/gitlint/blob/master/CHANGELOG.md">Changelog</a>
-	    </li>
-          
-        </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="" href="https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md">Changelog</a>
+                    </li>
+                </ul>
       </div>
-      &nbsp;
+    </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -144,6 +119,7 @@
       
     </li>
   </ul>
+  
   <hr/>
 </div>
           <div role="main">
@@ -157,34 +133,40 @@ The <a href="https://github.com/jorisroovers/gitlint">source-code and issue trac
 your interest!
 We maintain a <a href="https://github.com/jorisroovers/gitlint/wiki/Roadmap">loose roadmap on our wiki</a>, but
 that's open to a lot of change and input.</p>
-<h1 id="guidelines">Guidelines</h1>
+<h2 id="guidelines">Guidelines</h2>
 <p>When contributing code, please consider all the parts that are typically required:</p>
 <ul>
-<li><a href="https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests">Unit tests</a> (automatically
+<li><a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint/tests">Unit tests</a> (automatically
   <a href="https://github.com/jorisroovers/gitlint/actions">enforced by CI</a>). Please consider writing
   new ones for your functionality, not only updating existing ones to make the build pass.</li>
-<li><a href="https://github.com/jorisroovers/gitlint/tree/master/qa">Integration tests</a> (also automatically
+<li><a href="https://github.com/jorisroovers/gitlint/tree/main/qa">Integration tests</a> (also automatically
   <a href="https://github.com/jorisroovers/gitlint/actions">enforced by CI</a>). Again, please consider writing new ones
   for your functionality, not only updating existing ones to make the build pass.</li>
-<li><a href="https://github.com/jorisroovers/gitlint/tree/master/docs">Documentation</a></li>
+<li><a href="https://github.com/jorisroovers/gitlint/tree/main/docs">Documentation</a></li>
 </ul>
 <p>Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
 can make it as part of a release. If you can already include them as part of your PR, it's a huge timesaver for us
 and it's likely that your PR will be merged and released a lot sooner. Thanks!</p>
-<h1 id="development">Development</h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>On the topic of releases</strong>: Gitlint releases typically go out when there's either enough new features and fixes
+to make it worthwhile or when there's a critical fix for a bug that fundamentally breaks gitlint. While the amount
+of overhead of doing a release isn't huge, it's also not zero. In practice this means that it might take weeks
+or months before merged code actually gets released - we know that can be frustrating but please understand it's
+a well-considered trade-off based on available time.</p>
+</div>
+<h2 id="development">Development</h2>
 <p>There is a Vagrantfile in this repository that can be used for development.</p>
-<pre><code class="bash">vagrant up
+<pre><code class="language-sh">vagrant up
 vagrant ssh
 </code></pre>
-
 <p>Or you can choose to use your local environment:</p>
-<pre><code class="bash">virtualenv .venv
+<pre><code class="language-sh">virtualenv .venv
 pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
 python setup.py develop
 </code></pre>
-
 <p>To run tests:</p>
-<pre><code class="bash">./run_tests.sh                       # run unit tests and print test coverage
+<pre><code class="language-sh">./run_tests.sh                       # run unit tests and print test coverage
 ./run_test.sh gitlint/tests/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
 ./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
@@ -195,47 +177,40 @@ python setup.py develop
 ./run_tests.sh --git                 # inception: run gitlint against itself
 ./run_tests.sh --lint                # run pylint checks
 ./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
-
-
 </code></pre>
-
-<p>The <code>Vagrantfile</code> comes with <code>virtualenv</code>s for python 2.7, 3.5, 3.6, 3.7 and pypy2.
+<p>The <code>Vagrantfile</code> comes with <code>virtualenv</code>s for python 2.7, 3.5, 3.6, 3.7, 3.8, 3.9 and pypy2.
 You can easily run tests against specific python environments by using the following commands <em>inside</em> of the Vagrant VM:</p>
-<pre><code>./run_tests.sh --envs 27               # Run the unit tests against Python 2.7
-./run_tests.sh --envs 27,35,pypy2      # Run the unit tests against Python 2.7, Python 3.5 and Pypy2
-./run_tests.sh --envs 27,35 --pep8     # Run pep8 checks against Python 2.7 and Python 3.5 (also works for ```--git```, ```--integration```, ```--pep8```, ```--stats``` and ```--lint```).
+<pre><code class="language-sh">./run_tests.sh --envs 27               # Run the unit tests against Python 2.7
+./run_tests.sh --envs 27,37,pypy2      # Run the unit tests against Python 2.7, Python 3.7 and Pypy2
+./run_tests.sh --envs 27,37 --pep8     # Run pep8 checks against Python 2.7 and Python 3.7 (also works for --git, --integration, --pep8, --stats and --lint.
 ./run_tests.sh --envs all --all        # Run all tests against all environments
 ./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
 </code></pre>
-
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Gitlint commits and pull requests are gated on all of our tests and checks.</p>
 </div>
-<h1 id="packaging">Packaging</h1>
+<h2 id="packaging">Packaging</h2>
 <p>To see the package description in HTML format</p>
-<pre><code>pip install docutils
+<pre><code class="language-sh">pip install docutils
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 python setup.py --long-description | rst2html.py &gt; output.html
 </code></pre>
-
-<h1 id="documentation">Documentation</h1>
+<h2 id="documentation">Documentation</h2>
 <p>We use <a href="https://www.mkdocs.org/">mkdocs</a> for generating our documentation from markdown.</p>
 <p>To use it, do the following outside of the vagrant box (on your host machine):</p>
-<pre><code class="bash">pip install -r doc-requirements.txt # install doc requirements
+<pre><code class="language-sh">pip install -r doc-requirements.txt # install doc requirements
 mkdocs serve
 </code></pre>
-
 <p>Then access the documentation website on your host machine on <a href="">http://localhost:8000</a>.</p>
-<h1 id="tools">Tools</h1>
+<h2 id="tools">Tools</h2>
 <p>We keep a small set of scripts in the <code>tools/</code> directory:</p>
-<pre><code class="sh">tools/create-test-repo.sh            # Create a test git repo in your /tmp directory
+<pre><code class="language-sh">tools/create-test-repo.sh            # Create a test git repo in your /tmp directory
 tools/windows/create-test-repo.bat   # Windows: create git test repo
 tools/windows/run_tests.bat          # Windows run unit tests
 </code></pre>
-
-<h1 id="contrib-rules">Contrib rules</h1>
+<h2 id="contrib-rules">Contrib rules</h2>
 <p>Since gitlint 0.12.0, we support <a href="../contrib_rules">Contrib rules</a>: community contributed rules that are part of gitlint
 itself. Thanks for considering to add a new one to gitlint!</p>
 <p>Before starting, please read all the other documentation on this page about contributing first.
@@ -243,12 +218,12 @@ Then, we suggest taking the following approach to add a Contrib rule:</p>
 <ol>
 <li><strong>Write your rule as a <a href="../user_defined_rules">user-defined rule</a></strong>. In terms of code, Contrib rules are identical to
    user-defined rules, they just happen to have their code sit within the gitlint codebase itself.</li>
-<li><strong>Add your user-defined rule to gitlint</strong>. You should put your file(s) in the <a href="https://github.com/jorisroovers/gitlint/tree/master/gitlint/contrib/rules">gitlint/contrib/rules</a> directory.</li>
-<li><strong>Write unit tests</strong>. The gitlint codebase contains <a href="https://github.com/jorisroovers/gitlint/tree/master/gitlint/tests/contrib">Contrib rule test files you can copy and modify</a>.</li>
-<li><strong>Write documentation</strong>. In particular, you should update the <a href="https://github.com/jorisroovers/gitlint/blob/master/docs/contrib_rules.md">gitlint/docs/contrib_rules.md</a> file with details on your Contrib rule.</li>
+<li><strong>Add your user-defined rule to gitlint</strong>. You should put your file(s) in the <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint/contrib/rules">gitlint/contrib/rules</a> directory.</li>
+<li><strong>Write unit tests</strong>. The gitlint codebase contains <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint/tests/contrib/rules">Contrib rule test files you can copy and modify</a>.</li>
+<li><strong>Write documentation</strong>. In particular, you should update the <a href="https://github.com/jorisroovers/gitlint/blob/main/docs/contrib_rules.md">gitlint/docs/contrib_rules.md</a> file with details on your Contrib rule.</li>
 <li><strong>Create a Pull Request</strong>: code review typically requires a bit of back and forth. Thanks for your contribution!</li>
 </ol>
-<h2 id="contrib-rule-requirements">Contrib rule requirements</h2>
+<h3 id="contrib-rule-requirements">Contrib rule requirements</h3>
 <p>If you follow the steps above and follow the existing gitlint conventions wrt naming things, you should already be fairly close to done.</p>
 <p>In case you're looking for a slightly more formal spec, here's what gitlint requires of Contrib rules.</p>
 <ul>
@@ -282,7 +257,7 @@ Then, we suggest taking the following approach to add a Contrib rule:</p>
     
   </div>
 
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
       
         </div>
@@ -292,7 +267,7 @@ Then, we suggest taking the following approach to add a Contrib rule:</p>
 
   </div>
 
-  <div class="rst-versions" role="note" style="cursor: pointer">
+  <div class="rst-versions" role="note" aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
           <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
@@ -305,7 +280,13 @@ Then, we suggest taking the following approach to add a Contrib rule:</p>
 </div>
     <script>var base_url = '..';</script>
     <script src="../js/theme.js" defer></script>
+      <script src="../extra.js" defer></script>
       <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
 
 </body>
 </html>
