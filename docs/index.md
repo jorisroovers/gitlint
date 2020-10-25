@@ -39,8 +39,8 @@ useful throughout the years.
 pip install gitlint
 
 # macOS
-brew tap rockyluke/devops
 brew install gitlint
+sudo port install gitlint  # alternative
 
 # Ubuntu
 apt-get install gitlint
