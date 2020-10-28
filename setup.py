@@ -7,13 +7,6 @@ import os
 import platform
 import sys
 
-# There is an issue with building python packages in a shared vagrant directory because of how setuptools works
-# in python < 2.7.9. We solve this by deleting the filesystem hardlinking capability during build.
-# See: http://stackoverflow.com/a/22147112/381010
-try:
-    del os.link
-except:
-    pass  # Not all OSes (e.g. windows) support os.link
 
 description = "Git commit message linter written in python, checks your commit messages for style."
 long_description = """
@@ -52,8 +45,6 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
@@ -93,8 +84,7 @@ setup(
 # Print a red deprecation warning for python < 3.6 users
 if sys.version_info[:2] < (3, 6):
     msg = "\033[31mDEPRECATION: You're using a python version that has reached end-of-life. " + \
-          "Gitlint does not support Python < 3.5 or < 2.7, and will be dropping support for " + \
-          "Python 2.7 and 3.5 in the next release. " + \
+          "Gitlint does not support Python < 3.6" + \
           "Please upgrade your Python to 3.6 or above.\033[0m"
     print(msg)
 

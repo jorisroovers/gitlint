@@ -7,7 +7,7 @@ INSTALL_DEPS=<<EOF
 cd /vagrant
 sudo add-apt-repository -y ppa:deadsnakes/ppa
 sudo apt-get update
-sudo apt-get install -y --allow-unauthenticated python2.7-dev python3.5-dev python3.6-dev python3.7-dev python3.8-dev python3.9-dev
+sudo apt-get install -y --allow-unauthenticated python3.6-dev python3.7-dev python3.8-dev python3.9-dev
 sudo apt-get install -y --allow-unauthenticated python3.8-distutils python3.9-distutils # Needed to work around python3.8/9+virtualenv issue
 sudo apt-get install -y python-virtualenv git ipython python-pip python3-pip silversearcher-ag jq
 sudo apt-get install -y build-essential libssl-dev libffi-dev # for rebuilding cryptography (required for pypy2)
@@ -18,7 +18,7 @@ sudo pip3 install virtualenv
 ./run_tests.sh --install --envs all
 
 grep 'cd /vagrant' /home/vagrant/.bashrc || echo 'cd /vagrant' >> /home/vagrant/.bashrc
-grep 'source .venv27/bin/activate' /home/vagrant/.bashrc || echo 'source .venv27/bin/activate' >> /home/vagrant/.bashrc
+grep 'source .venv36/bin/activate' /home/vagrant/.bashrc || echo 'source .venv36/bin/activate' >> /home/vagrant/.bashrc
 EOF
 
 INSTALL_JENKINS=<<EOF
