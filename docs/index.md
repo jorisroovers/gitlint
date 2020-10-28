@@ -15,7 +15,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 
 
 !!! important
-    **Gitlint will soon be dropping support for Python 2.7 and Python 3.5 as they [have reached End-Of-Life](https://endoflife.date/python)**.
+    **Gitlint no longer supports Python 2.7 and Python 3.5 as they [have reached End-Of-Life](https://endoflife.date/python). The last gitlint version to support python 2.7 and python 3.5 is `0.14.0` (released on October 24th, 2020).**
 
 ## Features
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook). Also [works with pre-commit](#using-gitlint-through-pre-commit).

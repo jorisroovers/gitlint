@@ -63,12 +63,12 @@ To run tests:
 ./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
 ```
 
-The `Vagrantfile` comes with `virtualenv`s for python 2.7, 3.5, 3.6, 3.7, 3.8, 3.9 and pypy2.
+The `Vagrantfile` comes with `virtualenv`s for python 3.6, 3.7, 3.8, 3.9 and pypy3.6.
 You can easily run tests against specific python environments by using the following commands *inside* of the Vagrant VM:
 ```sh
-./run_tests.sh --envs 27               # Run the unit tests against Python 2.7
-./run_tests.sh --envs 27,37,pypy2      # Run the unit tests against Python 2.7, Python 3.7 and Pypy2
-./run_tests.sh --envs 27,37 --pep8     # Run pep8 checks against Python 2.7 and Python 3.7 (also works for --git, --integration, --pep8, --stats and --lint.
+./run_tests.sh --envs 36               # Run the unit tests against Python 3.6
+./run_tests.sh --envs 36,37,pypy36     # Run the unit tests against Python 3.6, Python 3.7 and Pypy3.6
+./run_tests.sh --envs 36,37 --pep8     # Run pep8 checks against Python 3.6 and Python 3.7 (also works for --git, --integration, --pep8, --stats and --lint.
 ./run_tests.sh --envs all --all        # Run all tests against all environments
 ./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
 ```
