@@ -2,7 +2,6 @@
 
 from gitlint.rules import CommitRule, RuleViolation, ConfigurationRule
 from gitlint.options import IntOption, StrOption, ListOption
-from gitlint.utils import sstr
 
 
 class GitContextRule(CommitRule):
@@ -26,7 +25,7 @@ class GitCommitRule(CommitRule):
 
     def validate(self, commit):
         violations = [
-            RuleViolation(self.id, u"GitCommit.branches: {0}".format(sstr(commit.branches)), line_nr=1),
+            RuleViolation(self.id, u"GitCommit.branches: {0}".format(commit.branches), line_nr=1),
             RuleViolation(self.id, u"GitCommit.custom_prop: {0}".format(commit.custom_prop), line_nr=1),
         ]
 
@@ -63,7 +62,7 @@ class ConfigurableCommitRule(CommitRule):
         violations = [
             RuleViolation(self.id, u"int-öption: {0}".format(self.options[u'int-öption'].value), line_nr=1),
             RuleViolation(self.id, u"str-öption: {0}".format(self.options[u'str-öption'].value), line_nr=1),
-            RuleViolation(self.id, u"list-öption: {0}".format(sstr(self.options[u'list-öption'].value)), line_nr=1),
+            RuleViolation(self.id, u"list-öption: {0}".format(self.options[u'list-öption'].value), line_nr=1),
         ]
 
         return violations

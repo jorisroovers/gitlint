@@ -2,8 +2,6 @@
 
 from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption, ListOption
-from gitlint import utils
-
 
 """
 Full details on user-defined rules: https://jorisroovers.com/gitlint/user_defined_rules
@@ -90,8 +88,7 @@ class BranchNamingConventions(CommitRule):
                     break
 
             if not valid_branch_name:
-                msg = "Branch name '{0}' does not start with one of {1}".format(branch,
-                                                                                utils.sstr(allowed_branch_prefixes))
+                msg = "Branch name '{0}' does not start with one of {1}".format(branch, allowed_branch_prefixes)
                 violations.append(RuleViolation(self.id, msg, line_nr=1))
 
         return violations

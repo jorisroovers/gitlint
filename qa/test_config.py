@@ -5,7 +5,7 @@ import re
 
 from qa.shell import gitlint
 from qa.base import BaseTestCase
-from qa.utils import sstr, ustr
+from qa.utils import ustr
 
 
 class ConfigTests(BaseTestCase):
@@ -65,7 +65,7 @@ class ConfigTests(BaseTestCase):
             output = gitlint("--config", config_path, "--debug", _cwd=target_repo, _tty_in=True, _ok_code=[5])
 
             expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
-            expected_kwargs.update({'config_path': config_path, 'changed_files': sstr([filename])})
+            expected_kwargs.update({'config_path': config_path, 'changed_files': [filename]})
             self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_file_debug_1",
                                                              expected_kwargs))
 
@@ -84,7 +84,7 @@ class ConfigTests(BaseTestCase):
                                        "GITLINT_COMMITS": self.get_last_commit_hash(git_repo=target_repo)})
         output = gitlint(_env=env, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
         expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
-        expected_kwargs.update({'changed_files': sstr([filename])})
+        expected_kwargs.update({'changed_files': [filename]})
 
         self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_env_1", expected_kwargs))
 

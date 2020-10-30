@@ -4,7 +4,6 @@ import logging
 import re
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RegexOption
-from gitlint.utils import sstr
 
 
 class Rule:
@@ -37,7 +36,7 @@ class Rule:
                self.options == other.options and self.target == other.target  # noqa
 
     def __str__(self):
-        return sstr(self)  # pragma: no cover
+        return self  # pragma: no cover
 
     def __unicode__(self):
         return u"{0} {1}".format(self.id, self.name)  # pragma: no cover
@@ -94,7 +93,7 @@ class RuleViolation:
         return equal
 
     def __str__(self):
-        return sstr(self)  # pragma: no cover
+        return self  # pragma: no cover
 
     def __unicode__(self):
         return u"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,

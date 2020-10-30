@@ -90,10 +90,3 @@ def ustr(obj):
         return obj.decode(DEFAULT_ENCODING)
     else:
         return str(obj)
-
-
-def sstr(obj):
-    """ Python 2 and 3 utility method that converts an obj to a DEFAULT_ENCODING encoded string in python 2
-    and to unicode in python 3.
-    Especially useful for implementing __str__ methods in python 2: http://stackoverflow.com/a/1307210/381010"""
-    return obj
