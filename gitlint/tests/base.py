@@ -9,33 +9,12 @@ import re
 import shutil
 import tempfile
 
-try:
-    # python 2.x
-    import unittest2 as unittest
-except ImportError:
-    # python 3.x
-    import unittest
+import unittest
 
-try:
-    # python 2.x
-    from mock import patch
-except ImportError:
-    # python 3.x
-    from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
+from unittest.mock import patch
 
 from gitlint.git import GitContext
-from gitlint.utils import ustr, IS_PY2, LOG_FORMAT, DEFAULT_ENCODING
-
-
-# unittest2's assertRaisesRegex doesn't do unicode comparison.
-# Let's monkeypatch the str() function to point to unicode() so that it does :)
-# For reference, this is where this patch is required:
-# https://hg.python.org/unittest2/file/tip/unittest2/case.py#l227
-try:
-    # python 2.x
-    unittest.case.str = unicode
-except (AttributeError, NameError):
-    pass  # python 3.x
+from gitlint.utils import ustr, LOG_FORMAT, DEFAULT_ENCODING
 
 
 class BaseTestCase(unittest.TestCase):
@@ -88,8 +67,6 @@ class BaseTestCase(unittest.TestCase):
     def patch_input(side_effect):
         """ Patches the built-in input() with a provided side-effect """
         module_path = "builtins.input"
-        if IS_PY2:
-            module_path = "__builtin__.raw_input"
         patched_module = patch(module_path, side_effect=side_effect)
         return patched_module
 

@@ -10,15 +10,10 @@ import sys
 import tempfile
 from datetime import datetime
 from uuid import uuid4
+from unittest import TestCase
 
 import arrow
 
-try:
-    # python 2.x
-    from unittest2 import TestCase
-except ImportError:
-    # python 3.x
-    from unittest import TestCase
 
 from qa.shell import git, gitlint, RunningCommand
 from qa.utils import DEFAULT_ENCODING, ustr

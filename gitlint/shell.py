@@ -6,7 +6,7 @@ capabilities wrt dealing with more edge-case environments on *nix systems that a
 """
 
 import subprocess
-from gitlint.utils import ustr, IS_PY2, USE_SH_LIB
+from gitlint.utils import ustr, USE_SH_LIB
 
 
 def shell(cmd):
@@ -51,11 +51,6 @@ else:
         return _exec(*args, **kwargs)
 
     def _exec(*args, **kwargs):
-        if IS_PY2:
-            no_command_error = OSError  # noqa pylint: disable=undefined-variable,invalid-name
-        else:
-            no_command_error = FileNotFoundError  # noqa pylint: disable=undefined-variable
-
         pipe = subprocess.PIPE
         popen_kwargs = {'stdout': pipe, 'stderr': pipe, 'shell': kwargs.get('_tty_out', False)}
         if '_cwd' in kwargs:
@@ -64,7 +59,7 @@ else:
         try:
             p = subprocess.Popen(args, **popen_kwargs)
             result = p.communicate()
-        except no_command_error:
+        except FileNotFoundError:
             raise CommandNotFound
 
         exit_code = p.returncode

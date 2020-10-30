@@ -8,21 +8,11 @@ import platform
 
 import arrow
 
-try:
-    # python 2.x
-    from StringIO import StringIO
-except ImportError:
-    # python 3.x
-    from io import StringIO  # pylint: disable=ungrouped-imports
+from io import StringIO
 
 from click.testing import CliRunner
 
-try:
-    # python 2.x
-    from mock import patch
-except ImportError:
-    # python 3.x
-    from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
+from unittest.mock import patch
 
 from gitlint.shell import CommandNotFound
 

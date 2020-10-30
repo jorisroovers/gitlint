@@ -1,7 +1,6 @@
 # pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
 import codecs
 import platform
-import sys
 import os
 
 import locale
@@ -23,16 +22,6 @@ def platform_is_windows():
 
 
 PLATFORM_IS_WINDOWS = platform_is_windows()
-
-########################################################################################################################
-# IS_PY2
-
-
-def is_py2():
-    return sys.version_info[0] == 2
-
-
-IS_PY2 = is_py2()
 
 ########################################################################################################################
 # USE_SH_LIB
@@ -97,32 +86,14 @@ DEFAULT_ENCODING = getpreferredencoding()
 
 def ustr(obj):
     """ Python 2 and 3 utility method that converts an obj to unicode in python 2 and to a str object in python 3"""
-    if IS_PY2:
-        # If we are getting a string, then do an explicit decode
-        # else, just call the unicode method of the object
-        if type(obj) in [str, basestring]:  # pragma: no cover # noqa
-            return unicode(obj, DEFAULT_ENCODING)  # pragma: no cover # noqa
-        else:
-            return unicode(obj)  # pragma: no cover # noqa
+    if type(obj) in [bytes]:
+        return obj.decode(DEFAULT_ENCODING)
     else:
-        if type(obj) in [bytes]:
-            return obj.decode(DEFAULT_ENCODING)
-        else:
-            return str(obj)
+        return str(obj)
 
 
 def sstr(obj):
     """ Python 2 and 3 utility method that converts an obj to a DEFAULT_ENCODING encoded string in python 2
     and to unicode in python 3.
     Especially useful for implementing __str__ methods in python 2: http://stackoverflow.com/a/1307210/381010"""
-    if IS_PY2:
-        # For lists and tuples in python2, remove unicode string representation characters.
-        # i.e. ensure lists are printed as ['a', 'b'] and not [u'a', u'b']
-        if type(obj) in [list]:
-            return [sstr(item) for item in obj] # pragma: no cover # noqa
-        elif type(obj) in [tuple]:
-            return tuple(sstr(item) for item in obj) # pragma: no cover # noqa
-
-        return unicode(obj).encode(DEFAULT_ENCODING)  # pragma: no cover # noqa
-    else:
-        return obj  # pragma: no cover
+    return obj

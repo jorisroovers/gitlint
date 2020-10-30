@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-try:
-    # python 2.x
-    from mock import patch
-except ImportError:
-    # python 3.x
-    from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
+from unittest.mock import patch
 
 from gitlint.shell import ErrorReturnCode, CommandNotFound
 
