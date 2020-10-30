@@ -6,7 +6,6 @@ import sys
 from gitlint.tests.base import BaseTestCase
 from gitlint.rule_finder import find_rule_classes, assert_valid_rule_class
 from gitlint.rules import UserRuleError
-from gitlint.utils import ustr
 
 from gitlint import options, rules
 
@@ -25,7 +24,7 @@ class UserRuleTests(BaseTestCase):
         # - Other members of the my_commit_rules module are ignored
         #  (such as func_should_be_ignored, global_variable_should_be_ignored)
         # - Rules are loaded non-recursively (user_rules/import_exception directory is ignored)
-        self.assertEqual("[<class 'my_commit_rules.MyUserCommitRule'>]", ustr(classes))
+        self.assertEqual("[<class 'my_commit_rules.MyUserCommitRule'>]", str(classes))
 
         # Assert that we added the new user_rules directory to the system path and modules
         self.assertIn(user_rule_path, sys.path)
@@ -68,7 +67,7 @@ class UserRuleTests(BaseTestCase):
         classes = find_rule_classes(user_rule_path)
 
         # convert classes to strings and sort them so we can compare them
-        class_strings = sorted([ustr(clazz) for clazz in classes])
+        class_strings = sorted([str(clazz) for clazz in classes])
         expected = ["<class 'my_commit_rules.MyUserCommitRule'>", "<class 'parent_package.InitFileRule'>"]
         self.assertListEqual(class_strings, expected)
 

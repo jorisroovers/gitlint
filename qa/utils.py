@@ -60,16 +60,3 @@ def getpreferredencoding():
 
 
 DEFAULT_ENCODING = getpreferredencoding()
-
-########################################################################################################################
-# Unicode utility functions
-
-
-def ustr(obj):
-    """ Python 2 and 3 utility method that converts an obj to unicode in python 2 and to a str object in python 3"""
-    if type(obj) in [bytes]:
-        return obj.decode(DEFAULT_ENCODING)
-    else:
-        return str(obj)
-
-########################################################################################################################

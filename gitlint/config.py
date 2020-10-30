@@ -7,7 +7,7 @@ import os
 import shutil
 
 from collections import OrderedDict
-from gitlint.utils import ustr, DEFAULT_ENCODING
+from gitlint.utils import DEFAULT_ENCODING
 from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
 from gitlint import rule_finder
@@ -22,7 +22,7 @@ def handle_option_error(func):
         try:
             return func(*args)
         except options.RuleOptionError as e:
-            raise LintConfigError(ustr(e))
+            raise LintConfigError(str(e))
 
     return wrapped
 
@@ -193,7 +193,7 @@ class LintConfig:
             self.rules.add_rules(rule_classes, {'is_user_defined': True})
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
-            raise LintConfigError(ustr(e))
+            raise LintConfigError(str(e))
 
     @property
     def contrib(self):
@@ -214,20 +214,18 @@ class LintConfig:
             # For each specified contrib rule, check whether it exists among the contrib classes
             for rule_id_or_name in self.contrib:
                 rule_class = next((rc for rc in rule_classes if
-                                   rc.id == ustr(rule_id_or_name) or rc.name == ustr(rule_id_or_name)), False)
+                                   rule_id_or_name in (rc.id, rc.name)), False)
 
                 # If contrib rule exists, instantiate it and add it to the rules list
                 if rule_class:
                     self.rules.add_rule(rule_class, rule_class.id, {'is_contrib': True})
                 else:
-                    raise LintConfigError("No contrib rule with id or name '{0}' found.".format(ustr(rule_id_or_name)))
+                    raise LintConfigError("No contrib rule with id or name '{0}' found.".format(rule_id_or_name))
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
-            raise LintConfigError(ustr(e))
+            raise LintConfigError(str(e))
 
     def _get_option(self, rule_name_or_id, option_name):
-        rule_name_or_id = ustr(rule_name_or_id)  # convert to unicode first
-        option_name = ustr(option_name)
         rule = self.rules.find_rule(rule_name_or_id)
         if not rule:
             raise LintConfigError("No such rule '{0}'".format(rule_name_or_id))
@@ -252,7 +250,7 @@ class LintConfig:
             option.set(option_value)
         except options.RuleOptionError as e:
             msg = "'{0}' is not a valid value for option '{1}.{2}'. {3}."
-            raise LintConfigError(msg.format(option_value, rule_name_or_id, option_name, ustr(e)))
+            raise LintConfigError(msg.format(option_value, rule_name_or_id, option_name, e))
 
     def set_general_option(self, option_name, option_value):
         attr_name = option_name.replace("-", "_")
@@ -310,8 +308,6 @@ class RuleCollection:
             self.add_rules(rule_classes, rule_attrs)
 
     def find_rule(self, rule_id_or_name):
-        # try finding rule by id
-        rule_id_or_name = ustr(rule_id_or_name)  # convert to unicode first
         rule = self._rules.get(rule_id_or_name)
         # if not found, try finding rule by name
         if not rule:
@@ -434,10 +430,10 @@ class LintConfigBuilder:
 
             for section_name in parser.sections():
                 for option_name, option_value in parser.items(section_name):
-                    self.set_option(section_name, option_name, ustr(option_value))
+                    self.set_option(section_name, option_name, str(option_value))
 
         except ConfigParserError as e:
-            raise LintConfigError(ustr(e))
+            raise LintConfigError(str(e))
 
     def _add_named_rule(self, config, qualified_rule_name):
         """ Adds a Named Rule to a given LintConfig object.

@@ -6,7 +6,7 @@ capabilities wrt dealing with more edge-case environments on *nix systems that a
 """
 
 import subprocess
-from gitlint.utils import ustr, USE_SH_LIB
+from gitlint.utils import USE_SH_LIB, DEFAULT_ENCODING
 
 
 def shell(cmd):
@@ -63,7 +63,7 @@ else:
             raise CommandNotFound
 
         exit_code = p.returncode
-        stdout = ustr(result[0])
+        stdout = result[0].decode(DEFAULT_ENCODING)
         stderr = result[1]  # 'sh' does not decode the stderr bytes to unicode
         full_cmd = '' if args is None else ' '.join(args)
 

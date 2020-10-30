@@ -16,7 +16,7 @@ import arrow
 
 
 from qa.shell import git, gitlint, RunningCommand
-from qa.utils import DEFAULT_ENCODING, ustr
+from qa.utils import DEFAULT_ENCODING
 
 
 class BaseTestCase(TestCase):
@@ -51,7 +51,7 @@ class BaseTestCase(TestCase):
 
     def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
-        output = ustr(output.stdout)
+        output = output.stdout.decode(DEFAULT_ENCODING)
         output = output.replace('\r', '')
         self.assertMultiLineEqual(output, expected)
 

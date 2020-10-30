@@ -8,7 +8,6 @@ from gitlint import shell as sh
 from gitlint.shell import CommandNotFound, ErrorReturnCode
 
 from gitlint.cache import PropertyCache, cache
-from gitlint.utils import ustr
 
 # For now, the git date format we use is fixed, but technically this format is determined by `git config log.date`
 # We should fix this at some point :-)
@@ -49,7 +48,7 @@ def _git(*command_parts, **kwargs):
         # a non-zero exit code -> just return the entire result
         if hasattr(result, 'exit_code') and result.exit_code > 0:
             return result
-        return ustr(result)
+        return str(result)
     except CommandNotFound:
         raise GitNotInstalledError()
     except ErrorReturnCode as e:  # Something went wrong while executing the git command
@@ -77,13 +76,13 @@ def git_commentchar(repository_path=None):
     # git will return an exit code of 1 if it can't find a config value, in this case we fall-back to # as commentchar
     if hasattr(commentchar, 'exit_code') and commentchar.exit_code == 1:  # pylint: disable=no-member
         commentchar = "#"
-    return ustr(commentchar).replace("\n", "")
+    return commentchar.replace("\n", "")
 
 
 def git_hooks_dir(repository_path):
     """ Determine hooks directory for a given target dir """
     hooks_dir = _git("rev-parse", "--git-path", "hooks", _cwd=repository_path)
-    hooks_dir = ustr(hooks_dir).replace("\n", "")
+    hooks_dir = hooks_dir.replace("\n", "")
     return os.path.realpath(os.path.join(repository_path, hooks_dir))
 
 
@@ -111,7 +110,7 @@ class GitCommitMessage:
             cutline_index = all_lines.index(cutline)
         except ValueError:
             cutline_index = None
-        lines = [ustr(line) for line in all_lines[:cutline_index] if not line.startswith(context.commentchar)]
+        lines = [line for line in all_lines[:cutline_index] if not line.startswith(context.commentchar)]
         full = "\n".join(lines)
         title = lines[0] if lines else ""
         body = lines[1:] if len(lines) > 1 else []
@@ -176,7 +175,7 @@ class GitCommit:
                       "Changed Files: %s\n"
                       "-----------------------")  # pragma: no cover
         date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
-        return format_str % (ustr(self.message), self.author_name, self.author_email, date_str,
+        return format_str % (self.message, self.author_name, self.author_email, date_str,
                              self.is_merge_commit, self.is_fixup_commit, self.is_squash_commit,
                              self.is_revert_commit, self.branches, self.changed_files)  # pragma: no cover
 
@@ -224,7 +223,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
         # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
         # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
         # http://stackoverflow.com/a/30696682/381010
-        commit_date = arrow.get(ustr(date), GIT_TIMEFORMAT).datetime
+        commit_date = arrow.get(date, GIT_TIMEFORMAT).datetime
 
         # Create Git commit object with the retrieved info
         commit_msg_obj = GitCommitMessage.from_full_message(self.context, commit_msg)
@@ -264,7 +263,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
             # safely do this since git branches cannot contain '*' anywhere, so if we find an '*' we know it's output
             # from the git CLI and not part of the branch name. See https://git-scm.com/docs/git-check-ref-format
             # We also drop the last empty line from the output.
-            self._cache['branches'] = [ustr(branch.replace("*", "").strip()) for branch in branches[:-1]]
+            self._cache['branches'] = [branch.replace("*", "").strip() for branch in branches[:-1]]
 
         return self._try_cache("branches", cache_branches)
 
@@ -300,7 +299,7 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     @cache
     def author_name(self):
         try:
-            return ustr(_git("config", "--get", "user.name", _cwd=self.context.repository_path)).strip()
+            return _git("config", "--get", "user.name", _cwd=self.context.repository_path).strip()
         except GitExitCodeError:
             raise GitContextError("Missing git configuration: please set user.name")
 
@@ -308,7 +307,7 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     @cache
     def author_email(self):
         try:
-            return ustr(_git("config", "--get", "user.email", _cwd=self.context.repository_path)).strip()
+            return _git("config", "--get", "user.email", _cwd=self.context.repository_path).strip()
         except GitExitCodeError:
             raise GitContextError("Missing git configuration: please set user.email")
 
@@ -350,7 +349,7 @@ class GitContext(PropertyCache):
     @property
     @cache
     def current_branch(self):
-        current_branch = ustr(_git("rev-parse", "--abbrev-ref", "HEAD", _cwd=self.repository_path)).strip()
+        current_branch = _git("rev-parse", "--abbrev-ref", "HEAD", _cwd=self.repository_path).strip()
         return current_branch
 
     @staticmethod

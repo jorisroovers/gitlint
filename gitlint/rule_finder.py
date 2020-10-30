@@ -5,7 +5,6 @@ import sys
 import importlib
 
 from gitlint import rules, options
-from gitlint.utils import ustr
 
 
 def find_rule_classes(extra_path):
@@ -56,7 +55,7 @@ def find_rule_classes(extra_path):
             importlib.import_module(module)
 
         except Exception as e:
-            raise rules.UserRuleError("Error while importing extra-path module '{0}': {1}".format(module, ustr(e)))
+            raise rules.UserRuleError("Error while importing extra-path module '{0}': {1}".format(module, e))
 
         # Find all rule classes in the module. We do this my inspecting all members of the module and checking
         # 1) is it a class, if not, skip

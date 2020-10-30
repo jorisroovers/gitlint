@@ -14,7 +14,7 @@ import unittest
 from unittest.mock import patch
 
 from gitlint.git import GitContext
-from gitlint.utils import ustr, LOG_FORMAT, DEFAULT_ENCODING
+from gitlint.utils import LOG_FORMAT, DEFAULT_ENCODING
 
 
 class BaseTestCase(unittest.TestCase):
@@ -51,16 +51,16 @@ class BaseTestCase(unittest.TestCase):
     def get_sample_path(filename=""):
         # Don't join up empty files names because this will add a trailing slash
         if filename == "":
-            return ustr(BaseTestCase.SAMPLES_DIR)
+            return BaseTestCase.SAMPLES_DIR
 
-        return ustr(os.path.join(BaseTestCase.SAMPLES_DIR, filename))
+        return os.path.join(BaseTestCase.SAMPLES_DIR, filename)
 
     @staticmethod
     def get_sample(filename=""):
         """ Read and return the contents of a file in gitlint/tests/samples """
         sample_path = BaseTestCase.get_sample_path(filename)
         with io.open(sample_path, encoding=DEFAULT_ENCODING) as content:
-            sample = ustr(content.read())
+            sample = content.read()
         return sample
 
     @staticmethod
@@ -76,7 +76,7 @@ class BaseTestCase(unittest.TestCase):
         Optionally replace template variables specified by variable_dict. """
         expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)
         with io.open(expected_path, encoding=DEFAULT_ENCODING) as content:
-            expected = ustr(content.read())
+            expected = content.read()
 
         if variable_dict:
             expected = expected.format(**variable_dict)
@@ -133,7 +133,7 @@ class BaseTestCase(unittest.TestCase):
         try:
             yield
         except expected_exception as exc:
-            exception_msg = ustr(exc)
+            exception_msg = str(exc)
             if exception_msg != expected_msg:
                 error = "Right exception, wrong message:\n      got: {0}\n expected: {1}"
                 raise self.fail(error.format(exception_msg, expected_msg))
@@ -182,4 +182,4 @@ class LogCapture(logging.Handler):
         self.messages = []
 
     def emit(self, record):
-        self.messages.append(ustr(self.format(record)))
+        self.messages.append(self.format(record))

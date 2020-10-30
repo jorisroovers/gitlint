@@ -3,7 +3,7 @@
 # on gitlint internals for our integration testing framework.
 
 import subprocess
-from qa.utils import ustr, USE_SH_LIB
+from qa.utils import USE_SH_LIB, DEFAULT_ENCODING
 
 if USE_SH_LIB:
     from sh import git, echo, gitlint  # pylint: disable=unused-import,no-name-in-module,import-error
@@ -27,7 +27,7 @@ else:
             self.full_cmd = full_cmd
             # TODO(jorisroovers): The 'sh' library by default will merge stdout and stderr. We mimic this behavior
             # for now until we fully remove the 'sh' library.
-            self.stdout = stdout + ustr(stderr)
+            self.stdout = stdout + stderr.decode(DEFAULT_ENCODING)
             self.stderr = stderr
             self.exit_code = exitcode
 
@@ -55,7 +55,7 @@ else:
         # a non-zero exit code -> just return the entire result
         if hasattr(result, 'exit_code') and result.exit_code > 0:
             return result
-        return ustr(result)
+        return str(result)
 
     def _exec(*args, **kwargs):
         pipe = subprocess.PIPE
@@ -72,7 +72,7 @@ else:
             raise CommandNotFound
 
         exit_code = p.returncode
-        stdout = ustr(result[0])
+        stdout = result[0].decode(DEFAULT_ENCODING)
         stderr = result[1]  # 'sh' does not decode the stderr bytes to unicode
         full_cmd = '' if args is None else ' '.join(args)
 
