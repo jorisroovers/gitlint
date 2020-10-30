@@ -87,7 +87,7 @@ def git_hooks_dir(repository_path):
     return os.path.realpath(os.path.join(repository_path, hooks_dir))
 
 
-class GitCommitMessage(object):
+class GitCommitMessage:
     """ Class representing a git commit message. A commit message consists of the following:
       - context: The `GitContext` this commit message is part of
       - original: The actual commit message as returned by `git log`
@@ -131,7 +131,7 @@ class GitCommitMessage(object):
                 and self.full == other.full and self.title == other.title and self.body == other.body)  # noqa
 
 
-class GitCommit(object):
+class GitCommit:
     """ Class representing a git commit.
         A commit consists of: context, message, author name, author email, date, list of parent commit shas,
         list of changed files, list of branch names.

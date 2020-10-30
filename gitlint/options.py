@@ -21,7 +21,7 @@ class RuleOptionError(Exception):
     pass
 
 
-class RuleOption(object):
+class RuleOption:
     """ Base class representing a configurable part (i.e. option) of a rule (e.g. the max-length of the title-max-line
         rule).
         This class should not be used directly. Instead, use on the derived classes like StrOption, IntOption to set

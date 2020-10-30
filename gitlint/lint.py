@@ -8,7 +8,7 @@ LOG = logging.getLogger(__name__)
 logging.basicConfig()
 
 
-class GitLinter(object):
+class GitLinter:
     """ Main linter class. This is where rules actually get applied. See the lint() method. """
 
     def __init__(self, config):

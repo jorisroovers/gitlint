@@ -1,7 +1,7 @@
 from sys import stdout, stderr
 
 
-class Display(object):
+class Display:
     """ Utility class to print stuff to an output stream (stdout by default) based on the config's verbosity """
 
     def __init__(self, lint_config):

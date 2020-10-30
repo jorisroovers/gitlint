@@ -16,7 +16,7 @@ else:
         """ Exception indicating a command was not found during execution """
         pass
 
-    class RunningCommand(object):
+    class RunningCommand:
         pass
 
     class ShResult(RunningCommand):

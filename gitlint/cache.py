@@ -1,4 +1,4 @@
-class PropertyCache(object):
+class PropertyCache:
     """ Mixin class providing a simple cache. """
 
     def __init__(self):
