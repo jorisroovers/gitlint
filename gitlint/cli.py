@@ -170,7 +170,7 @@ def build_git_context(lint_config, msg_filename, refspec):
     return GitContext.from_local_repository(lint_config.target, refspec)
 
 
-class ContextObj(object):
+class ContextObj:
     """ Simple class to hold data that is passed between Click commands via the Click context. """
 
     def __init__(self, config, config_builder, refspec, msg_filename, gitcontext=None):

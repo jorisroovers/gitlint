@@ -7,7 +7,7 @@ from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RegexO
 from gitlint.utils import sstr
 
 
-class Rule(object):
+class Rule:
     """ Class representing gitlint rules. """
     options_spec = []
     id = None
@@ -61,7 +61,7 @@ class LineRule(Rule):
     pass
 
 
-class LineRuleTarget(object):
+class LineRuleTarget:
     """ Base class for LineRule targets. A LineRuleTarget specifies where a given rule will be applied
     (e.g. commit message title, commit message body).
     Each LineRule MUST have a target specified. """
@@ -78,7 +78,7 @@ class CommitMessageBody(LineRuleTarget):
     pass
 
 
-class RuleViolation(object):
+class RuleViolation:
     """ Class representing a violation of a rule. I.e.: When a rule is broken, the rule will instantiate this class
     to indicate how and where the rule was broken. """
 

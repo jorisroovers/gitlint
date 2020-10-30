@@ -31,7 +31,7 @@ class LintConfigError(Exception):
     pass
 
 
-class LintConfig(object):
+class LintConfig:
     """ Class representing gitlint configuration.
         Contains active config as well as number of methods to easily get/set the config.
     """
@@ -300,7 +300,7 @@ class LintConfig(object):
         return return_str
 
 
-class RuleCollection(object):
+class RuleCollection:
     """ Class representing an ordered list of rules. Methods are provided to easily retrieve, add or delete rules. """
 
     def __init__(self, rule_classes=None, rule_attrs=None):
@@ -377,7 +377,7 @@ class RuleCollection(object):
         return return_str
 
 
-class LintConfigBuilder(object):
+class LintConfigBuilder:
     """ Factory class that can build gitlint config.
     This is primarily useful to deal with complex configuration scenarios where configuration can be set and overridden
     from various sources (typically according to certain precedence rules) before the actual config should be
@@ -514,7 +514,7 @@ class LintConfigBuilder(object):
 GITLINT_CONFIG_TEMPLATE_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files/gitlint")
 
 
-class LintConfigGenerator(object):
+class LintConfigGenerator:
     @staticmethod
     def generate_config(dest):
         """ Generates a gitlint config file at the given destination location.

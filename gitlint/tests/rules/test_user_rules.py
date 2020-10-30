@@ -132,7 +132,7 @@ class UserRuleTests(BaseTestCase):
 
     def test_assert_valid_rule_class_negative_parent(self):
         # rule class must extend from LineRule or CommitRule
-        class MyRuleClass(object):
+        class MyRuleClass:
             pass
 
         expected_msg = "User-defined rule class 'MyRuleClass' must extend from gitlint.rules.LineRule, " + \

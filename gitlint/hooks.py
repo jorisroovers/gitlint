@@ -15,7 +15,7 @@ class GitHookInstallerError(Exception):
     pass
 
 
-class GitHookInstaller(object):
+class GitHookInstaller:
     """ Utility class that provides methods for installing and uninstalling the gitlint commitmsg hook. """
 
     @staticmethod
