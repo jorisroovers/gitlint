@@ -2,7 +2,6 @@
 import logging
 from gitlint import rules as gitlint_rules
 from gitlint import display
-from gitlint.utils import ustr
 
 LOG = logging.getLogger(__name__)
 logging.basicConfig()
@@ -70,7 +69,7 @@ class GitLinter:
     def lint(self, commit):
         """ Lint the last commit in a given git context by applying all ignore, title, body and commit rules. """
         LOG.debug("Linting commit %s", commit.sha or "[SHA UNKNOWN]")
-        LOG.debug("Commit Object\n" + ustr(commit))
+        LOG.debug("Commit Object\n" + str(commit))
 
         # Apply config rules
         for rule in self.configuration_rules:

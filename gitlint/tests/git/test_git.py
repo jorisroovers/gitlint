@@ -90,8 +90,7 @@ class GitTests(BaseTestCase):
         self.assertEqual(git_commentchar(), "#")
 
         git.return_value.exit_code = 0
-        git.return_value.__str__ = lambda _: "ä"
-        git.return_value.__unicode__ = lambda _: "ä"
+        git.return_value = "ä"
         self.assertEqual(git_commentchar(), "ä")
 
         git.return_value = ';\n'
@@ -103,8 +102,7 @@ class GitTests(BaseTestCase):
     @patch("gitlint.git._git")
     def test_git_hooks_dir(self, git):
         hooks_dir = os.path.join("föo", ".git", "hooks")
-        git.return_value.__str__ = lambda _: hooks_dir + "\n"
-        git.return_value.__unicode__ = lambda _: hooks_dir + "\n"
+        git.return_value = hooks_dir + "\n"
         self.assertEqual(git_hooks_dir("/blä"), os.path.abspath(os.path.join("/blä", hooks_dir)))
 
         git.assert_called_once_with("rev-parse", "--git-path", "hooks", _cwd="/blä")

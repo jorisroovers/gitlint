@@ -2,7 +2,6 @@ import re
 
 from gitlint.options import ListOption
 from gitlint.rules import CommitMessageTitle, LineRule, RuleViolation
-from gitlint.utils import ustr
 
 RULE_REGEX = re.compile(r"[^(]+?(\([^)]+?\))?: .+")
 
@@ -26,7 +25,7 @@ class ConventionalCommit(LineRule):
         violations = []
 
         for commit_type in self.options["types"].value:
-            if line.startswith(ustr(commit_type)):
+            if line.startswith(commit_type):
                 break
         else:
             msg = "Title does not start with one of {0}".format(', '.join(self.options['types'].value))

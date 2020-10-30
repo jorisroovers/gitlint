@@ -11,7 +11,6 @@ from unittest.mock import patch, call
 from gitlint.tests.base import BaseTestCase
 from gitlint.git import GitContext, GitCommit, GitContextError, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
 from gitlint.shell import ErrorReturnCode
-from gitlint.utils import ustr
 
 
 class GitCommitTests(BaseTestCase):
@@ -488,7 +487,7 @@ class GitCommitTests(BaseTestCase):
         expected_msg = "Missing git configuration: please set user.name"
         with self.assertRaisesMessage(GitContextError, expected_msg):
             ctx = GitContext.from_staged_commit("Foōbar 123\n\ncömmit-body\n", "fåke/path")
-            [ustr(commit) for commit in ctx.commits]
+            [str(commit) for commit in ctx.commits]
 
     @patch('gitlint.git.sh')
     def test_staged_commit_with_missing_email(self, sh):
@@ -503,7 +502,7 @@ class GitCommitTests(BaseTestCase):
         expected_msg = "Missing git configuration: please set user.email"
         with self.assertRaisesMessage(GitContextError, expected_msg):
             ctx = GitContext.from_staged_commit("Foōbar 123\n\ncömmit-body\n", "fåke/path")
-            [ustr(commit) for commit in ctx.commits]
+            [str(commit) for commit in ctx.commits]
 
     def test_gitcommitmessage_equality(self):
         commit_message1 = GitCommitMessage(GitContext(), "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])

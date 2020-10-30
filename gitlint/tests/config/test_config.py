@@ -5,7 +5,7 @@ from unittest.mock import patch
 from gitlint import rules
 from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
 from gitlint import options
-from gitlint.tests.base import BaseTestCase, ustr
+from gitlint.tests.base import BaseTestCase
 
 
 class LintConfigTests(BaseTestCase):
@@ -112,7 +112,7 @@ class LintConfigTests(BaseTestCase):
         actual_rule = config.rules.find_rule("contrib-title-conventional-commits")
         self.assertTrue(actual_rule.is_contrib)
 
-        self.assertEqual(ustr(type(actual_rule)), "<class 'conventional_commit.ConventionalCommit'>")
+        self.assertEqual(str(type(actual_rule)), "<class 'conventional_commit.ConventionalCommit'>")
         self.assertEqual(actual_rule.id, 'CT1')
         self.assertEqual(actual_rule.name, u'contrib-title-conventional-commits')
         self.assertEqual(actual_rule.target, rules.CommitMessageTitle)
@@ -130,7 +130,7 @@ class LintConfigTests(BaseTestCase):
         actual_rule = config.rules.find_rule("contrib-body-requires-signed-off-by")
         self.assertTrue(actual_rule.is_contrib)
 
-        self.assertEqual(ustr(type(actual_rule)), "<class 'signedoff_by.SignedOffBy'>")
+        self.assertEqual(str(type(actual_rule)), "<class 'signedoff_by.SignedOffBy'>")
         self.assertEqual(actual_rule.id, 'CC1')
         self.assertEqual(actual_rule.name, u'contrib-body-requires-signed-off-by')
 
@@ -153,7 +153,7 @@ class LintConfigTests(BaseTestCase):
         side_effects = [rules.UserRuleError("üser-rule"), options.RuleOptionError("rüle-option")]
         for side_effect in side_effects:
             with patch('gitlint.config.rule_finder.find_rule_classes', side_effect=side_effect):
-                with self.assertRaisesMessage(LintConfigError, ustr(side_effect)):
+                with self.assertRaisesMessage(LintConfigError, str(side_effect)):
                     config.contrib = "contrib-title-conventional-commits"
 
     def test_extra_path(self):
@@ -163,7 +163,7 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(config.extra_path, self.get_user_rules_path())
         actual_rule = config.rules.find_rule('UC1')
         self.assertTrue(actual_rule.is_user_defined)
-        self.assertEqual(ustr(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
+        self.assertEqual(str(type(actual_rule)), "<class 'my_commit_rules.MyUserCommitRule'>")
         self.assertEqual(actual_rule.id, 'UC1')
         self.assertEqual(actual_rule.name, u'my-üser-commit-rule')
         self.assertEqual(actual_rule.target, None)

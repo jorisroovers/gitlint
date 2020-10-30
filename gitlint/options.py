@@ -2,8 +2,6 @@ from abc import abstractmethod
 import os
 import re
 
-from gitlint.utils import ustr
-
 
 def allow_none(func):
     """ Decorator that sets option value to None if the passed value is None, otherwise calls the regular set method """
@@ -29,8 +27,8 @@ class RuleOption:
     """
 
     def __init__(self, name, value, description):
-        self.name = ustr(name)
-        self.description = ustr(description)
+        self.name = name
+        self.description = description
         self.value = None
         self.set(value)
 
@@ -55,7 +53,7 @@ class RuleOption:
 class StrOption(RuleOption):
     @allow_none
     def set(self, value):
-        self.value = ustr(value)
+        self.value = str(value)
 
 
 class IntOption(RuleOption):
@@ -85,7 +83,7 @@ class BoolOption(RuleOption):
 
     # explicit choice to not annotate with @allow_none: Booleans must be False or True, they cannot be unset.
     def set(self, value):
-        value = ustr(value).strip().lower()
+        value = str(value).strip().lower()
         if value not in ['true', 'false']:
             raise RuleOptionError("Option '{0}' must be either 'true' or 'false'".format(self.name))
         self.value = value == 'true'
@@ -100,9 +98,9 @@ class ListOption(RuleOption):
         if isinstance(value, list):
             the_list = value
         else:
-            the_list = ustr(value).split(",")
+            the_list = str(value).split(",")
 
-        self.value = [ustr(item.strip()) for item in the_list if item.strip() != ""]
+        self.value = [str(item.strip()) for item in the_list if item.strip() != ""]
 
 
 class PathOption(RuleOption):
@@ -114,7 +112,7 @@ class PathOption(RuleOption):
 
     @allow_none
     def set(self, value):
-        value = ustr(value)
+        value = str(value)
 
         error_msg = ""
 

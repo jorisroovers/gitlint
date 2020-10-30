@@ -20,7 +20,7 @@ from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerat
 from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.shell import shell
-from gitlint.utils import ustr, LOG_FORMAT
+from gitlint.utils import LOG_FORMAT
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 # -n: disable swap files. This fixes a vim error on windows (E303: Unable to open swap file for <path>)
@@ -134,7 +134,7 @@ def get_stdin_data():
         # Only return the input data if there's actually something passed
         # i.e. don't consider empty piped data
         if input_data:
-            return ustr(input_data)
+            return str(input_data)
     return False
 
 
@@ -151,7 +151,7 @@ def build_git_context(lint_config, msg_filename, refspec):
     # 1. Any data specified via --msg-filename
     if msg_filename:
         LOG.debug("Using --msg-filename.")
-        return from_commit_msg(ustr(msg_filename.read()))
+        return from_commit_msg(str(msg_filename.read()))
 
     # 2. Any data sent to stdin (unless stdin is being ignored)
     if not lint_config.ignore_stdin:
@@ -230,7 +230,7 @@ def cli(  # pylint: disable=too-many-arguments
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
         config, config_builder = build_config(target, config, c, extra_path, ignore, contrib,
                                               ignore_stdin, staged, verbose, silent, debug)
-        LOG.debug("Configuration\n%s", ustr(config))
+        LOG.debug("Configuration\n%s", config)
 
         ctx.obj = ContextObj(config, config_builder, commits, msg_filename)
 
@@ -239,13 +239,13 @@ def cli(  # pylint: disable=too-many-arguments
             ctx.invoke(lint)
 
     except GitContextError as e:
-        click.echo(ustr(e))
+        click.echo(e)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
     except GitLintUsageError as e:
-        click.echo("Error: {0}".format(ustr(e)))
+        click.echo("Error: {0}".format(e))
         ctx.exit(USAGE_ERROR_CODE)
     except LintConfigError as e:
-        click.echo("Config Error: {0}".format(ustr(e)))
+        click.echo("Config Error: {0}".format(e))
         ctx.exit(CONFIG_ERROR_CODE)
 
 
@@ -318,7 +318,7 @@ def install_hook(ctx):
         click.echo("Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
-        click.echo(ustr(e), err=True)
+        click.echo(e, err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
 
@@ -332,7 +332,7 @@ def uninstall_hook(ctx):
         click.echo("Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
-        click.echo(ustr(e), err=True)
+        click.echo(e, err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
 
