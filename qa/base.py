@@ -84,7 +84,7 @@ class BaseTestCase(TestCase):
     @staticmethod
     def create_file(parent_dir):
         """ Creates a file inside a passed directory. Returns filename."""
-        test_filename = u"test-fïle-" + str(uuid4())
+        test_filename = "test-fïle-" + str(uuid4())
         io.open(os.path.join(parent_dir, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
         return test_filename
 

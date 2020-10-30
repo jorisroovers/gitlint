@@ -39,7 +39,7 @@ class Rule:
         return self  # pragma: no cover
 
     def __unicode__(self):
-        return u"{0} {1}".format(self.id, self.name)  # pragma: no cover
+        return "{0} {1}".format(self.id, self.name)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -96,7 +96,7 @@ class RuleViolation:
         return self  # pragma: no cover
 
     def __unicode__(self):
-        return u"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
+        return f"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
                                                self.content)  # pragma: no cover
 
     def __repr__(self):
@@ -147,7 +147,7 @@ class LineMustNotContainWord(LineRule):
     name = "line-must-not-contain"
     id = "R5"
     options_spec = [ListOption('words', [], "Comma separated list of words that should not be found")]
-    violation_message = u"Line contains {0}"
+    violation_message = "Line contains {0}"
 
     def validate(self, line, _commit):
         strings = self.options['words'].value
@@ -195,7 +195,7 @@ class TitleTrailingPunctuation(LineRule):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
             if title.endswith(punctuation_mark):
-                return [RuleViolation(self.id, u"Title has trailing punctuation ({0})".format(punctuation_mark), title)]
+                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), title)]
 
 
 class TitleHardTab(HardTab):
@@ -210,7 +210,7 @@ class TitleMustNotContainWord(LineMustNotContainWord):
     id = "T5"
     target = CommitMessageTitle
     options_spec = [ListOption('words', ["WIP"], "Must not contain word")]
-    violation_message = u"Title contains the word '{0}' (case-insensitive)"
+    violation_message = "Title contains the word '{0}' (case-insensitive)"
 
 
 class TitleLeadingWhitespace(LeadingWhiteSpace):
@@ -232,7 +232,7 @@ class TitleRegexMatches(LineRule):
             return
 
         if not self.options['regex'].value.search(title):
-            violation_msg = u"Title does not match regex ({0})".format(self.options['regex'].value.pattern)
+            violation_msg = "Title does not match regex ({0})".format(self.options['regex'].value.pattern)
             return [RuleViolation(self.id, violation_msg, title)]
 
 
@@ -318,7 +318,7 @@ class BodyChangedFileMention(CommitRule):
             # in the commit msg body
             if needs_mentioned_file in commit.changed_files:
                 if needs_mentioned_file not in " ".join(commit.message.body):
-                    violation_message = u"Body does not mention changed file '{0}'".format(needs_mentioned_file)
+                    violation_message = "Body does not mention changed file '{0}'".format(needs_mentioned_file)
                     violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))
         return violations if violations else None
 
@@ -347,7 +347,7 @@ class BodyRegexMatches(CommitRule):
         full_body = "\n".join(body_lines)
 
         if not self.options['regex'].value.search(full_body):
-            violation_msg = u"Body does not match regex ({0})".format(self.options['regex'].value.pattern)
+            violation_msg = "Body does not match regex ({0})".format(self.options['regex'].value.pattern)
             return [RuleViolation(self.id, violation_msg, None, len(commit.message.body) + 1)]
 
 
@@ -379,7 +379,7 @@ class IgnoreByTitle(ConfigurationRule):
         if self.options['regex'].value.match(commit.message.title):
             config.ignore = self.options['ignore'].value
 
-            message = u"Commit title '{0}' matches the regex '{1}', ignoring rules: {2}"
+            message = "Commit title '{0}' matches the regex '{1}', ignoring rules: {2}"
             message = message.format(commit.message.title, self.options['regex'].value.pattern,
                                      self.options['ignore'].value)
 
@@ -401,7 +401,7 @@ class IgnoreByBody(ConfigurationRule):
             if self.options['regex'].value.match(line):
                 config.ignore = self.options['ignore'].value
 
-                message = u"Commit message line '{0}' matches the regex '{1}', ignoring rules: {2}"
+                message = "Commit message line '{0}' matches the regex '{1}', ignoring rules: {2}"
                 message = message.format(line, self.options['regex'].value.pattern, self.options['ignore'].value)
 
                 self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
@@ -422,10 +422,10 @@ class IgnoreBodyLines(ConfigurationRule):
         new_body = []
         for line in commit.message.body:
             if self.options['regex'].value.match(line):
-                debug_msg = u"Ignoring line '%s' because it matches '%s'"
+                debug_msg = "Ignoring line '%s' because it matches '%s'"
                 self.log.debug(debug_msg, line, self.options['regex'].value.pattern)
             else:
                 new_body.append(line)
 
         commit.message.body = new_body
-        commit.message.full = u"\n".join([commit.message.title] + new_body)
+        commit.message.full = "\n".join([commit.message.title] + new_body)

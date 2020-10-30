@@ -371,7 +371,7 @@ class ReleaseConfigurationRule(ConfigurationRule):
 
             # You can add any extra properties you want to the commit object, 
             # these will be available later on in all rules.
-            commit.my_property = u"This is my property"
+            commit.my_property = "This is my property"
 ```
 
 For all available properties and methods on the `config` object, have a look at the

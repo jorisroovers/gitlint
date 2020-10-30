@@ -91,7 +91,7 @@ class BaseTestCase(unittest.TestCase):
         """ Utility method to easily create gitcontext objects based on a given commit msg string and an optional set of
         changed files"""
         with patch("gitlint.git.git_commentchar") as comment_char:
-            comment_char.return_value = u"#"
+            comment_char.return_value = "#"
             gitcontext = GitContext.from_commit_msg(commit_msg_str)
             commit = gitcontext.commits[-1]
             if changed_files:
@@ -135,12 +135,12 @@ class BaseTestCase(unittest.TestCase):
         except expected_exception as exc:
             exception_msg = ustr(exc)
             if exception_msg != expected_msg:
-                error = u"Right exception, wrong message:\n      got: {0}\n expected: {1}"
+                error = "Right exception, wrong message:\n      got: {0}\n expected: {1}"
                 raise self.fail(error.format(exception_msg, expected_msg))
             # else: everything is fine, just return
             return
         except Exception as exc:
-            raise self.fail(u"Expected '{0}' got '{1}'".format(expected_exception.__name__, exc.__class__.__name__))
+            raise self.fail("Expected '{0}' got '{1}'".format(expected_exception.__name__, exc.__class__.__name__))
 
         # No exception raised while we expected one
         raise self.fail("Expected to raise {0}, didn't get an exception at all".format(expected_exception.__name__))
@@ -167,9 +167,9 @@ class BaseTestCase(unittest.TestCase):
             self.assertEqual(obj, clone)
 
             # Change attribute and assert objects are different (via both attribute set and ctor)
-            setattr(clone, attr, u"föo")
+            setattr(clone, attr, "föo")
             self.assertNotEqual(obj, clone)
-            attr_kwargs_copy[attr] = u"föo"
+            attr_kwargs_copy[attr] = "föo"
 
             self.assertNotEqual(obj, obj.__class__(**attr_kwargs_copy))
 

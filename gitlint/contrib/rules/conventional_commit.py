@@ -29,11 +29,11 @@ class ConventionalCommit(LineRule):
             if line.startswith(ustr(commit_type)):
                 break
         else:
-            msg = u"Title does not start with one of {0}".format(', '.join(self.options['types'].value))
+            msg = "Title does not start with one of {0}".format(', '.join(self.options['types'].value))
             violations.append(RuleViolation(self.id, msg, line))
 
         if not RULE_REGEX.match(line):
-            msg = u"Title does not follow ConventionalCommits.org format 'type(optional-scope): description'"
+            msg = "Title does not follow ConventionalCommits.org format 'type(optional-scope): description'"
             violations.append(RuleViolation(self.id, msg, line))
 
         return violations

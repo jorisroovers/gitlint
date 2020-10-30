@@ -33,8 +33,8 @@ class UserRuleTests(BaseTestCase):
 
         # Do some basic asserts on our user rule
         self.assertEqual(classes[0].id, "UC1")
-        self.assertEqual(classes[0].name, u"my-üser-commit-rule")
-        expected_option = options.IntOption('violation-count', 1, u"Number of violåtions to return")
+        self.assertEqual(classes[0].name, "my-üser-commit-rule")
+        expected_option = options.IntOption('violation-count', 1, "Number of violåtions to return")
         self.assertListEqual(classes[0].options_spec, [expected_option])
         self.assertTrue(hasattr(classes[0], "validate"))
 
@@ -42,13 +42,13 @@ class UserRuleTests(BaseTestCase):
         # expected result
         rule_class = classes[0]()
         violations = rule_class.validate("false-commit-object (ignored)")
-        self.assertListEqual(violations, [rules.RuleViolation("UC1", u"Commit violåtion 1", u"Contënt 1", 1)])
+        self.assertListEqual(violations, [rules.RuleViolation("UC1", "Commit violåtion 1", "Contënt 1", 1)])
 
         # Have it return more violations
         rule_class.options['violation-count'].value = 2
         violations = rule_class.validate("false-commit-object (ignored)")
-        self.assertListEqual(violations, [rules.RuleViolation("UC1", u"Commit violåtion 1", u"Contënt 1", 1),
-                                          rules.RuleViolation("UC1", u"Commit violåtion 2", u"Contënt 2", 2)])
+        self.assertListEqual(violations, [rules.RuleViolation("UC1", "Commit violåtion 1", "Contënt 1", 1),
+                                          rules.RuleViolation("UC1", "Commit violåtion 2", "Contënt 2", 2)])
 
     def test_extra_path_specified_by_file(self):
         # Test that find_rule_classes can handle an extra path given as a file name instead of a directory
@@ -58,7 +58,7 @@ class UserRuleTests(BaseTestCase):
 
         rule_class = classes[0]()
         violations = rule_class.validate("false-commit-object (ignored)")
-        self.assertListEqual(violations, [rules.RuleViolation("UC1", u"Commit violåtion 1", u"Contënt 1", 1)])
+        self.assertListEqual(violations, [rules.RuleViolation("UC1", "Commit violåtion 1", "Contënt 1", 1)])
 
     def test_rules_from_init_file(self):
         # Test that we can import rules that are defined in __init__.py files
@@ -69,7 +69,7 @@ class UserRuleTests(BaseTestCase):
 
         # convert classes to strings and sort them so we can compare them
         class_strings = sorted([ustr(clazz) for clazz in classes])
-        expected = [u"<class 'my_commit_rules.MyUserCommitRule'>", u"<class 'parent_package.InitFileRule'>"]
+        expected = ["<class 'my_commit_rules.MyUserCommitRule'>", "<class 'parent_package.InitFileRule'>"]
         self.assertListEqual(class_strings, expected)
 
     def test_empty_user_classes(self):
@@ -92,8 +92,8 @@ class UserRuleTests(BaseTestCase):
             find_rule_classes(user_rule_path)
 
     def test_find_rule_classes_nonexisting_path(self):
-        with self.assertRaisesMessage(UserRuleError, u"Invalid extra-path: föo/bar"):
-            find_rule_classes(u"föo/bar")
+        with self.assertRaisesMessage(UserRuleError, "Invalid extra-path: föo/bar"):
+            find_rule_classes("föo/bar")
 
     def test_assert_valid_rule_class(self):
         class MyLineRuleClass(rules.LineRule):
@@ -186,17 +186,17 @@ class UserRuleTests(BaseTestCase):
 
             class MyRuleClass(parent_class):
                 id = "UC1"
-                name = u"my-rüle-class"
+                name = "my-rüle-class"
 
             # if set, option_spec must be a list of gitlint options
-            MyRuleClass.options_spec = u"föo"
+            MyRuleClass.options_spec = "föo"
             expected_msg = "The options_spec attribute of user-defined rule class 'MyRuleClass' must be a list " + \
                 "of gitlint.options.RuleOption"
             with self.assertRaisesMessage(UserRuleError, expected_msg):
                 assert_valid_rule_class(MyRuleClass)
 
             # option_spec is a list, but not of gitlint options
-            MyRuleClass.options_spec = [u"föo", 123]  # pylint: disable=bad-option-value,redefined-variable-type
+            MyRuleClass.options_spec = ["föo", 123]  # pylint: disable=bad-option-value,redefined-variable-type
             with self.assertRaisesMessage(UserRuleError, expected_msg):
                 assert_valid_rule_class(MyRuleClass)
 
@@ -206,14 +206,14 @@ class UserRuleTests(BaseTestCase):
         for clazz in baseclasses:
             class MyRuleClass(clazz):
                 id = "UC1"
-                name = u"my-rüle-class"
+                name = "my-rüle-class"
 
             with self.assertRaisesMessage(UserRuleError,
                                           "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
                 assert_valid_rule_class(MyRuleClass)
 
             # validate attribute - not a method
-            MyRuleClass.validate = u"föo"
+            MyRuleClass.validate = "föo"
             with self.assertRaisesMessage(UserRuleError,
                                           "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
                 assert_valid_rule_class(MyRuleClass)
@@ -221,21 +221,21 @@ class UserRuleTests(BaseTestCase):
     def test_assert_valid_rule_class_negative_apply(self):
         class MyRuleClass(rules.ConfigurationRule):
             id = "UCR1"
-            name = u"my-rüle-class"
+            name = "my-rüle-class"
 
         expected_msg = "User-defined Configuration rule class 'MyRuleClass' must have an 'apply' method"
         with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
         # validate attribute - not a method
-        MyRuleClass.validate = u"föo"
+        MyRuleClass.validate = "föo"
         with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_target(self):
         class MyRuleClass(rules.LineRule):
             id = "UC1"
-            name = u"my-rüle-class"
+            name = "my-rüle-class"
 
             def validate(self):
                 pass
@@ -247,7 +247,7 @@ class UserRuleTests(BaseTestCase):
             assert_valid_rule_class(MyRuleClass)
 
         # invalid target
-        MyRuleClass.target = u"föo"
+        MyRuleClass.target = "föo"
         with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 

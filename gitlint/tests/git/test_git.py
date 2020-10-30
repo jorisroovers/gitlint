@@ -14,7 +14,7 @@ class GitTests(BaseTestCase):
     # Expected special_args passed to 'sh'
     expected_sh_special_args = {
         '_tty_out': False,
-        '_cwd': u"fåke/path"
+        '_cwd': "fåke/path"
     }
 
     @patch('gitlint.git.sh')
@@ -23,7 +23,7 @@ class GitTests(BaseTestCase):
         expected_msg = "'git' command not found. You need to install git to use gitlint on a local repository. " + \
                        "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
         with self.assertRaisesMessage(GitNotInstalledError, expected_msg):
-            GitContext.from_local_repository(u"fåke/path")
+            GitContext.from_local_repository("fåke/path")
 
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
@@ -34,8 +34,8 @@ class GitTests(BaseTestCase):
         err = b"fatal: Not a git repository (or any of the parent directories): .git"
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
-        with self.assertRaisesMessage(GitContextError, u"fåke/path is not a git repository."):
-            GitContext.from_local_repository(u"fåke/path")
+        with self.assertRaisesMessage(GitContextError, "fåke/path is not a git repository."):
+            GitContext.from_local_repository("fåke/path")
 
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
@@ -44,9 +44,9 @@ class GitTests(BaseTestCase):
         err = b"fatal: Random git error"
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
-        expected_msg = u"An error occurred while executing 'git log -1 --pretty=%H': {0}".format(err)
+        expected_msg = "An error occurred while executing 'git log -1 --pretty=%H': {0}".format(err)
         with self.assertRaisesMessage(GitContextError, expected_msg):
-            GitContext.from_local_repository(u"fåke/path")
+            GitContext.from_local_repository("fåke/path")
 
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
@@ -58,9 +58,9 @@ class GitTests(BaseTestCase):
 
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
-        expected_msg = u"Current branch has no commits. Gitlint requires at least one commit to function."
+        expected_msg = "Current branch has no commits. Gitlint requires at least one commit to function."
         with self.assertRaisesMessage(GitContextError, expected_msg):
-            GitContext.from_local_repository(u"fåke/path")
+            GitContext.from_local_repository("fåke/path")
 
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
@@ -73,12 +73,12 @@ class GitTests(BaseTestCase):
                b"'git <command> [<revision>...] -- [<file>...]'")
 
         sh.git.side_effect = [
-            u"#\n",  # git config --get core.commentchar
+            "#\n",  # git config --get core.commentchar
             ErrorReturnCode("rev-parse --abbrev-ref HEAD", b"", err)
         ]
 
         with self.assertRaisesMessage(GitContextError, expected_msg):
-            context = GitContext.from_commit_msg(u"test")
+            context = GitContext.from_commit_msg("test")
             context.current_branch
 
         # assert that commit message was read using git command
@@ -90,21 +90,21 @@ class GitTests(BaseTestCase):
         self.assertEqual(git_commentchar(), "#")
 
         git.return_value.exit_code = 0
-        git.return_value.__str__ = lambda _: u"ä"
-        git.return_value.__unicode__ = lambda _: u"ä"
-        self.assertEqual(git_commentchar(), u"ä")
+        git.return_value.__str__ = lambda _: "ä"
+        git.return_value.__unicode__ = lambda _: "ä"
+        self.assertEqual(git_commentchar(), "ä")
 
         git.return_value = ';\n'
-        self.assertEqual(git_commentchar(os.path.join(u"/föo", u"bar")), ';')
+        self.assertEqual(git_commentchar(os.path.join("/föo", "bar")), ';')
 
         git.assert_called_with("config", "--get", "core.commentchar", _ok_code=[0, 1],
-                               _cwd=os.path.join(u"/föo", u"bar"))
+                               _cwd=os.path.join("/föo", "bar"))
 
     @patch("gitlint.git._git")
     def test_git_hooks_dir(self, git):
-        hooks_dir = os.path.join(u"föo", ".git", "hooks")
+        hooks_dir = os.path.join("föo", ".git", "hooks")
         git.return_value.__str__ = lambda _: hooks_dir + "\n"
         git.return_value.__unicode__ = lambda _: hooks_dir + "\n"
-        self.assertEqual(git_hooks_dir(u"/blä"), os.path.abspath(os.path.join(u"/blä", hooks_dir)))
+        self.assertEqual(git_hooks_dir("/blä"), os.path.abspath(os.path.join("/blä", hooks_dir)))
 
-        git.assert_called_once_with("rev-parse", "--git-path", "hooks", _cwd=u"/blä")
+        git.assert_called_once_with("rev-parse", "--git-path", "hooks", _cwd="/blä")

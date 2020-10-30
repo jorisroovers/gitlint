@@ -25,8 +25,8 @@ class GitContextError(Exception):
 class GitNotInstalledError(GitContextError):
     def __init__(self):
         super(GitNotInstalledError, self).__init__(
-            u"'git' command not found. You need to install git to use gitlint on a local repository. " +
-            u"See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git.")
+            "'git' command not found. You need to install git to use gitlint on a local repository. " +
+            "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git.")
 
 
 class GitExitCodeError(GitContextError):
@@ -34,7 +34,7 @@ class GitExitCodeError(GitContextError):
         self.command = command
         self.stderr = stderr
         super(GitExitCodeError, self).__init__(
-            u"An error occurred while executing '{0}': {1}".format(command, stderr))
+            "An error occurred while executing '{0}': {1}".format(command, stderr))
 
 
 def _git(*command_parts, **kwargs):
@@ -56,19 +56,19 @@ def _git(*command_parts, **kwargs):
         error_msg = e.stderr.strip()
         error_msg_lower = error_msg.lower()
         if '_cwd' in git_kwargs and b"not a git repository" in error_msg_lower:
-            error_msg = u"{0} is not a git repository.".format(git_kwargs['_cwd'])
+            error_msg = "{0} is not a git repository.".format(git_kwargs['_cwd'])
             raise GitContextError(error_msg)
 
         if (b"does not have any commits yet" in error_msg_lower or
                 b"ambiguous argument 'head': unknown revision" in error_msg_lower):
-            raise GitContextError(u"Current branch has no commits. Gitlint requires at least one commit to function.")
+            raise GitContextError("Current branch has no commits. Gitlint requires at least one commit to function.")
 
         raise GitExitCodeError(e.full_cmd, error_msg)
 
 
 def git_version():
     """ Determine the git version installed on this host by calling git --version"""
-    return _git("--version").replace(u"\n", u"")
+    return _git("--version").replace("\n", "")
 
 
 def git_commentchar(repository_path=None):
@@ -77,13 +77,13 @@ def git_commentchar(repository_path=None):
     # git will return an exit code of 1 if it can't find a config value, in this case we fall-back to # as commentchar
     if hasattr(commentchar, 'exit_code') and commentchar.exit_code == 1:  # pylint: disable=no-member
         commentchar = "#"
-    return ustr(commentchar).replace(u"\n", u"")
+    return ustr(commentchar).replace("\n", "")
 
 
 def git_hooks_dir(repository_path):
     """ Determine hooks directory for a given target dir """
     hooks_dir = _git("rev-parse", "--git-path", "hooks", _cwd=repository_path)
-    hooks_dir = ustr(hooks_dir).replace(u"\n", u"")
+    hooks_dir = ustr(hooks_dir).replace("\n", "")
     return os.path.realpath(os.path.join(repository_path, hooks_dir))
 
 
@@ -106,7 +106,7 @@ class GitCommitMessage:
     def from_full_message(context, commit_msg_str):
         """  Parses a full git commit message by parsing a given string into the different parts of a commit message """
         all_lines = commit_msg_str.splitlines()
-        cutline = u"{0} ------------------------ >8 ------------------------".format(context.commentchar)
+        cutline = "{0} ------------------------ >8 ------------------------".format(context.commentchar)
         try:
             cutline_index = all_lines.index(cutline)
         except ValueError:
@@ -152,29 +152,29 @@ class GitCommit:
 
     @property
     def is_merge_commit(self):
-        return self.message.title.startswith(u"Merge")
+        return self.message.title.startswith("Merge")
 
     @property
     def is_fixup_commit(self):
-        return self.message.title.startswith(u"fixup!")
+        return self.message.title.startswith("fixup!")
 
     @property
     def is_squash_commit(self):
-        return self.message.title.startswith(u"squash!")
+        return self.message.title.startswith("squash!")
 
     @property
     def is_revert_commit(self):
-        return self.message.title.startswith(u"Revert")
+        return self.message.title.startswith("Revert")
 
     def __unicode__(self):
-        format_str = (u"--- Commit Message ----\n%s\n"
-                      u"--- Meta info ---------\n"
-                      u"Author: %s <%s>\nDate:   %s\n"
-                      u"is-merge-commit:  %s\nis-fixup-commit:  %s\n"
-                      u"is-squash-commit: %s\nis-revert-commit: %s\n"
-                      u"Branches: %s\n"
-                      u"Changed Files: %s\n"
-                      u"-----------------------")  # pragma: no cover
+        format_str = ("--- Commit Message ----\n%s\n"
+                      "--- Meta info ---------\n"
+                      "Author: %s <%s>\nDate:   %s\n"
+                      "is-merge-commit:  %s\nis-fixup-commit:  %s\n"
+                      "is-squash-commit: %s\nis-revert-commit: %s\n"
+                      "Branches: %s\n"
+                      "Changed Files: %s\n"
+                      "-----------------------")  # pragma: no cover
         date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
         return format_str % (ustr(self.message), self.author_name, self.author_email, date_str,
                              self.is_merge_commit, self.is_fixup_commit, self.is_squash_commit,
@@ -390,7 +390,7 @@ class GitContext(PropertyCache):
             # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
             # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into
             # problems with e.g. merge commits. Easiest solution is just taking the SHA from `git log -1`.
-            sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace(u"\n", u"")]
+            sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace("\n", "")]
         else:
             sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
 

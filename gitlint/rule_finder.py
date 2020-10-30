@@ -28,7 +28,7 @@ def find_rule_classes(extra_path):
         files = os.listdir(extra_path)
         directory = extra_path
     else:
-        raise rules.UserRuleError(u"Invalid extra-path: {0}".format(extra_path))
+        raise rules.UserRuleError("Invalid extra-path: {0}".format(extra_path))
 
     # Filter out files that are not python modules
     for filename in files:
@@ -56,7 +56,7 @@ def find_rule_classes(extra_path):
             importlib.import_module(module)
 
         except Exception as e:
-            raise rules.UserRuleError(u"Error while importing extra-path module '{0}': {1}".format(module, ustr(e)))
+            raise rules.UserRuleError("Error while importing extra-path module '{0}': {1}".format(module, ustr(e)))
 
         # Find all rule classes in the module. We do this my inspecting all members of the module and checking
         # 1) is it a class, if not, skip
@@ -94,36 +94,36 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):  # pylint: disable
     # Rules must extend from LineRule, CommitRule or ConfigurationRule
     if not (issubclass(clazz, rules.LineRule) or issubclass(clazz, rules.CommitRule)
             or issubclass(clazz, rules.ConfigurationRule)):
-        msg = u"{0} rule class '{1}' must extend from {2}.{3}, {2}.{4} or {2}.{5}"
+        msg = "{0} rule class '{1}' must extend from {2}.{3}, {2}.{4} or {2}.{5}"
         raise rules.UserRuleError(msg.format(rule_type, clazz.__name__, rules.CommitRule.__module__,
                                              rules.LineRule.__name__, rules.CommitRule.__name__,
                                              rules.ConfigurationRule.__name__))
 
     # Rules must have an id attribute
     if not hasattr(clazz, 'id') or clazz.id is None or not clazz.id:
-        msg = u"{0} rule class '{1}' must have an 'id' attribute"
+        msg = "{0} rule class '{1}' must have an 'id' attribute"
         raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
 
     # Rule id's cannot start with gitlint reserved letters
     if clazz.id[0].upper() in ['R', 'T', 'B', 'M', 'I']:
-        msg = u"The id '{1}' of '{0}' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
+        msg = "The id '{1}' of '{0}' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
         raise rules.UserRuleError(msg.format(clazz.__name__, clazz.id[0]))
 
     # Rules must have a name attribute
     if not hasattr(clazz, 'name') or clazz.name is None or not clazz.name:
-        msg = u"{0} rule class '{1}' must have a 'name' attribute"
+        msg = "{0} rule class '{1}' must have a 'name' attribute"
         raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
 
     # if set, options_spec must be a list of RuleOption
     if not isinstance(clazz.options_spec, list):
-        msg = u"The options_spec attribute of {0} rule class '{1}' must be a list of {2}.{3}"
+        msg = "The options_spec attribute of {0} rule class '{1}' must be a list of {2}.{3}"
         raise rules.UserRuleError(msg.format(rule_type.lower(), clazz.__name__,
                                              options.RuleOption.__module__, options.RuleOption.__name__))
 
     # check that all items in options_spec are actual gitlint options
     for option in clazz.options_spec:
         if not isinstance(option, options.RuleOption):
-            msg = u"The options_spec attribute of {0} rule class '{1}' must be a list of {2}.{3}"
+            msg = "The options_spec attribute of {0} rule class '{1}' must be a list of {2}.{3}"
             raise rules.UserRuleError(msg.format(rule_type.lower(), clazz.__name__,
                                                  options.RuleOption.__module__, options.RuleOption.__name__))
 
@@ -131,18 +131,18 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):  # pylint: disable
     # We use isroutine() as it's both python 2 and 3 compatible. Details: http://stackoverflow.com/a/17019998/381010
     if (issubclass(clazz, rules.LineRule) or issubclass(clazz, rules.CommitRule)):
         if not hasattr(clazz, 'validate') or not inspect.isroutine(clazz.validate):
-            msg = u"{0} rule class '{1}' must have a 'validate' method"
+            msg = "{0} rule class '{1}' must have a 'validate' method"
             raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
     # Configuration rules must have an `apply` method
     elif issubclass(clazz, rules.ConfigurationRule):
         if not hasattr(clazz, 'apply') or not inspect.isroutine(clazz.apply):
-            msg = u"{0} Configuration rule class '{1}' must have an 'apply' method"
+            msg = "{0} Configuration rule class '{1}' must have an 'apply' method"
             raise rules.UserRuleError(msg.format(rule_type, clazz.__name__))
 
     # LineRules must have a valid target: rules.CommitMessageTitle or rules.CommitMessageBody
     if issubclass(clazz, rules.LineRule):
         if clazz.target not in [rules.CommitMessageTitle, rules.CommitMessageBody]:
-            msg = u"The target attribute of the {0} LineRule class '{1}' must be either {2}.{3} or {2}.{4}"
+            msg = "The target attribute of the {0} LineRule class '{1}' must be either {2}.{3} or {2}.{4}"
             msg = msg.format(rule_type.lower(), clazz.__name__, rules.CommitMessageTitle.__module__,
                              rules.CommitMessageTitle.__name__, rules.CommitMessageBody.__name__)
             raise rules.UserRuleError(msg)

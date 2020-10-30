@@ -34,12 +34,12 @@ class CLIHookTests(BaseTestCase):
         self.git_version_path.stop()
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
-    @patch('gitlint.hooks.git_hooks_dir', return_value=os.path.join(u"/hür", u"dur"))
+    @patch('gitlint.hooks.git_hooks_dir', return_value=os.path.join("/hür", "dur"))
     def test_install_hook(self, _, install_hook):
         """ Test for install-hook subcommand """
         result = self.cli.invoke(cli.cli, ["install-hook"])
-        expected_path = os.path.join(u"/hür", u"dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
-        expected = u"Successfully installed gitlint commit-msg hook in {0}\n".format(expected_path)
+        expected_path = os.path.join("/hür", "dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected = "Successfully installed gitlint commit-msg hook in {0}\n".format(expected_path)
         self.assertEqual(result.output, expected)
         self.assertEqual(result.exit_code, 0)
         expected_config = config.LintConfig()
@@ -47,12 +47,12 @@ class CLIHookTests(BaseTestCase):
         install_hook.assert_called_once_with(expected_config)
 
     @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook')
-    @patch('gitlint.hooks.git_hooks_dir', return_value=os.path.join(u"/hür", u"dur"))
+    @patch('gitlint.hooks.git_hooks_dir', return_value=os.path.join("/hür", "dur"))
     def test_install_hook_target(self, _, install_hook):
         """  Test for install-hook subcommand with a specific --target option specified """
         # Specified target
         result = self.cli.invoke(cli.cli, ["--target", self.SAMPLES_DIR, "install-hook"])
-        expected_path = os.path.join(u"/hür", u"dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected_path = os.path.join("/hür", "dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
         expected = "Successfully installed gitlint commit-msg hook in %s\n" % expected_path
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
@@ -61,35 +61,35 @@ class CLIHookTests(BaseTestCase):
         expected_config.target = self.SAMPLES_DIR
         install_hook.assert_called_once_with(expected_config)
 
-    @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError(u"tëst"))
+    @patch('gitlint.hooks.GitHookInstaller.install_commit_msg_hook', side_effect=hooks.GitHookInstallerError("tëst"))
     def test_install_hook_negative(self, install_hook):
         """ Negative test for install-hook subcommand """
         result = self.cli.invoke(cli.cli, ["install-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
-        self.assertEqual(result.output, u"tëst\n")
+        self.assertEqual(result.output, "tëst\n")
         expected_config = config.LintConfig()
         expected_config.target = os.path.realpath(os.getcwd())
         install_hook.assert_called_once_with(expected_config)
 
     @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook')
-    @patch('gitlint.hooks.git_hooks_dir', return_value=os.path.join(u"/hür", u"dur"))
+    @patch('gitlint.hooks.git_hooks_dir', return_value=os.path.join("/hür", "dur"))
     def test_uninstall_hook(self, _, uninstall_hook):
         """ Test for uninstall-hook subcommand """
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
-        expected_path = os.path.join(u"/hür", u"dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
-        expected = u"Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_path)
+        expected_path = os.path.join("/hür", "dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
+        expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_path)
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
         expected_config = config.LintConfig()
         expected_config.target = os.path.realpath(os.getcwd())
         uninstall_hook.assert_called_once_with(expected_config)
 
-    @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError(u"tëst"))
+    @patch('gitlint.hooks.GitHookInstaller.uninstall_commit_msg_hook', side_effect=hooks.GitHookInstallerError("tëst"))
     def test_uninstall_hook_negative(self, uninstall_hook):
         """ Negative test for uninstall-hook subcommand """
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
-        self.assertEqual(result.output, u"tëst\n")
+        self.assertEqual(result.output, "tëst\n")
         expected_config = config.LintConfig()
         expected_config.target = os.path.realpath(os.getcwd())
         uninstall_hook.assert_called_once_with(expected_config)
@@ -108,9 +108,9 @@ class CLIHookTests(BaseTestCase):
         # check the output which indirectly proves the same thing.
 
         with self.tempdir() as tmpdir:
-            msg_filename = os.path.join(tmpdir, u"hür")
+            msg_filename = os.path.join(tmpdir, "hür")
             with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
-                f.write(u"WIP: tïtle\n")
+                f.write("WIP: tïtle\n")
 
             with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                 result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
@@ -124,9 +124,9 @@ class CLIHookTests(BaseTestCase):
     def test_hook_edit(self, shell):
         """ Test for run-hook subcommand, answering 'e(dit)' after commit-hook """
 
-        set_editors = [None, u"myeditor"]
-        expected_editors = [u"vim -n", u"myeditor"]
-        commit_messages = [u"WIP: höok edit 1", u"WIP: höok edit 2"]
+        set_editors = [None, "myeditor"]
+        expected_editors = ["vim -n", "myeditor"]
+        commit_messages = ["WIP: höok edit 1", "WIP: höok edit 2"]
 
         for i in range(0, len(set_editors)):
             if set_editors[i]:
@@ -134,7 +134,7 @@ class CLIHookTests(BaseTestCase):
 
             with self.patch_input(['e', 'e', 'n']):
                 with self.tempdir() as tmpdir:
-                    msg_filename = os.path.realpath(os.path.join(tmpdir, u"hür"))
+                    msg_filename = os.path.realpath(os.path.join(tmpdir, "hür"))
                     with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
                         f.write(commit_messages[i] + "\n")
 
@@ -150,18 +150,18 @@ class CLIHookTests(BaseTestCase):
                         self.assertEqual(result.exit_code, 2)
 
                         shell.assert_called_with(expected_editors[i] + " " + msg_filename)
-                        self.assert_log_contains(u"DEBUG: gitlint.cli run-hook: editing commit message")
-                        self.assert_log_contains(u"DEBUG: gitlint.cli run-hook: {0} {1}".format(expected_editors[i],
-                                                                                                msg_filename))
+                        self.assert_log_contains("DEBUG: gitlint.cli run-hook: editing commit message")
+                        self.assert_log_contains("DEBUG: gitlint.cli run-hook: {0} {1}".format(expected_editors[i],
+                                                                                               msg_filename))
 
     def test_hook_no(self):
         """ Test for run-hook subcommand, answering 'n(o)' after commit-hook """
 
         with self.patch_input(['n']):
             with self.tempdir() as tmpdir:
-                msg_filename = os.path.join(tmpdir, u"hür")
+                msg_filename = os.path.join(tmpdir, "hür")
                 with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
-                    f.write(u"WIP: höok no\n")
+                    f.write("WIP: höok no\n")
 
                 with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                     result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
@@ -177,9 +177,9 @@ class CLIHookTests(BaseTestCase):
         """ Test for run-hook subcommand, answering 'y(es)' after commit-hook """
         with self.patch_input(['y']):
             with self.tempdir() as tmpdir:
-                msg_filename = os.path.join(tmpdir, u"hür")
+                msg_filename = os.path.join(tmpdir, "hür")
                 with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
-                    f.write(u"WIP: höok yes\n")
+                    f.write("WIP: höok yes\n")
 
                 with patch('gitlint.display.stderr', new=StringIO()) as stderr:
                     result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
@@ -191,7 +191,7 @@ class CLIHookTests(BaseTestCase):
                     self.assertEqual(result.exit_code, 0)
                     self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message accepted")
 
-    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: Test hook stdin tïtle\n")
+    @patch('gitlint.cli.get_stdin_data', return_value="WIP: Test hook stdin tïtle\n")
     def test_hook_stdin_violations(self, _):
         """ Test for passing stdin data to run-hook, expecting some violations. Equivalent of:
             $ echo "WIP: Test hook stdin tïtle" | gitlint run-hook
@@ -205,7 +205,7 @@ class CLIHookTests(BaseTestCase):
             # Hook will auto-abort because we're using stdin. Abort = exit code 1
             self.assertEqual(result.exit_code, 1)
 
-    @patch('gitlint.cli.get_stdin_data', return_value=u"Test tïtle\n\nTest bödy that is long enough")
+    @patch('gitlint.cli.get_stdin_data', return_value="Test tïtle\n\nTest bödy that is long enough")
     def test_hook_stdin_no_violations(self, _):
         """ Test for passing stdin data to run-hook, expecting *NO* violations, Equivalent of:
             $ echo -e "Test tïtle\n\nTest bödy that is long enough" | gitlint run-hook
@@ -218,7 +218,7 @@ class CLIHookTests(BaseTestCase):
             self.assertEqual(result.output, expected_stdout)
             self.assertEqual(result.exit_code, 0)
 
-    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: Test hook config tïtle\n")
+    @patch('gitlint.cli.get_stdin_data', return_value="WIP: Test hook config tïtle\n")
     def test_hook_config(self, _):
         """ Test that gitlint still respects config when running run-hook, equivalent of:
             $ echo "WIP: Test hook config tïtle" | gitlint -c title-max-length.line-length=5 --ignore B6 run-hook
@@ -240,11 +240,11 @@ class CLIHookTests(BaseTestCase):
         """
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360",
-            u"test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
-            u"WIP: commït-title\n\ncommït-body",
-            u"#",  # git config --get core.commentchar
-            u"commit-1-branch-1\ncommit-1-branch-2\n",
-            u"file1.txt\npåth/to/file2.txt\n"
+            "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            "WIP: commït-title\n\ncommït-body",
+            "#",  # git config --get core.commentchar
+            "commit-1-branch-1\ncommit-1-branch-2\n",
+            "file1.txt\npåth/to/file2.txt\n"
         ]
 
         with self.patch_input(['e']):
