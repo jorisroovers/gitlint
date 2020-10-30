@@ -43,7 +43,7 @@ class RuleOption:
         return self  # pragma: no cover
 
     def __unicode__(self):
-        return u"({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover
+        return "({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -65,9 +65,9 @@ class IntOption(RuleOption):
 
     def _raise_exception(self, value):
         if self.allow_negative:
-            error_msg = u"Option '{0}' must be an integer (current value: '{1}')".format(self.name, value)
+            error_msg = "Option '{0}' must be an integer (current value: '{1}')".format(self.name, value)
         else:
-            error_msg = u"Option '{0}' must be a positive integer (current value: '{1}')".format(self.name, value)
+            error_msg = "Option '{0}' must be a positive integer (current value: '{1}')".format(self.name, value)
         raise RuleOptionError(error_msg)
 
     @allow_none
@@ -87,7 +87,7 @@ class BoolOption(RuleOption):
     def set(self, value):
         value = ustr(value).strip().lower()
         if value not in ['true', 'false']:
-            raise RuleOptionError(u"Option '{0}' must be either 'true' or 'false'".format(self.name))
+            raise RuleOptionError("Option '{0}' must be either 'true' or 'false'".format(self.name))
         self.value = value == 'true'
 
 
@@ -108,7 +108,7 @@ class ListOption(RuleOption):
 class PathOption(RuleOption):
     """ Option that accepts either a directory or both a directory and a file. """
 
-    def __init__(self, name, value, description, type=u"dir"):
+    def __init__(self, name, value, description, type="dir"):
         self.type = type
         super(PathOption, self).__init__(name, value, description)
 
@@ -116,21 +116,21 @@ class PathOption(RuleOption):
     def set(self, value):
         value = ustr(value)
 
-        error_msg = u""
+        error_msg = ""
 
         if self.type == 'dir':
             if not os.path.isdir(value):
-                error_msg = u"Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
+                error_msg = "Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
         elif self.type == 'file':
             if not os.path.isfile(value):
-                error_msg = u"Option {0} must be an existing file (current value: '{1}')".format(self.name, value)
+                error_msg = "Option {0} must be an existing file (current value: '{1}')".format(self.name, value)
         elif self.type == 'both':
             if not os.path.isdir(value) and not os.path.isfile(value):
-                error_msg = (u"Option {0} must be either an existing directory or file "
-                             u"(current value: '{1}')").format(self.name, value)
+                error_msg = ("Option {0} must be either an existing directory or file "
+                             "(current value: '{1}')").format(self.name, value)
         else:
-            error_msg = u"Option {0} type must be one of: 'file', 'dir', 'both' (current: '{1}')".format(self.name,
-                                                                                                         self.type)
+            error_msg = "Option {0} type must be one of: 'file', 'dir', 'both' (current: '{1}')".format(self.name,
+                                                                                                        self.type)
 
         if error_msg:
             raise RuleOptionError(error_msg)

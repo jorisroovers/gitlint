@@ -16,13 +16,13 @@ class CacheTests(BaseTestCase):
         @cache
         def foo(self):
             self.counter += 1
-            return u"bår"
+            return "bår"
 
         @property
-        @cache(cachekey=u"hür")
+        @cache(cachekey="hür")
         def bar(self):
             self.counter += 1
-            return u"fōo"
+            return "fōo"
 
     def test_cache(self):
         # Init new class with cached properties
@@ -31,14 +31,14 @@ class CacheTests(BaseTestCase):
         self.assertDictEqual(myclass._cache, {})
 
         # Assert that function is called on first access, cache is set
-        self.assertEqual(myclass.foo, u"bår")
+        self.assertEqual(myclass.foo, "bår")
         self.assertEqual(myclass.counter, 1)
-        self.assertDictEqual(myclass._cache, {"foo": u"bår"})
+        self.assertDictEqual(myclass._cache, {"foo": "bår"})
 
         # After function is not called on subsequent access, cache is still set
-        self.assertEqual(myclass.foo, u"bår")
+        self.assertEqual(myclass.foo, "bår")
         self.assertEqual(myclass.counter, 1)
-        self.assertDictEqual(myclass._cache, {"foo": u"bår"})
+        self.assertDictEqual(myclass._cache, {"foo": "bår"})
 
     def test_cache_custom_key(self):
         # Init new class with cached properties
@@ -47,11 +47,11 @@ class CacheTests(BaseTestCase):
         self.assertDictEqual(myclass._cache, {})
 
         # Assert that function is called on first access, cache is set with custom key
-        self.assertEqual(myclass.bar, u"fōo")
+        self.assertEqual(myclass.bar, "fōo")
         self.assertEqual(myclass.counter, 1)
-        self.assertDictEqual(myclass._cache, {u"hür": u"fōo"})
+        self.assertDictEqual(myclass._cache, {"hür": "fōo"})
 
         # After function is not called on subsequent access, cache is still set
-        self.assertEqual(myclass.bar, u"fōo")
+        self.assertEqual(myclass.bar, "fōo")
         self.assertEqual(myclass.counter, 1)
-        self.assertDictEqual(myclass._cache, {u"hür": u"fōo"})
+        self.assertDictEqual(myclass._cache, {"hür": "fōo"})

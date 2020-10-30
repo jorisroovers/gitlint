@@ -15,7 +15,7 @@ class LintConfigPrecedenceTests(BaseTestCase):
     def setUp(self):
         self.cli = CliRunner()
 
-    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP:fö\n\nThis is å test message\n")
+    @patch('gitlint.cli.get_stdin_data', return_value="WIP:fö\n\nThis is å test message\n")
     def test_config_precedence(self, _):
         # TODO(jroovers): this test really only test verbosity, we need to do some refactoring to gitlint.cli
         # to more easily test everything
@@ -31,14 +31,14 @@ class LintConfigPrecedenceTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-vvv", "-c", "general.verbosity=2", "--config", config_path])
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
+            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
 
         # 2. environment variables
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["-c", "general.verbosity=2", "--config", config_path],
                                      env={"GITLINT_VERBOSITY": "3"})
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
+            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
 
         # 3. commandline -c flags
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
@@ -56,9 +56,9 @@ class LintConfigPrecedenceTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli)
             self.assertEqual(result.output, "")
-            self.assertEqual(stderr.getvalue(), u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
+            self.assertEqual(stderr.getvalue(), "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP:fö\"\n")
 
-    @patch('gitlint.cli.get_stdin_data', return_value=u"WIP: This is å test")
+    @patch('gitlint.cli.get_stdin_data', return_value="WIP: This is å test")
     def test_ignore_precedence(self, get_stdin_data):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             # --ignore takes precedence over -c general.ignore
@@ -67,11 +67,11 @@ class LintConfigPrecedenceTests(BaseTestCase):
             self.assertEqual(result.exit_code, 1)
             # We still expect the T5 violation, but no B6 violation as --ignore overwrites -c general.ignore
             self.assertEqual(stderr.getvalue(),
-                             u"1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is å test\"\n")
+                             "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is å test\"\n")
 
         # test that we can also still configure a rule that is first ignored but then not
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
-            get_stdin_data.return_value = u"This is å test"
+            get_stdin_data.return_value = "This is å test"
             # --ignore takes precedence over -c general.ignore
             result = self.cli.invoke(cli.cli, ["-c", "general.ignore=title-max-length",
                                                "-c", "title-max-length.line-length=5",
@@ -81,7 +81,7 @@ class LintConfigPrecedenceTests(BaseTestCase):
 
             # We still expect the T1 violation with custom config,
             # but no B6 violation as --ignore overwrites -c general.ignore
-            self.assertEqual(stderr.getvalue(), u"1: T1 Title exceeds max length (14>5): \"This is å test\"\n")
+            self.assertEqual(stderr.getvalue(), "1: T1 Title exceeds max length (14>5): \"This is å test\"\n")
 
     def test_general_option_after_rule_option(self):
         # We used to have a bug where we didn't process general options before setting specific options, this would

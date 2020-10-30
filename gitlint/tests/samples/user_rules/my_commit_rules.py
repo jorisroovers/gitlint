@@ -5,14 +5,14 @@ from gitlint.options import IntOption
 
 
 class MyUserCommitRule(CommitRule):
-    name = u"my-üser-commit-rule"
+    name = "my-üser-commit-rule"
     id = "UC1"
-    options_spec = [IntOption('violation-count', 1, u"Number of violåtions to return")]
+    options_spec = [IntOption('violation-count', 1, "Number of violåtions to return")]
 
     def validate(self, _commit):
         violations = []
         for i in range(1, self.options['violation-count'].value + 1):
-            violations.append(RuleViolation(self.id, u"Commit violåtion %d" % i, u"Contënt %d" % i, i))
+            violations.append(RuleViolation(self.id, "Commit violåtion %d" % i, "Contënt %d" % i, i))
 
         return violations
 

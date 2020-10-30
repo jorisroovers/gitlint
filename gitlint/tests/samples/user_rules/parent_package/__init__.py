@@ -5,7 +5,7 @@ from gitlint.rules import CommitRule
 
 
 class InitFileRule(CommitRule):
-    name = u"my-init-cömmit-rule"
+    name = "my-init-cömmit-rule"
     id = "UC1"
     options_spec = []
 

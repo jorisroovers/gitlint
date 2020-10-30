@@ -17,14 +17,14 @@ class LintTests(BaseTestCase):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample1"))
         violations = linter.lint(gitcontext.commits[-1])
         expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
-                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
+                                         "Commit title contåining 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
+                                         "Commit title contåining 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                            RuleViolation("B1", "Line exceeds max length (135>80)",
                                          "This is the first line of the commit message body and it is meant to test " +
                                          "a line that exceeds the maximum line length of 80 characters.", 3),
-                           RuleViolation("B2", "Line has trailing whitespace", u"This line has a tråiling space. ", 4),
+                           RuleViolation("B2", "Line has trailing whitespace", "This line has a tråiling space. ", 4),
                            RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t", 5),
                            RuleViolation("B3", "Line contains hard tab characters (\\t)",
                                          "This line has a trailing tab.\t", 5)]
@@ -36,7 +36,7 @@ class LintTests(BaseTestCase):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
         violations = linter.lint(gitcontext.commits[-1])
         expected = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                  u"Just a title contåining WIP", 1),
+                                  "Just a title contåining WIP", 1),
                     RuleViolation("B6", "Body message is missing", None, 3)]
 
         self.assertListEqual(violations, expected)
@@ -46,7 +46,7 @@ class LintTests(BaseTestCase):
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample3"))
         violations = linter.lint(gitcontext.commits[-1])
 
-        title = u" Commit title containing 'WIP', \tleading and tråiling whitespace and longer than 72 characters."
+        title = " Commit title containing 'WIP', \tleading and tråiling whitespace and longer than 72 characters."
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
                     RuleViolation("T3", "Title has trailing punctuation (.)", title, 1),
                     RuleViolation("T4", "Title contains hard tab characters (\\t)", title, 1),
@@ -54,12 +54,12 @@ class LintTests(BaseTestCase):
                     RuleViolation("T6", "Title has leading whitespace", title, 1),
                     RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                     RuleViolation("B1", "Line exceeds max length (101>80)",
-                                  u"This is the first line is meånt to test a line that exceeds the maximum line " +
+                                  "This is the first line is meånt to test a line that exceeds the maximum line " +
                                   "length of 80 characters.", 3),
                     RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing space. ", 4),
-                    RuleViolation("B2", "Line has trailing whitespace", u"This line has a tråiling tab.\t", 5),
+                    RuleViolation("B2", "Line has trailing whitespace", "This line has a tråiling tab.\t", 5),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
-                                  u"This line has a tråiling tab.\t", 5)]
+                                  "This line has a tråiling tab.\t", 5)]
 
         self.assertListEqual(violations, expected)
 
@@ -80,13 +80,13 @@ class LintTests(BaseTestCase):
         linter = GitLinter(config_builder.build())
         violations = linter.lint(commit)
 
-        title = u" Commit title containing 'WIP', \tleading and tråiling whitespace and longer than 72 characters."
+        title = " Commit title containing 'WIP', \tleading and tråiling whitespace and longer than 72 characters."
         # expect only certain violations because sample5 has a 'gitlint-ignore: T3, T6, body-max-line-length'
         expected = [RuleViolation("T1", "Title exceeds max length (95>72)", title, 1),
                     RuleViolation("T4", "Title contains hard tab characters (\\t)", title, 1),
                     RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)", title, 1),
-                    RuleViolation("B4", "Second line is not empty", u"This line should be ëmpty", 2),
-                    RuleViolation("B2", "Line has trailing whitespace", u"This line has a tråiling space. ", 4),
+                    RuleViolation("B4", "Second line is not empty", "This line should be ëmpty", 2),
+                    RuleViolation("B2", "Line has trailing whitespace", "This line has a tråiling space. ", 4),
                     RuleViolation("B2", "Line has trailing whitespace", "This line has a trailing tab.\t", 5),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
                                   "This line has a trailing tab.\t", 5)]
@@ -96,11 +96,11 @@ class LintTests(BaseTestCase):
         """ Lint sample2 but also add some metadata to the commit so we that gets linted as well """
         linter = GitLinter(LintConfig())
         gitcontext = self.gitcontext(self.get_sample("commit_message/sample2"))
-        gitcontext.commits[0].author_email = u"foo bår"
+        gitcontext.commits[0].author_email = "foo bår"
         violations = linter.lint(gitcontext.commits[-1])
-        expected = [RuleViolation("M1", "Author email for commit is invalid", u"foo bår", None),
+        expected = [RuleViolation("M1", "Author email for commit is invalid", "foo bår", None),
                     RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                  u"Just a title contåining WIP", 1),
+                                  "Just a title contåining WIP", 1),
                     RuleViolation("B6", "Body message is missing", None, 3)]
 
         self.assertListEqual(violations, expected)
@@ -113,7 +113,7 @@ class LintTests(BaseTestCase):
 
         expected = [RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                     RuleViolation("B3", "Line contains hard tab characters (\\t)",
-                                  u"This line has a tråiling tab.\t", 5)]
+                                  "This line has a tråiling tab.\t", 5)]
 
         self.assertListEqual(violations, expected)
 
@@ -136,19 +136,19 @@ class LintTests(BaseTestCase):
 
         # Normally we'd expect a B6 violation, but that one is skipped because of the specific ignore set above
         expected = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                  u"Just a title contåining WIP", 1)]
+                                  "Just a title contåining WIP", 1)]
 
         self.assertListEqual(violations, expected)
 
         # Test ignoring body lines
         lint_config = LintConfig()
         linter = GitLinter(lint_config)
-        lint_config.set_rule_option("I3", "regex", u"(.*)tråiling(.*)")
+        lint_config.set_rule_option("I3", "regex", "(.*)tråiling(.*)")
         violations = linter.lint(self.gitcommit(self.get_sample("commit_message/sample1")))
         expected_errors = [RuleViolation("T3", "Title has trailing punctuation (.)",
-                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
+                                         "Commit title contåining 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                         u"Commit title contåining 'WIP', as well as trailing punctuation.", 1),
+                                         "Commit title contåining 'WIP', as well as trailing punctuation.", 1),
                            RuleViolation("B4", "Second line is not empty", "This line should be empty", 2),
                            RuleViolation("B1", "Line exceeds max length (135>80)",
                                          "This is the first line of the commit message body and it is meant to test " +
@@ -185,7 +185,7 @@ class LintTests(BaseTestCase):
         self.assertListEqual(violations, [])
 
         # Matching regexes shouldn't be a problem
-        rule_regexes = [("title-match-regex", u"Tïtle$"), ("body-match-regex", u"Sïgned-Off-By: (.*)$")]
+        rule_regexes = [("title-match-regex", "Tïtle$"), ("body-match-regex", "Sïgned-Off-By: (.*)$")]
         for rule_regex in rule_regexes:
             lintconfig.set_rule_option(rule_regex[0], "regex", rule_regex[1])
             violations = linter.lint(commit)
@@ -193,16 +193,16 @@ class LintTests(BaseTestCase):
 
         # Non-matching regexes should return violations
         rule_regexes = [("title-match-regex", ), ("body-match-regex",)]
-        lintconfig.set_rule_option("title-match-regex", "regex", u"^Tïtle")
-        lintconfig.set_rule_option("body-match-regex", "regex", u"Sügned-Off-By: (.*)$")
-        expected_violations = [RuleViolation("T7", u"Title does not match regex (^Tïtle)", u"Normal Commit Tïtle", 1),
-                               RuleViolation("B8", u"Body does not match regex (Sügned-Off-By: (.*)$)", None, 6)]
+        lintconfig.set_rule_option("title-match-regex", "regex", "^Tïtle")
+        lintconfig.set_rule_option("body-match-regex", "regex", "Sügned-Off-By: (.*)$")
+        expected_violations = [RuleViolation("T7", "Title does not match regex (^Tïtle)", "Normal Commit Tïtle", 1),
+                               RuleViolation("B8", "Body does not match regex (Sügned-Off-By: (.*)$)", None, 6)]
         violations = linter.lint(commit)
         self.assertListEqual(violations, expected_violations)
 
     def test_print_violations(self):
-        violations = [RuleViolation("RULE_ID_1", u"Error Messåge 1", "Violating Content 1", None),
-                      RuleViolation("RULE_ID_2", "Error Message 2", u"Violåting Content 2", 2)]
+        violations = [RuleViolation("RULE_ID_1", "Error Messåge 1", "Violating Content 1", None),
+                      RuleViolation("RULE_ID_2", "Error Message 2", "Violåting Content 2", 2)]
         linter = GitLinter(LintConfig())
 
         # test output with increasing verbosity
@@ -214,54 +214,54 @@ class LintTests(BaseTestCase):
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 1
             linter.print_violations(violations)
-            expected = u"-: RULE_ID_1\n2: RULE_ID_2\n"
+            expected = "-: RULE_ID_1\n2: RULE_ID_2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 2
             linter.print_violations(violations)
-            expected = u"-: RULE_ID_1 Error Messåge 1\n2: RULE_ID_2 Error Message 2\n"
+            expected = "-: RULE_ID_1 Error Messåge 1\n2: RULE_ID_2 Error Message 2\n"
             self.assertEqual(expected, stderr.getvalue())
 
         with patch('gitlint.display.stderr', new=StringIO()) as stderr:
             linter.config.verbosity = 3
             linter.print_violations(violations)
-            expected = u"-: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n" + \
-                       u"2: RULE_ID_2 Error Message 2: \"Violåting Content 2\"\n"
+            expected = "-: RULE_ID_1 Error Messåge 1: \"Violating Content 1\"\n" + \
+                       "2: RULE_ID_2 Error Message 2: \"Violåting Content 2\"\n"
             self.assertEqual(expected, stderr.getvalue())
 
     def test_named_rules(self):
         """ Test that when named rules are present, both them and the original (non-named) rules executed """
 
         lint_config = LintConfig()
-        for rule_name in [u"my-ïd", u"another-rule-ïd"]:
+        for rule_name in ["my-ïd", "another-rule-ïd"]:
             rule_id = TitleMustNotContainWord.id + ":" + rule_name
             lint_config.rules.add_rule(TitleMustNotContainWord, rule_id)
-            lint_config.set_rule_option(rule_id, "words", [u"Föo"])
+            lint_config.set_rule_option(rule_id, "words", ["Föo"])
             linter = GitLinter(lint_config)
 
-        violations = [RuleViolation("T5", u"Title contains the word 'WIP' (case-insensitive)", u"WIP: Föo bar", 1),
-                      RuleViolation(u"T5:another-rule-ïd", u"Title contains the word 'Föo' (case-insensitive)",
-                                    u"WIP: Föo bar", 1),
-                      RuleViolation(u"T5:my-ïd", u"Title contains the word 'Föo' (case-insensitive)",
-                                    u"WIP: Föo bar", 1)]
-        self.assertListEqual(violations, linter.lint(self.gitcommit(u"WIP: Föo bar\n\nFoo bår hur dur bla bla")))
+        violations = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)", "WIP: Föo bar", 1),
+                      RuleViolation("T5:another-rule-ïd", "Title contains the word 'Föo' (case-insensitive)",
+                                    "WIP: Föo bar", 1),
+                      RuleViolation("T5:my-ïd", "Title contains the word 'Föo' (case-insensitive)",
+                                    "WIP: Föo bar", 1)]
+        self.assertListEqual(violations, linter.lint(self.gitcommit("WIP: Föo bar\n\nFoo bår hur dur bla bla")))
 
     def test_ignore_named_rules(self):
         """ Test that named rules can be ignored """
 
         # Add named rule to lint config
         config_builder = LintConfigBuilder()
-        rule_id = TitleMustNotContainWord.id + u":my-ïd"
-        config_builder.set_option(rule_id, "words", [u"Föo"])
+        rule_id = TitleMustNotContainWord.id + ":my-ïd"
+        config_builder.set_option(rule_id, "words", ["Föo"])
         lint_config = config_builder.build()
         linter = GitLinter(lint_config)
-        commit = self.gitcommit(u"WIP: Föo bar\n\nFoo bår hur dur bla bla")
+        commit = self.gitcommit("WIP: Föo bar\n\nFoo bår hur dur bla bla")
 
         # By default, we expect both the violations of the regular rule as well as the named rule to show up
-        violations = [RuleViolation("T5", u"Title contains the word 'WIP' (case-insensitive)", u"WIP: Föo bar", 1),
-                      RuleViolation(u"T5:my-ïd", u"Title contains the word 'Föo' (case-insensitive)",
-                                    u"WIP: Föo bar", 1)]
+        violations = [RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)", "WIP: Föo bar", 1),
+                      RuleViolation("T5:my-ïd", "Title contains the word 'Föo' (case-insensitive)",
+                                    "WIP: Föo bar", 1)]
         self.assertListEqual(violations, linter.lint(commit))
 
         # ignore regular rule: only named rule violations show up
@@ -273,5 +273,5 @@ class LintTests(BaseTestCase):
         self.assertListEqual(violations[:-1], linter.lint(commit))
 
         # ignore named rule by name: only regular rule violations show up
-        lint_config.ignore = [TitleMustNotContainWord.name + u":my-ïd"]
+        lint_config.ignore = [TitleMustNotContainWord.name + ":my-ïd"]
         self.assertListEqual(violations[:-1], linter.lint(commit))

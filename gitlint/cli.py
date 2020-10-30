@@ -162,8 +162,8 @@ def build_git_context(lint_config, msg_filename, refspec):
             return from_commit_msg(stdin_input)
 
     if lint_config.staged:
-        raise GitLintUsageError(u"The 'staged' option (--staged) can only be used when using '--msg-filename' or "
-                                u"when piping data to gitlint via stdin.")
+        raise GitLintUsageError("The 'staged' option (--staged) can only be used when using '--msg-filename' or "
+                                "when piping data to gitlint via stdin.")
 
     # 3. Fallback to reading from local repository
     LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Using the local repo.")
@@ -230,7 +230,7 @@ def cli(  # pylint: disable=too-many-arguments
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
         config, config_builder = build_config(target, config, c, extra_path, ignore, contrib,
                                               ignore_stdin, staged, verbose, silent, debug)
-        LOG.debug(u"Configuration\n%s", ustr(config))
+        LOG.debug("Configuration\n%s", ustr(config))
 
         ctx.obj = ContextObj(config, config_builder, commits, msg_filename)
 
@@ -242,10 +242,10 @@ def cli(  # pylint: disable=too-many-arguments
         click.echo(ustr(e))
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
     except GitLintUsageError as e:
-        click.echo(u"Error: {0}".format(ustr(e)))
+        click.echo("Error: {0}".format(ustr(e)))
         ctx.exit(USAGE_ERROR_CODE)
     except LintConfigError as e:
-        click.echo(u"Config Error: {0}".format(ustr(e)))
+        click.echo("Config Error: {0}".format(ustr(e)))
         ctx.exit(CONFIG_ERROR_CODE)
 
 
@@ -294,7 +294,7 @@ def lint(ctx):
         if violations:
             # Display the commit hash & new lines intelligently
             if number_of_commits > 1 and commit.sha:
-                linter.display.e(u"{0}Commit {1}:".format(
+                linter.display.e("{0}Commit {1}:".format(
                     "\n" if not first_violation or commit is last_commit else "",
                     commit.sha[:10]
                 ))
@@ -315,7 +315,7 @@ def install_hook(ctx):
     try:
         hooks.GitHookInstaller.install_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
-        click.echo(u"Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
+        click.echo("Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
         click.echo(ustr(e), err=True)
@@ -329,7 +329,7 @@ def uninstall_hook(ctx):
     try:
         hooks.GitHookInstaller.uninstall_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
-        click.echo(u"Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
+        click.echo("Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
         click.echo(ustr(e), err=True)
@@ -344,7 +344,7 @@ def run_hook(ctx):
     exit_code = 1
     while exit_code > 0:
         try:
-            click.echo(u"gitlint: checking commit message...")
+            click.echo("gitlint: checking commit message...")
             ctx.invoke(lint)
         except click.exceptions.Exit as e:
             # Flush stderr andstdout, this resolves an issue with output ordering in Cygwin
@@ -353,11 +353,11 @@ def run_hook(ctx):
 
             exit_code = e.exit_code
             if exit_code == 0:
-                click.echo(u"gitlint: " + click.style("OK", fg='green') + u" (no violations in commit message)")
+                click.echo("gitlint: " + click.style("OK", fg='green') + " (no violations in commit message)")
                 continue
 
-            click.echo(u"-----------------------------------------------")
-            click.echo(u"gitlint: " + click.style("Your commit message contains the above violations.", fg='red'))
+            click.echo("-----------------------------------------------")
+            click.echo("gitlint: " + click.style("Your commit message contains the above violations.", fg='red'))
 
             value = None
             while value not in ["y", "n", "e"]:
@@ -389,15 +389,15 @@ def run_hook(ctx):
                     LOG.debug("run-hook: %s %s", editor, msg_filename_path)
                     shell(editor + " " + msg_filename_path)
                 else:
-                    click.echo(u"Editing only possible when --msg-filename is specified.")
+                    click.echo("Editing only possible when --msg-filename is specified.")
                     ctx.exit(exit_code)
             elif value == "n":
                 LOG.debug("run-hook: commit message declined")
-                click.echo(u"Commit aborted.")
-                click.echo(u"Your commit message: ")
-                click.echo(u"-----------------------------------------------")
+                click.echo("Commit aborted.")
+                click.echo("Your commit message: ")
+                click.echo("-----------------------------------------------")
                 click.echo(ctx.obj.gitcontext.commits[0].message.full)
-                click.echo(u"-----------------------------------------------")
+                click.echo("-----------------------------------------------")
                 ctx.exit(exit_code)
 
     ctx.exit(exit_code)
@@ -411,14 +411,14 @@ def generate_config(ctx):
     path = os.path.realpath(path)
     dir_name = os.path.dirname(path)
     if not os.path.exists(dir_name):
-        click.echo(u"Error: Directory '{0}' does not exist.".format(dir_name), err=True)
+        click.echo("Error: Directory '{0}' does not exist.".format(dir_name), err=True)
         ctx.exit(USAGE_ERROR_CODE)
     elif os.path.exists(path):
-        click.echo(u"Error: File \"{0}\" already exists.".format(path), err=True)
+        click.echo("Error: File \"{0}\" already exists.".format(path), err=True)
         ctx.exit(USAGE_ERROR_CODE)
 
     LintConfigGenerator.generate_config(path)
-    click.echo(u"Successfully generated {0}".format(path))
+    click.echo("Successfully generated {0}".format(path))
     ctx.exit(0)
 
 

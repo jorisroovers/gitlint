@@ -24,8 +24,8 @@ class ContribRuleTests(BaseTestCase):
         # Find all python files in the contrib dir and assert there's a corresponding test file
         for filename in os.listdir(self.CONTRIB_DIR):
             if filename.endswith(".py") and filename not in ["__init__.py"]:
-                expected_test_file = ustr(u"test_" + filename)
-                error_msg = u"Every Contrib Rule must have associated tests. " + \
+                expected_test_file = ustr("test_" + filename)
+                error_msg = "Every Contrib Rule must have associated tests. " + \
                             "Expected test file {0} not found.".format(os.path.join(contrib_tests_dir,
                                                                                     expected_test_file))
                 self.assertIn(expected_test_file, contrib_test_files, error_msg)
