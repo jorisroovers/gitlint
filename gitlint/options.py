@@ -51,9 +51,6 @@ class RuleOption(object):
     def __eq__(self, other):
         return self.name == other.name and self.description == other.description and self.value == other.value
 
-    def __ne__(self, other):
-        return not self.__eq__(other)  # required for py2
-
 
 class StrOption(RuleOption):
     @allow_none

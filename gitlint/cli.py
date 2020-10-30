@@ -20,7 +20,7 @@ from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerat
 from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.shell import shell
-from gitlint.utils import ustr, LOG_FORMAT, IS_PY2
+from gitlint.utils import ustr, LOG_FORMAT
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 # -n: disable swap files. This fixes a vim error on windows (E303: Unable to open swap file for <path>)
@@ -374,14 +374,7 @@ def run_hook(ctx):
                 # - https://github.com/pallets/click/pull/1372
                 # - From https://click.palletsprojects.com/en/7.x/utils/#getting-characters-from-terminal
                 #   Note that this function will always read from the terminal, even if stdin is instead a pipe.
-                #
-                # We also need a to use raw_input() in Python2 as input() is unsafe (and raw_input() doesn't exist in
-                # Python3). See https://stackoverflow.com/a/4960216/381010
-                input_func = input
-                if IS_PY2:
-                    input_func = raw_input  # noqa pylint: disable=undefined-variable
-
-                value = input_func()
+                value = input()
 
             if value == "y":
                 LOG.debug("run-hook: commit message accepted")

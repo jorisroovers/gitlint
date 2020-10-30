@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from unittest.mock import patch
+
 from gitlint import utils
 from gitlint.tests.base import BaseTestCase
-
-try:
-    # python 2.x
-    from mock import patch
-except ImportError:
-    # python 3.x
-    from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
 
 
 class UtilsTests(BaseTestCase):

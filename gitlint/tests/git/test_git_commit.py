@@ -6,12 +6,7 @@ import dateutil
 
 import arrow
 
-try:
-    # python 2.x
-    from mock import patch, call
-except ImportError:
-    # python 3.x
-    from unittest.mock import patch, call  # pylint: disable=no-name-in-module, import-error
+from unittest.mock import patch, call
 
 from gitlint.tests.base import BaseTestCase
 from gitlint.git import GitContext, GitCommit, GitContextError, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
