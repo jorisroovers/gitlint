@@ -7,7 +7,7 @@ import os
 import shutil
 
 from collections import OrderedDict
-from gitlint.utils import ustr, sstr, DEFAULT_ENCODING
+from gitlint.utils import ustr, DEFAULT_ENCODING
 from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
 from gitlint import options
 from gitlint import rule_finder
@@ -285,7 +285,7 @@ class LintConfig:
         return_str = u"config-path: {0}\n".format(self._config_path)
         return_str += u"[GENERAL]\n"
         return_str += u"extra-path: {0}\n".format(self.extra_path)
-        return_str += u"contrib: {0}\n".format(sstr(self.contrib))
+        return_str += u"contrib: {0}\n".format(self.contrib)
         return_str += u"ignore: {0}\n".format(",".join(self.ignore))
         return_str += u"ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
         return_str += u"ignore-fixup-commits: {0}\n".format(self.ignore_fixup_commits)

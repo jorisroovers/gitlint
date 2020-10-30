@@ -8,7 +8,7 @@ from gitlint import shell as sh
 from gitlint.shell import CommandNotFound, ErrorReturnCode
 
 from gitlint.cache import PropertyCache, cache
-from gitlint.utils import ustr, sstr
+from gitlint.utils import ustr
 
 # For now, the git date format we use is fixed, but technically this format is determined by `git config log.date`
 # We should fix this at some point :-)
@@ -42,7 +42,7 @@ def _git(*command_parts, **kwargs):
     git_kwargs = {'_tty_out': False}
     git_kwargs.update(kwargs)
     try:
-        LOG.debug(sstr(command_parts))
+        LOG.debug(command_parts)
         result = sh.git(*command_parts, **git_kwargs)  # pylint: disable=unexpected-keyword-arg
         # If we reach this point and the result has an exit_code that is larger than 0, this means that we didn't
         # get an exception (which is the default sh behavior for non-zero exit codes) and so the user is expecting
@@ -121,7 +121,7 @@ class GitCommitMessage:
         return self.full  # pragma: no cover
 
     def __str__(self):
-        return sstr(self.__unicode__())  # pragma: no cover
+        return self.__unicode__()  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -178,10 +178,10 @@ class GitCommit:
         date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
         return format_str % (ustr(self.message), self.author_name, self.author_email, date_str,
                              self.is_merge_commit, self.is_fixup_commit, self.is_squash_commit,
-                             self.is_revert_commit, sstr(self.branches), sstr(self.changed_files))  # pragma: no cover
+                             self.is_revert_commit, self.branches, self.changed_files)  # pragma: no cover
 
     def __str__(self):
-        return sstr(self.__unicode__())  # pragma: no cover
+        return self.__unicode__()  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
