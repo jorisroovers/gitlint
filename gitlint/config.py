@@ -425,8 +425,7 @@ class LintConfigBuilder:
             parser = ConfigParser()
 
             with io.open(filename, encoding=DEFAULT_ENCODING) as config_file:
-                # readfp() is deprecated in python 3.2+, but compatible with 2.7
-                parser.readfp(config_file, filename)  # pylint: disable=deprecated-method
+                parser.read_file(config_file, filename)
 
             for section_name in parser.sections():
                 for option_name, option_value in parser.items(section_name):
