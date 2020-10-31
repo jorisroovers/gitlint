@@ -13,7 +13,7 @@ class PropertyCache:
         return self._cache[cache_key]
 
 
-def cache(original_func=None, cachekey=None):
+def cache(original_func=None, cachekey=None):  # pylint: disable=unused-argument
     """ Cache decorator. Caches function return values.
         Requires the parent class to extend and initialize PropertyCache.
         Usage:
@@ -28,26 +28,22 @@ def cache(original_func=None, cachekey=None):
                 ...
     """
 
-    # Decorators with optional arguments are a bit convoluted in python, especially if you want to support both
-    # Python 2 and 3. See some of the links below for details.
+    # Decorators with optional arguments are a bit convoluted in python, see some of the links below for details.
 
     def cache_decorator(func):
-
-        # If no specific cache key is given, use the function name as cache key
-        if not cache_decorator.cachekey:
-            cache_decorator.cachekey = func.__name__
+        # Use 'nonlocal' keyword to access parent function variable:
+        # https://stackoverflow.com/a/14678445/381010
+        nonlocal cachekey
+        if not cachekey:
+            cachekey = func.__name__
 
         def wrapped(*args):
             def cache_func_result():
                 # Call decorated function and store its result in the cache
-                args[0]._cache[cache_decorator.cachekey] = func(*args)
-            return args[0]._try_cache(cache_decorator.cachekey, cache_func_result)
+                args[0]._cache[cachekey] = func(*args)
+            return args[0]._try_cache(cachekey, cache_func_result)
 
         return wrapped
-
-    # Passing parent function variables to child functions requires special voodoo in python2:
-    # https://stackoverflow.com/a/14678445/381010
-    cache_decorator.cachekey = cachekey  # attribute on the function
 
     # To support optional kwargs for decorators, we need to check if a function is passed as first argument or not.
     # https://stackoverflow.com/a/24617244/381010
