@@ -45,7 +45,7 @@ class CommitsTests(BaseTestCase):
         self.create_simple_commit("Sïmple title.\n")
         self.create_simple_commit("Sïmple title2.\n")
         commit_sha = self.get_last_commit_hash()
-        refspec = "{0}^...{0}".format(commit_sha)
+        refspec = f"{commit_sha}^...{commit_sha}"
         self.create_simple_commit("Sïmple title3.\n")
         output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
         expected = ("1: T3 Title has trailing punctuation (.): \"Sïmple title2.\"\n" +

@@ -152,7 +152,7 @@ class SpecialChars(LineRule):
         # options can be accessed by looking them up by their name in self.options
         for char in self.options['special-chars'].value:
             if char in line:
-                msg = "Title contains the special character '{0}'".format(char)
+                msg = f"Title contains the special character '{char}'"
                 violation = RuleViolation(self.id, msg, line)
                 violations.append(violation)
 
@@ -262,8 +262,7 @@ class BodyMaxLineCount(CommitRule):
         line_count = len(commit.message.body)
         max_line_count = self.options['max-line-count'].value
         if line_count > max_line_count:
-            message = "Body contains too many lines ({0} > {1})".format(line_count, 
-                                                                        max_line_count)
+            message = f"Body contains too many lines ({line_count} > {max_line_count})"
             return [RuleViolation(self.id, message, line_nr=1)]
 ```
 

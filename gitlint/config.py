@@ -220,7 +220,7 @@ class LintConfig:
                 if rule_class:
                     self.rules.add_rule(rule_class, rule_class.id, {'is_contrib': True})
                 else:
-                    raise LintConfigError("No contrib rule with id or name '{0}' found.".format(rule_id_or_name))
+                    raise LintConfigError(f"No contrib rule with id or name '{rule_id_or_name}' found.")
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
             raise LintConfigError(str(e))
@@ -228,11 +228,11 @@ class LintConfig:
     def _get_option(self, rule_name_or_id, option_name):
         rule = self.rules.find_rule(rule_name_or_id)
         if not rule:
-            raise LintConfigError("No such rule '{0}'".format(rule_name_or_id))
+            raise LintConfigError(f"No such rule '{rule_name_or_id}'")
 
         option = rule.options.get(option_name)
         if not option:
-            raise LintConfigError("Rule '{0}' has no option '{1}'".format(rule_name_or_id, option_name))
+            raise LintConfigError(f"Rule '{rule_name_or_id}' has no option '{option_name}'")
 
         return option
 
@@ -249,14 +249,14 @@ class LintConfig:
         try:
             option.set(option_value)
         except options.RuleOptionError as e:
-            msg = "'{0}' is not a valid value for option '{1}.{2}'. {3}."
-            raise LintConfigError(msg.format(option_value, rule_name_or_id, option_name, e))
+            msg = f"'{option_value}' is not a valid value for option '{rule_name_or_id}.{option_name}'. {e}."
+            raise LintConfigError(msg)
 
     def set_general_option(self, option_name, option_value):
         attr_name = option_name.replace("-", "_")
         # only allow setting general options that exist and don't start with an underscore
         if not hasattr(self, attr_name) or attr_name[0] == "_":
-            raise LintConfigError("'{0}' is not a valid gitlint option".format(option_name))
+            raise LintConfigError(f"'{option_name}' is not a valid gitlint option")
 
         # else:
         setattr(self, attr_name, option_value)
@@ -280,21 +280,21 @@ class LintConfig:
 
     def __str__(self):
         # config-path is not a user exposed variable, so don't print it under the general section
-        return_str = "config-path: {0}\n".format(self._config_path)
-        return_str += "[GENERAL]\n"
-        return_str += "extra-path: {0}\n".format(self.extra_path)
-        return_str += "contrib: {0}\n".format(self.contrib)
+        return_str = f"config-path: {self._config_path}\n"
+        return_str += f"[GENERAL]\n"
+        return_str += f"extra-path: {self.extra_path}\n"
+        return_str += f"contrib: {self.contrib}\n"
         return_str += "ignore: {0}\n".format(",".join(self.ignore))
-        return_str += "ignore-merge-commits: {0}\n".format(self.ignore_merge_commits)
-        return_str += "ignore-fixup-commits: {0}\n".format(self.ignore_fixup_commits)
-        return_str += "ignore-squash-commits: {0}\n".format(self.ignore_squash_commits)
-        return_str += "ignore-revert-commits: {0}\n".format(self.ignore_revert_commits)
-        return_str += "ignore-stdin: {0}\n".format(self.ignore_stdin)
-        return_str += "staged: {0}\n".format(self.staged)
-        return_str += "verbosity: {0}\n".format(self.verbosity)
-        return_str += "debug: {0}\n".format(self.debug)
-        return_str += "target: {0}\n".format(self.target)
-        return_str += "[RULES]\n{0}".format(self.rules)
+        return_str += f"ignore-merge-commits: {self.ignore_merge_commits}\n"
+        return_str += f"ignore-fixup-commits: {self.ignore_fixup_commits}\n"
+        return_str += f"ignore-squash-commits: {self.ignore_squash_commits}\n"
+        return_str += f"ignore-revert-commits: {self.ignore_revert_commits}\n"
+        return_str += f"ignore-stdin: {self.ignore_stdin}\n"
+        return_str += f"staged: {self.staged}\n"
+        return_str += f"verbosity: {self.verbosity}\n"
+        return_str += f"debug: {self.debug}\n"
+        return_str += f"target: {self.target}\n"
+        return_str += f"[RULES]\n{self.rules}"
         return return_str
 
 
@@ -359,7 +359,7 @@ class RuleCollection:
     def __unicode__(self):
         return_str = ""
         for rule in self._rules.values():
-            return_str += "  {0}: {1}\n".format(rule.id, rule.name)
+            return_str += f"  {rule.id}: {rule.name}\n"
             for option_name, option_value in sorted(rule.options.items()):
                 if option_value.value is None:
                     option_val_repr = None
@@ -369,7 +369,7 @@ class RuleCollection:
                     option_val_repr = option_value.value.pattern
                 else:
                     option_val_repr = option_value.value
-                return_str += "     {0}={1}\n".format(option_name, option_val_repr)
+                return_str += f"     {option_name}={option_val_repr}\n"
         return return_str
 
 
@@ -414,12 +414,12 @@ class LintConfigBuilder:
                 self.set_option(rule_name, option_name, option_value)
             except ValueError:  # raised if the config string is invalid
                 raise LintConfigError(
-                    "'{0}' is an invalid configuration option. Use '<rule>.<option>=<value>'".format(config_option))
+                    f"'{config_option}' is an invalid configuration option. Use '<rule>.<option>=<value>'")
 
     def set_from_config_file(self, filename):
         """ Loads lint config from a ini-style config file """
         if not os.path.exists(filename):
-            raise LintConfigError("Invalid file path: {0}".format(filename))
+            raise LintConfigError(f"Invalid file path: {filename}")
         self._config_path = os.path.realpath(filename)
         try:
             parser = ConfigParser()
@@ -449,14 +449,14 @@ class LintConfigBuilder:
         # - not empty
         # - no whitespace or colons
         if rule_name == "" or bool(re.search("\\s|:", rule_name, re.UNICODE)):
-            msg = "The rule-name part in '{0}' cannot contain whitespace, colons or be empty"
-            raise LintConfigError(msg.format(qualified_rule_name))
+            msg = f"The rule-name part in '{qualified_rule_name}' cannot contain whitespace, colons or be empty"
+            raise LintConfigError(msg)
 
         # find parent rule
         parent_rule = config.rules.find_rule(parent_rule_specifier)
         if not parent_rule:
-            msg = "No such rule '{0}' (named rule: '{1}')"
-            raise LintConfigError(msg.format(parent_rule_specifier, qualified_rule_name))
+            msg = f"No such rule '{parent_rule_specifier}' (named rule: '{qualified_rule_name}')"
+            raise LintConfigError(msg)
 
         # Determine canonical id and name by recombining the parent id/name and instance name parts.
         canonical_id = parent_rule.__class__.id + self.RULE_QUALIFIER_SYMBOL + rule_name

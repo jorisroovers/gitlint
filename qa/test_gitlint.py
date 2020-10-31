@@ -34,14 +34,14 @@ class IntegrationTests(BaseTestCase):
         git("checkout", "-b", "test-branch", _cwd=self.tmp_git_repo)
         git("checkout", "test-branch", _cwd=self.tmp_git_repo)
         commit_title = "Commit on test-brånch with a pretty long title that will cause issues when merging"
-        self.create_simple_commit("{0}\n\nSïmple body".format(commit_title))
+        self.create_simple_commit(f"{commit_title}\n\nSïmple body")
         hash = self.get_last_commit_hash()
 
         # Checkout master and merge the commit
         # We explicitly set the title of the merge commit to the title of the previous commit as this or similar
         # behavior is what many tools do that handle merges (like github, gerrit, etc).
         git("checkout", "master", _cwd=self.tmp_git_repo)
-        git("merge", "--no-ff", "-m", "Merge '{0}'".format(commit_title), hash, _cwd=self.tmp_git_repo)
+        git("merge", "--no-ff", "-m", f"Merge '{commit_title}'", hash, _cwd=self.tmp_git_repo)
 
         # Run gitlint and assert output is empty
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
@@ -50,8 +50,7 @@ class IntegrationTests(BaseTestCase):
         # Assert that we do see the error if we disable the ignore-merge-commits option
         output = gitlint("-c", "general.ignore-merge-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
         self.assertEqual(output.exit_code, 1)
-        self.assertEqualStdout(output,
-                               "1: T1 Title exceeds max length (90>72): \"Merge '{0}'\"\n".format(commit_title))
+        self.assertEqualStdout(output, f"1: T1 Title exceeds max length (90>72): \"Merge '{commit_title}'\"\n")
 
     def test_fixup_commit(self):
         # Create a normal commit and assert that it has a violation

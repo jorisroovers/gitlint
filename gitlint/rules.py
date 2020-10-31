@@ -39,7 +39,7 @@ class Rule:
         return self  # pragma: no cover
 
     def __unicode__(self):
-        return "{0} {1}".format(self.id, self.name)  # pragma: no cover
+        return f"{self.id} {self.name}"  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -96,8 +96,7 @@ class RuleViolation:
         return self  # pragma: no cover
 
     def __unicode__(self):
-        return f"{0}: {1} {2}: \"{3}\"".format(self.line_nr, self.rule_id, self.message,
-                                               self.content)  # pragma: no cover
+        return f"{self.line_nr}: {self.rule_id} {self.message}: \"{self.content}\""  # pragma: no cover
 
     def __repr__(self):
         return self.__unicode__()  # pragma: no cover
@@ -195,7 +194,7 @@ class TitleTrailingPunctuation(LineRule):
         punctuation_marks = '?:!.,;'
         for punctuation_mark in punctuation_marks:
             if title.endswith(punctuation_mark):
-                return [RuleViolation(self.id, "Title has trailing punctuation ({0})".format(punctuation_mark), title)]
+                return [RuleViolation(self.id, f"Title has trailing punctuation ({punctuation_mark})", title)]
 
 
 class TitleHardTab(HardTab):
@@ -232,7 +231,7 @@ class TitleRegexMatches(LineRule):
             return
 
         if not self.options['regex'].value.search(title):
-            violation_msg = "Title does not match regex ({0})".format(self.options['regex'].value.pattern)
+            violation_msg = f"Title does not match regex ({self.options['regex'].value.pattern})"
             return [RuleViolation(self.id, violation_msg, title)]
 
 
@@ -246,7 +245,7 @@ class TitleMinLength(LineRule):
         min_length = self.options['min-length'].value
         actual_length = len(title)
         if actual_length < min_length:
-            violation_message = "Title is too short ({0}<{1})".format(actual_length, min_length)
+            violation_message = f"Title is too short ({actual_length}<{min_length})"
             return [RuleViolation(self.id, violation_message, title, 1)]
 
 
@@ -289,7 +288,7 @@ class BodyMinLength(CommitRule):
         body_message_no_newline = "".join([line for line in commit.message.body if line is not None])
         actual_length = len(body_message_no_newline)
         if 0 < actual_length < min_length:
-            violation_message = "Body message is too short ({0}<{1})".format(actual_length, min_length)
+            violation_message = f"Body message is too short ({actual_length}<{min_length})"
             return [RuleViolation(self.id, violation_message, body_message_no_newline, 3)]
 
 
@@ -318,7 +317,7 @@ class BodyChangedFileMention(CommitRule):
             # in the commit msg body
             if needs_mentioned_file in commit.changed_files:
                 if needs_mentioned_file not in " ".join(commit.message.body):
-                    violation_message = "Body does not mention changed file '{0}'".format(needs_mentioned_file)
+                    violation_message = f"Body does not mention changed file '{needs_mentioned_file}'"
                     violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))
         return violations if violations else None
 
@@ -347,7 +346,7 @@ class BodyRegexMatches(CommitRule):
         full_body = "\n".join(body_lines)
 
         if not self.options['regex'].value.search(full_body):
-            violation_msg = "Body does not match regex ({0})".format(self.options['regex'].value.pattern)
+            violation_msg = f"Body does not match regex ({self.options['regex'].value.pattern})"
             return [RuleViolation(self.id, violation_msg, None, len(commit.message.body) + 1)]
 
 
@@ -379,9 +378,8 @@ class IgnoreByTitle(ConfigurationRule):
         if self.options['regex'].value.match(commit.message.title):
             config.ignore = self.options['ignore'].value
 
-            message = "Commit title '{0}' matches the regex '{1}', ignoring rules: {2}"
-            message = message.format(commit.message.title, self.options['regex'].value.pattern,
-                                     self.options['ignore'].value)
+            message = f"Commit title '{commit.message.title}' matches the regex " + \
+                      f"'{self.options['regex'].value.pattern}', ignoring rules: {self.options['ignore'].value}"
 
             self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
 
@@ -401,8 +399,8 @@ class IgnoreByBody(ConfigurationRule):
             if self.options['regex'].value.match(line):
                 config.ignore = self.options['ignore'].value
 
-                message = "Commit message line '{0}' matches the regex '{1}', ignoring rules: {2}"
-                message = message.format(line, self.options['regex'].value.pattern, self.options['ignore'].value)
+                message = f"Commit message line '{line}' matches the regex '{self.options['regex'].value.pattern}'," + \
+                          f" ignoring rules: {self.options['ignore'].value}"
 
                 self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
                 # No need to check other lines if we found a match

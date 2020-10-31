@@ -45,7 +45,7 @@ class SpecialChars(LineRule):
         # options can be accessed by looking them up by their name in self.options
         for char in self.options['special-chars'].value:
             if char in line:
-                msg = "Title contains the special character '{0}'".format(char)
+                msg = f"Title contains the special character '{char}'"
                 violation = RuleViolation(self.id, msg, line)
                 violations.append(violation)
 

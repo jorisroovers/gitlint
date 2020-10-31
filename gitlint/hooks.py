@@ -27,7 +27,7 @@ class GitHookInstaller:
         """ Asserts that a given target directory is a git repository """
         hooks_dir = git_hooks_dir(target)
         if not os.path.isdir(hooks_dir):
-            raise GitHookInstallerError("{0} is not a git repository.".format(target))
+            raise GitHookInstallerError(f"{target} is not a git repository.")
 
     @staticmethod
     def install_commit_msg_hook(lint_config):
@@ -35,7 +35,7 @@ class GitHookInstaller:
         dest_path = GitHookInstaller.commit_msg_hook_path(lint_config)
         if os.path.exists(dest_path):
             raise GitHookInstallerError(
-                "There is already a commit-msg hook file present in {0}.\n".format(dest_path) +
+                f"There is already a commit-msg hook file present in {dest_path}.\n" +
                 "gitlint currently does not support appending to an existing commit-msg file.")
 
         # copy hook file
@@ -49,14 +49,14 @@ class GitHookInstaller:
         GitHookInstaller._assert_git_repo(lint_config.target)
         dest_path = GitHookInstaller.commit_msg_hook_path(lint_config)
         if not os.path.exists(dest_path):
-            raise GitHookInstallerError("There is no commit-msg hook present in {0}.".format(dest_path))
+            raise GitHookInstallerError(f"There is no commit-msg hook present in {dest_path}.")
 
         with io.open(dest_path, encoding=DEFAULT_ENCODING) as fp:
             lines = fp.readlines()
             if len(lines) < 2 or lines[1] != GITLINT_HOOK_IDENTIFIER:
-                msg = "The commit-msg hook in {0} was not installed by gitlint (or it was modified).\n" + \
+                msg = f"The commit-msg hook in {dest_path} was not installed by gitlint (or it was modified).\n" + \
                       "Uninstallation of 3th party or modified gitlint hooks is not supported."
-                raise GitHookInstallerError(msg.format(dest_path))
+                raise GitHookInstallerError(msg)
 
         # If we are sure it's a gitlint hook, go ahead and remove it
         os.remove(dest_path)

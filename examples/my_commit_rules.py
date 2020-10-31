@@ -35,7 +35,7 @@ class BodyMaxLineCount(CommitRule):
         line_count = len(commit.message.body)
         max_line_count = self.options['max-line-count'].value
         if line_count > max_line_count:
-            message = "Body contains too many lines ({0} > {1})".format(line_count, max_line_count)
+            message = f"Body contains too many lines ({line_count} > {max_line_count})"
             return [RuleViolation(self.id, message, line_nr=1)]
 
 
@@ -88,7 +88,7 @@ class BranchNamingConventions(CommitRule):
                     break
 
             if not valid_branch_name:
-                msg = "Branch name '{0}' does not start with one of {1}".format(branch, allowed_branch_prefixes)
+                msg = f"Branch name '{branch}' does not start with one of {allowed_branch_prefixes}"
                 violations.append(RuleViolation(self.id, msg, line_nr=1))
 
         return violations

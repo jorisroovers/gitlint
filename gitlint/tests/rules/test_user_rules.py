@@ -159,8 +159,9 @@ class UserRuleTests(BaseTestCase):
             # Rule ids must not start with one of the reserved id letters
             for letter in ["T", "R", "B", "M", "I"]:
                 MyRuleClass.id = letter + "1"
-                expected_msg = "The id '{0}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
-                with self.assertRaisesMessage(UserRuleError, expected_msg.format(letter)):
+                expected_msg = f"The id '{letter}' of 'MyRuleClass' is invalid. " + \
+                               "Gitlint reserves ids starting with R,T,B,M,I"
+                with self.assertRaisesMessage(UserRuleError, expected_msg):
                     assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_name(self):

@@ -90,7 +90,7 @@ class LintConfigBuilderTests(BaseTestCase):
 
         # bad config file load
         foo_path = self.get_sample_path("föo")
-        expected_error_msg = "Invalid file path: {0}".format(foo_path)
+        expected_error_msg = f"Invalid file path: {foo_path}"
         with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config_builder.set_from_config_file(foo_path)
 
@@ -246,9 +246,9 @@ class LintConfigBuilderTests(BaseTestCase):
         # Invalid rule name
         for invalid_name in ["", " ", "    ", "\t", "\n", "å b", "å:b", "åb:", ":åb"]:
             config_builder = LintConfigBuilder()
-            config_builder.set_option("T7:{0}".format(invalid_name), 'regex', "tëst")
-            expected_msg = "The rule-name part in 'T7:{0}' cannot contain whitespace, colons or be empty"
-            with self.assertRaisesMessage(LintConfigError, expected_msg.format(invalid_name)):
+            config_builder.set_option(f"T7:{invalid_name}", 'regex', "tëst")
+            expected_msg = f"The rule-name part in 'T7:{invalid_name}' cannot contain whitespace, colons or be empty"
+            with self.assertRaisesMessage(LintConfigError, expected_msg):
                 config_builder.build()
 
         # Invalid parent rule name

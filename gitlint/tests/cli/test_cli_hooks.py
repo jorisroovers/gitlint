@@ -39,7 +39,7 @@ class CLIHookTests(BaseTestCase):
         """ Test for install-hook subcommand """
         result = self.cli.invoke(cli.cli, ["install-hook"])
         expected_path = os.path.join("/hür", "dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
-        expected = "Successfully installed gitlint commit-msg hook in {0}\n".format(expected_path)
+        expected = f"Successfully installed gitlint commit-msg hook in {expected_path}\n"
         self.assertEqual(result.output, expected)
         self.assertEqual(result.exit_code, 0)
         expected_config = config.LintConfig()
@@ -77,7 +77,7 @@ class CLIHookTests(BaseTestCase):
         """ Test for uninstall-hook subcommand """
         result = self.cli.invoke(cli.cli, ["uninstall-hook"])
         expected_path = os.path.join("/hür", "dur", hooks.COMMIT_MSG_HOOK_DST_PATH)
-        expected = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_path)
+        expected = f"Successfully uninstalled gitlint commit-msg hook from {expected_path}\n"
         self.assertEqual(result.exit_code, 0)
         self.assertEqual(result.output, expected)
         expected_config = config.LintConfig()
@@ -151,8 +151,7 @@ class CLIHookTests(BaseTestCase):
 
                         shell.assert_called_with(expected_editors[i] + " " + msg_filename)
                         self.assert_log_contains("DEBUG: gitlint.cli run-hook: editing commit message")
-                        self.assert_log_contains("DEBUG: gitlint.cli run-hook: {0} {1}".format(expected_editors[i],
-                                                                                               msg_filename))
+                        self.assert_log_contains(f"DEBUG: gitlint.cli run-hook: {expected_editors[i]} {msg_filename}")
 
     def test_hook_no(self):
         """ Test for run-hook subcommand, answering 'n(o)' after commit-hook """

@@ -24,8 +24,7 @@ class ContribRuleTests(BaseTestCase):
             if filename.endswith(".py") and filename not in ["__init__.py"]:
                 expected_test_file = "test_" + filename
                 error_msg = "Every Contrib Rule must have associated tests. " + \
-                            "Expected test file {0} not found.".format(os.path.join(contrib_tests_dir,
-                                                                                    expected_test_file))
+                            f"Expected test file {os.path.join(contrib_tests_dir, expected_test_file)} not found."
                 self.assertIn(expected_test_file, contrib_test_files, error_msg)
 
     def test_contrib_rule_naming_conventions(self):

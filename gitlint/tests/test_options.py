@@ -171,13 +171,13 @@ class RuleOptionTests(BaseTestCase):
 
         # set to non-existing directory
         non_existing_path = os.path.join("/föo", "bar")
-        expected = "Option tëst-directory must be an existing directory (current value: '{0}')"
-        with self.assertRaisesMessage(RuleOptionError, expected.format(non_existing_path)):
+        expected = f"Option tëst-directory must be an existing directory (current value: '{non_existing_path}')"
+        with self.assertRaisesMessage(RuleOptionError, expected):
             option.set(non_existing_path)
 
         # set to a file, should raise exception since option.type = dir
         sample_path = self.get_sample_path(os.path.join("commit_message", "sample1"))
-        expected = "Option tëst-directory must be an existing directory (current value: '{0}')".format(sample_path)
+        expected = f"Option tëst-directory must be an existing directory (current value: '{sample_path}')"
         with self.assertRaisesMessage(RuleOptionError, expected):
             option.set(sample_path)
 
@@ -185,8 +185,7 @@ class RuleOptionTests(BaseTestCase):
         option.type = "file"
         option.set(sample_path)
         self.assertEqual(option.value, sample_path)
-        expected = "Option tëst-directory must be an existing file (current value: '{0}')".format(
-            self.get_sample_path())
+        expected = f"Option tëst-directory must be an existing file (current value: '{self.get_sample_path()}')"
         with self.assertRaisesMessage(RuleOptionError, expected):
             option.set(self.get_sample_path())
 
