@@ -219,10 +219,13 @@ your `.pre-commit-config.yaml` file like so:
     rev:  # Fill in a tag / sha here
     hooks:
     -   id: gitlint
-        stages: [commit-msg]
-        entry: gitlint
         args: [--contrib=CT1, --msg-filename]
 ```
+
+!!! important
+
+   You need to add `--msg-filename` at the end of your custom `args` list as the gitlint-hook will fail otherwise.
+
 
 ## Using gitlint in a CI environment
 By default, when just running `gitlint` without additional parameters, gitlint lints the last commit in the current
