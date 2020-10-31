@@ -68,7 +68,7 @@ class TitleRuleTests(BaseTestCase):
         for char in punctuation:
             line = "This is å test" + char  # note that make sure to include some unicode!
             gitcontext = self.gitcontext(line)
-            expected_violation = RuleViolation("T3", "Title has trailing punctuation ({0})".format(char), line)
+            expected_violation = RuleViolation("T3", f"Title has trailing punctuation ({char})", line)
             violations = rule.validate(line, gitcontext)
             self.assertListEqual(violations, [expected_violation])
 

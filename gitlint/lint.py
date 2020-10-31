@@ -78,8 +78,8 @@ class GitLinter:
         # Skip linting if this is a special commit type that is configured to be ignored
         ignore_commit_types = ["merge", "squash", "fixup", "revert"]
         for commit_type in ignore_commit_types:
-            if getattr(commit, "is_{0}_commit".format(commit_type)) and \
-               getattr(self.config, "ignore_{0}_commits".format(commit_type)):
+            if getattr(commit, f"is_{commit_type}_commit") and \
+               getattr(self.config, f"ignore_{commit_type}_commits"):
                 return []
 
         violations = []
@@ -98,10 +98,9 @@ class GitLinter:
         """ Print a given set of violations to the standard error output """
         for v in violations:
             line_nr = v.line_nr if v.line_nr else "-"
-            self.display.e("{0}: {1}".format(line_nr, v.rule_id), exact=True)
-            self.display.ee("{0}: {1} {2}".format(line_nr, v.rule_id, v.message), exact=True)
+            self.display.e(f"{line_nr}: {v.rule_id}", exact=True)
+            self.display.ee(f"{line_nr}: {v.rule_id} {v.message}", exact=True)
             if v.content:
-                self.display.eee("{0}: {1} {2}: \"{3}\"".format(line_nr, v.rule_id, v.message, v.content),
-                                 exact=True)
+                self.display.eee(f"{line_nr}: {v.rule_id} {v.message}: \"{v.content}\"", exact=True)
             else:
-                self.display.eee("{0}: {1} {2}".format(line_nr, v.rule_id, v.message), exact=True)
+                self.display.eee(f"{line_nr}: {v.rule_id} {v.message}", exact=True)

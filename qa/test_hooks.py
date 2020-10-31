@@ -50,7 +50,7 @@ class HookTests(BaseTestCase):
         # Answer 'yes' to question to keep violating commit-msg
         if "Your commit message contains the above violations" in line:
             response = self.responses[self.response_index]
-            stdin.put("{0}\n".format(response))
+            stdin.put(f"{response}\n")
             self.response_index = (self.response_index + 1) % len(self.responses)
 
     def test_commit_hook_no_violations(self):
@@ -156,10 +156,10 @@ class HookTests(BaseTestCase):
 
         output_installed = gitlint("install-hook", _cwd=worktree_dir)
         expected_hook_path = os.path.join(tmp_git_repo, ".git", "hooks", "commit-msg")
-        expected_msg = "Successfully installed gitlint commit-msg hook in {0}\n".format(expected_hook_path)
+        expected_msg = f"Successfully installed gitlint commit-msg hook in {expected_hook_path}\n"
         self.assertEqual(output_installed, expected_msg)
 
         output_uninstalled = gitlint("uninstall-hook", _cwd=worktree_dir)
         expected_hook_path = os.path.join(tmp_git_repo, ".git", "hooks", "commit-msg")
-        expected_msg = "Successfully uninstalled gitlint commit-msg hook from {0}\n".format(expected_hook_path)
+        expected_msg = f"Successfully uninstalled gitlint commit-msg hook from {expected_hook_path}\n"
         self.assertEqual(output_uninstalled, expected_msg)

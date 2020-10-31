@@ -189,7 +189,7 @@ class GitCommitTests(BaseTestCase):
             sh.git.side_effect = [
                 sample_sha,
                 "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
-                "{0}! \"foo bår commit\"".format(commit_type),
+                f"{commit_type}! \"foo bår commit\"",
                 "#",  # git config --get core.commentchar
                 "file1.txt\npåth/to/file2.txt\n",
                 "foöbar\n* hürdur\n"
@@ -212,7 +212,7 @@ class GitCommitTests(BaseTestCase):
             last_commit = context.commits[-1]
             self.assertIsInstance(last_commit, LocalGitCommit)
             self.assertEqual(last_commit.sha, sample_sha)
-            self.assertEqual(last_commit.message.title, "{0}! \"foo bår commit\"".format(commit_type))
+            self.assertEqual(last_commit.message.title, f"{commit_type}! \"foo bår commit\"")
             self.assertEqual(last_commit.message.body, [])
             self.assertEqual(last_commit.author_name, "test åuthor")
             self.assertEqual(last_commit.author_email, "test-emåil@foo.com")
@@ -396,7 +396,7 @@ class GitCommitTests(BaseTestCase):
     def test_from_commit_msg_fixup_squash_commit(self):
         commit_types = ["fixup", "squash"]
         for commit_type in commit_types:
-            commit_msg = "{0}! Test message".format(commit_type)
+            commit_msg = f"{commit_type}! Test message"
             gitcontext = GitContext.from_commit_msg(commit_msg)
             commit = gitcontext.commits[-1]
 

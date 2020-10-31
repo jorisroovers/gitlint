@@ -32,8 +32,7 @@ class GitExitCodeError(GitContextError):
     def __init__(self, command, stderr):
         self.command = command
         self.stderr = stderr
-        super(GitExitCodeError, self).__init__(
-            "An error occurred while executing '{0}': {1}".format(command, stderr))
+        super(GitExitCodeError, self).__init__(f"An error occurred while executing '{command}': {stderr}")
 
 
 def _git(*command_parts, **kwargs):
@@ -55,8 +54,7 @@ def _git(*command_parts, **kwargs):
         error_msg = e.stderr.strip()
         error_msg_lower = error_msg.lower()
         if '_cwd' in git_kwargs and b"not a git repository" in error_msg_lower:
-            error_msg = "{0} is not a git repository.".format(git_kwargs['_cwd'])
-            raise GitContextError(error_msg)
+            raise GitContextError(f"{git_kwargs['_cwd']} is not a git repository.")
 
         if (b"does not have any commits yet" in error_msg_lower or
                 b"ambiguous argument 'head': unknown revision" in error_msg_lower):
@@ -105,7 +103,7 @@ class GitCommitMessage:
     def from_full_message(context, commit_msg_str):
         """  Parses a full git commit message by parsing a given string into the different parts of a commit message """
         all_lines = commit_msg_str.splitlines()
-        cutline = "{0} ------------------------ >8 ------------------------".format(context.commentchar)
+        cutline = f"{context.commentchar} ------------------------ >8 ------------------------"
         try:
             cutline_index = all_lines.index(cutline)
         except ValueError:

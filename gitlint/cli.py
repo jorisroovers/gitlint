@@ -187,7 +187,7 @@ class ContextObj:
               type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               help="Path of the target git repository. [default: current working directory]")
 @click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
-              help="Config file location [default: {0}]".format(DEFAULT_CONFIG_FILE))
+              help=f"Config file location [default: {DEFAULT_CONFIG_FILE}]")
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
@@ -242,10 +242,10 @@ def cli(  # pylint: disable=too-many-arguments
         click.echo(e)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
     except GitLintUsageError as e:
-        click.echo("Error: {0}".format(e))
+        click.echo(f"Error: {e}")
         ctx.exit(USAGE_ERROR_CODE)
     except LintConfigError as e:
-        click.echo("Config Error: {0}".format(e))
+        click.echo(f"Config Error: {e}")
         ctx.exit(CONFIG_ERROR_CODE)
 
 
@@ -315,7 +315,7 @@ def install_hook(ctx):
     try:
         hooks.GitHookInstaller.install_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
-        click.echo("Successfully installed gitlint commit-msg hook in {0}".format(hook_path))
+        click.echo(f"Successfully installed gitlint commit-msg hook in {hook_path}")
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
         click.echo(e, err=True)
@@ -329,7 +329,7 @@ def uninstall_hook(ctx):
     try:
         hooks.GitHookInstaller.uninstall_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
-        click.echo("Successfully uninstalled gitlint commit-msg hook from {0}".format(hook_path))
+        click.echo(f"Successfully uninstalled gitlint commit-msg hook from {hook_path}")
         ctx.exit(0)
     except hooks.GitHookInstallerError as e:
         click.echo(e, err=True)
@@ -411,14 +411,14 @@ def generate_config(ctx):
     path = os.path.realpath(path)
     dir_name = os.path.dirname(path)
     if not os.path.exists(dir_name):
-        click.echo("Error: Directory '{0}' does not exist.".format(dir_name), err=True)
+        click.echo(f"Error: Directory '{dir_name}' does not exist.", err=True)
         ctx.exit(USAGE_ERROR_CODE)
     elif os.path.exists(path):
-        click.echo("Error: File \"{0}\" already exists.".format(path), err=True)
+        click.echo(f"Error: File \"{path}\" already exists.", err=True)
         ctx.exit(USAGE_ERROR_CODE)
 
     LintConfigGenerator.generate_config(path)
-    click.echo("Successfully generated {0}".format(path))
+    click.echo(f"Successfully generated {path}")
     ctx.exit(0)
 
 

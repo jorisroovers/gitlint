@@ -41,7 +41,7 @@ class RuleOption:
         return self  # pragma: no cover
 
     def __unicode__(self):
-        return "({0}: {1} ({2}))".format(self.name, self.value, self.description)  # pragma: no cover
+        return f"({self.name}: {self.value} ({self.description}))"  # pragma: no cover
 
     def __repr__(self):
         return self.__str__()  # pragma: no cover
@@ -63,9 +63,9 @@ class IntOption(RuleOption):
 
     def _raise_exception(self, value):
         if self.allow_negative:
-            error_msg = "Option '{0}' must be an integer (current value: '{1}')".format(self.name, value)
+            error_msg = f"Option '{self.name}' must be an integer (current value: '{value}')"
         else:
-            error_msg = "Option '{0}' must be a positive integer (current value: '{1}')".format(self.name, value)
+            error_msg = f"Option '{self.name}' must be a positive integer (current value: '{value}')"
         raise RuleOptionError(error_msg)
 
     @allow_none
@@ -85,7 +85,7 @@ class BoolOption(RuleOption):
     def set(self, value):
         value = str(value).strip().lower()
         if value not in ['true', 'false']:
-            raise RuleOptionError("Option '{0}' must be either 'true' or 'false'".format(self.name))
+            raise RuleOptionError(f"Option '{self.name}' must be either 'true' or 'false'")
         self.value = value == 'true'
 
 
@@ -118,17 +118,16 @@ class PathOption(RuleOption):
 
         if self.type == 'dir':
             if not os.path.isdir(value):
-                error_msg = "Option {0} must be an existing directory (current value: '{1}')".format(self.name, value)
+                error_msg = f"Option {self.name} must be an existing directory (current value: '{value}')"
         elif self.type == 'file':
             if not os.path.isfile(value):
-                error_msg = "Option {0} must be an existing file (current value: '{1}')".format(self.name, value)
+                error_msg = f"Option {self.name} must be an existing file (current value: '{value}')"
         elif self.type == 'both':
             if not os.path.isdir(value) and not os.path.isfile(value):
-                error_msg = ("Option {0} must be either an existing directory or file "
-                             "(current value: '{1}')").format(self.name, value)
+                error_msg = (f"Option {self.name} must be either an existing directory or file "
+                             f"(current value: '{value}')")
         else:
-            error_msg = "Option {0} type must be one of: 'file', 'dir', 'both' (current: '{1}')".format(self.name,
-                                                                                                        self.type)
+            error_msg = f"Option {self.name} type must be one of: 'file', 'dir', 'both' (current: '{self.type}')"
 
         if error_msg:
             raise RuleOptionError(error_msg)
@@ -143,7 +142,7 @@ class RegexOption(RuleOption):
         try:
             self.value = re.compile(value, re.UNICODE)
         except (re.error, TypeError) as exc:
-            raise RuleOptionError("Invalid regular expression: '{0}'".format(exc))
+            raise RuleOptionError(f"Invalid regular expression: '{exc}'")
 
     def __deepcopy__(self, _):
         # copy.deepcopy() - used in rules.py - doesn't support copying regex objects prior to Python 3.7

@@ -49,7 +49,7 @@ class CLITests(BaseTestCase):
     def test_version(self):
         """ Test for --version option """
         result = self.cli.invoke(cli.cli, ["--version"])
-        self.assertEqual(result.output.split("\n")[0], "cli, version {0}".format(__version__))
+        self.assertEqual(result.output.split("\n")[0], f"cli, version {__version__}")
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
@@ -428,16 +428,14 @@ class CLITests(BaseTestCase):
         # Directory as config file
         config_path = self.get_sample_path("config")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        expected_string = "Error: Invalid value for \"-C\" / \"--config\": File \"{0}\" is a directory.".format(
-            config_path)
+        expected_string = f"Error: Invalid value for \"-C\" / \"--config\": File \"{config_path}\" is a directory."
         self.assertEqual(result.output.split("\n")[3], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
         # Non existing file
         config_path = self.get_sample_path("föo")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        expected_string = "Error: Invalid value for \"-C\" / \"--config\": File \"{0}\" does not exist.".format(
-            config_path)
+        expected_string = f"Error: Invalid value for \"-C\" / \"--config\": File \"{config_path}\" does not exist."
         self.assertEqual(result.output.split("\n")[3], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
@@ -470,7 +468,7 @@ class CLITests(BaseTestCase):
         target_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
         result = self.cli.invoke(cli.cli, ["--target", target_path])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = "Error: Invalid value for \"--target\": Directory \"{0}\" is a file.".format(target_path)
+        expected_msg = f"Error: Invalid value for \"--target\": Directory \"{target_path}\" is a file."
         self.assertEqual(result.output.split("\n")[3], expected_msg)
 
     @patch('gitlint.config.LintConfigGenerator.generate_config')
@@ -479,7 +477,7 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["generate-config"], input="tëstfile\n")
         self.assertEqual(result.exit_code, 0)
         expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: tëstfile\n" + \
-                       "Successfully generated {0}\n".format(os.path.realpath("tëstfile"))
+                       f"Successfully generated {os.path.realpath('tëstfile')}\n"
         self.assertEqual(result.output, expected_msg)
         generate_config.assert_called_once_with(os.path.realpath("tëstfile"))
 
@@ -490,8 +488,8 @@ class CLITests(BaseTestCase):
         fake_path = os.path.join(fake_dir, "bar")
         result = self.cli.invoke(cli.cli, ["generate-config"], input=fake_path)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = ("Please specify a location for the sample gitlint config file [.gitlint]: {0}\n"
-                        + "Error: Directory '{1}' does not exist.\n").format(fake_path, fake_dir)
+        expected_msg = f"Please specify a location for the sample gitlint config file [.gitlint]: {fake_path}\n" + \
+                       f"Error: Directory '{fake_dir}' does not exist.\n"
         self.assertEqual(result.output, expected_msg)
 
         # Existing file
@@ -499,8 +497,8 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["generate-config"], input=sample_path)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = "Please specify a location for the sample gitlint " + \
-                       "config file [.gitlint]: {0}\n".format(sample_path) + \
-                       "Error: File \"{0}\" already exists.\n".format(sample_path)
+                       f"config file [.gitlint]: {sample_path}\n" + \
+                       f"Error: File \"{sample_path}\" already exists.\n"
         self.assertEqual(result.output, expected_msg)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)

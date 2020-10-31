@@ -11,8 +11,8 @@ class GitContextRule(CommitRule):
 
     def validate(self, commit):
         violations = [
-            RuleViolation(self.id, "GitContext.current_branch: {0}".format(commit.context.current_branch), line_nr=1),
-            RuleViolation(self.id, "GitContext.commentchar: {0}".format(commit.context.commentchar), line_nr=1)
+            RuleViolation(self.id, f"GitContext.current_branch: {commit.context.current_branch}", line_nr=1),
+            RuleViolation(self.id, f"GitContext.commentchar: {commit.context.commentchar}", line_nr=1)
         ]
 
         return violations
@@ -25,8 +25,8 @@ class GitCommitRule(CommitRule):
 
     def validate(self, commit):
         violations = [
-            RuleViolation(self.id, "GitCommit.branches: {0}".format(commit.branches), line_nr=1),
-            RuleViolation(self.id, "GitCommit.custom_prop: {0}".format(commit.custom_prop), line_nr=1),
+            RuleViolation(self.id, f"GitCommit.branches: {commit.branches}", line_nr=1),
+            RuleViolation(self.id, f"GitCommit.custom_prop: {commit.custom_prop}", line_nr=1),
         ]
 
         return violations
@@ -40,7 +40,7 @@ class GitlintConfigurationRule(ConfigurationRule):
     def apply(self, config, commit):
         # We add a line to the commit message body that pulls a value from config, this proves we can modify the body
         # and read the config contents
-        commit.message.body.append("{0} ".format(config.target))  # trailing whitespace deliberate to trigger violation
+        commit.message.body.append(f"{config.target} ")  # trailing whitespace deliberate to trigger violation
 
         # We set a custom property that we access in CommitRule, to prove we can add extra properties to the commit
         commit.custom_prop = "foöbar"
@@ -60,9 +60,9 @@ class ConfigurableCommitRule(CommitRule):
 
     def validate(self, _):
         violations = [
-            RuleViolation(self.id, "int-öption: {0}".format(self.options[u'int-öption'].value), line_nr=1),
-            RuleViolation(self.id, "str-öption: {0}".format(self.options[u'str-öption'].value), line_nr=1),
-            RuleViolation(self.id, "list-öption: {0}".format(self.options[u'list-öption'].value), line_nr=1),
+            RuleViolation(self.id, f"int-öption: {self.options[u'int-öption'].value}", line_nr=1),
+            RuleViolation(self.id, f"str-öption: {self.options[u'str-öption'].value}", line_nr=1),
+            RuleViolation(self.id, f"list-öption: {self.options[u'list-öption'].value}", line_nr=1),
         ]
 
         return violations

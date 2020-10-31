@@ -57,7 +57,8 @@ class BaseTestCase(TestCase):
 
     @classmethod
     def generate_temp_path(cls):
-        return os.path.realpath("/tmp/gitlint-test-{0}".format(datetime.now().strftime("%Y%m%d-%H%M%S-%f")))
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+        return os.path.realpath(f"/tmp/gitlint-test-{timestamp}")
 
     @classmethod
     def create_tmp_git_repo(cls):

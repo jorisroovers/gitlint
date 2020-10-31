@@ -161,7 +161,7 @@ class LintTests(BaseTestCase):
 
     def test_lint_special_commit(self):
         for commit_type in ["merge", "revert", "squash", "fixup"]:
-            commit = self.gitcommit(self.get_sample("commit_message/{0}".format(commit_type)))
+            commit = self.gitcommit(self.get_sample(f"commit_message/{commit_type}"))
             lintconfig = LintConfig()
             linter = GitLinter(lintconfig)
             violations = linter.lint(commit)
@@ -170,7 +170,7 @@ class LintTests(BaseTestCase):
             self.assertListEqual(violations, [])
 
             # Check that we do see violations if we disable 'ignore-merge-commits'
-            setattr(lintconfig, "ignore_{0}_commits".format(commit_type), False)
+            setattr(lintconfig, f"ignore_{commit_type}_commits", False)
             linter = GitLinter(lintconfig)
             violations = linter.lint(commit)
             self.assertTrue(len(violations) > 0)

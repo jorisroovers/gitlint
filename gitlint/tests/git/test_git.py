@@ -44,7 +44,7 @@ class GitTests(BaseTestCase):
         err = b"fatal: Random git error"
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 
-        expected_msg = "An error occurred while executing 'git log -1 --pretty=%H': {0}".format(err)
+        expected_msg = f"An error occurred while executing 'git log -1 --pretty=%H': {err}"
         with self.assertRaisesMessage(GitContextError, expected_msg):
             GitContext.from_local_repository("fåke/path")
 

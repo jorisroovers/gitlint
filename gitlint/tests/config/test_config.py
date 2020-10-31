@@ -203,7 +203,7 @@ class LintConfigTests(BaseTestCase):
         # invalid verbosity
         incorrect_values = [-1, "föo"]
         for value in incorrect_values:
-            expected_msg = "Option 'verbosity' must be a positive integer (current value: '{0}')".format(value)
+            expected_msg = f"Option 'verbosity' must be a positive integer (current value: '{value}')"
             with self.assertRaisesMessage(LintConfigError, expected_msg):
                 config.verbosity = value
 
@@ -220,7 +220,7 @@ class LintConfigTests(BaseTestCase):
             for value in incorrect_values:
                 option_name = attribute.replace("_", "-")
                 with self.assertRaisesMessage(LintConfigError,
-                                              "Option '{0}' must be either 'true' or 'false'".format(option_name)):
+                                              f"Option '{option_name}' must be either 'true' or 'false'"):
                     setattr(config, attribute, value)
 
         # invalid ignore -> not here because ignore is a ListOption which converts everything to a string before
@@ -230,7 +230,7 @@ class LintConfigTests(BaseTestCase):
         for attribute in ['debug', 'staged', 'ignore_stdin']:
             option_name = attribute.replace("_", "-")
             with self.assertRaisesMessage(LintConfigError,
-                                          "Option '{0}' must be either 'true' or 'false'".format(option_name)):
+                                          f"Option '{option_name}' must be either 'true' or 'false'"):
                 setattr(config, attribute, "föobar")
 
         # extra-path has its own negative test
