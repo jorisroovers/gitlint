@@ -280,22 +280,21 @@ class LintConfig:
 
     def __str__(self):
         # config-path is not a user exposed variable, so don't print it under the general section
-        return_str = f"config-path: {self._config_path}\n"
-        return_str += f"[GENERAL]\n"
-        return_str += f"extra-path: {self.extra_path}\n"
-        return_str += f"contrib: {self.contrib}\n"
-        return_str += "ignore: {0}\n".format(",".join(self.ignore))
-        return_str += f"ignore-merge-commits: {self.ignore_merge_commits}\n"
-        return_str += f"ignore-fixup-commits: {self.ignore_fixup_commits}\n"
-        return_str += f"ignore-squash-commits: {self.ignore_squash_commits}\n"
-        return_str += f"ignore-revert-commits: {self.ignore_revert_commits}\n"
-        return_str += f"ignore-stdin: {self.ignore_stdin}\n"
-        return_str += f"staged: {self.staged}\n"
-        return_str += f"verbosity: {self.verbosity}\n"
-        return_str += f"debug: {self.debug}\n"
-        return_str += f"target: {self.target}\n"
-        return_str += f"[RULES]\n{self.rules}"
-        return return_str
+        return (f"config-path: {self._config_path}\n"
+                f"[GENERAL]\n"
+                f"extra-path: {self.extra_path}\n"
+                f"contrib: {self.contrib}\n"
+                f"ignore: {','.join(self.ignore)}\n"
+                f"ignore-merge-commits: {self.ignore_merge_commits}\n"
+                f"ignore-fixup-commits: {self.ignore_fixup_commits}\n"
+                f"ignore-squash-commits: {self.ignore_squash_commits}\n"
+                f"ignore-revert-commits: {self.ignore_revert_commits}\n"
+                f"ignore-stdin: {self.ignore_stdin}\n"
+                f"staged: {self.staged}\n"
+                f"verbosity: {self.verbosity}\n"
+                f"debug: {self.debug}\n"
+                f"target: {self.target}\n"
+                f"[RULES]\n{self.rules}")
 
 
 class RuleCollection:
@@ -353,10 +352,7 @@ class RuleCollection:
     def __len__(self):
         return len(self._rules)
 
-    def __repr__(self):
-        return self.__unicode__()  # pragma: no cover
-
-    def __unicode__(self):
+    def __str__(self):
         return_str = ""
         for rule in self._rules.values():
             return_str += f"  {rule.id}: {rule.name}\n"

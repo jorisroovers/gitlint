@@ -114,14 +114,8 @@ class GitCommitMessage:
         body = lines[1:] if len(lines) > 1 else []
         return GitCommitMessage(context=context, original=commit_msg_str, full=full, title=title, body=body)
 
-    def __unicode__(self):
-        return self.full  # pragma: no cover
-
     def __str__(self):
-        return self.__unicode__()  # pragma: no cover
-
-    def __repr__(self):
-        return self.__str__()  # pragma: no cover
+        return self.full
 
     def __eq__(self, other):
         return (isinstance(other, GitCommitMessage) and self.original == other.original
@@ -163,25 +157,19 @@ class GitCommit:
     def is_revert_commit(self):
         return self.message.title.startswith("Revert")
 
-    def __unicode__(self):
-        format_str = ("--- Commit Message ----\n%s\n"
-                      "--- Meta info ---------\n"
-                      "Author: %s <%s>\nDate:   %s\n"
-                      "is-merge-commit:  %s\nis-fixup-commit:  %s\n"
-                      "is-squash-commit: %s\nis-revert-commit: %s\n"
-                      "Branches: %s\n"
-                      "Changed Files: %s\n"
-                      "-----------------------")  # pragma: no cover
-        date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
-        return format_str % (self.message, self.author_name, self.author_email, date_str,
-                             self.is_merge_commit, self.is_fixup_commit, self.is_squash_commit,
-                             self.is_revert_commit, self.branches, self.changed_files)  # pragma: no cover
-
     def __str__(self):
-        return self.__unicode__()  # pragma: no cover
-
-    def __repr__(self):
-        return self.__str__()  # pragma: no cover
+        date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
+        return (f"--- Commit Message ----\n{self.message}\n"
+                "--- Meta info ---------\n"
+                f"Author: {self.author_name} <{self.author_email}>\n"
+                f"Date:   {date_str}\n"
+                f"is-merge-commit:  {self.is_merge_commit}\n"
+                f"is-fixup-commit:  {self.is_fixup_commit}\n"
+                f"is-squash-commit: {self.is_squash_commit}\n"
+                f"is-revert-commit: {self.is_revert_commit}\n"
+                f"Branches: {self.branches}\n"
+                f"Changed Files: {self.changed_files}\n"
+                "-----------------------")
 
     def __eq__(self, other):
         # skip checking the context as context refers back to this obj, this will trigger a cyclic dependency

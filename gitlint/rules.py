@@ -36,13 +36,7 @@ class Rule:
                self.options == other.options and self.target == other.target  # noqa
 
     def __str__(self):
-        return self  # pragma: no cover
-
-    def __unicode__(self):
         return f"{self.id} {self.name}"  # pragma: no cover
-
-    def __repr__(self):
-        return self.__str__()  # pragma: no cover
 
 
 class ConfigurationRule(Rule):
@@ -93,13 +87,7 @@ class RuleViolation:
         return equal
 
     def __str__(self):
-        return self  # pragma: no cover
-
-    def __unicode__(self):
-        return f"{self.line_nr}: {self.rule_id} {self.message}: \"{self.content}\""  # pragma: no cover
-
-    def __repr__(self):
-        return self.__unicode__()  # pragma: no cover
+        return f"{self.line_nr}: {self.rule_id} {self.message}: \"{self.content}\""
 
 
 class UserRuleError(Exception):
