@@ -124,8 +124,7 @@ class BaseTestCase(unittest.TestCase):
         """ Pass-through method to unittest.TestCase.assertRaisesRegex that applies re.escape() to the passed
             `expected_regex`. This is useful to automatically escape all file paths that might be present in the regex.
         """
-        return super(BaseTestCase, self).assertRaisesRegex(expected_exception, re.escape(expected_regex),
-                                                           *args, **kwargs)
+        return super().assertRaisesRegex(expected_exception, re.escape(expected_regex), *args, **kwargs)
 
     @contextlib.contextmanager
     def assertRaisesMessage(self, expected_exception, expected_msg):  # pylint: disable=invalid-name

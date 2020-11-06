@@ -23,7 +23,7 @@ class GitContextError(Exception):
 
 class GitNotInstalledError(GitContextError):
     def __init__(self):
-        super(GitNotInstalledError, self).__init__(
+        super().__init__(
             "'git' command not found. You need to install git to use gitlint on a local repository. " +
             "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git.")
 
@@ -32,7 +32,7 @@ class GitExitCodeError(GitContextError):
     def __init__(self, command, stderr):
         self.command = command
         self.stderr = stderr
-        super(GitExitCodeError, self).__init__(f"An error occurred while executing '{command}': {stderr}")
+        super().__init__(f"An error occurred while executing '{command}': {stderr}")
 
 
 def _git(*command_parts, **kwargs):
@@ -48,19 +48,20 @@ def _git(*command_parts, **kwargs):
         if hasattr(result, 'exit_code') and result.exit_code > 0:
             return result
         return str(result)
-    except CommandNotFound:
-        raise GitNotInstalledError()
+    except CommandNotFound as e:
+        raise GitNotInstalledError from e
     except ErrorReturnCode as e:  # Something went wrong while executing the git command
         error_msg = e.stderr.strip()
         error_msg_lower = error_msg.lower()
         if '_cwd' in git_kwargs and b"not a git repository" in error_msg_lower:
-            raise GitContextError(f"{git_kwargs['_cwd']} is not a git repository.")
+            raise GitContextError(f"{git_kwargs['_cwd']} is not a git repository.") from e
 
         if (b"does not have any commits yet" in error_msg_lower or
                 b"ambiguous argument 'head': unknown revision" in error_msg_lower):
-            raise GitContextError("Current branch has no commits. Gitlint requires at least one commit to function.")
+            msg = "Current branch has no commits. Gitlint requires at least one commit to function."
+            raise GitContextError(msg) from e
 
-        raise GitExitCodeError(e.full_cmd, error_msg)
+        raise GitExitCodeError(e.full_cmd, error_msg) from e
 
 
 def git_version():
@@ -286,16 +287,16 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     def author_name(self):
         try:
             return _git("config", "--get", "user.name", _cwd=self.context.repository_path).strip()
-        except GitExitCodeError:
-            raise GitContextError("Missing git configuration: please set user.name")
+        except GitExitCodeError as e:
+            raise GitContextError("Missing git configuration: please set user.name") from e
 
     @property
     @cache
     def author_email(self):
         try:
             return _git("config", "--get", "user.email", _cwd=self.context.repository_path).strip()
-        except GitExitCodeError:
-            raise GitContextError("Missing git configuration: please set user.email")
+        except GitExitCodeError as e:
+            raise GitContextError("Missing git configuration: please set user.email") from e
 
     @property
     @cache

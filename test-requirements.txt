@@ -1,7 +1,7 @@
 flake8==3.7.9
 coverage==4.5.3
 python-coveralls==2.9.2
-radon==4.3.2
+radon==4.1.0
 pytest==6.1.2;
-pylint==2.3.1;
+pylint==2.6.0;
 -e .
