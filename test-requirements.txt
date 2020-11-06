@@ -1,8 +1,7 @@
 flake8==3.7.9
 coverage==4.5.3
 python-coveralls==2.9.2
-radon==4.1.0
-mock==3.0.5    # mock 4.x no longer supports Python 2.7
-pytest==4.6.3; # pytest 5.x no longer supports Python 2.7
-pylint==2.3.1; python_version >= '3.4'
+radon==4.3.2
+pytest==6.1.2;
+pylint==2.3.1;
 -e .

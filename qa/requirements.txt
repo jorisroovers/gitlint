@@ -1,4 +1,4 @@
 sh==1.14.1
-pytest==4.6.3;
+pytest==6.1.2;
 arrow==0.17.0;
 gitlint # no version as you want to test the currently installed version
