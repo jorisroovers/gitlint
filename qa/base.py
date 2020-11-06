@@ -167,8 +167,8 @@ class BaseTestCase(TestCase):
     @staticmethod
     def get_system_info_dict():
         """ Returns a dict with items related to system values logged by `gitlint --debug` """
-        expected_gitlint_version = gitlint("--version").replace("gitlint, version ", "").replace("\n", "")
-        expected_git_version = git("--version").replace("\n", "")
+        expected_gitlint_version = gitlint("--version").replace("gitlint, version ", "").strip()
+        expected_git_version = git("--version").strip()
         return {'platform': platform.platform(), 'python_version': sys.version,
                 'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
                 'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB, 'DEFAULT_ENCODING': DEFAULT_ENCODING}

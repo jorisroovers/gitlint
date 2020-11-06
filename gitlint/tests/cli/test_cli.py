@@ -428,14 +428,14 @@ class CLITests(BaseTestCase):
         # Directory as config file
         config_path = self.get_sample_path("config")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        expected_string = f"Error: Invalid value for \"-C\" / \"--config\": File \"{config_path}\" is a directory."
+        expected_string = f"Error: Invalid value for '-C' / '--config': File '{config_path}' is a directory."
         self.assertEqual(result.output.split("\n")[3], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
         # Non existing file
         config_path = self.get_sample_path("föo")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        expected_string = f"Error: Invalid value for \"-C\" / \"--config\": File \"{config_path}\" does not exist."
+        expected_string = f"Error: Invalid value for '-C' / '--config': File '{config_path}' does not exist."
         self.assertEqual(result.output.split("\n")[3], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
@@ -461,14 +461,14 @@ class CLITests(BaseTestCase):
         # try setting a non-existing target
         result = self.cli.invoke(cli.cli, ["--target", "/föo/bar"])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = "Error: Invalid value for \"--target\": Directory \"/föo/bar\" does not exist."
+        expected_msg = "Error: Invalid value for '--target': Directory '/föo/bar' does not exist."
         self.assertEqual(result.output.split("\n")[3], expected_msg)
 
         # try setting a file as target
         target_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
         result = self.cli.invoke(cli.cli, ["--target", target_path])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = f"Error: Invalid value for \"--target\": Directory \"{target_path}\" is a file."
+        expected_msg = f"Error: Invalid value for '--target': Directory '{target_path}' is a file."
         self.assertEqual(result.output.split("\n")[3], expected_msg)
 
     @patch('gitlint.config.LintConfigGenerator.generate_config')
