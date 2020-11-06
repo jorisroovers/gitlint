@@ -22,7 +22,7 @@ def handle_option_error(func):
         try:
             return func(*args)
         except options.RuleOptionError as e:
-            raise LintConfigError(str(e))
+            raise LintConfigError(str(e)) from e
 
     return wrapped
 
@@ -193,7 +193,7 @@ class LintConfig:
             self.rules.add_rules(rule_classes, {'is_user_defined': True})
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
-            raise LintConfigError(str(e))
+            raise LintConfigError(str(e)) from e
 
     @property
     def contrib(self):
@@ -223,7 +223,7 @@ class LintConfig:
                     raise LintConfigError(f"No contrib rule with id or name '{rule_id_or_name}' found.")
 
         except (options.RuleOptionError, rules.UserRuleError) as e:
-            raise LintConfigError(str(e))
+            raise LintConfigError(str(e)) from e
 
     def _get_option(self, rule_name_or_id, option_name):
         rule = self.rules.find_rule(rule_name_or_id)
@@ -250,7 +250,7 @@ class LintConfig:
             option.set(option_value)
         except options.RuleOptionError as e:
             msg = f"'{option_value}' is not a valid value for option '{rule_name_or_id}.{option_name}'. {e}."
-            raise LintConfigError(msg)
+            raise LintConfigError(msg) from e
 
     def set_general_option(self, option_name, option_value):
         attr_name = option_name.replace("-", "_")
@@ -338,7 +338,7 @@ class RuleCollection:
         """ Deletes all rules from the collection that match a given attribute name and value """
         # Create a new list based on _rules.values() because in python 3, values() is a ValuesView as opposed to a list
         # This means you can't modify the ValueView while iterating over it.
-        for rule in [r for r in self._rules.values()]:
+        for rule in [r for r in self._rules.values()]:  # pylint: disable=unnecessary-comprehension
             if hasattr(rule, attr_name) and (getattr(rule, attr_name) == attr_val):
                 del self._rules[rule.id]
 
@@ -408,9 +408,9 @@ class LintConfigBuilder:
                     raise ValueError()
                 rule_name, option_name = config_name.split(".", 1)
                 self.set_option(rule_name, option_name, option_value)
-            except ValueError:  # raised if the config string is invalid
+            except ValueError as e:  # raised if the config string is invalid
                 raise LintConfigError(
-                    f"'{config_option}' is an invalid configuration option. Use '<rule>.<option>=<value>'")
+                    f"'{config_option}' is an invalid configuration option. Use '<rule>.<option>=<value>'") from e
 
     def set_from_config_file(self, filename):
         """ Loads lint config from a ini-style config file """
@@ -428,7 +428,7 @@ class LintConfigBuilder:
                     self.set_option(section_name, option_name, str(option_value))
 
         except ConfigParserError as e:
-            raise LintConfigError(str(e))
+            raise LintConfigError(str(e)) from e
 
     def _add_named_rule(self, config, qualified_rule_name):
         """ Adds a Named Rule to a given LintConfig object.

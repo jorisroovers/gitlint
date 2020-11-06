@@ -53,7 +53,7 @@ class StrOption(RuleOption):
 class IntOption(RuleOption):
     def __init__(self, name, value, description, allow_negative=False):
         self.allow_negative = allow_negative
-        super(IntOption, self).__init__(name, value, description)
+        super().__init__(name, value, description)
 
     def _raise_exception(self, value):
         if self.allow_negative:
@@ -102,7 +102,7 @@ class PathOption(RuleOption):
 
     def __init__(self, name, value, description, type="dir"):
         self.type = type
-        super(PathOption, self).__init__(name, value, description)
+        super().__init__(name, value, description)
 
     @allow_none
     def set(self, value):
@@ -136,7 +136,7 @@ class RegexOption(RuleOption):
         try:
             self.value = re.compile(value, re.UNICODE)
         except (re.error, TypeError) as exc:
-            raise RuleOptionError(f"Invalid regular expression: '{exc}'")
+            raise RuleOptionError(f"Invalid regular expression: '{exc}'") from exc
 
     def __deepcopy__(self, _):
         # copy.deepcopy() - used in rules.py - doesn't support copying regex objects prior to Python 3.7

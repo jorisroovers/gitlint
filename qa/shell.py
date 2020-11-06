@@ -69,8 +69,8 @@ else:
         try:
             p = subprocess.Popen(args, **popen_kwargs)
             result = p.communicate()
-        except FileNotFoundError:
-            raise CommandNotFound
+        except FileNotFoundError as exc:
+            raise CommandNotFound from exc
 
         exit_code = p.returncode
         stdout = result[0].decode(DEFAULT_ENCODING)
