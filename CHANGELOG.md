@@ -1,9 +1,22 @@
 # Changelog #
 
+## v0.15.0 (TBD) ##
+
+Contributors:
+Special thanks to [BrunIF](https://github.com/BrunIF), [lukech](https://github.com/lukech), [Cielquan](https://github.com/Cielquan), [harens](https://github.com/harens) and [sigmavirus24](https://github.com/sigmavirus24).
+
+**This release drops support for Python 2.7 and Python 3.5 ([both are EOL](https://endoflife.date/python)). Other than a few minor fixes, there are no functional differences from the 0.14.0 release.**
+
+Other call-outs:
+- **Mac users**: Gitlint can now be installed using both homebrew (upgraded to latest) and macports. Special thanks to [@harens](https://github.com/harens) for maintaining these packages (best-effort).
+- Bugfix: Gitlint now properly handles exceptions when using its built-in commit-msg hook ([#166](https://github.com/jorisroovers/gitlint/issues/166)).
+- All dependencies have been upgraded to the latest available versions (`Click==7.1.2`, `arrow==0.17.0`, `sh==1.14.1`).
+- Much under-the-hood refactoring as a result of dropping Python 2.7
+
 ## v0.14.0 (2020-10-24) ##
 
 Contributors:
-Special thanks to all contributors for this release, in particular [@mrshu](https://github.com/mrshu), [@glasserc](https://github.com/glasserc), [@strk](https://github.com/strk), [@chgl](https://github.com/chgl), [@melg8](https://github.com/melg8) and [@sigmavirus24](https://github.com/sigmavirus24).
+Special thanks to all contributors for this release, in particular [mrshu](https://github.com/mrshu), [glasserc](https://github.com/glasserc), [strk](https://github.com/strk), [chgl](https://github.com/chgl), [melg8](https://github.com/melg8) and [sigmavirus24](https://github.com/sigmavirus24).
 
 
 - **IMPORTANT: Gitlint 0.14.x will be the last gitlint release to support Python 2.7 and Python 3.5, as [both are EOL](https://endoflife.date/python) which makes it difficult to keep supporting them.**

@@ -255,8 +255,8 @@ files                 | >= 0.4          | (empty)      |  Comma-separated list o
 #### .gitlint
 
 ```ini
-# Prevent that certain sensitive files are committed by mistake by forcing users to mention them explicitly if they're
-# deliberately changing them
+# Prevent that certain sensitive files are committed by mistake by forcing
+# users to mention them explicitly if they're deliberately changing them
 [body-changed-file-mention]
 files=generated.xml,secrets.txt,private-key.pem
 ```

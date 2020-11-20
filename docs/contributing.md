@@ -34,7 +34,8 @@ and it's likely that your PR will be merged and released a lot sooner. Thanks!
 
 ## Development
 
-There is a Vagrantfile in this repository that can be used for development.
+There is a Vagrantfile (Ubuntu) in this repository that can be used for development.
+It comes pre-installed with all Python versions that gitlint supports.
 ```sh
 vagrant up
 vagrant ssh
@@ -51,7 +52,7 @@ python setup.py develop
 To run tests:
 ```sh
 ./run_tests.sh                       # run unit tests and print test coverage
-./run_test.sh gitlint/tests/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+./run_tests.sh gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
 ./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
 ./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)

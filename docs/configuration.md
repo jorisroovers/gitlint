@@ -80,7 +80,7 @@ min-length=5
 words=wip
 
 [title-match-regex]
-# python like regex (https://docs.python.org/2/library/re.html) that the
+# python like regex (https://docs.python.org/3/library/re.html) that the
 # commit-msg title must be matched to.
 # Note that the regex can contradict with other rules if not used correctly
 # (e.g. title-must-not-contain-word).
@@ -100,8 +100,8 @@ ignore-merge-commits=false
 [body-changed-file-mention]
 # List of files that need to be explicitly mentioned in the body when they are changed
 # This is useful for when developers often erroneously edit certain files or git submodules.
-# By specifying this rule, developers can only change the file when they explicitly reference
-# it in the commit message.
+# By specifying this rule, developers can only change the file when they explicitly
+# reference it in the commit message.
 files=gitlint/rules.py,README.md
 
 [body-match-regex]
@@ -110,9 +110,10 @@ files=gitlint/rules.py,README.md
 regex=My-Commit-Tag: foo$
 
 [author-valid-email]
-# python like regex (https://docs.python.org/2/library/re.html) that the
+# python like regex (https://docs.python.org/3/library/re.html) that the
 # commit author email address should be matched to
-# E.g.: For example, use the following regex if you only want to allow email addresses from foo.com
+# E.g.: For example, use the following regex if you only want to allow email
+# addresses from foo.com
 regex=[^@]+@foo.com
 
 [ignore-by-title]
@@ -330,8 +331,10 @@ Default value              |  gitlint version | commandline flag  | environment 
 ```sh
 # CLI
 gitlint --contrib=contrib-title-conventional-commits,CC1
-gitlint -c general.contrib=contrib-title-conventional-commits,CC1  # different way of doing the same
-GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint     # using env variable
+# different way of doing the same
+gitlint -c general.contrib=contrib-title-conventional-commits,CC1
+# using env variable
+GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint   
 ```
 ```ini
 #.gitlint
@@ -341,7 +344,7 @@ contrib=contrib-title-conventional-commits,CC1
 
 ### staged
 
-Fetch additional meta-data from the local `repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
+Fetch additional meta-data from the local repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
 
 Default value  |  gitlint version | commandline flag  | environment variable   
 ---------------|------------------|-------------------|-----------------------
