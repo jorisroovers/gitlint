@@ -9,10 +9,11 @@ sudo add-apt-repository -y ppa:deadsnakes/ppa
 sudo apt-get update
 sudo apt-get install -y --allow-unauthenticated python3.6-dev python3.7-dev python3.8-dev python3.9-dev
 sudo apt-get install -y --allow-unauthenticated python3.8-distutils python3.9-distutils # Needed to work around python3.8/9+virtualenv issue
-sudo apt-get install -y python-virtualenv git ipython python-pip python3-pip silversearcher-ag jq
+sudo apt-get install -y git python3-pip ripgrep jq
 sudo apt-get install -y build-essential libssl-dev libffi-dev # for rebuilding cryptography (required for pypy2)
-sudo apt-get purge -y python3-virtualenv
-sudo pip3 install virtualenv
+sudo apt-get install -y python3-pip
+pip3 install -U pip
+pip3 install 'virtualenv!=20.1.0'
 
 ./run_tests.sh --uninstall --envs all
 ./run_tests.sh --install --envs all
@@ -31,7 +32,7 @@ EOF
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-    config.vm.box = "ubuntu/xenial64"
+    config.vm.box = "ubuntu/focal64"
 
     config.vm.define "dev" do |dev|
         dev.vm.provision "gitlint", type: "shell", inline: "#{INSTALL_DEPS}"
