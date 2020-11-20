@@ -15,7 +15,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 
 
 !!! important
-    **Gitlint no longer supports Python 2.7 and Python 3.5 as they [have reached End-Of-Life](https://endoflife.date/python). The last gitlint version to support python 2.7 and python 3.5 is `0.14.0` (released on October 24th, 2020).**
+    **Gitlint no longer supports Python 2.7 and Python 3.5 as they [have reached End-Of-Life](https://endoflife.date/python). The last gitlint version to support Python 2.7 and Python 3.5 is `0.14.0` (released on October 24th, 2020).**
 
 ## Features
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook). Also [works with pre-commit](#using-gitlint-through-pre-commit).
@@ -40,7 +40,7 @@ pip install gitlint
 
 # macOS
 brew install gitlint
-sudo port install gitlint  # alternative
+sudo port install gitlint  # alternative using macports
 
 # Ubuntu
 apt-get install gitlint
@@ -224,7 +224,7 @@ your `.pre-commit-config.yaml` file like so:
 
 !!! important
 
-   You need to add `--msg-filename` at the end of your custom `args` list as the gitlint-hook will fail otherwise.
+    You need to add `--msg-filename` at the end of your custom `args` list as the gitlint-hook will fail otherwise.
 
 
 ## Using gitlint in a CI environment

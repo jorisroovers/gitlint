@@ -69,7 +69,11 @@ setup(
     },
     keywords='gitlint git lint',
     author='Joris Roovers',
-    url='https://github.com/jorisroovers/gitlint',
+    url='https://jorisroovers.github.io/gitlint',
+    project_urls={
+        'Documentation': 'https://jorisroovers.github.io/gitlint',
+        'Source': 'https://github.com/jorisroovers/gitlint',
+    },
     license='MIT',
     package_data={
         'gitlint': ['files/*']
