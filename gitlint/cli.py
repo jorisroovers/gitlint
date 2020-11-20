@@ -8,12 +8,6 @@ import stat
 import sys
 import click
 
-# Error codes
-MAX_VIOLATION_ERROR_CODE = 252  # noqa
-USAGE_ERROR_CODE = 253  # noqa
-GIT_CONTEXT_ERROR_CODE = 254  # noqa
-CONFIG_ERROR_CODE = 255  # noqa
-
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
@@ -21,6 +15,12 @@ from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.shell import shell
 from gitlint.utils import LOG_FORMAT
+
+# Error codes
+MAX_VIOLATION_ERROR_CODE = 252
+USAGE_ERROR_CODE = 253
+GIT_CONTEXT_ERROR_CODE = 254
+CONFIG_ERROR_CODE = 255
 
 DEFAULT_CONFIG_FILE = ".gitlint"
 # -n: disable swap files. This fixes a vim error on windows (E303: Unable to open swap file for <path>)
