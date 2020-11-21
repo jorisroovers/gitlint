@@ -5,13 +5,14 @@ import stat
 
 from gitlint.utils import DEFAULT_ENCODING
 from gitlint.git import git_hooks_dir
+from gitlint.exception import GitlintError
 
 COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files", "commit-msg")
 COMMIT_MSG_HOOK_DST_PATH = "commit-msg"
 GITLINT_HOOK_IDENTIFIER = "### gitlint commit-msg hook start ###\n"
 
 
-class GitHookInstallerError(Exception):
+class GitHookInstallerError(GitlintError):
     pass
 
 

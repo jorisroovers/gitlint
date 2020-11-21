@@ -2,6 +2,8 @@ from abc import abstractmethod
 import os
 import re
 
+from gitlint.exception import GitlintError
+
 
 def allow_none(func):
     """ Decorator that sets option value to None if the passed value is None, otherwise calls the regular set method """
@@ -15,7 +17,7 @@ def allow_none(func):
     return wrapped
 
 
-class RuleOptionError(Exception):
+class RuleOptionError(GitlintError):
     pass
 
 

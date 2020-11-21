@@ -4,6 +4,7 @@ import logging
 import re
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RegexOption
+from gitlint.exception import GitlintError
 
 
 class Rule:
@@ -90,7 +91,7 @@ class RuleViolation:
         return f"{self.line_nr}: {self.rule_id} {self.message}: \"{self.content}\""
 
 
-class UserRuleError(Exception):
+class UserRuleError(GitlintError):
     """ Error used to indicate that an error occurred while trying to load a user rule """
     pass
 

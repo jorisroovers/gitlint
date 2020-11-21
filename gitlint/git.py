@@ -8,6 +8,7 @@ from gitlint import shell as sh
 from gitlint.shell import CommandNotFound, ErrorReturnCode
 
 from gitlint.cache import PropertyCache, cache
+from gitlint.exception import GitlintError
 
 # For now, the git date format we use is fixed, but technically this format is determined by `git config log.date`
 # We should fix this at some point :-)
@@ -16,7 +17,7 @@ GIT_TIMEFORMAT = "YYYY-MM-DD HH:mm:ss Z"
 LOG = logging.getLogger(__name__)
 
 
-class GitContextError(Exception):
+class GitContextError(GitlintError):
     """ Exception indicating there is an issue with the git context """
     pass
 

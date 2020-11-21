@@ -15,6 +15,7 @@ from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.shell import shell
 from gitlint.utils import LOG_FORMAT
+from gitlint.exception import GitlintError
 
 # Error codes
 MAX_VIOLATION_ERROR_CODE = 252
@@ -34,7 +35,7 @@ click.UsageError.exit_code = USAGE_ERROR_CODE
 LOG = logging.getLogger("gitlint.cli")
 
 
-class GitLintUsageError(Exception):
+class GitLintUsageError(GitlintError):
     """ Exception indicating there is an issue with how gitlint is used. """
     pass
 

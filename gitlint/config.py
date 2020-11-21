@@ -12,6 +12,7 @@ from gitlint import rules  # For some weird reason pylint complains about this, 
 from gitlint import options
 from gitlint import rule_finder
 from gitlint.contrib import rules as contrib_rules
+from gitlint.exception import GitlintError
 
 
 def handle_option_error(func):
@@ -27,7 +28,7 @@ def handle_option_error(func):
     return wrapped
 
 
-class LintConfigError(Exception):
+class LintConfigError(GitlintError):
     pass
 
 
