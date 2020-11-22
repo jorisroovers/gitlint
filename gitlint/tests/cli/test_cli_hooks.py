@@ -12,6 +12,7 @@ from gitlint.tests.base import BaseTestCase
 from gitlint import cli
 from gitlint import hooks
 from gitlint import config
+from gitlint.shell import ErrorReturnCode
 
 from gitlint.utils import DEFAULT_ENCODING
 
@@ -94,7 +95,7 @@ class CLIHookTests(BaseTestCase):
         expected_config.target = os.path.realpath(os.getcwd())
         uninstall_hook.assert_called_once_with(expected_config)
 
-    def test_hook_no_tty(self):
+    def test_run_hook_no_tty(self):
         """ Test for run-hook subcommand.
             When no TTY is available (like is the case for this test), the hook will abort after the first check.
         """
@@ -121,7 +122,7 @@ class CLIHookTests(BaseTestCase):
                 self.assertEqual(result.exit_code, 1)
 
     @patch('gitlint.cli.shell')
-    def test_hook_edit(self, shell):
+    def test_run_hook_edit(self, shell):
         """ Test for run-hook subcommand, answering 'e(dit)' after commit-hook """
 
         set_editors = [None, "myeditor"]
@@ -153,7 +154,7 @@ class CLIHookTests(BaseTestCase):
                         self.assert_log_contains("DEBUG: gitlint.cli run-hook: editing commit message")
                         self.assert_log_contains(f"DEBUG: gitlint.cli run-hook: {expected_editors[i]} {msg_filename}")
 
-    def test_hook_no(self):
+    def test_run_hook_no(self):
         """ Test for run-hook subcommand, answering 'n(o)' after commit-hook """
 
         with self.patch_input(['n']):
@@ -172,7 +173,7 @@ class CLIHookTests(BaseTestCase):
                     self.assertEqual(result.exit_code, 2)
                     self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message declined")
 
-    def test_hook_yes(self):
+    def test_run_hook_yes(self):
         """ Test for run-hook subcommand, answering 'y(es)' after commit-hook """
         with self.patch_input(['y']):
             with self.tempdir() as tmpdir:
@@ -190,8 +191,32 @@ class CLIHookTests(BaseTestCase):
                     self.assertEqual(result.exit_code, 0)
                     self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message accepted")
 
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
+    @patch('gitlint.git.sh')
+    def test_run_hook_negative(self, sh, _):
+        """ Negative test for the run-hook subcommand: testing whether exceptions are correctly handled when
+        running `gitlint run-hook`.
+        """
+        # GIT_CONTEXT_ERROR_CODE: git error
+        error_msg = b"fatal: not a git repository (or any of the parent directories): .git"
+        sh.git.side_effect = ErrorReturnCode("full command", b"stdout", error_msg)
+        result = self.cli.invoke(cli.cli, ["run-hook"])
+        expected = self.get_expected('cli/test_cli_hooks/test_run_hook_negative_1', {'git_repo': os.getcwd()})
+        self.assertEqual(result.output, expected)
+        self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
+
+        # USAGE_ERROR_CODE: incorrect use of gitlint
+        result = self.cli.invoke(cli.cli, ["--staged", "run-hook"])
+        self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_run_hook_negative_2'))
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+
+        # CONFIG_ERROR_CODE: incorrect config. Note that this is handled before the hook even runs
+        result = self.cli.invoke(cli.cli, ["-c", "föo.bár=1", "run-hook"])
+        self.assertEqual(result.output, "Config Error: No such rule 'föo'\n")
+        self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
+
     @patch('gitlint.cli.get_stdin_data', return_value="WIP: Test hook stdin tïtle\n")
-    def test_hook_stdin_violations(self, _):
+    def test_run_hook_stdin_violations(self, _):
         """ Test for passing stdin data to run-hook, expecting some violations. Equivalent of:
             $ echo "WIP: Test hook stdin tïtle" | gitlint run-hook
         """
@@ -205,7 +230,7 @@ class CLIHookTests(BaseTestCase):
             self.assertEqual(result.exit_code, 1)
 
     @patch('gitlint.cli.get_stdin_data', return_value="Test tïtle\n\nTest bödy that is long enough")
-    def test_hook_stdin_no_violations(self, _):
+    def test_run_hook_stdin_no_violations(self, _):
         """ Test for passing stdin data to run-hook, expecting *NO* violations, Equivalent of:
             $ echo -e "Test tïtle\n\nTest bödy that is long enough" | gitlint run-hook
         """
@@ -218,7 +243,7 @@ class CLIHookTests(BaseTestCase):
             self.assertEqual(result.exit_code, 0)
 
     @patch('gitlint.cli.get_stdin_data', return_value="WIP: Test hook config tïtle\n")
-    def test_hook_config(self, _):
+    def test_run_hook_config(self, _):
         """ Test that gitlint still respects config when running run-hook, equivalent of:
             $ echo "WIP: Test hook config tïtle" | gitlint -c title-max-length.line-length=5 --ignore B6 run-hook
         """
@@ -232,7 +257,7 @@ class CLIHookTests(BaseTestCase):
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
     @patch('gitlint.git.sh')
-    def test_hook_local_commit(self, sh, _):
+    def test_run_hook_local_commit(self, sh, _):
         """ Test running the hook on the last commit-msg from the local repo, equivalent of:
             $ gitlint run-hook
             and then choosing 'e'

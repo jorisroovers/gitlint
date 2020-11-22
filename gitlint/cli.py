@@ -171,6 +171,19 @@ def build_git_context(lint_config, msg_filename, refspec):
     return GitContext.from_local_repository(lint_config.target, refspec)
 
 
+def handle_gitlint_error(ctx, exc):
+    """ Helper function to handle exceptions """
+    if isinstance(exc, GitContextError):
+        click.echo(exc)
+        ctx.exit(GIT_CONTEXT_ERROR_CODE)
+    elif isinstance(exc, GitLintUsageError):
+        click.echo(f"Error: {exc}")
+        ctx.exit(USAGE_ERROR_CODE)
+    elif isinstance(exc, LintConfigError):
+        click.echo(f"Config Error: {exc}")
+        ctx.exit(CONFIG_ERROR_CODE)
+
+
 class ContextObj:
     """ Simple class to hold data that is passed between Click commands via the Click context. """
 
@@ -239,15 +252,8 @@ def cli(  # pylint: disable=too-many-arguments
         if ctx.invoked_subcommand is None:
             ctx.invoke(lint)
 
-    except GitContextError as e:
-        click.echo(e)
-        ctx.exit(GIT_CONTEXT_ERROR_CODE)
-    except GitLintUsageError as e:
-        click.echo(f"Error: {e}")
-        ctx.exit(USAGE_ERROR_CODE)
-    except LintConfigError as e:
-        click.echo(f"Config Error: {e}")
-        ctx.exit(CONFIG_ERROR_CODE)
+    except GitlintError as e:
+        handle_gitlint_error(ctx, e)
 
 
 @cli.command("lint")
@@ -347,6 +353,8 @@ def run_hook(ctx):
         try:
             click.echo("gitlint: checking commit message...")
             ctx.invoke(lint)
+        except GitlintError as e:
+            handle_gitlint_error(ctx, e)
         except click.exceptions.Exit as e:
             # Flush stderr andstdout, this resolves an issue with output ordering in Cygwin
             sys.stderr.flush()
