@@ -114,7 +114,7 @@
     <li>Contributing</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/jorisroovers/gitlint/edit/master/docs/contributing.md"
+        <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/contributing.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -156,7 +156,8 @@ or months before merged code actually gets released - we know that can be frustr
 a well-considered trade-off based on available time.</p>
 </div>
 <h2 id="development">Development</h2>
-<p>There is a Vagrantfile in this repository that can be used for development.</p>
+<p>There is a Vagrantfile (Ubuntu) in this repository that can be used for development.
+It comes pre-installed with all Python versions that gitlint supports.</p>
 <pre><code class="language-sh">vagrant up
 vagrant ssh
 </code></pre>
@@ -167,7 +168,7 @@ python setup.py develop
 </code></pre>
 <p>To run tests:</p>
 <pre><code class="language-sh">./run_tests.sh                       # run unit tests and print test coverage
-./run_test.sh gitlint/tests/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+./run_tests.sh gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
 ./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
 ./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
@@ -178,11 +179,11 @@ python setup.py develop
 ./run_tests.sh --lint                # run pylint checks
 ./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
 </code></pre>
-<p>The <code>Vagrantfile</code> comes with <code>virtualenv</code>s for python 2.7, 3.5, 3.6, 3.7, 3.8, 3.9 and pypy2.
+<p>The <code>Vagrantfile</code> comes with <code>virtualenv</code>s for python 3.6, 3.7, 3.8, 3.9 and pypy3.6.
 You can easily run tests against specific python environments by using the following commands <em>inside</em> of the Vagrant VM:</p>
-<pre><code class="language-sh">./run_tests.sh --envs 27               # Run the unit tests against Python 2.7
-./run_tests.sh --envs 27,37,pypy2      # Run the unit tests against Python 2.7, Python 3.7 and Pypy2
-./run_tests.sh --envs 27,37 --pep8     # Run pep8 checks against Python 2.7 and Python 3.7 (also works for --git, --integration, --pep8, --stats and --lint.
+<pre><code class="language-sh">./run_tests.sh --envs 36               # Run the unit tests against Python 3.6
+./run_tests.sh --envs 36,37,pypy36     # Run the unit tests against Python 3.6, Python 3.7 and Pypy3.6
+./run_tests.sh --envs 36,37 --pep8     # Run pep8 checks against Python 3.6 and Python 3.7 (also works for --git, --integration, --pep8, --stats and --lint.
 ./run_tests.sh --envs all --all        # Run all tests against all environments
 ./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
 </code></pre>

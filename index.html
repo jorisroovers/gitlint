@@ -124,7 +124,7 @@
     <li>Home</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/jorisroovers/gitlint/edit/master/docs/index.md"
+        <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/index.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -150,7 +150,7 @@ have a look at <a href="https://github.com/m1foley/fit-commit">fit-commit</a> (R
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p><strong>Gitlint will soon be dropping support for Python 2.7 and Python 3.5 as they <a href="https://endoflife.date/python">have reached End-Of-Life</a></strong>.</p>
+<p><strong>Gitlint no longer supports Python 2.7 and Python 3.5 as they <a href="https://endoflife.date/python">have reached End-Of-Life</a>. The last gitlint version to support Python 2.7 and Python 3.5 is <code>0.14.0</code> (released on October 24th, 2020).</strong></p>
 </div>
 <h2 id="features">Features</h2>
 <ul>
@@ -175,7 +175,7 @@ pip install gitlint
 
 # macOS
 brew install gitlint
-sudo port install gitlint  # alternative
+sudo port install gitlint  # alternative using macports
 
 # Ubuntu
 apt-get install gitlint
@@ -327,10 +327,12 @@ your <code>.pre-commit-config.yaml</code> file like so:</p>
     rev:  # Fill in a tag / sha here
     hooks:
     -   id: gitlint
-        stages: [commit-msg]
-        entry: gitlint
         args: [--contrib=CT1, --msg-filename]
 </code></pre>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You need to add <code>--msg-filename</code> at the end of your custom <code>args</code> list as the gitlint-hook will fail otherwise.</p>
+</div>
 <h2 id="using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</h2>
 <p>By default, when just running <code>gitlint</code> without additional parameters, gitlint lints the last commit in the current
 working directory.</p>
@@ -568,5 +570,5 @@ to 252.</p>
 
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2020-10-25 09:04:43.943555+00:00
+Build Date UTC : 2020-11-27 11:15:29.715435+00:00
 -->
