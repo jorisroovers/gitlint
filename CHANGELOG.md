@@ -1,6 +1,6 @@
 # Changelog #
 
-## v0.15.0 (TBD) ##
+## v0.15.0 (2020-11-27) ##
 
 Contributors:
 Special thanks to [BrunIF](https://github.com/BrunIF), [lukech](https://github.com/lukech), [Cielquan](https://github.com/Cielquan), [harens](https://github.com/harens) and [sigmavirus24](https://github.com/sigmavirus24).
