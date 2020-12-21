@@ -368,7 +368,13 @@ def run_hook(ctx):
             click.echo("-----------------------------------------------")
             click.echo("gitlint: " + click.style("Your commit message contains the above violations.", fg='red'))
 
-            value = None
+            if ctx.obj.config.ignore_stdin:
+                # in a cli or non-interactive environment, automatically refuse the commit and fail with 
+                # the appriopriate exit code
+                value = "n"
+            else:
+                value = None
+
             while value not in ["y", "n", "e"]:
                 click.echo("Continue with commit anyways (this keeps the current commit message)? "
                            "[y(es)/n(no)/e(dit)] ", nl=False)
