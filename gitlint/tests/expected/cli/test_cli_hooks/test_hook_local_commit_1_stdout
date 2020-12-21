@@ -1,4 +1,4 @@
 gitlint: checking commit message...
 -----------------------------------------------
-gitlint: Your commit message contains the above violations.
+gitlint: Your commit message contains violations.
 Continue with commit anyways (this keeps the current commit message)? [y(es)/n(no)/e(dit)] Editing only possible when --msg-filename is specified.
