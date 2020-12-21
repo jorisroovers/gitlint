@@ -2412,7 +2412,7 @@
     ],
     [
       0.000020,
-      "gitlint: \u001b[31mYour commit message contains the above violations.\u001b[0m\r\n"
+      "gitlint: \u001b[31mYour commit message contains violations.\u001b[0m\r\n"
     ],
     [
       0.002541,

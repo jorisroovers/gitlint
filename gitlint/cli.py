@@ -366,7 +366,7 @@ def run_hook(ctx):
                 continue
 
             click.echo("-----------------------------------------------")
-            click.echo("gitlint: " + click.style("Your commit message contains the above violations.", fg='red'))
+            click.echo("gitlint: " + click.style("Your commit message contains violations.", fg='red'))
 
             value = None
             while value not in ["y", "n", "e"]:

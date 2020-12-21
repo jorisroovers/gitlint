@@ -14,7 +14,7 @@ class HookTests(BaseTestCase):
                   u'2: B4 Second line is not empty: "Contënt on the second line"\n',
                   '3: B6 Body message is missing\n',
                   '-----------------------------------------------\n',
-                  'gitlint: \x1b[31mYour commit message contains the above violations.\x1b[0m\n']
+                  'gitlint: \x1b[31mYour commit message contains violations.\x1b[0m\n']
 
     def setUp(self):
         self.responses = []
@@ -48,7 +48,7 @@ class HookTests(BaseTestCase):
     def _interact(self, line, stdin):
         self.githook_output.append(line)
         # Answer 'yes' to question to keep violating commit-msg
-        if "Your commit message contains the above violations" in line:
+        if "Your commit message contains violations" in line:
             response = self.responses[self.response_index]
             stdin.put(f"{response}\n")
             self.response_index = (self.response_index + 1) % len(self.responses)
