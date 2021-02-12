@@ -17,16 +17,16 @@ class ContribSignedOffByTests(BaseTestCase):
             self.assertIn(SignedOffBy(), config.rules)
 
     def test_signedoff_by(self):
-        # No violations when 'Signed-Off-By' line is present
+        # No violations when 'Signed-off-by' line is present
         rule = SignedOffBy()
-        violations = rule.validate(self.gitcommit("Föobar\n\nMy Body\nSigned-Off-By: John Smith"))
+        violations = rule.validate(self.gitcommit("Föobar\n\nMy Body\nSigned-off-by: John Smith"))
         self.assertListEqual([], violations)
 
-        # Assert violation when no 'Signed-Off-By' line is present
+        # Assert violation when no 'Signed-off-by' line is present
         violations = rule.validate(self.gitcommit("Föobar\n\nMy Body"))
-        expected_violation = RuleViolation("CC1", "Body does not contain a 'Signed-Off-By' line", line_nr=1)
+        expected_violation = RuleViolation("CC1", "Body does not contain a 'Signed-off-by' line", line_nr=1)
         self.assertListEqual(violations, [expected_violation])
 
-        # Assert violation when no 'Signed-Off-By' in title but not in body
-        violations = rule.validate(self.gitcommit("Signed-Off-By\n\nFöobar"))
+        # Assert violation when no 'Signed-off-by' in title but not in body
+        violations = rule.validate(self.gitcommit("Signed-off-by\n\nFöobar"))
         self.assertListEqual(violations, [expected_violation])
