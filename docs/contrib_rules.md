@@ -41,7 +41,7 @@ You can also configure contrib rules using [any of the other ways to configure g
 ID    | Name                                | gitlint version   | Description
 ------|-------------------------------------|------------------ |-------------------------------------------
 CT1   | contrib-title-conventional-commits  | >= 0.12.0         | Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit message style on the title.
-CC1   | contrib-requires-signed-off-by      | >= 0.12.0         | Commit body must contain a `Signed-Off-By` line.
+CC1   | contrib-body-requires-signed-off-by | >= 0.12.0         | Commit body must contain a `Signed-Off-By` line.
 
 ## CT1: contrib-title-conventional-commits ##
 
@@ -56,11 +56,11 @@ Name           | gitlint version    | Default      | Description
 types          | >= 0.12.0          | `fix,feat,chore,docs,style,refactor,perf,test,revert,ci,build` | Comma separated list of allowed commit types.
 
 
-## CC1: contrib-requires-signed-off-by ##
+## CC1: contrib-body-requires-signed-off-by ##
 
 ID    | Name                                  | gitlint version    | Description
 ------|---------------------------------------|--------------------|-------------------------------------------
-CC1   | contrib-requires-signed-off-by        | >= 0.12.0          | Commit body must contain a `Signed-Off-By` line. This means, a line that starts with the `Signed-Off-By` keyword.
+CC1   | contrib-body-requires-signed-off-by   | >= 0.12.0          | Commit body must contain a `Signed-Off-By` line. This means, a line that starts with the `Signed-Off-By` keyword.
 
 
 ## Contributing Contrib rules
