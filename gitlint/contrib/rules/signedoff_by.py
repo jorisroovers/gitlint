@@ -3,8 +3,8 @@ from gitlint.rules import CommitRule, RuleViolation
 
 
 class SignedOffBy(CommitRule):
-    """ This rule will enforce that each commit body contains a "Signed-Off-By" line.
-    We keep things simple here and just check whether the commit body contains a line that starts with "Signed-Off-By".
+    """ This rule will enforce that each commit body contains a "Signed-off-by" line.
+    We keep things simple here and just check whether the commit body contains a line that starts with "Signed-off-by".
     """
 
     name = "contrib-body-requires-signed-off-by"
@@ -12,7 +12,7 @@ class SignedOffBy(CommitRule):
 
     def validate(self, commit):
         for line in commit.message.body:
-            if line.startswith("Signed-Off-By"):
+            if line.lower().startswith("signed-off-by"):
                 return []
 
-        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By' line", line_nr=1)]
+        return [RuleViolation(self.id, "Body does not contain a 'Signed-off-by' line", line_nr=1)]

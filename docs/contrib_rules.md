@@ -10,7 +10,7 @@ re-implement these commonly used rules themselves as [user-defined](user_defined
 To enable certain contrib rules, you can use the `--contrib` flag.
 ```sh
 $ cat examples/commit-message-1 | gitlint --contrib contrib-title-conventional-commits,CC1
-1: CC1 Body does not contain a 'Signed-Off-By' line
+1: CC1 Body does not contain a 'Signed-off-by' line
 1: CL1 Title does not start with one of fix, feat, chore, docs, style, refactor, perf, test: "WIP: This is the title of a commit message."
 
 # These are the default violations
@@ -41,7 +41,7 @@ You can also configure contrib rules using [any of the other ways to configure g
 ID    | Name                                | gitlint version   | Description
 ------|-------------------------------------|------------------ |-------------------------------------------
 CT1   | contrib-title-conventional-commits  | >= 0.12.0         | Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit message style on the title.
-CC1   | contrib-body-requires-signed-off-by | >= 0.12.0         | Commit body must contain a `Signed-Off-By` line.
+CC1   | contrib-body-requires-signed-off-by | >= 0.12.0         | Commit body must contain a `Signed-off-by` line.
 
 ## CT1: contrib-title-conventional-commits ##
 
@@ -60,7 +60,7 @@ types          | >= 0.12.0          | `fix,feat,chore,docs,style,refactor,perf,t
 
 ID    | Name                                  | gitlint version    | Description
 ------|---------------------------------------|--------------------|-------------------------------------------
-CC1   | contrib-body-requires-signed-off-by   | >= 0.12.0          | Commit body must contain a `Signed-Off-By` line. This means, a line that starts with the `Signed-Off-By` keyword.
+CC1   | contrib-body-requires-signed-off-by   | >= 0.12.0          | Commit body must contain a `Signed-off-by` line. This means, a line that starts with the `Signed-off-by` keyword.
 
 
 ## Contributing Contrib rules

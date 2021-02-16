@@ -9,8 +9,8 @@ for python files containing gitlint rule classes. You can also specify a single 
 
 ```sh
 cat examples/commit-message-1 | gitlint --extra-path examples/
-# Example output of a user-defined Signed-Off-By rule
-1: UC2 Body does not contain a 'Signed-Off-By Line' 
+# Example output of a user-defined Signed-off-by rule
+1: UC2 Body does not contain a 'Signed-off-by Line'
 # other violations were removed for brevity
 ```
 
@@ -23,9 +23,9 @@ which is part of the examples directory that was passed via `--extra-path`:
 from gitlint.rules import CommitRule, RuleViolation
 
 class SignedOffBy(CommitRule):
-    """ This rule will enforce that each commit contains a "Signed-Off-By" line.
+    """ This rule will enforce that each commit contains a "Signed-off-by" line.
     We keep things simple here and just check whether the commit body contains a
-    line that starts with "Signed-Off-By".
+    line that starts with "Signed-off-by".
     """
 
     # A rule MUST have a human friendly name
@@ -39,10 +39,10 @@ class SignedOffBy(CommitRule):
         self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")
 
         for line in commit.message.body:
-            if line.startswith("Signed-Off-By"):
+            if line.startswith("Signed-off-by"):
                 return
 
-        msg = "Body does not contain a 'Signed-Off-By' line"
+        msg = "Body does not contain a 'Signed-off-by' line"
         return [RuleViolation(self.id, msg, line_nr=1)]
 ```
 
@@ -95,9 +95,9 @@ Consider the following `CommitRule` that can be found in [examples/my_commit_rul
 from gitlint.rules import CommitRule, RuleViolation
 
 class SignedOffBy(CommitRule):
-    """ This rule will enforce that each commit contains a "Signed-Off-By" line.
+    """ This rule will enforce that each commit contains a "Signed-off-by" line.
     We keep things simple here and just check whether the commit body contains a
-    line that starts with "Signed-Off-By".
+    line that starts with "Signed-off-by".
     """
 
     # A rule MUST have a human friendly name
@@ -111,10 +111,10 @@ class SignedOffBy(CommitRule):
         self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")
 
         for line in commit.message.body:
-            if line.startswith("Signed-Off-By"):
+            if line.startswith("Signed-off-by"):
                 return
 
-        msg = "Body does not contain a 'Signed-Off-By' line"
+        msg = "Body does not contain a 'Signed-off-by' line"
         return [RuleViolation(self.id, msg, line_nr=1)]
 ```
 Note the use of the `name` and `id` class attributes and the `validate(...)` method taking a single `commit` parameter.
@@ -368,7 +368,7 @@ class ReleaseConfigurationRule(ConfigurationRule):
             # NOT modify your actual commit in git)
             commit.message.body = [line for line in commit.message.body if not line.startswith("$")]
 
-            # You can add any extra properties you want to the commit object, 
+            # You can add any extra properties you want to the commit object,
             # these will be available later on in all rules.
             commit.my_property = "This is my property"
 ```

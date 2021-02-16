@@ -397,9 +397,9 @@ regex                 | >= 0.14.0         | None                         |  [Pyt
 [ignore-body-lines]
 regex=^Co-Authored-By
 
-# Ignore lines that start with 'Co-Authored-By' or with 'Signed-Off-By'
+# Ignore lines that start with 'Co-Authored-By' or with 'Signed-off-by'
 [ignore-body-lines]
-regex=(^Co-Authored-By)|(^Signed-Off-By)
+regex=(^Co-Authored-By)|(^Signed-off-by)
 
 # Ignore lines that contain 'foobar'
 [ignore-body-lines]

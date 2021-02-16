@@ -40,8 +40,8 @@ class BodyMaxLineCount(CommitRule):
 
 
 class SignedOffBy(CommitRule):
-    """ This rule will enforce that each commit contains a "Signed-Off-By" line.
-    We keep things simple here and just check whether the commit body contains a line that starts with "Signed-Off-By".
+    """ This rule will enforce that each commit contains a "Signed-off-by" line.
+    We keep things simple here and just check whether the commit body contains a line that starts with "Signed-off-by".
     """
 
     # A rule MUST have a human friendly name
@@ -54,10 +54,10 @@ class SignedOffBy(CommitRule):
         self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")
 
         for line in commit.message.body:
-            if line.startswith("Signed-Off-By"):
+            if line.startswith("Signed-off-by"):
                 return
 
-        return [RuleViolation(self.id, "Body does not contain a 'Signed-Off-By' line", line_nr=1)]
+        return [RuleViolation(self.id, "Body does not contain a 'Signed-off-by' line", line_nr=1)]
 
 
 class BranchNamingConventions(CommitRule):
