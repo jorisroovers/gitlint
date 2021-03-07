@@ -290,7 +290,7 @@ class BodyMissing(CommitRule):
         # ignore merges when option tells us to, which may have no body
         if self.options['ignore-merge-commits'].value and commit.is_merge_commit:
             return
-        if len(commit.message.body) < 2:
+        if len(commit.message.body) < 2 or not ''.join(commit.message.body).strip():
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
 
 

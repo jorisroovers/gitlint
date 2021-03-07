@@ -126,6 +126,16 @@ class BodyRuleTests(BaseTestCase):
         violations = rule.validate(commit)
         self.assertListEqual(violations, [expected_violation])
 
+    def test_body_missing_multiple_empty_new_lines(self):
+        rule = rules.BodyMissing()
+
+        # body is too short
+        expected_violation = rules.RuleViolation("B6", "Body message is missing", None, 3)
+
+        commit = self.gitcommit("Tïtle\n\n\n\n")
+        violations = rule.validate(commit)
+        self.assertListEqual(violations, [expected_violation])
+
     def test_body_missing_merge_commit(self):
         rule = rules.BodyMissing()
 
