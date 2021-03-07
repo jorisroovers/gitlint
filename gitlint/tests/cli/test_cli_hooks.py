@@ -17,6 +17,13 @@ from gitlint.shell import ErrorReturnCode
 from gitlint.utils import DEFAULT_ENCODING
 
 
+def edit_commit(args, commit_message):
+    cli = args.split(' ')
+    filepath = cli[-1]
+    with open(filepath, "w") as msg_filename:
+        msg_filename.write(commit_message)
+
+
 class CLIHookTests(BaseTestCase):
     USAGE_ERROR_CODE = 253
     GIT_CONTEXT_ERROR_CODE = 254
@@ -153,6 +160,39 @@ class CLIHookTests(BaseTestCase):
                         shell.assert_called_with(expected_editors[i] + " " + msg_filename)
                         self.assert_log_contains("DEBUG: gitlint.cli run-hook: editing commit message")
                         self.assert_log_contains(f"DEBUG: gitlint.cli run-hook: {expected_editors[i]} {msg_filename}")
+
+    def test_run_hook_edit_fail_first_edit_success(self):
+        """ Test for run-hook subcommand, answering 'e(dit)' after commit-hook """
+
+        expected_editor = "vim -n"
+        bad_commit_message = "WIP: höok edit 1."
+        corrected_commit_message = "höok edit 1\n\nAdd a long enough body\n"
+        os.environ['EDITOR'] = expected_editor
+
+        def edit_commit_partial(cli):
+            return edit_commit(cli, corrected_commit_message)
+
+        with patch('gitlint.cli.shell', side_effect=edit_commit_partial) as shell:
+            with self.patch_input(['e']):
+                with self.tempdir() as tmpdir:
+                    msg_filename = os.path.realpath(os.path.join(tmpdir, "hür"))
+                    with io.open(msg_filename, 'w', encoding=DEFAULT_ENCODING) as f:
+                        f.write(bad_commit_message + "\n")
+
+                    with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+                        result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
+                        self.assertEqual(result.output, self.get_expected('cli/test_cli_hooks/test_hook_edit_2_stdout',
+                                                                          {"commit_msg": corrected_commit_message}))
+                        expected = self.get_expected("cli/test_cli_hooks/test_hook_edit_2_stderr",
+                                                     {"commit_msg": bad_commit_message})
+                        self.assertEqual(stderr.getvalue(), expected)
+
+                        # exit code = number of violations, no more violations
+                        self.assertEqual(result.exit_code, 0)
+
+                        shell.assert_called_with(expected_editor + " " + msg_filename)
+                        self.assert_log_contains("DEBUG: gitlint.cli run-hook: editing commit message")
+                        self.assert_log_contains(f"DEBUG: gitlint.cli run-hook: {expected_editor} {msg_filename}")
 
     def test_run_hook_no(self):
         """ Test for run-hook subcommand, answering 'n(o)' after commit-hook """

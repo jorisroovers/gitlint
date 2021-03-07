@@ -3,6 +3,7 @@
 import copy
 import logging
 import os
+import pathlib
 import platform
 import stat
 import sys
@@ -152,7 +153,8 @@ def build_git_context(lint_config, msg_filename, refspec):
     # 1. Any data specified via --msg-filename
     if msg_filename:
         LOG.debug("Using --msg-filename.")
-        return from_commit_msg(str(msg_filename.read()))
+        with msg_filename.open() as msg_file:
+            return from_commit_msg(str(msg_file.read()))
 
     # 2. Any data sent to stdin (unless stdin is being ignored)
     if not lint_config.ignore_stdin:
@@ -191,7 +193,7 @@ class ContextObj:
         self.config = config
         self.config_builder = config_builder
         self.refspec = refspec
-        self.msg_filename = msg_filename
+        self.msg_filename = pathlib.Path(msg_filename) if msg_filename else None
         self.gitcontext = gitcontext
 
 
@@ -212,7 +214,8 @@ class ContextObj:
 @click.option('--ignore', envvar='GITLINT_IGNORE', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('--contrib', envvar='GITLINT_CONTRIB', default="",
               help="Contrib rules to enable (comma-separated by id or name).")
-@click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
+@click.option('--msg-filename', type=click.Path(exists=True, dir_okay=False),
+              help="Path to a file containing a commit-msg.")
 @click.option('--ignore-stdin', envvar='GITLINT_IGNORE_STDIN', is_flag=True,
               help="Ignore any stdin data. Useful for running in CI server.")
 @click.option('--staged', envvar='GITLINT_STAGED', is_flag=True,
@@ -392,9 +395,8 @@ def run_hook(ctx):
                 LOG.debug("run-hook: editing commit message")
                 msg_filename = ctx.obj.msg_filename
                 if msg_filename:
-                    msg_filename.seek(0)
                     editor = os.environ.get("EDITOR", DEFAULT_COMMIT_MSG_EDITOR)
-                    msg_filename_path = os.path.realpath(msg_filename.name)
+                    msg_filename_path = str(msg_filename.resolve())
                     LOG.debug("run-hook: %s %s", editor, msg_filename_path)
                     shell(editor + " " + msg_filename_path)
                 else:
