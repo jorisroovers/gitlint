@@ -212,7 +212,7 @@ what you're looking for.</p>
 </tr>
 <tr>
 <td>T8</td>
-<td>title-max-length</td>
+<td>title-min-length</td>
 <td>&gt;= 0.14.0</td>
 <td>Title length must be &gt; 5 chars.</td>
 </tr>
@@ -1034,9 +1034,9 @@ ignore=T1,body-min-length,B6
 [ignore-body-lines]
 regex=^Co-Authored-By
 
-# Ignore lines that start with 'Co-Authored-By' or with 'Signed-Off-By'
+# Ignore lines that start with 'Co-Authored-By' or with 'Signed-off-by'
 [ignore-body-lines]
-regex=(^Co-Authored-By)|(^Signed-Off-By)
+regex=(^Co-Authored-By)|(^Signed-off-by)
 
 # Ignore lines that contain 'foobar'
 [ignore-body-lines]

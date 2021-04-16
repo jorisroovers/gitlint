@@ -67,7 +67,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#ct1-contrib-title-conventional-commits">CT1: contrib-title-conventional-commits</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#cc1-contrib-requires-signed-off-by">CC1: contrib-requires-signed-off-by</a>
+    <li class="toctree-l2"><a class="reference internal" href="#cc1-contrib-body-requires-signed-off-by">CC1: contrib-body-requires-signed-off-by</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#contributing-contrib-rules">Contributing Contrib rules</a>
     </li>
@@ -129,7 +129,7 @@ forcing these rules on all gitlint users. This also means that users don't have 
 re-implement these commonly used rules themselves as <a href="user_defined_rules">user-defined</a> rules.</p>
 <p>To enable certain contrib rules, you can use the <code>--contrib</code> flag.</p>
 <pre><code class="language-sh">$ cat examples/commit-message-1 | gitlint --contrib contrib-title-conventional-commits,CC1
-1: CC1 Body does not contain a 'Signed-Off-By' line
+1: CC1 Body does not contain a 'Signed-off-by' line
 1: CL1 Title does not start with one of fix, feat, chore, docs, style, refactor, perf, test: &quot;WIP: This is the title of a commit message.&quot;
 
 # These are the default violations
@@ -169,9 +169,9 @@ types = bugfix,user-story,epic
 </tr>
 <tr>
 <td>CC1</td>
-<td>contrib-requires-signed-off-by</td>
+<td>contrib-body-requires-signed-off-by</td>
 <td>&gt;= 0.12.0</td>
-<td>Commit body must contain a <code>Signed-Off-By</code> line.</td>
+<td>Commit body must contain a <code>Signed-off-by</code> line.</td>
 </tr>
 </tbody>
 </table>
@@ -213,7 +213,7 @@ types = bugfix,user-story,epic
 </tr>
 </tbody>
 </table>
-<h2 id="cc1-contrib-requires-signed-off-by">CC1: contrib-requires-signed-off-by</h2>
+<h2 id="cc1-contrib-body-requires-signed-off-by">CC1: contrib-body-requires-signed-off-by</h2>
 <table>
 <thead>
 <tr>
@@ -226,9 +226,9 @@ types = bugfix,user-story,epic
 <tbody>
 <tr>
 <td>CC1</td>
-<td>contrib-requires-signed-off-by</td>
+<td>contrib-body-requires-signed-off-by</td>
 <td>&gt;= 0.12.0</td>
-<td>Commit body must contain a <code>Signed-Off-By</code> line. This means, a line that starts with the <code>Signed-Off-By</code> keyword.</td>
+<td>Commit body must contain a <code>Signed-off-by</code> line. This means, a line that starts with the <code>Signed-off-by</code> keyword.</td>
 </tr>
 </tbody>
 </table>
