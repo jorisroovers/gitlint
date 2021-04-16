@@ -60,7 +60,7 @@ setup(
     python_requires=">=3.6",
     install_requires=[
         'Click==7.1.2',
-        'arrow==1.0.2',
+        'arrow==1.0.3',
     ],
     extras_require={
         ':sys_platform != "win32"': [
