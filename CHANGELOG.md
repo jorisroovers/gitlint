@@ -1,5 +1,16 @@
 # Changelog #
 
+## v0.15.1 (2021-04-16) ##
+
+Contributors:
+Special thanks to all contributors for this release, in particular [PW999](https://github.com/PW999), [gsemet](https://github.com/gsemet) and [Lorac](https://github.com/Lorac).
+
+Bugfixes:
+  - Git commit message body with only new lines is not longer considered empty by `body-is-missing` ([#176](https://github.com/jorisroovers/gitlint/issues/176))
+  - Added compatibility with `git commit -s` for `contrib-requires-signed-off-by` rule ([#178](https://github.com/jorisroovers/gitlint/pull/178))
+- Minor tweak to gitlint commit-hook output ([#173](https://github.com/jorisroovers/gitlint/pull/173))
+- All dependencies have been upgraded to the latest available versions (`Click==7.1.2`, `arrow==1.0.3`, `sh==1.14.1`).
+- Minor doc fixes
 ## v0.15.0 (2020-11-27) ##
 
 Contributors:
