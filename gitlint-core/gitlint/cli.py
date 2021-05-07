@@ -210,7 +210,8 @@ class ContextObj:
 @click.option('--target', envvar='GITLINT_TARGET',
               type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               help="Path of the target git repository. [default: current working directory]")
-@click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
+@click.option('-C', '--config', envvar='GITLINT_CONFIG',
+              type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
               help=f"Config file location [default: {DEFAULT_CONFIG_FILE}]")
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +

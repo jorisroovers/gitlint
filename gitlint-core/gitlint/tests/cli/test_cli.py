@@ -481,6 +481,16 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
             self.assertEqual(result.exit_code, 2)
 
+    @patch('gitlint.cli.get_stdin_data', return_value="WIP: tëst")
+    def test_config_file_environment(self, _):
+        """ Test for GITLINT_CONFIG environment variable """
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
+            result = self.cli.invoke(cli.cli, env={"GITLINT_CONFIG": config_path})
+            self.assertEqual(result.output, "")
+            self.assertEqual(stderr.getvalue(), "1: T5\n3: B6\n")
+            self.assertEqual(result.exit_code, 2)
+
     def test_config_file_negative(self):
         """ Negative test for --config option """
         # Directory as config file
@@ -500,6 +510,27 @@ class CLITests(BaseTestCase):
         # Invalid config file
         config_path = self.get_sample_path(os.path.join("config", "invalid-option-value"))
         result = self.cli.invoke(cli.cli, ["--config", config_path])
+        self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
+
+    def test_config_file_negative_environment(self):
+        """ Negative test for GITLINT_CONFIG environment variable """
+        # Directory as config file
+        config_path = self.get_sample_path("config")
+        result = self.cli.invoke(cli.cli, env={"GITLINT_CONFIG": config_path})
+        expected_string = f"Error: Invalid value for '-C' / '--config': File '{config_path}' is a directory."
+        self.assertEqual(result.output.split("\n")[3], expected_string)
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+
+        # Non existing file
+        config_path = self.get_sample_path("föo")
+        result = self.cli.invoke(cli.cli, env={"GITLINT_CONFIG": config_path})
+        expected_string = f"Error: Invalid value for '-C' / '--config': File '{config_path}' does not exist."
+        self.assertEqual(result.output.split("\n")[3], expected_string)
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+
+        # Invalid config file
+        config_path = self.get_sample_path(os.path.join("config", "invalid-option-value"))
+        result = self.cli.invoke(cli.cli, env={"GITLINT_CONFIG": config_path})
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
