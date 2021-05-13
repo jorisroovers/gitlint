@@ -3,7 +3,7 @@ import re
 from gitlint.options import ListOption
 from gitlint.rules import CommitMessageTitle, LineRule, RuleViolation
 
-RULE_REGEX = re.compile(r"[^(]+?(\([^)]+?\))?: .+")
+RULE_REGEX = re.compile(r"[^(]+?(\([^)]+?\))?!?: .+")
 
 
 class ConventionalCommit(LineRule):
