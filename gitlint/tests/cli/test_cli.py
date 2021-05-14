@@ -405,7 +405,7 @@ class CLITests(BaseTestCase):
             result = self.cli.invoke(cli.cli, ["--contrib", "contrib-title-conventional-commits,CC1"])
             expected_output = self.get_expected('cli/test_cli/test_contrib_1')
             self.assertEqual(stderr.getvalue(), expected_output)
-            self.assertEqual(result.exit_code, 3)
+            self.assertEqual(result.exit_code, 2)
 
     @patch('gitlint.cli.get_stdin_data', return_value="Test tïtle\n")
     def test_contrib_negative(self, _):
