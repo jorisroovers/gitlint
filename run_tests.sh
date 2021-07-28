@@ -36,17 +36,17 @@ NO_COLOR="\033[0m"
 
 title(){
     MSG="$BLUE$1$NO_COLOR"
-    echo -e $MSG
+    echo -e "$MSG"
 }
 
 subtitle(){
     MSG="$YELLOW$1$NO_COLOR"
-    echo -e $MSG
+    echo -e "$MSG"
 }
 
 fatal(){
     MSG="$RED$1$NO_COLOR"
-    echo -e $MSG
+    echo -e "$MSG"
     exit 1
 }
 
@@ -61,7 +61,7 @@ handle_test_result(){
     EXIT_CODE=$1
     RESULT="$2"
     # Change color to red or green depending on SUCCESS
-    if [ $EXIT_CODE -eq 0 ]; then
+    if [ "$EXIT_CODE" -eq 0 ]; then
         echo -e "${GREEN}SUCCESS"
     else
         echo -e "${RED}FAIL"
@@ -76,30 +76,31 @@ handle_test_result(){
 
 run_formatting_check(){
     # BLACK
-    target=${testargs:-"."}
+    defaults=('.')
+    targets=("${testargs[@]:-${defaults[@]}}")
     echo -ne "Running black --check..."
-    RESULT=$(black --check --diff $target)
+    RESULT="$(black --check --diff "${targets[@]}")"
     local exit_code=$?
     handle_test_result $exit_code "$RESULT"
-    return $exit_code
+    return "$exit_code"
 }
 
 run_unit_tests(){
     clean
     # py.test -s  => print standard output (i.e. show print statement output)
     #         -rw => print warnings
-    target=${testargs:-"gitlint-core"}
-    if [ $include_coverage -eq 1 ]; then
-        coverage run -m pytest -rw -s $target
+    targets=("${testargs[@]:-gitlint-core}")
+    if [ "$include_coverage" -eq 1 ]; then
+        coverage run -m pytest -rw -s "${targets[@]}"
         TEST_RESULT=$?
-        COVERAGE_REPORT=$(coverage report -m)
+        COVERAGE_REPORT="$(coverage report -m)"
         echo "$COVERAGE_REPORT"
     else
-        pytest -rw -s $target
+        pytest -rw -s "${targets[@]}"
         TEST_RESULT=$?
     fi
 
-    return $TEST_RESULT;
+    return "$TEST_RESULT";
 }
 
 run_integration_tests(){
@@ -117,31 +118,32 @@ run_integration_tests(){
 
     # py.test -s => print standard output (i.e. show print statement output)
     #         -rw => print warnings
-    target=${testargs:-"qa/"}
-    py.test -s $target
+    targets=("${testargs[@]:-qa/}")
+    py.test -s "${targets[@]}"
 }
 
 run_git_check(){
     echo -ne "Running gitlint...${RED}"
-    RESULT=$(gitlint $testargs 2>&1)
+    RESULT="$(gitlint "${testargs[@]}" 2>&1)"
     local exit_code=$?
-    handle_test_result $exit_code "$RESULT"
+    handle_test_result "$exit_code" "$RESULT"
     # FUTURE: check if we use str() function: egrep -nriI "( |\(|\[)+str\(" gitlint | egrep -v "\w*#(.*)"
-    return $exit_code
+    return "$exit_code"
 }
 
 run_lint_check(){
     echo -ne "Running pylint...${RED}"
-    target=${testargs:-"gitlint-core/gitlint qa"}
-    RESULT=$(pylint $target --rcfile=".pylintrc" -r n)
+    defaults=(gitlint-core/gitlint qa)
+    targets=("${testargs[@]:-${defaults[@]}}")
+    RESULT="$(pylint "${targets[@]}" --rcfile=".pylintrc" -r n)"
     local exit_code=$?
-    handle_test_result $exit_code "$RESULT"
-    return $exit_code
+    handle_test_result "$exit_code" "$RESULT"
+    return "$exit_code"
 }
 
 run_build_test(){
     clean
-    datestr=$(date +"%Y-%m-%d-%H-%M-%S")
+    datestr="$(date +"%Y-%m-%d-%H-%M-%S")"
     temp_dir="/tmp/gitlint-build-test-$datestr"
 
     # Copy gitlint to a new temp dir
@@ -153,17 +155,14 @@ run_build_test(){
     # Update the version to include a timestamp
     echo -n "Writing new version to file..."
     version_file="$temp_dir/gitlint-core/gitlint/__init__.py"
-    version_str="$(cat $version_file)"
+    version_str="$(cat "$version_file")"
     version_str="${version_str:0:${#version_str}-1}-$datestr\""
-    echo "$version_str" > $version_file
+    echo "$version_str" > "$version_file"
     echo -e "${GREEN}DONE${NO_COLOR}"
     # Attempt to build the package
     echo "Building package ..."
-    pushd "$temp_dir/gitlint-core"
-    # Copy stdout file descriptor so we can both print output to stdout as well as capture it in a variable
-    # https://stackoverflow.com/questions/12451278/bash-capture-stdout-to-a-variable-but-still-display-it-in-the-console
-    exec 5>&1
-    output=$(python setup.py sdist bdist_wheel | tee /dev/fd/5)
+    pushd "${temp_dir}/gitlint-core"
+    python setup.py sdist bdist_wheel
     local exit_code=$?
     popd
     # Cleanup :-)
@@ -176,7 +175,7 @@ run_build_test(){
         echo -e "Building package...${GREEN}SUCCESS${NO_COLOR}"
     fi
 
-    return $exit_code
+    return "$exit_code"
 }
 
 run_stats(){
@@ -186,31 +185,31 @@ run_stats(){
     echo "*** Docs ***"
     echo "    Markdown: $(cat docs/*.md | wc -l | tr -d " ") lines"
     echo "*** Tests ***"
-    nr_unit_tests=$(py.test gitlint-core/ --collect-only | grep TestCaseFunction | wc -l)
-    nr_integration_tests=$(py.test qa/ --collect-only | grep TestCaseFunction | wc -l)
+    nr_unit_tests="$(py.test gitlint-core/ --collect-only | grep -c TestCaseFunction)"
+    nr_integration_tests="$(py.test qa/ --collect-only | grep -c TestCaseFunction)"
     echo "    Unit Tests: ${nr_unit_tests//[[:space:]]/}"
     echo "    Integration Tests: ${nr_integration_tests//[[:space:]]/}"
     echo "*** Git ***"
     echo "    Commits: $(git rev-list --all --count)"
     echo "    Commits (main): $(git rev-list main --count)"
-    echo "    First commit: $(git log --pretty="%aD" $(git rev-list --max-parents=0 HEAD))"
+    echo "    First commit: $(git log --pretty="%aD" "$(git rev-list --max-parents=0 HEAD)")"
     echo "    Contributors: $(git log --format='%aN' | sort -u | wc -l | tr -d ' ')"
     echo "    Releases (tags): $(git tag --list | wc -l | tr -d ' ')"
-    latest_tag=$(git tag --sort=creatordate | tail -n 1)
+    latest_tag="$(git tag --sort=creatordate | tail -n 1)"
     echo "    Latest Release (tag): $latest_tag"
-    echo "    Commits since $latest_tag: $(git log --format=oneline HEAD...$latest_tag | wc -l | tr -d ' ')"
-    echo "    Line changes since $latest_tag: $(git diff --shortstat $latest_tag)"
+    echo "    Commits since $latest_tag: $(git log --format=oneline HEAD..."$latest_tag" | wc -l | tr -d ' ')"
+    echo "    Line changes since $latest_tag: $(git diff --shortstat "$latest_tag")"
     # PyPi API: https://pypistats.org/api/
     echo "*** PyPi ***"
-    info=$(curl -Ls https://pypi.python.org/pypi/gitlint/json)
-    echo "    Current version: $(echo $info | jq -r .info.version)"
+    info="$(curl -Ls https://pypi.python.org/pypi/gitlint/json)"
+    echo "    Current version: $(echo "$info" | jq -r .info.version)"
     echo "*** PyPi (Downloads) ***"
-    overall_stats=$(curl -s https://pypistats.org/api/packages/gitlint/overall)
-    recent_stats=$(curl -s https://pypistats.org/api/packages/gitlint/recent)
-    echo "    Last 6 Months: $(echo $overall_stats | jq -r '.data[].downloads' | awk '{sum+=$1} END {print sum}')"
-    echo "    Last Month: $(echo $recent_stats | jq .data.last_month)"
-    echo "    Last Week: $(echo $recent_stats | jq .data.last_week)"
-    echo "    Last Day: $(echo $recent_stats | jq .data.last_day)"
+    overall_stats="$(curl -s https://pypistats.org/api/packages/gitlint/overall)"
+    recent_stats="$(curl -s https://pypistats.org/api/packages/gitlint/recent)"
+    echo "    Last 6 Months: $(echo "$overall_stats" | jq -r '.data[].downloads' | awk '{sum+=$1} END {print sum}')"
+    echo "    Last Month: $(echo "$recent_stats" | jq .data.last_month)"
+    echo "    Last Week: $(echo "$recent_stats" | jq .data.last_week)"
+    echo "    Last Day: $(echo "$recent_stats" | jq .data.last_day)"
 }
 
 clean(){
@@ -239,7 +238,7 @@ run_all(){
     exit_code=$((exit_code + $?))
     run_git_check
     exit_code=$((exit_code + $?))
-    return $exit_code
+    return "$exit_code"
 }
 
 uninstall_virtualenv(){
@@ -283,6 +282,7 @@ install_virtualenv(){
     title "### INSTALLING $venv_name ($python_binary) ###"
     deactivate 2> /dev/null # deactivate any active environment
     virtualenv -p "$python_binary" "$venv_name"
+    # shellcheck source=/dev/null
     source "${venv_name}/bin/activate"
     pip install --ignore-requires-python -r requirements.txt
     pip install --ignore-requires-python -r test-requirements.txt
@@ -295,24 +295,24 @@ container_name(){
 
 start_container(){
     container_name="$1"
-    echo -n "Starting container $1..."
-    container_details=$(docker container inspect $container_name 2>&1 > /dev/null)
+    echo -n "Starting container ${1}..."
+    docker container inspect "$container_name" > /dev/null 2>&1
     local exit_code=$?
     if [ $exit_code -gt 0 ]; then
-        docker run -t -d -v $(pwd):/gitlint --name $container_name $container_name
+        docker run -t -d -v "$(pwd):/gitlint" --name "$container_name" "$container_name"
         exit_code=$?
         echo -e "${GREEN}DONE${NO_COLOR}"
     else
         echo -e "${YELLOW}SKIP (ALREADY RUNNING)${NO_COLOR}"
         exit_code=0
     fi
-    return $exit_code
+    return "$exit_code"
 }
 
 stop_container(){
     container_name="$1"
     echo -n "Stopping container $container_name..."
-    result=$(docker kill $container_name 2> /dev/null)
+    docker kill "$container_name" 2> /dev/null
     local exit_code=$?
     if [ $exit_code -gt 0 ]; then
         echo -e "${YELLOW}SKIP (DOES NOT EXIST)${NO_COLOR}"
@@ -320,45 +320,45 @@ stop_container(){
     else
         echo -e "${GREEN}DONE${NO_COLOR}"
     fi
-    return $exit_code
+    return "$exit_code"
 }
 
 install_container(){
     local exit_code=0
     python_version="$1"
     python_version_dotted="${python_version:0:1}.${python_version:1:1}"
-    container_name="$(container_name $python_version)"
+    container_name="$(container_name "$python_version")"
 
     title "Installing container $container_name"
-    image_details=$(docker image inspect $container_name 2> /dev/null)
+    docker image inspect "$container_name" 2> /dev/null
     tmp_exit_code=$?
     if [ $tmp_exit_code -gt 0 ]; then
         subtitle "Building container image from python:${python_version_dotted}-stretch..."
-        docker build -f Dockerfile.dev --build-arg python_version_dotted="$python_version_dotted" -t $container_name .
+        docker build -f Dockerfile.dev --build-arg python_version_dotted="$python_version_dotted" -t "$container_name" .
         exit_code=$?
     else
         subtitle "Building container image from python:${python_version_dotted}-stretch...SKIP (ALREADY-EXISTS)"
         echo "  Use '$0 --uninstall-container; $0 --install-container'  to rebuild"
         exit_code=0
     fi
-    return $exit_code
+    return "$exit_code"
 }
 
 uninstall_container(){
     python_version="$1"
-    container_name="$(container_name $python_version)"
+    container_name="$(container_name "$python_version")"
 
     echo -n "Removing container image $container_name..."
-    image_details=$(docker image inspect $container_name 2> /dev/null)
+    docker image inspect "$container_name" 2> /dev/null
     tmp_exit_code=$?
     if [ $tmp_exit_code -gt 0 ]; then
         echo -e "${YELLOW}SKIP (DOES NOT EXIST)${NO_COLOR}"
         exit_code=0
     else
-        result=$(docker image rm -f $container_name 2> /dev/null)
+        docker image rm -f "$container_name" 2> /dev/null
         exit_code=$?
     fi
-    return $exit_code
+    return "$exit_code"
 }
 
 assert_specific_env(){
@@ -378,10 +378,12 @@ switch_env(){
         # Note that the 'deactivate' function from the virtualenv is not available here unless the script was invoked
         # as 'source ./run_tests.sh').
         # Thanks internet stranger! https://unix.stackexchange.com/a/496050/38465
-        if [ ! -z "$VIRTUAL_ENV" ]; then
-            export PATH=$(echo $PATH | tr ":" "\n" | grep -v "$VIRTUAL_ENV" | tr "\n" ":");
+        if [ -n "$VIRTUAL_ENV" ]; then
+            export PATH
+            PATH="$(echo "$PATH" | tr ":" "\n" | grep -v "$VIRTUAL_ENV" | tr "\n" ":");"
         fi
         set -e # Let's error out if you try executing against a non-existing env
+        # shellcheck source=/dev/null
         source "/vagrant/.venv${1}/bin/activate"
         set +e
     fi
@@ -392,12 +394,12 @@ run_in_container(){
     python_version="$1"
     envs="$2"
     args="$3"
-    container_name="$(container_name $python_version)"
-    container_command=$(echo "$0 $args" | sed -E "s/( -e | --envs )$envs//" | sed -E "s/( --container| -C)//")
+    container_name="$(container_name "$python_version")"
+    container_command="$(echo "$0 $args" | sed -E "s/( -e | --envs )$envs//" | sed -E "s/( --container| -C)//")"
 
     title "### CONTAINER $container_name"
     start_container "$container_name"
-    docker exec "$container_name" $container_command
+    docker exec "$container_name" "$container_command"
 }
 ##############################################################################
 # The magic starts here: argument parsing and determining what to do
@@ -421,8 +423,8 @@ container_enabled=0
 include_coverage=1
 envs="default"
 cmd=""
-testargs=""
-original_args="$@"
+testargs=()
+original_args=("$@")
 while [ "$#" -gt 0 ]; do
     case "$1" in
         -h|--help) shift; help;;
@@ -443,7 +445,7 @@ while [ "$#" -gt 0 ]; do
         --all-env) shift; envs="all";;
         -C|--container) shift; container_enabled=1;;
         --no-coverage)shift; include_coverage=0;;
-        *) testargs="$1"; shift;
+        *) testargs=("$@"); shift $#;
    esac
 done
 
@@ -451,7 +453,7 @@ old_virtualenv="$VIRTUAL_ENV" # Store the current virtualenv so we can restore i
 
 trap exit_script INT # Exit on interrupt (i.e. ^C)
 exit_script(){
-    echo -e -n $NO_COLOR # make sure we don't have color left on the terminal
+    echo -e -n "$NO_COLOR" # make sure we don't have color left on the terminal
     exit
 }
 
@@ -462,12 +464,12 @@ if [ "$envs" == "all" ]; then
     envs="36,37,38,39,pypy37"
 fi
 original_envs="$envs"
-envs=$(echo "$envs" | tr ',' '\n') # Split the env list on comma so we can loop through it
+envs="$(echo "$envs" | tr ',' '\n')" # Split the env list on comma so we can loop through it
 
 for environment in $envs; do
 
     if [ $container_enabled -eq 1 ]; then
-        run_in_container "$environment" "$original_envs" "$original_args"
+        run_in_container "$environment" "$original_envs" "${original_args[@]}"
     elif [ $just_formatting -eq 1 ]; then
         switch_env "$environment"
         run_formatting_check
@@ -518,7 +520,8 @@ for environment in $envs; do
 done
 
 # reactivate the virtualenv if we had one before
-if [ ! -z "$old_virtualenv" ]; then
+if [ -n "$old_virtualenv" ]; then
+    # shellcheck source=/dev/null
     source "$old_virtualenv/bin/activate"
 fi
 
