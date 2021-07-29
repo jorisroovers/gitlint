@@ -1,4 +1,4 @@
-flake8==3.9.1
+flake8==3.9.2
 coverage==5.5
 python-coveralls==2.9.3
 radon==4.5.0
