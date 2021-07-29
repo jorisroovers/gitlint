@@ -2,4 +2,5 @@
 fail_under = 97
 
 [run]
+branch = true
 omit=*dist-packages*,*site-packages*,gitlint/tests/*,.venv/*,*virtualenv*
