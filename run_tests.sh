@@ -88,9 +88,8 @@ run_unit_tests(){
     clean
     # py.test -s  => print standard output (i.e. show print statement output)
     #         -rw => print warnings
-    OMIT="*pypy*,*venv*,*virtualenv*,*gitlint/tests/*"
     target=${testargs:-"gitlint"}
-    coverage run --omit=$OMIT -m pytest -rw -s $target
+    coverage run -m pytest -rw -s $target
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
         COVERAGE_REPORT=$(coverage report -m)
