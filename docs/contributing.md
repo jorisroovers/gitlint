@@ -44,7 +44,9 @@ vagrant ssh
 Or you can choose to use your local environment:
 
 ```sh
-virtualenv .venv
+python -m venv .venv
+. .venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
 python setup.py develop
 ```
