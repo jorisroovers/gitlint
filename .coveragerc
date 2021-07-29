@@ -1,2 +1,5 @@
+[report]
+fail_under = 97
+
 [run]
 omit=*dist-packages*,*site-packages*,gitlint/tests/*,.venv/*,*virtualenv*
