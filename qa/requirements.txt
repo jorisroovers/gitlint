@@ -1,4 +1,4 @@
-sh==1.14.1
+sh==1.14.2
 pytest==6.2.4;
 arrow==1.1.1;
 gitlint # no version as you want to test the currently installed version
