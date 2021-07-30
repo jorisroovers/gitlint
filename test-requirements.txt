@@ -1,7 +1,7 @@
 flake8==3.9.2
 coverage==5.5
 python-coveralls==2.9.3
-radon==4.5.0
+radon==5.0.1
 flake8-polyfill==1.0.2 # Required when installing both flake8 and radon>=4.3.1 
 pytest==6.2.4;
 pylint==2.7.4;
