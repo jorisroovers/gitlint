@@ -30,10 +30,7 @@ class ConventionalCommit(LineRule):
             violations.append(RuleViolation(self.id, msg, line))
         else:
             line_commit_type = match.group(1)
-            for commit_type in self.options["types"].value:
-                if line_commit_type == commit_type:
-                    break
-            else:
+            if line_commit_type not in self.options["types"].value:
                 msg = "Title does not start with one of {0}".format(', '.join(self.options['types'].value))
                 violations.append(RuleViolation(self.id, msg, line))
 
