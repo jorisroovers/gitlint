@@ -337,7 +337,11 @@ class GitContext(PropertyCache):
     @property
     @cache
     def current_branch(self):
-        current_branch = _git("rev-parse", "--abbrev-ref", "HEAD", _cwd=self.repository_path).strip()
+        try:
+            current_branch = _git("rev-parse", "--abbrev-ref", "HEAD", _cwd=self.repository_path).strip()
+        except GitContextError:
+            # Maybe there is no commit.  Try another way to get current branch (need Git 2.22+)
+            current_branch = _git("branch", "--show-current", _cwd=self.repository_path).strip()
         return current_branch
 
     @staticmethod

@@ -74,15 +74,16 @@ class GitTests(BaseTestCase):
 
         sh.git.side_effect = [
             "#\n",  # git config --get core.commentchar
-            ErrorReturnCode("rev-parse --abbrev-ref HEAD", b"", err)
+            ErrorReturnCode("rev-parse --abbrev-ref HEAD", b"", err),
+            'test-branch',  # git branch --show-current
         ]
 
-        with self.assertRaisesMessage(GitContextError, expected_msg):
-            context = GitContext.from_commit_msg("test")
-            context.current_branch
+        context = GitContext.from_commit_msg("test")
+        assert context.current_branch == 'test-branch'
 
         # assert that commit message was read using git command
-        sh.git.assert_called_with("rev-parse", "--abbrev-ref", "HEAD", _tty_out=False, _cwd=None)
+        sh.git.assert_any_call("rev-parse", "--abbrev-ref", "HEAD", _tty_out=False, _cwd=None)
+        sh.git.assert_any_call("branch", "--show-current", _tty_out=False, _cwd=None)
 
     @patch("gitlint.git._git")
     def test_git_commentchar(self, git):
