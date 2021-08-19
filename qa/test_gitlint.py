@@ -186,7 +186,12 @@ class IntegrationTests(BaseTestCase):
         expected = "Current branch has no commits. Gitlint requires at least one commit to function.\n"
         self.assertEqualStdout(output, expected)
 
-        # Repo has no commits: caused by `git rev-parse`
+        # Repo has no commits will not caused by `git rev-parse`
+        expected = """\
+1: T3 Title has trailing punctuation (.): "WIP: Pïpe test."
+1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: Pïpe test."
+3: B6 Body message is missing
+"""
         output = gitlint(echo("WIP: Pïpe test."), "--staged", _cwd=empty_git_repo, _tty_in=False,
-                         _err_to_out=True, _ok_code=[self.GIT_CONTEXT_ERROR_CODE])
+                         _err_to_out=True, _ok_code=[3])
         self.assertEqualStdout(output, expected)
