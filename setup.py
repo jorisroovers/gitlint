@@ -64,7 +64,7 @@ setup(
     ],
     extras_require={
         ':sys_platform != "win32"': [
-            'sh==1.14.1',
+            'sh==1.14.2',
         ],
     },
     keywords='gitlint git lint',

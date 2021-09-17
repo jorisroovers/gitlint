@@ -1,5 +1,5 @@
 setuptools
 wheel==0.36.2
 Click==7.1.2
-sh==1.14.1; sys_platform != 'win32' # sh is not supported on windows
+sh==1.14.2; sys_platform != 'win32' # sh is not supported on windows
 arrow==1.1.1
