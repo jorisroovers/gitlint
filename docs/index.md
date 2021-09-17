@@ -36,7 +36,7 @@ useful throughout the years.
 ### Installation
 ```sh
 # Pip is recommended to install the latest version
-pip install gitlint
+pip install gitlint[pinned]
 
 # Community maintained packages:
 brew install gitlint       # Homebrew (macOS)

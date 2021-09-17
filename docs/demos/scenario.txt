@@ -26,7 +26,7 @@ asciicinema rec demo.json
 
 ------------------------------------
 
-pip install gitlint
+pip install gitlint[pinned]
 
 # Go to your git repo
 

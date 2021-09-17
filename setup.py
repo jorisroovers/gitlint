@@ -60,12 +60,15 @@ setup(
     ],
     python_requires=">=3.6",
     install_requires=[
-        'Click==8.0.3',
-        'arrow==1.2.1',
+        'Click>=8',
+        'arrow>=1',
+        'sh>=1 ; sys_platform != "win32"',
     ],
     extras_require={
-        ':sys_platform != "win32"': [
-            'sh==1.14.2',
+        'pinned': [
+            'Click==8.0.3',
+            'arrow==1.2.1',
+            'sh==1.14.2 ; sys_platform != "win32"',
         ],
     },
     keywords='gitlint git lint',
