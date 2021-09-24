@@ -1,3 +1,2 @@
 1: CC1 Body does not contain a 'Signed-off-by' line
-1: CT1 Title does not start with one of fix, feat, chore, docs, style, refactor, perf, test, revert, ci, build: "Test tïtle"
 1: CT1 Title does not follow ConventionalCommits.org format 'type(optional-scope): description': "Test tïtle"
