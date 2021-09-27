@@ -30,6 +30,8 @@ M1    | author-valid-email          | >= 0.9.0          | Author email address m
 I1    | ignore-by-title             | >= 0.10.0         | Ignore a commit based on matching its title
 I2    | ignore-by-body              | >= 0.10.0         | Ignore a commit based on matching its body
 I3    | ignore-body-lines           | >= 0.14.0         | Ignore certain lines in a commit body that match a regex
+I4    | ignore-by-author-name       | >= 0.16.0         | Ignore a commit based on matching its author name
+
 
 
 ## T1: title-max-length
@@ -404,4 +406,33 @@ regex=(^Co-Authored-By)|(^Signed-off-by)
 # Ignore lines that contain 'foobar'
 [ignore-body-lines]
 regex=(.*)foobar(.*)
+```
+
+## I4: ignore-by-author-name
+
+ID    | Name                      | gitlint version | Description
+------|---------------------------|-----------------|-------------------------------------------
+I4    |  ignore-by-author-name    | >= 0.16.0       | Ignore a commit based on matching its author name.
+
+### Options
+
+Name                  | gitlint version   | Default                      | Description
+----------------------|-------------------|------------------------------|----------------------------------
+regex                 | >= 0.16.0         | None                         |  [Python regex](https://docs.python.org/library/re.html) to match against the commit author name. On match, the commit will be ignored.
+ignore                | >= 0.16.0         | all                          |  Comma-separated list of rule names or ids to ignore when this rule is matched.
+
+### Examples
+
+#### .gitlint
+
+```ini
+# Ignore all commits authored by dependabot
+[ignore-by-author-name]
+regex=dependabot
+
+# For commits made by anyone with "[bot]" in their name, ignore
+# rules T1, body-min-length and B6
+[ignore-by-author-name]
+regex=(.*)\[bot\](.*)
+ignore=T1,body-min-length,B6
 ```

@@ -180,7 +180,7 @@ class CommitsTests(BaseTestCase):
         self.assertEqualStdout(output, self.get_expected("test_commits/test_lint_head_1", expected_kwargs))
 
     def test_ignore_commits(self):
-        """ Tests multiple commits of which some rules get igonored because of ignore-* rules """
+        """ Tests multiple commits of which some rules get ignored because of ignore-* rules """
         # Create repo and some commits
         tmp_git_repo = self.create_tmp_git_repo()
         self.create_simple_commit("Sïmple title.\n\nSimple bödy describing the commit", git_repo=tmp_git_repo)

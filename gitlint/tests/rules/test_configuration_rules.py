@@ -71,6 +71,39 @@ class ConfigurationRuleTests(BaseTestCase):
             "Commit message line ' a relëase body' matches the regex '(.*)relëase(.*)', ignoring rules: T1,B2"
         self.assert_log_contains(expected_log_message)
 
+    def test_ignore_by_author_name(self):
+        commit = self.gitcommit("Tïtle\n\nThis is\n a relëase body\n line", author_name="Tëst nåme")
+
+        # No regex specified -> Config shouldn't be changed
+        rule = rules.IgnoreByAuthorName()
+        config = LintConfig()
+        rule.apply(config, commit)
+        self.assertEqual(config, LintConfig())
+        self.assert_logged([])  # nothing logged -> nothing ignored
+
+        # Matching regex -> expect config to ignore all rules
+        rule = rules.IgnoreByAuthorName({"regex": "(.*)ëst(.*)"})
+        expected_config = LintConfig()
+        expected_config.ignore = "all"
+        rule.apply(config, commit)
+        self.assertEqual(config, expected_config)
+
+        expected_log_message = ("DEBUG: gitlint.rules Ignoring commit because of rule 'I4': "
+                                "Commit Author Name 'Tëst nåme' matches the regex '(.*)ëst(.*)',"
+                                " ignoring rules: all")
+        self.assert_log_contains(expected_log_message)
+
+        # Matching regex with specific ignore
+        rule = rules.IgnoreByAuthorName({"regex": "(.*)nåme", "ignore": "T1,B2"})
+        expected_config = LintConfig()
+        expected_config.ignore = "T1,B2"
+        rule.apply(config, commit)
+        self.assertEqual(config, expected_config)
+
+        expected_log_message = ("DEBUG: gitlint.rules Ignoring commit because of rule 'I4': "
+                                "Commit Author Name 'Tëst nåme' matches the regex '(.*)nåme', ignoring rules: T1,B2")
+        self.assert_log_contains(expected_log_message)
+
     def test_ignore_body_lines(self):
         commit1 = self.gitcommit("Tïtle\n\nThis is\n a relëase body\n line")
         commit2 = self.gitcommit("Tïtle\n\nThis is\n a relëase body\n line")

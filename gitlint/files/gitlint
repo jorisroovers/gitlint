@@ -117,6 +117,15 @@
 # E.g. Ignore all lines that start with 'Co-Authored-By'
 # regex=^Co-Authored-By
 
+# [ignore-by-author-name]
+# Ignore certain rules for commits of which the author name matches a regex
+# E.g. Match commits made by dependabot
+# regex=(.*)dependabot(.*)
+#
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+# ignore=T1,body-min-length
+
 # This is a contrib rule - a community contributed rule. These are disabled by default.
 # You need to explicitly enable them one-by-one by adding them to the "contrib" option
 # under [general] section above.

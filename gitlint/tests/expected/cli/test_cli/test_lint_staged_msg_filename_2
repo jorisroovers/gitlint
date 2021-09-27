@@ -30,6 +30,9 @@ target: {target}
      regex=None
   I3: ignore-body-lines
      regex=None
+  I4: ignore-by-author-name
+     ignore=all
+     regex=None
   T1: title-max-length
      line-length=72
   T2: title-trailing-whitespace

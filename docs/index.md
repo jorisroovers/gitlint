@@ -313,7 +313,6 @@ general `ignore-merge-commits`, `ignore-revert-commits`,  `ignore-fixup-commits`
 [using one of the various ways to configure gitlint](configuration.md).
 
 ## Ignoring commits
-_Introduced in gitlint v0.10.0_
 
 You can configure gitlint to ignore specific commits or parts of a commit.
 
@@ -321,8 +320,7 @@ One way to do this, is to by [adding a gitline-ignore line to your commit messag
 
 If you have a case where you want to ignore a certain type of commits all-together, you can
 use gitlint's *ignore* rules.
-Here's an example gitlint file that configures gitlint to ignore rules `title-max-length` and `body-min-length`
-for all commits with a title starting with *"Release"*.
+Here's a few examples snippets from a `.gitlint` file:
 
 ```ini
 [ignore-by-title]
@@ -335,6 +333,11 @@ ignore=title-max-length,body-min-length
 [ignore-by-body]
 # Match commits message bodies that have a line that contains 'release'
 regex=(.*)release(.*)
+ignore=all
+
+[ignore-by-author-name]
+# Match commits by author name (e.g. ignore all rules when a commit is made by dependabot)
+regex=dependabot
 ignore=all
 ```
 

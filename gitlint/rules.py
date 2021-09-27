@@ -416,3 +416,25 @@ class IgnoreBodyLines(ConfigurationRule):
 
         commit.message.body = new_body
         commit.message.full = "\n".join([commit.message.title] + new_body)
+
+
+class IgnoreByAuthorName(ConfigurationRule):
+    name = "ignore-by-author-name"
+    id = "I4"
+    options_spec = [RegexOption('regex', None, "Regex matching the author name of commits this rule should apply to"),
+                    StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
+
+    def apply(self, config, commit):
+        # If no regex is specified, immediately return
+        if not self.options['regex'].value:
+            return
+
+        if self.options['regex'].value.match(commit.author_name):
+            config.ignore = self.options['ignore'].value
+
+            message = (f"Commit Author Name '{commit.author_name}' matches the regex "
+                       f"'{self.options['regex'].value.pattern}', ignoring rules: {self.options['ignore'].value}")
+
+            self.log.debug("Ignoring commit because of rule '%s': %s", self.id, message)
+            # No need to check other lines if we found a match
+            return

@@ -52,6 +52,12 @@ ignore-stdin=true
 # commit message to gitlint via stdin or --commit-msg. Disabled by default.
 staged=true
 
+# Hard fail when the target commit range is empty. Note that gitlint will
+# already fail by default on invalid commit ranges. This option is specifically
+# to tell gitlint to fail on *valid but empty* commit ranges.
+# Disabled by default.
+fail-without-commits=true
+
 # Enable debug mode (prints more output). Disabled by default.
 debug=true
 
@@ -128,7 +134,7 @@ ignore=T1,body-min-length
 [ignore-by-body]
 # Ignore certain rules for commits of which the body has a line that matches a regex
 # E.g. Match bodies that have a line that that contain "release"
-# regex=(.*)release(.*)
+regex=(.*)release(.*)
 #
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
@@ -138,6 +144,15 @@ ignore=T1,body-min-length
 # Ignore certain lines in a commit body that match a regex.
 # E.g. Ignore all lines that start with 'Co-Authored-By'
 regex=^Co-Authored-By
+
+[ignore-by-author-name]
+# Ignore certain rules for commits of which the author name matches a regex
+# E.g. Match commits made by dependabot
+regex=(.*)dependabot(.*)
+
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+ignore=T1,body-min-length
 
 # This is a contrib rule - a community contributed rule. These are disabled by default.
 # You need to explicitly enable them one-by-one by adding them to the "contrib" option

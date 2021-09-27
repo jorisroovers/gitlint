@@ -41,6 +41,7 @@ class LintConfig:
     default_rule_classes = (rules.IgnoreByTitle,
                             rules.IgnoreByBody,
                             rules.IgnoreBodyLines,
+                            rules.IgnoreByAuthorName,
                             rules.TitleMaxLength,
                             rules.TitleTrailingWhitespace,
                             rules.TitleLeadingWhitespace,
