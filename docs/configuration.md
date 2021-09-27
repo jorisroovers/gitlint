@@ -363,6 +363,30 @@ GITLINT_STAGED=1 gitlint       # using env variable
 staged=true
 ```
 
+### fail-without-commits
+
+Hard fail when the target commit range is empty. Note that gitlint will
+already fail by default on invalid commit ranges. This option is specifically
+to tell gitlint to fail on **valid but empty** commit ranges.
+
+Default value  |  gitlint version | commandline flag  | environment variable   
+---------------|------------------|---------------------------|-----------------------
+ false         | >= 0.15.2        | `--fail-without-commits`  | `GITLINT_FAIL_WITHOUT_COMMITS`
+
+#### Examples
+```sh
+# CLI
+# The following will cause gitlint to hard fail (i.e. exit code > 0)
+# since HEAD..HEAD is a valid but empty commit range. 
+gitlint --fail-without-commits --commits HEAD..HEAD
+GITLINT_FAIL_WITHOUT_COMMITS=1 gitlint       # using env variable
+```
+```ini
+#.gitlint
+[general]
+fail-without-commits=true
+```
+
 ### ignore-stdin
 
 Ignore any stdin data. Sometimes useful when running gitlint in a CI server.

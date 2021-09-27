@@ -80,7 +80,8 @@ class ConfigTests(BaseTestCase):
         filename = self.create_simple_commit(commit_msg, git_repo=target_repo)
         env = self.create_environment({"GITLINT_DEBUG": "1", "GITLINT_VERBOSITY": "2",
                                        "GITLINT_IGNORE": "T1,T2", "GITLINT_CONTRIB": "CC1,CT1",
-                                       "GITLINT_IGNORE_STDIN": "1", "GITLINT_TARGET": target_repo,
+                                       "GITLINT_FAIL_WITHOUT_COMMITS": "1", "GITLINT_IGNORE_STDIN": "1",
+                                       "GITLINT_TARGET": target_repo,
                                        "GITLINT_COMMITS": self.get_last_commit_hash(git_repo=target_repo)})
         output = gitlint(_env=env, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
         expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
