@@ -136,7 +136,7 @@ Options:
   -c TEXT                  Config flags in format <rule>.<option>=<value>
                            (e.g.: -c T1.line-length=80). Flag can be
                            used multiple times to set multiple config values.
-
+  --commit TEXT            Hash (SHA) of specific commit to lint.
   --commits TEXT           The range of commits to lint. [default: HEAD]
   -e, --extra-path PATH    Path to a directory or python module with extra
                            user-defined rules
@@ -249,19 +249,21 @@ git log -1 --pretty=%B 62c0519 | gitlint
 Note that gitlint requires that you specify `--pretty=%B` (=only print the log message, not the metadata),
 future versions of gitlint might fix this and not require the `--pretty` argument.
 
-## Linting a range of commits
+## Linting specific commits
 
-_Introduced in gitlint v0.9.0 (experimental in v0.8.0)_
+Gitlint allows users to lint a specific commit:
+```sh
+gitlint --commit 019cf40580a471a3958d3c346aa8bfd265fe5e16
+gitlint --commit 019cf40 # short SHAs work too
+```
 
-Gitlint allows users to lint a number of commits at once like so:
+You can also lint multiple commits at once like so:
 
 ```sh
 # Lint a specific commit range:
 gitlint --commits "019cf40...d6bc75a"
 # You can also use git's special references:
 gitlint --commits "origin..HEAD"
-# Or specify a single specific commit in refspec format, like so:
-gitlint --commits "019cf40^...019cf40"
 ```
 
 The `--commits` flag takes a **single** refspec argument or commit range. Basically, any range that is understood
@@ -274,9 +276,8 @@ script to lint an arbitrary set of commits, like shown in the example below.
 #!/bin/sh
 
 for commit in $(git rev-list master); do
-    commit_msg=$(git log -1 --pretty=%B $commit)
-    echo "$commit"
-    echo "$commit_msg" | gitlint
+    echo "Commit $commit"
+    gitlint --commit $commit
     echo "--------"
 done
 ```

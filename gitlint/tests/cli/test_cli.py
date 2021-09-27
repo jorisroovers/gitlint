@@ -181,6 +181,39 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected)
             self.assertEqual(result.exit_code, 2)
 
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
+    @patch('gitlint.git.sh')
+    def test_lint_commit(self, sh, _):
+        """ Test for --commit option """
+
+        sh.git.side_effect = [
+            "6f29bf81a8322a04071bb794666e48c443a90360\n",  # git log -1 <SHA> --pretty=%H
+            # git log --pretty <FORMAT> <SHA>
+            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            "WIP: commït-title1\n\ncommït-body1",
+            "#",                                           # git config --get core.commentchar
+            "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
+        ]
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--commit", "foo"])
+            self.assertEqual(result.output, "")
+
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_lint_commit_1"))
+            self.assertEqual(result.exit_code, 2)
+
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
+    @patch('gitlint.git.sh')
+    def test_lint_commit_negative(self, sh, _):
+        """ Negative test for --commit option """
+
+        # Try using --commit and --commits at the same time (not allowed)
+        result = self.cli.invoke(cli.cli, ["--commit", "foo", "--commits", "foo...bar"])
+        expected_output = "Error: --commit and --commits are mutually exclusive, use one or the other.\n"
+        self.assertEqual(result.output, expected_output)
+        self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+
     @patch('gitlint.cli.get_stdin_data', return_value=u'WIP: tïtle \n')
     def test_input_stream(self, _):
         """ Test for linting when a message is passed via stdin """
