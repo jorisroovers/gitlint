@@ -17,6 +17,7 @@ class HookTests(BaseTestCase):
                   'gitlint: \x1b[31mYour commit message contains violations.\x1b[0m\n']
 
     def setUp(self):
+        super().setUp()
         self.responses = []
         self.response_index = 0
         self.githook_output = []
@@ -40,6 +41,7 @@ class HookTests(BaseTestCase):
                                 f"{self.tmp_git_repo}/.git/hooks/commit-msg\n")
 
         self.assertEqualStdout(output_uninstalled, expected_uninstalled)
+        super().tearDown()
 
     def _violations(self):
         # Make a copy of the violations array so that we don't inadvertently edit it in the test (like I did :D)

@@ -31,24 +31,18 @@ class BaseTestCase(TestCase):
     GIT_CONTEXT_ERROR_CODE = 254
     GITLINT_USAGE_ERROR = 253
 
-    @classmethod
-    def setUpClass(cls):
-        """ Sets up the integration tests by creating a new temporary git repository """
-        cls.tmp_git_repos = []
-        cls.tmp_git_repo = cls.create_tmp_git_repo()
-
-    @classmethod
-    def tearDownClass(cls):
-        """ Cleans up the temporary git repositories """
-        for repo in cls.tmp_git_repos:
-            shutil.rmtree(repo)
-
     def setUp(self):
+        """ Sets up the integration tests by creating a new temporary git repository """
         self.tmpfiles = []
+        self.tmp_git_repos = []
+        self.tmp_git_repo = self.create_tmp_git_repo()
 
     def tearDown(self):
+        # Clean up temporary files and repos
         for tmpfile in self.tmpfiles:
             os.remove(tmpfile)
+        for repo in self.tmp_git_repos:
+            shutil.rmtree(repo)
 
     def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
@@ -56,16 +50,15 @@ class BaseTestCase(TestCase):
         output = output.replace('\r', '')
         self.assertMultiLineEqual(output, expected)
 
-    @classmethod
-    def generate_temp_path(cls):
+    @staticmethod
+    def generate_temp_path():
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
         return os.path.realpath(f"/tmp/gitlint-test-{timestamp}")
 
-    @classmethod
-    def create_tmp_git_repo(cls):
+    def create_tmp_git_repo(self):
         """ Creates a temporary git repository and returns its directory path """
-        tmp_git_repo = cls.generate_temp_path()
-        cls.tmp_git_repos.append(tmp_git_repo)
+        tmp_git_repo = self.generate_temp_path()
+        self.tmp_git_repos.append(tmp_git_repo)
 
         git("init", tmp_git_repo)
         # configuring name and email is required in every git repot
