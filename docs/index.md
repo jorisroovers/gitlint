@@ -134,8 +134,9 @@ Options:
                            current working directory]
   -C, --config FILE        Config file location [default: .gitlint]
   -c TEXT                  Config flags in format <rule>.<option>=<value>
-                           (e.g.: -c T1.line-length=80). Flag can be used
-                           multiple times to set multiple config values.
+                           (e.g.: -c T1.line-length=80). Flag can be
+                           used multiple times to set multiple config values.
+
   --commits TEXT           The range of commits to lint. [default: HEAD]
   -e, --extra-path PATH    Path to a directory or python module with extra
                            user-defined rules
@@ -147,10 +148,11 @@ Options:
                            server.
   --staged                 Read staged commit meta-info from the local
                            repository.
-  -v, --verbose            Verbosity, more v's for more verbose output (e.g.:
-                           -v, -vv, -vvv). [default: -vvv]
-  -s, --silent             Silent mode (no output). Takes precedence over -v,
-                           -vv, -vvv.
+  --fail-without-commits   Hard fail when the target commit range is empty.
+  -v, --verbose            Verbosity, more v's for more verbose output
+                           (e.g.: -v, -vv, -vvv). [default: -vvv]
+  -s, --silent             Silent mode (no output).
+                           Takes precedence over -v, -vv, -vvv.
   -d, --debug              Enable debugging output.
   --version                Show the version and exit.
   --help                   Show this message and exit.
@@ -159,6 +161,7 @@ Commands:
   generate-config  Generates a sample gitlint config file.
   install-hook     Install gitlint as a git commit-msg hook.
   lint             Lints a git repository [default command]
+  run-hook         Runs the gitlint commit-msg hook.
   uninstall-hook   Uninstall gitlint commit-msg hook.
 
   When no COMMAND is specified, gitlint defaults to 'gitlint lint'.

@@ -62,7 +62,8 @@ def log_system_info():
 
 
 def build_config(  # pylint: disable=too-many-arguments
-        target, config_path, c, extra_path, ignore, contrib, ignore_stdin, staged, verbose, silent, debug
+        target, config_path, c, extra_path, ignore, contrib, ignore_stdin, staged, fail_without_commits, verbose,
+        silent, debug
 ):
     """ Creates a LintConfig object based on a set of commandline parameters. """
     config_builder = LintConfigBuilder()
@@ -102,6 +103,9 @@ def build_config(  # pylint: disable=too-many-arguments
 
     if staged:
         config_builder.set_option('general', 'staged', staged)
+
+    if fail_without_commits:
+        config_builder.set_option('general', 'fail-without-commits', fail_without_commits)
 
     config = config_builder.build()
 
@@ -218,6 +222,8 @@ class ContextObj:
               help="Ignore any stdin data. Useful for running in CI server.")
 @click.option('--staged', envvar='GITLINT_STAGED', is_flag=True,
               help="Read staged commit meta-info from the local repository.")
+@click.option('--fail-without-commits', envvar='GITLINT_FAIL_WITHOUT_COMMITS', is_flag=True,
+              help="Hard fail when the target commit range is empty.")
 @click.option('-v', '--verbose', envvar='GITLINT_VERBOSITY', count=True, default=0,
               help="Verbosity, more v's for more verbose output (e.g.: -v, -vv, -vvv). [default: -vvv]", )
 @click.option('-s', '--silent', envvar='GITLINT_SILENT', is_flag=True,
@@ -227,7 +233,8 @@ class ContextObj:
 @click.pass_context
 def cli(  # pylint: disable=too-many-arguments
         ctx, target, config, c, commits, extra_path, ignore, contrib,
-        msg_filename, ignore_stdin, staged, verbose, silent, debug,
+        msg_filename, ignore_stdin, staged, fail_without_commits, verbose,
+        silent, debug,
 ):
     """ Git lint tool, checks your git commit messages for styling issues
 
@@ -243,8 +250,8 @@ def cli(  # pylint: disable=too-many-arguments
 
         # Get the lint config from the commandline parameters and
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
-        config, config_builder = build_config(target, config, c, extra_path, ignore, contrib,
-                                              ignore_stdin, staged, verbose, silent, debug)
+        config, config_builder = build_config(target, config, c, extra_path, ignore, contrib, ignore_stdin, staged,
+                                              fail_without_commits, verbose, silent, debug)
         LOG.debug("Configuration\n%s", config)
 
         ctx.obj = ContextObj(config, config_builder, commits, msg_filename)
