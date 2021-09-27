@@ -59,7 +59,7 @@ setup(
     ],
     python_requires=">=3.6",
     install_requires=[
-        'Click==7.1.2',
+        'Click==8.0.1',
         'arrow==1.1.1',
     ],
     extras_require={
