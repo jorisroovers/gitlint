@@ -281,8 +281,11 @@ def lint(ctx):
     # Exit if we don't have commits in the specified range. Use a 0 exit code, since a popular use-case is one
     # where users are using --commits in a check job to check the commit messages inside a CI job. By returning 0, we
     # ensure that these jobs don't fail if for whatever reason the specified commit range is empty.
+    # This behavior can be overridden by using the --fail-without-commits flag.
     if number_of_commits == 0:
         LOG.debug(u'No commits in range "%s"', refspec)
+        if lint_config.fail_without_commits:
+            raise GitLintUsageError(u'No commits in range "%s"' % refspec)
         ctx.exit(GITLINT_SUCCESS)
 
     LOG.debug(u'Linting %d commit(s)', number_of_commits)

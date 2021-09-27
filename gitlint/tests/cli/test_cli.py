@@ -284,6 +284,30 @@ class CLITests(BaseTestCase):
                                          "'--msg-filename' or when piping data to gitlint via stdin.\n"))
 
     @patch('gitlint.cli.get_stdin_data', return_value=False)
+    @patch('gitlint.git.sh')
+    def test_fail_without_commits(self, sh, _):
+        """ Test for --debug option """
+
+        sh.git.side_effect = [
+            "",  # First invocation of git rev-list
+            ""   # Second invocation of git rev-list
+        ]
+
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            # By default, gitlint should silently exit with code GITLINT_SUCCESS when there are no commits
+            result = self.cli.invoke(cli.cli, ["--commits", "foo..bar"])
+            self.assertEqual(stderr.getvalue(), "")
+            self.assertEqual(result.exit_code, cli.GITLINT_SUCCESS)
+            self.assert_log_contains("DEBUG: gitlint.cli No commits in range \"foo..bar\"")
+
+            # When --fail-without-commits is set, gitlint should hard fail with code USAGE_ERROR_CODE
+            self.clearlog()
+            result = self.cli.invoke(cli.cli, ["--commits", "foo..bar", "--fail-without-commits"])
+            self.assertEqual(result.output, 'Error: No commits in range "foo..bar"\n')
+            self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
+            self.assert_log_contains("DEBUG: gitlint.cli No commits in range \"foo..bar\"")
+
+    @patch('gitlint.cli.get_stdin_data', return_value=False)
     def test_msg_filename(self, _):
         expected_output = "3: B6 Body message is missing\n"
 

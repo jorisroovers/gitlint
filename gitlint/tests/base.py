@@ -126,6 +126,10 @@ class BaseTestCase(unittest.TestCase):
         """
         return super().assertRaisesRegex(expected_exception, re.escape(expected_regex), *args, **kwargs)
 
+    def clearlog(self):
+        """ Clears the log capture """
+        self.logcapture.clear()
+
     @contextlib.contextmanager
     def assertRaisesMessage(self, expected_exception, expected_msg):  # pylint: disable=invalid-name
         """ Asserts an exception has occurred with a given error message """
@@ -182,3 +186,6 @@ class LogCapture(logging.Handler):
 
     def emit(self, record):
         self.messages.append(self.format(record))
+
+    def clear(self):
+        self.messages = []
