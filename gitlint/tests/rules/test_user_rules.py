@@ -97,7 +97,7 @@ class UserRuleTests(BaseTestCase):
     def test_assert_valid_rule_class(self):
         class MyLineRuleClass(rules.LineRule):
             id = 'UC1'
-            name = u'my-lïne-rule'
+            name = 'my-lïne-rule'
             target = rules.CommitMessageTitle
 
             def validate(self):
@@ -105,14 +105,14 @@ class UserRuleTests(BaseTestCase):
 
         class MyCommitRuleClass(rules.CommitRule):
             id = 'UC2'
-            name = u'my-cömmit-rule'
+            name = 'my-cömmit-rule'
 
             def validate(self):
                 pass
 
         class MyConfigurationRuleClass(rules.ConfigurationRule):
             id = 'UC3'
-            name = u'my-cönfiguration-rule'
+            name = 'my-cönfiguration-rule'
 
             def apply(self):
                 pass

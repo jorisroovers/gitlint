@@ -79,7 +79,7 @@ class TitleRuleTests(BaseTestCase):
         violations = rule.validate("This is å test", None)
         self.assertIsNone(violations)
 
-        # no violation if WIP occurs inside a wor
+        # no violation if WIP occurs inside a word
         violations = rule.validate("This is å wiping test", None)
         self.assertIsNone(violations)
 

@@ -50,7 +50,7 @@ class StdInTests(BaseTestCase):
             # We need to use subprocess.Popen() here instead of sh because when passing a file_handle to sh, it will
             # deal with reading the file itself instead of passing it on to gitlint as a STDIN. Since we're trying to
             # test for the condition where stat.S_ISREG == True that won't work for us here.
-            p = subprocess.Popen("gitlint", stdin=file_handle, cwd=self.tmp_git_repo,
-                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            output, _ = p.communicate()
-            self.assertEqual(output.decode(DEFAULT_ENCODING), self.get_expected("test_stdin/test_stdin_file_1"))
+            with subprocess.Popen("gitlint", stdin=file_handle, cwd=self.tmp_git_repo,
+                                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT) as p:
+                output, _ = p.communicate()
+                self.assertEqual(output.decode(DEFAULT_ENCODING), self.get_expected("test_stdin/test_stdin_file_1"))

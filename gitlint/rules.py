@@ -141,7 +141,7 @@ class LineMustNotContainWord(LineRule):
         strings = self.options['words'].value
         violations = []
         for string in strings:
-            regex = re.compile(r"\b%s\b" % string.lower(), re.IGNORECASE | re.UNICODE)
+            regex = re.compile(rf"\b{string.lower()}\b", re.IGNORECASE | re.UNICODE)
             match = regex.search(line.lower())
             if match:
                 violations.append(RuleViolation(self.id, self.violation_message.format(string), line))
