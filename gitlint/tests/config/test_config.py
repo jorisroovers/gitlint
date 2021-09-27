@@ -50,6 +50,7 @@ class LintConfigTests(BaseTestCase):
 
         self.assertFalse(config.ignore_stdin)
         self.assertFalse(config.staged)
+        self.assertFalse(config.fail_without_commits)
         self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
         active_rule_classes = tuple(type(rule) for rule in config.rules)
@@ -94,6 +95,10 @@ class LintConfigTests(BaseTestCase):
         # staged
         config.set_general_option("staged", "true")
         self.assertTrue(config.staged)
+
+        # fail-without-commits
+        config.set_general_option("fail-without-commits", "true")
+        self.assertTrue(config.fail_without_commits)
 
         # target
         config.set_general_option("target", self.SAMPLES_DIR)
@@ -227,7 +232,7 @@ class LintConfigTests(BaseTestCase):
         # splitting which means it it will accept just about everything
 
         # invalid boolean options
-        for attribute in ['debug', 'staged', 'ignore_stdin']:
+        for attribute in ['debug', 'staged', 'ignore_stdin', 'fail_without_commits']:
             option_name = attribute.replace("_", "-")
             with self.assertRaisesMessage(LintConfigError,
                                           f"Option '{option_name}' must be either 'true' or 'false'"):

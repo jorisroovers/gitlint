@@ -18,6 +18,7 @@ ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: True
 staged: False
+fail-without-commits: False
 verbosity: 2
 debug: True
 target: {target}

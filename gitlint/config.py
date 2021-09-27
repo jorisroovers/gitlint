@@ -76,6 +76,8 @@ class LintConfig:
         ignore_stdin_description = "Ignore any stdin data. Useful for running in CI server."
         self._ignore_stdin = options.BoolOption('ignore-stdin', False, ignore_stdin_description)
         self._staged = options.BoolOption('staged', False, "Read staged commit meta-info from the local repository.")
+        self._fail_without_commits = options.BoolOption('fail-without-commits', False,
+                                                        "Hard fail when the target commit range is empty")
 
     @property
     def target(self):
@@ -169,6 +171,15 @@ class LintConfig:
     @handle_option_error
     def staged(self, value):
         return self._staged.set(value)
+
+    @property
+    def fail_without_commits(self):
+        return self._fail_without_commits.value
+
+    @fail_without_commits.setter
+    @handle_option_error
+    def fail_without_commits(self, value):
+        return self._fail_without_commits.set(value)
 
     @property
     def extra_path(self):
@@ -275,6 +286,7 @@ class LintConfig:
             self.ignore_revert_commits == other.ignore_revert_commits and \
             self.ignore_stdin == other.ignore_stdin and \
             self.staged == other.staged and \
+            self.fail_without_commits == other.fail_without_commits and \
             self.debug == other.debug and \
             self.ignore == other.ignore and \
             self._config_path == other._config_path  # noqa
@@ -292,6 +304,7 @@ class LintConfig:
                 f"ignore-revert-commits: {self.ignore_revert_commits}\n"
                 f"ignore-stdin: {self.ignore_stdin}\n"
                 f"staged: {self.staged}\n"
+                f"fail-without-commits: {self.fail_without_commits}\n"
                 f"verbosity: {self.verbosity}\n"
                 f"debug: {self.debug}\n"
                 f"target: {self.target}\n"
