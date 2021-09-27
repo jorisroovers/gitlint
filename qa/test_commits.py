@@ -40,8 +40,27 @@ class CommitsTests(BaseTestCase):
         expected_kwargs = {'commit_sha1': commit_sha1, 'commit_sha2': commit_sha2}
         self.assertEqualStdout(output, self.get_expected("test_commits/test_violations_1", expected_kwargs))
 
+    def test_lint_empty_commit_range(self):
+        """ Tests `gitlint --commits <sha>^...<sha>` --fail-without-commits where the provided range is empty. """
+        self.create_simple_commit("Sïmple title.\n")
+        self.create_simple_commit("Sïmple title2.\n")
+        commit_sha = self.get_last_commit_hash()
+        # git revspec -> 2 dots: <exclusive sha>..<inclusive sha> -> empty range when using same start and end sha
+        refspec = f"{commit_sha}..{commit_sha}"
+
+        # Regular gitlint invocation should run without issues
+        output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True)
+        self.assertEqual(output.exit_code, 0)
+        self.assertEqualStdout(output, "")
+
+        # Gitlint should fail when --fail-without-commits is used
+        output = gitlint("--commits", refspec, "--fail-without-commits", _cwd=self.tmp_git_repo, _tty_in=True,
+                         _ok_code=[self.GITLINT_USAGE_ERROR])
+        self.assertEqual(output.exit_code, self.GITLINT_USAGE_ERROR)
+        self.assertEqualStdout(output, f"Error: No commits in range \"{refspec}\"\n")
+
     def test_lint_single_commit(self):
-        """ Tests `gitlint --commits <sha>` """
+        """ Tests `gitlint --commits <sha>^...<same sha>` """
         self.create_simple_commit("Sïmple title.\n")
         self.create_simple_commit("Sïmple title2.\n")
         commit_sha = self.get_last_commit_hash()
