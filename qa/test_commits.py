@@ -62,15 +62,37 @@ class CommitsTests(BaseTestCase):
     def test_lint_single_commit(self):
         """ Tests `gitlint --commits <sha>^...<same sha>` """
         self.create_simple_commit("Sïmple title.\n")
+        first_commit_sha = self.get_last_commit_hash()
         self.create_simple_commit("Sïmple title2.\n")
         commit_sha = self.get_last_commit_hash()
         refspec = f"{commit_sha}^...{commit_sha}"
         self.create_simple_commit("Sïmple title3.\n")
-        output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+
         expected = ("1: T3 Title has trailing punctuation (.): \"Sïmple title2.\"\n" +
                     "3: B6 Body message is missing\n")
+
+        # Lint using --commit <commit sha>
+        output = gitlint("--commit", commit_sha, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
         self.assertEqual(output.exit_code, 2)
         self.assertEqualStdout(output, expected)
+
+        # Lint a single commit using --commits <refspec> pointing to the single commit
+        output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+        self.assertEqual(output.exit_code, 2)
+        self.assertEqualStdout(output, expected)
+
+        # Lint the first commit in the repository. This is a use-case that is not supported by --commits
+        # As <sha>^...<sha> is not correct refspec in case <sha> points to the initial commit (which has no parents)
+        expected = ("1: T3 Title has trailing punctuation (.): \"Sïmple title.\"\n" +
+                    "3: B6 Body message is missing\n")
+        output = gitlint("--commit", first_commit_sha, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+        self.assertEqual(output.exit_code, 2)
+        self.assertEqualStdout(output, expected)
+
+        # Assert that indeed --commits <refspec> is not supported when <refspec> points the the first commit
+        refspec = f"{first_commit_sha}^...{first_commit_sha}"
+        output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[254])
+        self.assertEqual(output.exit_code, 254)
 
     def test_lint_staged_stdin(self):
         """ Tests linting a staged commit. Gitint should lint the passed commit message andfetch additional meta-data

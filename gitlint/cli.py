@@ -144,7 +144,7 @@ def get_stdin_data():
     return False
 
 
-def build_git_context(lint_config, msg_filename, refspec):
+def build_git_context(lint_config, msg_filename, commit_hash, refspec):
     """ Builds a git context based on passed parameters and order of precedence """
 
     # Determine which GitContext method to use if a custom message is passed
@@ -173,7 +173,11 @@ def build_git_context(lint_config, msg_filename, refspec):
 
     # 3. Fallback to reading from local repository
     LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Using the local repo.")
-    return GitContext.from_local_repository(lint_config.target, refspec)
+
+    if commit_hash and refspec:
+        raise GitLintUsageError("--commit and --commits are mutually exclusive, use one or the other.")
+
+    return GitContext.from_local_repository(lint_config.target, refspec=refspec, commit_hash=commit_hash)
 
 
 def handle_gitlint_error(ctx, exc):
@@ -192,9 +196,10 @@ def handle_gitlint_error(ctx, exc):
 class ContextObj:
     """ Simple class to hold data that is passed between Click commands via the Click context. """
 
-    def __init__(self, config, config_builder, refspec, msg_filename, gitcontext=None):
+    def __init__(self, config, config_builder, commit_hash, refspec, msg_filename, gitcontext=None):
         self.config = config
         self.config_builder = config_builder
+        self.commit_hash = commit_hash
         self.refspec = refspec
         self.msg_filename = msg_filename
         self.gitcontext = gitcontext
@@ -210,6 +215,7 @@ class ContextObj:
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
+@click.option('--commit', envvar='GITLINT_COMMIT', default=None, help="Hash (SHA) of specific commit to lint.")
 @click.option('--commits', envvar='GITLINT_COMMITS', default=None, help="The range of commits to lint. [default: HEAD]")
 @click.option('-e', '--extra-path', envvar='GITLINT_EXTRA_PATH',
               help="Path to a directory or python module with extra user-defined rules",
@@ -232,7 +238,7 @@ class ContextObj:
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
 def cli(  # pylint: disable=too-many-arguments
-        ctx, target, config, c, commits, extra_path, ignore, contrib,
+        ctx, target, config, c, commit, commits, extra_path, ignore, contrib,
         msg_filename, ignore_stdin, staged, fail_without_commits, verbose,
         silent, debug,
 ):
@@ -254,7 +260,7 @@ def cli(  # pylint: disable=too-many-arguments
                                               fail_without_commits, verbose, silent, debug)
         LOG.debug("Configuration\n%s", config)
 
-        ctx.obj = ContextObj(config, config_builder, commits, msg_filename)
+        ctx.obj = ContextObj(config, config_builder, commit, commits, msg_filename)
 
         # If no subcommand is specified, then just lint
         if ctx.invoked_subcommand is None:
@@ -270,9 +276,10 @@ def lint(ctx):
     """ Lints a git repository [default command] """
     lint_config = ctx.obj.config
     refspec = ctx.obj.refspec
+    commit_hash = ctx.obj.commit_hash
     msg_filename = ctx.obj.msg_filename
 
-    gitcontext = build_git_context(lint_config, msg_filename, refspec)
+    gitcontext = build_git_context(lint_config, msg_filename, commit_hash, refspec)
     # Set gitcontext in the click context, so we can use it in command that are ran after this
     # in particular, this is used by run-hook
     ctx.obj.gitcontext = gitcontext

@@ -364,22 +364,27 @@ class GitContext(PropertyCache):
         return context
 
     @staticmethod
-    def from_local_repository(repository_path, refspec=None):
+    def from_local_repository(repository_path, refspec=None, commit_hash=None):
         """ Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
-        :param refspec: The commit(s) to retrieve
+        :param refspec: The commit(s) to retrieve (mutually exclusive with `commit_sha`)
+        :param commit_hash: Hash of the commit to retrieve (mutually exclusive with `refspec`)
         """
 
         context = GitContext(repository_path=repository_path)
 
-        # If no refspec is defined, fallback to the last commit on the current branch
-        if refspec is None:
+        if refspec:
+            sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
+        elif commit_hash:  # Single commit, just pass it to `git log -1`
+            # Even though we have already been passed the commit hash, we ask git to retrieve this hash and
+            # return it to us. This way we verify that the passed hash is a valid hash for the target repo and we
+            # also convert it to the full hash format (we might have been passed a short hash).
+            sha_list = [_git("log", "-1", commit_hash, "--pretty=%H", _cwd=repository_path).replace("\n", "")]
+        else:  # If no refspec is defined, fallback to the last commit on the current branch
             # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
             # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into
             # problems with e.g. merge commits. Easiest solution is just taking the SHA from `git log -1`.
             sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace("\n", "")]
-        else:
-            sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
 
         for sha in sha_list:
             commit = LocalGitCommit(context, sha)
