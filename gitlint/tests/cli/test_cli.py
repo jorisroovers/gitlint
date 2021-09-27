@@ -26,6 +26,7 @@ class CLITests(BaseTestCase):
     USAGE_ERROR_CODE = 253
     GIT_CONTEXT_ERROR_CODE = 254
     CONFIG_ERROR_CODE = 255
+    GITLINT_SUCCESS_CODE = 0
 
     def setUp(self):
         super(CLITests, self).setUp()
@@ -475,7 +476,7 @@ class CLITests(BaseTestCase):
     def test_generate_config(self, generate_config):
         """ Test for the generate-config subcommand """
         result = self.cli.invoke(cli.cli, ["generate-config"], input="tëstfile\n")
-        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.exit_code, self.GITLINT_SUCCESS_CODE)
         expected_msg = "Please specify a location for the sample gitlint config file [.gitlint]: tëstfile\n" + \
                        f"Successfully generated {os.path.realpath('tëstfile')}\n"
         self.assertEqual(result.output, expected_msg)
@@ -517,7 +518,7 @@ class CLITests(BaseTestCase):
         result = self.cli.invoke(cli.cli, ["--commits", "master...HEAD"])
 
         self.assert_log_contains("DEBUG: gitlint.cli No commits in range \"master...HEAD\"")
-        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.exit_code, self.GITLINT_SUCCESS_CODE)
 
     @patch('gitlint.cli.get_stdin_data', return_value="WIP: tëst tïtle")
     def test_named_rules(self, _):
