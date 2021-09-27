@@ -18,6 +18,7 @@ from gitlint.utils import LOG_FORMAT
 from gitlint.exception import GitlintError
 
 # Error codes
+GITLINT_SUCCESS = 0
 MAX_VIOLATION_ERROR_CODE = 252
 USAGE_ERROR_CODE = 253
 GIT_CONTEXT_ERROR_CODE = 254
@@ -275,7 +276,7 @@ def lint(ctx):
     # ensure that these jobs don't fail if for whatever reason the specified commit range is empty.
     if number_of_commits == 0:
         LOG.debug(u'No commits in range "%s"', refspec)
-        ctx.exit(0)
+        ctx.exit(GITLINT_SUCCESS)
 
     LOG.debug(u'Linting %d commit(s)', number_of_commits)
     general_config_builder = ctx.obj.config_builder
@@ -283,7 +284,7 @@ def lint(ctx):
 
     # Let's get linting!
     first_violation = True
-    exit_code = 0
+    exit_code = GITLINT_SUCCESS
     for commit in gitcontext.commits:
         # Build a config_builder taking into account the commit specific config (if any)
         config_builder = general_config_builder.clone()
@@ -323,7 +324,7 @@ def install_hook(ctx):
         hooks.GitHookInstaller.install_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
         click.echo(f"Successfully installed gitlint commit-msg hook in {hook_path}")
-        ctx.exit(0)
+        ctx.exit(GITLINT_SUCCESS)
     except hooks.GitHookInstallerError as e:
         click.echo(e, err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
@@ -337,7 +338,7 @@ def uninstall_hook(ctx):
         hooks.GitHookInstaller.uninstall_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
         click.echo(f"Successfully uninstalled gitlint commit-msg hook from {hook_path}")
-        ctx.exit(0)
+        ctx.exit(GITLINT_SUCCESS)
     except hooks.GitHookInstallerError as e:
         click.echo(e, err=True)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
@@ -361,7 +362,7 @@ def run_hook(ctx):
             sys.stdout.flush()
 
             exit_code = e.exit_code
-            if exit_code == 0:
+            if exit_code == GITLINT_SUCCESS:
                 click.echo("gitlint: " + click.style("OK", fg='green') + " (no violations in commit message)")
                 continue
 
@@ -387,7 +388,7 @@ def run_hook(ctx):
 
             if value == "y":
                 LOG.debug("run-hook: commit message accepted")
-                exit_code = 0
+                exit_code = GITLINT_SUCCESS
             elif value == "e":
                 LOG.debug("run-hook: editing commit message")
                 msg_filename = ctx.obj.msg_filename
@@ -428,7 +429,7 @@ def generate_config(ctx):
 
     LintConfigGenerator.generate_config(path)
     click.echo(f"Successfully generated {path}")
-    ctx.exit(0)
+    ctx.exit(GITLINT_SUCCESS)
 
 
 # Let's Party!
