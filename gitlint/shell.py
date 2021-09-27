@@ -11,8 +11,8 @@ from gitlint.utils import USE_SH_LIB, DEFAULT_ENCODING
 
 def shell(cmd):
     """ Convenience function that opens a given command in a shell. Does not use 'sh' library. """
-    p = subprocess.Popen(cmd, shell=True)
-    p.communicate()
+    with subprocess.Popen(cmd, shell=True) as p:
+        p.communicate()
 
 
 if USE_SH_LIB:
@@ -57,8 +57,8 @@ else:
             popen_kwargs['cwd'] = kwargs['_cwd']
 
         try:
-            p = subprocess.Popen(args, **popen_kwargs)
-            result = p.communicate()
+            with subprocess.Popen(args, **popen_kwargs) as p:
+                result = p.communicate()
         except FileNotFoundError as e:
             raise CommandNotFound from e
 

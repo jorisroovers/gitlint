@@ -9,9 +9,9 @@ class HookTests(BaseTestCase):
     """ Integration tests for gitlint commitmsg hooks"""
 
     VIOLATIONS = ['gitlint: checking commit message...\n',
-                  u'1: T3 Title has trailing punctuation (.): "WIP: This ïs a title."\n',
-                  u'1: T5 Title contains the word \'WIP\' (case-insensitive): "WIP: This ïs a title."\n',
-                  u'2: B4 Second line is not empty: "Contënt on the second line"\n',
+                  '1: T3 Title has trailing punctuation (.): "WIP: This ïs a title."\n',
+                  '1: T5 Title contains the word \'WIP\' (case-insensitive): "WIP: This ïs a title."\n',
+                  '2: B4 Second line is not empty: "Contënt on the second line"\n',
                   '3: B6 Body message is missing\n',
                   '-----------------------------------------------\n',
                   'gitlint: \x1b[31mYour commit message contains violations.\x1b[0m\n']
@@ -28,15 +28,17 @@ class HookTests(BaseTestCase):
 
         # install git commit-msg hook and assert output
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
-        expected_installed = "Successfully installed gitlint commit-msg hook in %s/.git/hooks/commit-msg\n" % \
-                             self.tmp_git_repo
+        expected_installed = ("Successfully installed gitlint commit-msg hook in "
+                              f"{self.tmp_git_repo}/.git/hooks/commit-msg\n")
+
         self.assertEqualStdout(output_installed, expected_installed)
 
     def tearDown(self):
         # uninstall git commit-msg hook and assert output
         output_uninstalled = gitlint("uninstall-hook", _cwd=self.tmp_git_repo)
-        expected_uninstalled = "Successfully uninstalled gitlint commit-msg hook from %s/.git/hooks/commit-msg\n" % \
-                               self.tmp_git_repo
+        expected_uninstalled = ("Successfully uninstalled gitlint commit-msg hook from "
+                                f"{self.tmp_git_repo}/.git/hooks/commit-msg\n")
+
         self.assertEqualStdout(output_uninstalled, expected_uninstalled)
 
     def _violations(self):
@@ -60,9 +62,9 @@ class HookTests(BaseTestCase):
         short_hash = self.get_last_commit_short_hash()
         expected_output = ["gitlint: checking commit message...\n",
                            "gitlint: \x1b[32mOK\x1b[0m (no violations in commit message)\n",
-                           "[master %s] This ïs a title\n" % short_hash,
+                           f"[master {short_hash}] This ïs a title\n",
                            " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
-                           " create mode 100644 %s\n" % test_filename]
+                           f" create mode 100644 {test_filename}\n"]
         self.assertListEqual(expected_output, self.githook_output)
 
     def test_commit_hook_continue(self):
@@ -76,10 +78,9 @@ class HookTests(BaseTestCase):
         expected_output = self._violations()
         expected_output += ["Continue with commit anyways (this keeps the current commit message)? " +
                             "[y(es)/n(no)/e(dit)] " +
-                            "[master %s] WIP: This ïs a title. Contënt on the second line\n"
-                            % short_hash,
+                            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
                             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
-                            " create mode 100644 %s\n" % test_filename]
+                            f" create mode 100644 {test_filename}\n"]
 
         assert len(self.githook_output) == len(expected_output)
         for output, expected in zip(self.githook_output, expected_output):
@@ -124,9 +125,9 @@ class HookTests(BaseTestCase):
         expected_output += self._violations()[1:]
         expected_output += ['Continue with commit anyways (this keeps the current commit message)? ' +
                             "[y(es)/n(no)/e(dit)] " +
-                            "[master %s] WIP: This ïs a title. Contënt on the second line\n" % short_hash,
+                            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
                             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
-                            " create mode 100644 %s\n" % test_filename]
+                            f" create mode 100644 {test_filename}\n"]
 
         assert len(self.githook_output) == len(expected_output)
         for output, expected in zip(self.githook_output, expected_output):

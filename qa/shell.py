@@ -67,8 +67,8 @@ else:
             popen_kwargs['env'] = kwargs['_env']
 
         try:
-            p = subprocess.Popen(args, **popen_kwargs)
-            result = p.communicate()
+            with subprocess.Popen(args, **popen_kwargs) as p:
+                result = p.communicate()
         except FileNotFoundError as exc:
             raise CommandNotFound from exc
 

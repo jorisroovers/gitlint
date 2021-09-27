@@ -283,12 +283,12 @@ def lint(ctx):
     # ensure that these jobs don't fail if for whatever reason the specified commit range is empty.
     # This behavior can be overridden by using the --fail-without-commits flag.
     if number_of_commits == 0:
-        LOG.debug(u'No commits in range "%s"', refspec)
+        LOG.debug('No commits in range "%s"', refspec)
         if lint_config.fail_without_commits:
-            raise GitLintUsageError(u'No commits in range "%s"' % refspec)
+            raise GitLintUsageError(f'No commits in range "{refspec}"')
         ctx.exit(GITLINT_SUCCESS)
 
-    LOG.debug(u'Linting %d commit(s)', number_of_commits)
+    LOG.debug('Linting %d commit(s)', number_of_commits)
     general_config_builder = ctx.obj.config_builder
     last_commit = gitcontext.commits[-1]
 
@@ -312,10 +312,8 @@ def lint(ctx):
         if violations:
             # Display the commit hash & new lines intelligently
             if number_of_commits > 1 and commit.sha:
-                linter.display.e("{0}Commit {1}:".format(
-                    "\n" if not first_violation or commit is last_commit else "",
-                    commit.sha[:10]
-                ))
+                commit_separator = "\n" if not first_violation or commit is last_commit else ""
+                linter.display.e(f"{commit_separator}Commit {commit.sha[:10]}:")
             linter.print_violations(violations)
             first_violation = False
 

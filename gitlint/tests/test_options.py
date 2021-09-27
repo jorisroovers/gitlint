@@ -197,7 +197,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, self.get_sample_path())
 
         # Expect exception if path type is invalid
-        option.type = u'föo'
+        option.type = 'föo'
         expected = "Option tëst-directory type must be one of: 'file', 'dir', 'both' (current: 'föo')"
         with self.assertRaisesMessage(RuleOptionError, expected):
             option.set("haha")

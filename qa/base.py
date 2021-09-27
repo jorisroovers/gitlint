@@ -87,6 +87,7 @@ class BaseTestCase(TestCase):
     def create_file(parent_dir):
         """ Creates a file inside a passed directory. Returns filename."""
         test_filename = "test-fïle-" + str(uuid4())
+        # pylint: disable=consider-using-with
         io.open(os.path.join(parent_dir, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
         return test_filename
 
@@ -159,11 +160,12 @@ class BaseTestCase(TestCase):
         specified by variable_dict. """
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        expected = io.open(expected_path, encoding=DEFAULT_ENCODING).read()
+        with io.open(expected_path, encoding=DEFAULT_ENCODING) as file:
+            expected = file.read()
 
-        if variable_dict:
-            expected = expected.format(**variable_dict)
-        return expected
+            if variable_dict:
+                expected = expected.format(**variable_dict)
+            return expected
 
     @staticmethod
     def get_system_info_dict():

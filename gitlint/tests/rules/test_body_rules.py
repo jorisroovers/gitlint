@@ -101,13 +101,13 @@ class BodyRuleTests(BaseTestCase):
         expected_violation = rules.RuleViolation("B5", "Body message is too short (21<120)", "å" * 21, 3)
 
         rule = rules.BodyMinLength({'min-length': 120})
-        commit = self.gitcommit("Title\n\n%s\n" % ("å" * 21))
+        commit = self.gitcommit("Title\n\n{0}\n".format("å" * 21))  # pylint: disable=consider-using-f-string
         violations = rule.validate(commit)
         self.assertListEqual(violations, [expected_violation])
 
         # Make sure we don't get the error if the body-length is exactly the min-length
         rule = rules.BodyMinLength({'min-length': 8})
-        commit = self.gitcommit("Tïtle\n\n%s\n" % ("å" * 8))
+        commit = self.gitcommit("Tïtle\n\n{0}\n".format("å" * 8))  # pylint: disable=consider-using-f-string
         violations = rule.validate(commit)
         self.assertIsNone(violations)
 
@@ -182,7 +182,7 @@ class BodyRuleTests(BaseTestCase):
         expected_violation = rules.RuleViolation("B7", "Body does not mention changed file 'föo/test.py'", None, 4)
         self.assertEqual([expected_violation], violations)
 
-        # assert multiple errors if  multiple files habe changed and are not mentioned
+        # assert multiple errors if multiple files have changed and are not mentioned
         commit_msg = "This is å test\n\nHere is a mention of\nAnd here is a mention of"
         commit = self.gitcommit(commit_msg, ["föo/test.py", "bar.txt"])
         violations = rule.validate(commit)
