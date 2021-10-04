@@ -69,8 +69,11 @@ jobs:
       - name: Re-add git version control to code
         run: mv ._git .git
 
+      # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
+      # PRs get squashed and get a proper commit message during merge.
       - name: Gitlint check
         run: ./run_tests.sh -g --debug
+        if: ${{ github.event_name	!= 'pull_request' }}
 
   windows-checks:
     runs-on: windows-latest
@@ -133,5 +136,8 @@ jobs:
       - name: Re-add git version control to code
         run: Rename-Item ._git .git
 
+      # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
+      # PRs get squashed and get a proper commit message during merge.
       - name: Gitlint check
         run: gitlint --debug
+        if: ${{ github.event_name	!= 'pull_request' }}
