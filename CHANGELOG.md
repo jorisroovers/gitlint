@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.16.0 (soon) ##
+
+Contributors:
+
 ## v0.15.1 (2021-04-16) ##
 
 Contributors:
