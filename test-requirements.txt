@@ -1,5 +1,5 @@
 flake8==3.9.2
-coverage==5.5
+coverage==6.0
 python-coveralls==2.9.3
 radon==5.1.0
 flake8-polyfill==1.0.2 # Required when installing both flake8 and radon>=4.3.1 
