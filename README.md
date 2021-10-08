@@ -8,7 +8,9 @@ Git commit message linter written in python (for Linux and Mac, experimental on 
 
 **See [jorisroovers.github.io/gitlint](http://jorisroovers.github.io/gitlint/) for full documentation.**
 
-<a href="http://jorisroovers.github.io/gitlint/" target="_blank"><img src="https://asciinema.org/a/30477.png" width="640"/></a>
+<a href="http://jorisroovers.github.io/gitlint/" target="_blank">
+<img src="docs/images/readme-gitlint.png" />
+</a>
 
 ## Contributing ##
 All contributions are welcome and very much appreciated!

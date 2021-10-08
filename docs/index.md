@@ -38,12 +38,11 @@ useful throughout the years.
 # Pip is recommended to install the latest version
 pip install gitlint
 
-# macOS
-brew install gitlint
-sudo port install gitlint  # alternative using macports
-
-# Ubuntu
-apt-get install gitlint
+# Community maintained packages:
+brew install gitlint       # Homebrew (macOS)
+sudo port install gitlint  # Macports (macOS)
+apt-get install gitlint    # Ubuntu
+# Other package managers, see https://repology.org/project/gitlint/versions
 
 # Docker: https://hub.docker.com/r/jorisroovers/gitlint
 docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint

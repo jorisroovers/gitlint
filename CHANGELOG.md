@@ -1,5 +1,19 @@
 # Changelog #
 
+## v0.16.0 (2021-10-?) Soon! ##
+
+Contributors:
+Special thanks to all contributors for this release, in particular [sigmavirus24](https://github.com/sigmavirus24), [l0b0](https://github.com/l0b0) and [rafaelbubach](https://github.com/rafaelbubach).
+
+- Python 3.10 support
+- **New Rule**: [ignore-by-author-name](http://jorisroovers.github.io/gitlint/rules/#i4-ignore-by-author-name) allows users to skip linting commit messages made by specific authors
+- `--commit <SHA>` flag to more easily lint a single commit message ([#141](https://github.com/jorisroovers/gitlint/issues/141))
+- `--fail-without-commits` flag will force gitlint to fail ([exit code 253](https://jorisroovers.com/gitlint/#exit-codes)) when the target commit range is empty (typically when using `--commits`)  ([#193](https://github.com/jorisroovers/gitlint/issues/193))
+- Bugfixes:
+  - [contrib-title-conventional-commits (CT1)](https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits)  now properly enforces the commit type ([#185](https://github.com/jorisroovers/gitlint/issues/185))
+  - [contrib-title-conventional-commits (CT1)](https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits) now supports the BREAKING CHANGE symbol "!" ([#186](https://github.com/jorisroovers/gitlint/issues/186))
+- Heads-up: [Python 3.6 will become EOL at the end of 2021](https://endoflife.date/python). It's likely that future gitlint releases will stop supporting Python 3.6 as a result. We will continue to support Python 3.6 as long as its easily doable, which in practice usually means as long as our dependencies support it.
+- Under-the-hood: dependencies updated, test and github action improvements.
 ## v0.15.1 (2021-04-16) ##
 
 Contributors:
