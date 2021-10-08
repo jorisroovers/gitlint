@@ -14,7 +14,7 @@
 
   <link rel="stylesheet" href="css/theme.css" />
   <link rel="stylesheet" href="css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
   <link href="extra.css" rel="stylesheet" />
   
   <script>
@@ -26,9 +26,8 @@
   
   <script src="js/jquery-2.1.1.min.js" defer></script>
   <script src="js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
-  
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -42,7 +41,7 @@
         <a href="." class="icon icon-home"> Gitlint</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -63,7 +62,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#linting-a-range-of-commits">Linting a range of commits</a>
+    <li class="toctree-l2"><a class="reference internal" href="#linting-specific-commits">Linting specific commits</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#merge-fixup-squash-and-revert-commits">Merge, fixup, squash and revert commits</a>
     </li>
@@ -132,6 +131,7 @@
   
   <hr/>
 </div>
+
           <div role="main">
             <div class="section">
               
@@ -173,12 +173,11 @@ useful throughout the years.</li>
 <pre><code class="language-sh"># Pip is recommended to install the latest version
 pip install gitlint
 
-# macOS
-brew install gitlint
-sudo port install gitlint  # alternative using macports
-
-# Ubuntu
-apt-get install gitlint
+# Community maintained packages:
+brew install gitlint       # Homebrew (macOS)
+sudo port install gitlint  # Macports (macOS)
+apt-get install gitlint    # Ubuntu
+# Other package managers, see https://repology.org/project/gitlint/versions
 
 # Docker: https://hub.docker.com/r/jorisroovers/gitlint
 docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint
@@ -256,8 +255,9 @@ Options:
                            current working directory]
   -C, --config FILE        Config file location [default: .gitlint]
   -c TEXT                  Config flags in format &lt;rule&gt;.&lt;option&gt;=&lt;value&gt;
-                           (e.g.: -c T1.line-length=80). Flag can be used
-                           multiple times to set multiple config values.
+                           (e.g.: -c T1.line-length=80). Flag can be
+                           used multiple times to set multiple config values.
+  --commit TEXT            Hash (SHA) of specific commit to lint.
   --commits TEXT           The range of commits to lint. [default: HEAD]
   -e, --extra-path PATH    Path to a directory or python module with extra
                            user-defined rules
@@ -269,10 +269,11 @@ Options:
                            server.
   --staged                 Read staged commit meta-info from the local
                            repository.
-  -v, --verbose            Verbosity, more v's for more verbose output (e.g.:
-                           -v, -vv, -vvv). [default: -vvv]
-  -s, --silent             Silent mode (no output). Takes precedence over -v,
-                           -vv, -vvv.
+  --fail-without-commits   Hard fail when the target commit range is empty.
+  -v, --verbose            Verbosity, more v's for more verbose output
+                           (e.g.: -v, -vv, -vvv). [default: -vvv]
+  -s, --silent             Silent mode (no output).
+                           Takes precedence over -v, -vv, -vvv.
   -d, --debug              Enable debugging output.
   --version                Show the version and exit.
   --help                   Show this message and exit.
@@ -281,6 +282,7 @@ Commands:
   generate-config  Generates a sample gitlint config file.
   install-hook     Install gitlint as a git commit-msg hook.
   lint             Lints a git repository [default command]
+  run-hook         Runs the gitlint commit-msg hook.
   uninstall-hook   Uninstall gitlint commit-msg hook.
 
   When no COMMAND is specified, gitlint defaults to 'gitlint lint'.
@@ -348,15 +350,16 @@ git log -1 --pretty=%B 62c0519 | gitlint
 </code></pre>
 <p>Note that gitlint requires that you specify <code>--pretty=%B</code> (=only print the log message, not the metadata),
 future versions of gitlint might fix this and not require the <code>--pretty</code> argument.</p>
-<h2 id="linting-a-range-of-commits">Linting a range of commits</h2>
-<p><em>Introduced in gitlint v0.9.0 (experimental in v0.8.0)</em></p>
-<p>Gitlint allows users to lint a number of commits at once like so:</p>
+<h2 id="linting-specific-commits">Linting specific commits</h2>
+<p>Gitlint allows users to lint a specific commit:</p>
+<pre><code class="language-sh">gitlint --commit 019cf40580a471a3958d3c346aa8bfd265fe5e16
+gitlint --commit 019cf40 # short SHAs work too
+</code></pre>
+<p>You can also lint multiple commits at once like so:</p>
 <pre><code class="language-sh"># Lint a specific commit range:
 gitlint --commits &quot;019cf40...d6bc75a&quot;
 # You can also use git's special references:
 gitlint --commits &quot;origin..HEAD&quot;
-# Or specify a single specific commit in refspec format, like so:
-gitlint --commits &quot;019cf40^...019cf40&quot;
 </code></pre>
 <p>The <code>--commits</code> flag takes a <strong>single</strong> refspec argument or commit range. Basically, any range that is understood
 by <a href="https://git-scm.com/docs/git-rev-list">git rev-list</a> as a single argument will work.</p>
@@ -365,9 +368,8 @@ script to lint an arbitrary set of commits, like shown in the example below.</p>
 <pre><code class="language-sh">#!/bin/sh
 
 for commit in $(git rev-list master); do
-    commit_msg=$(git log -1 --pretty=%B $commit)
-    echo &quot;$commit&quot;
-    echo &quot;$commit_msg&quot; | gitlint
+    echo &quot;Commit $commit&quot;
+    gitlint --commit $commit
     echo &quot;--------&quot;
 done
 </code></pre>
@@ -397,13 +399,11 @@ general <code>ignore-merge-commits</code>, <code>ignore-revert-commits</code>,  
 <code>ignore-squash-commits</code> option to <code>false</code>
 <a href="configuration/">using one of the various ways to configure gitlint</a>.</p>
 <h2 id="ignoring-commits">Ignoring commits</h2>
-<p><em>Introduced in gitlint v0.10.0</em></p>
 <p>You can configure gitlint to ignore specific commits or parts of a commit.</p>
 <p>One way to do this, is to by <a href="configuration/#commit-specific-config">adding a gitline-ignore line to your commit message</a>.</p>
 <p>If you have a case where you want to ignore a certain type of commits all-together, you can
 use gitlint's <em>ignore</em> rules.
-Here's an example gitlint file that configures gitlint to ignore rules <code>title-max-length</code> and <code>body-min-length</code>
-for all commits with a title starting with <em>"Release"</em>.</p>
+Here's a few examples snippets from a <code>.gitlint</code> file:</p>
 <pre><code class="language-ini">[ignore-by-title]
 # Match commit titles starting with Release
 regex=^Release(.*)
@@ -414,6 +414,11 @@ ignore=title-max-length,body-min-length
 [ignore-by-body]
 # Match commits message bodies that have a line that contains 'release'
 regex=(.*)release(.*)
+ignore=all
+
+[ignore-by-author-name]
+# Match commits by author name (e.g. ignore all rules when a commit is made by dependabot)
+regex=dependabot
 ignore=all
 </code></pre>
 <p>If you just want to ignore certain lines in a commit, you can do that using the
@@ -545,17 +550,20 @@ to 252.</p>
   </div>
 
   <div class="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-          <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
-      
-      
-      
-        <span style="margin-left: 15px"><a href="configuration/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+    
+      <span><a href="configuration/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
 </div>
     <script>var base_url = '.';</script>
+    <script src="js/theme_extra.js" defer></script>
     <script src="js/theme.js" defer></script>
       <script src="extra.js" defer></script>
       <script src="search/main.js" defer></script>
@@ -569,6 +577,6 @@ to 252.</p>
 </html>
 
 <!--
-MkDocs version : 1.1.2
-Build Date UTC : 2021-04-16 21:25:17.304869+00:00
+MkDocs version : 1.2.2
+Build Date UTC : 2021-10-08 17:08:14.064730+00:00
 -->

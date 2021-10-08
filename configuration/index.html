@@ -14,7 +14,7 @@
 
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
   <link href="../extra.css" rel="stylesheet" />
   
   <script>
@@ -26,9 +26,8 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
-  
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -42,7 +41,7 @@
         <a href=".." class="icon icon-home"> Gitlint</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -120,6 +119,7 @@
   
   <hr/>
 </div>
+
           <div role="main">
             <div class="section">
               
@@ -168,6 +168,12 @@ ignore-stdin=true
 # Fetch additional meta-data from the local repository when manually passing a 
 # commit message to gitlint via stdin or --commit-msg. Disabled by default.
 staged=true
+
+# Hard fail when the target commit range is empty. Note that gitlint will
+# already fail by default on invalid commit ranges. This option is specifically
+# to tell gitlint to fail on *valid but empty* commit ranges.
+# Disabled by default.
+fail-without-commits=true
 
 # Enable debug mode (prints more output). Disabled by default.
 debug=true
@@ -245,7 +251,7 @@ ignore=T1,body-min-length
 [ignore-by-body]
 # Ignore certain rules for commits of which the body has a line that matches a regex
 # E.g. Match bodies that have a line that that contain &quot;release&quot;
-# regex=(.*)release(.*)
+regex=(.*)release(.*)
 #
 # Ignore certain rules, you can reference them by their id or by their full name
 # Use 'all' to ignore all rules
@@ -255,6 +261,15 @@ ignore=T1,body-min-length
 # Ignore certain lines in a commit body that match a regex.
 # E.g. Ignore all lines that start with 'Co-Authored-By'
 regex=^Co-Authored-By
+
+[ignore-by-author-name]
+# Ignore certain rules for commits of which the author name matches a regex
+# E.g. Match commits made by dependabot
+regex=(.*)dependabot(.*)
+
+# Ignore certain rules, you can reference them by their id or by their full name
+# Use 'all' to ignore all rules
+ignore=T1,body-min-length
 
 # This is a contrib rule - a community contributed rule. These are disabled by default.
 # You need to explicitly enable them one-by-one by adding them to the &quot;contrib&quot; option
@@ -538,6 +553,39 @@ GITLINT_STAGED=1 gitlint       # using env variable
 [general]
 staged=true
 </code></pre>
+<h3 id="fail-without-commits">fail-without-commits</h3>
+<p>Hard fail when the target commit range is empty. Note that gitlint will
+already fail by default on invalid commit ranges. This option is specifically
+to tell gitlint to fail on <strong>valid but empty</strong> commit ranges.</p>
+<table>
+<thead>
+<tr>
+<th>Default value</th>
+<th>gitlint version</th>
+<th>commandline flag</th>
+<th>environment variable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>false</td>
+<td>&gt;= 0.15.2</td>
+<td><code>--fail-without-commits</code></td>
+<td><code>GITLINT_FAIL_WITHOUT_COMMITS</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="examples_8">Examples</h4>
+<pre><code class="language-sh"># CLI
+# The following will cause gitlint to hard fail (i.e. exit code &gt; 0)
+# since HEAD..HEAD is a valid but empty commit range. 
+gitlint --fail-without-commits --commits HEAD..HEAD
+GITLINT_FAIL_WITHOUT_COMMITS=1 gitlint       # using env variable
+</code></pre>
+<pre><code class="language-ini">#.gitlint
+[general]
+fail-without-commits=true
+</code></pre>
 <h3 id="ignore-stdin">ignore-stdin</h3>
 <p>Ignore any stdin data. Sometimes useful when running gitlint in a CI server.</p>
 <table>
@@ -558,7 +606,7 @@ staged=true
 </tr>
 </tbody>
 </table>
-<h4 id="examples_8">Examples</h4>
+<h4 id="examples_9">Examples</h4>
 <pre><code class="language-sh"># CLI
 gitlint --ignore-stdin
 gitlint -c general.ignore-stdin=true # different way of doing the same
@@ -588,7 +636,7 @@ ignore-stdin=true
 </tr>
 </tbody>
 </table>
-<h4 id="examples_9">Examples</h4>
+<h4 id="examples_10">Examples</h4>
 <pre><code class="language-sh"># CLI
 gitlint -c general.ignore-merge-commits=false
 </code></pre>
@@ -616,7 +664,7 @@ ignore-merge-commits=false
 </tr>
 </tbody>
 </table>
-<h4 id="examples_10">Examples</h4>
+<h4 id="examples_11">Examples</h4>
 <pre><code class="language-sh"># CLI
 gitlint -c general.ignore-revert-commits=false
 </code></pre>
@@ -644,7 +692,7 @@ ignore-revert-commits=false
 </tr>
 </tbody>
 </table>
-<h4 id="examples_11">Examples</h4>
+<h4 id="examples_12">Examples</h4>
 <pre><code class="language-sh"># CLI
 gitlint -c general.ignore-fixup-commits=false
 </code></pre>
@@ -672,7 +720,7 @@ ignore-fixup-commits=false
 </tr>
 </tbody>
 </table>
-<h4 id="examples_12">Examples</h4>
+<h4 id="examples_13">Examples</h4>
 <pre><code class="language-sh"># CLI
 gitlint -c general.ignore-squash-commits=false
 </code></pre>
@@ -713,19 +761,22 @@ ignore-squash-commits=false
   </div>
 
   <div class="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-          <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
-      
-      
-        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../rules/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/jorisroovers/gitlint/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../rules/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
 </div>
     <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
     <script src="../js/theme.js" defer></script>
       <script src="../extra.js" defer></script>
       <script src="../search/main.js" defer></script>
