@@ -1,6 +1,6 @@
 # Changelog #
 
-## v0.16.0 (2021-10-?) Soon! ##
+## v0.16.0 (2021-10-08) ##
 
 Contributors:
 Special thanks to all contributors for this release, in particular [sigmavirus24](https://github.com/sigmavirus24), [l0b0](https://github.com/l0b0) and [rafaelbubach](https://github.com/rafaelbubach).
