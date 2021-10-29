@@ -19,14 +19,18 @@ if [ $stdin_available -eq 1 ]; then
     fi
 fi
 
-gitlint --staged --msg-filename "$1" run-hook
+if [ ! -f "${PWD:-"$(pwd)"}"/.gitlint ] && [ -f "$HOME"/.gitlint ]; then
+    global_config="--config \"\$HOME\"/.gitlint"
+fi
+
+gitlint "${global_config-}" --staged --msg-filename "$1" run-hook
 exit_code=$?
 
 # If we fail to find the gitlint binary (command not found), let's retry by executing as a python module.
 # This is the case for Atlassian SourceTree, where $PATH deviates from the user's shell $PATH.
 if [ $exit_code -eq 127 ]; then
     echo "Fallback to python module execution"
-    python -m gitlint.cli --staged --msg-filename "$1" run-hook
+    python -m gitlint.cli "${global_config-}" --staged --msg-filename "$1" run-hook
     exit_code=$?
 fi
 
