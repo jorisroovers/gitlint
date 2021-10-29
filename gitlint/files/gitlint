@@ -45,7 +45,7 @@
 # extra-path=examples/
 
 # This is an example of how to configure the "title-max-length" rule and
-# set the line-length it enforces to 80
+# set the line-length it enforces to 50
 # [title-max-length]
 # line-length=50
 
