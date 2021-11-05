@@ -206,7 +206,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
         (name, email, date, parents), commit_msg = raw_commit[0].split('\x00'), "\n".join(raw_commit[1:])
 
         commit_parents = parents.split(" ")
-        commit_is_merge_commit = len(commit_parents) > 1
+        commit_is_merge_commit = len(commit_parents) > 1 or commit_msg.startswith("Merge")
 
         # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
         # Use arrow for datetime parsing, because apparently python is quirky around ISO-8601 dates:
