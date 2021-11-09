@@ -367,7 +367,7 @@ class GitContext(PropertyCache):
     def from_local_repository(repository_path, refspec=None, commit_hash=None):
         """ Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
-        :param refspec: The commit(s) to retrieve (mutually exclusive with `commit_sha`)
+        :param refspec: The commit(s) to retrieve (mutually exclusive with `commit_hash`)
         :param commit_hash: Hash of the commit to retrieve (mutually exclusive with `refspec`)
         """
 
