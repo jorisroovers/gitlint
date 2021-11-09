@@ -315,7 +315,7 @@ general `ignore-merge-commits`, `ignore-revert-commits`,  `ignore-fixup-commits`
 
 You can configure gitlint to ignore specific commits or parts of a commit.
 
-One way to do this, is to by [adding a gitline-ignore line to your commit message](configuration.md#commit-specific-config).
+One way to do this, is by [adding a gitlint-ignore line to your commit message](configuration.md#commit-specific-config).
 
 If you have a case where you want to ignore a certain type of commits all-together, you can
 use gitlint's *ignore* rules.

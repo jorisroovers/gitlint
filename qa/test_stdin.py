@@ -23,7 +23,7 @@ class StdInTests(BaseTestCase):
         self.assertEqualStdout(output, self.get_expected("test_stdin/test_stdin_pipe_1"))
 
     def test_stdin_pipe_empty(self):
-        """ Test the scenario where no TTY is attached an nothing is piped into gitlint. This occurs in
+        """ Test the scenario where no TTY is attached and nothing is piped into gitlint. This occurs in
             CI runners like Jenkins and Gitlab, see https://github.com/jorisroovers/gitlint/issues/42 for details.
             This is the equivalent of doing:
             $ echo -n "" | gitlint

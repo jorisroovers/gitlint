@@ -1,5 +1,5 @@
 
-# This code is mostly duplicated from the `gitlint.shell` module. We conciously duplicate this code as to not depend
+# This code is mostly duplicated from the `gitlint.shell` module. We consciously duplicate this code as to not depend
 # on gitlint internals for our integration testing framework.
 
 import subprocess

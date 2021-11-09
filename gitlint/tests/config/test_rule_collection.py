@@ -19,7 +19,7 @@ class RuleCollectionTests(BaseTestCase):
 
         self.assertEqual(len(collection), 1)
         self.assertDictEqual(collection._rules, OrderedDict({"my-rüle": expected}))
-        # Need to explicitely compare expected attributes as the rule.__eq__ method does not compare these attributes
+        # Need to explicitly compare expected attributes as the rule.__eq__ method does not compare these attributes
         self.assertEqual(collection._rules[expected.id].my_attr, expected.my_attr)
         self.assertEqual(collection._rules[expected.id].my_attr2, expected.my_attr2)
 

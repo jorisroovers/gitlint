@@ -33,7 +33,7 @@ class BaseTestCase(unittest.TestCase):
         logging.getLogger('gitlint').setLevel(logging.DEBUG)
         logging.getLogger('gitlint').handlers = [self.logcapture]
 
-        # Make sure we don't propagate anything to child loggers, we need to do this explicitely here
+        # Make sure we don't propagate anything to child loggers, we need to do this explicitly here
         # because if you run a specific test file like test_lint.py, we won't be calling the setupLogging() method
         # in gitlint.cli that normally takes care of this
         logging.getLogger('gitlint').propagate = False

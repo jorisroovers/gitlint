@@ -86,7 +86,7 @@ class BoolOption(RuleOption):
 
 
 class ListOption(RuleOption):
-    """ Option that is either a given list or a comma-separated string that can be splitted into a list when being set.
+    """ Option that is either a given list or a comma-separated string that can be split into a list when being set.
     """
 
     @allow_none
