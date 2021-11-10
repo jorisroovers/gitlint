@@ -428,7 +428,7 @@ class LintConfigBuilder:
                     f"'{config_option}' is an invalid configuration option. Use '<rule>.<option>=<value>'") from e
 
     def set_from_config_file(self, filename):
-        """ Loads lint config from a ini-style config file """
+        """ Loads lint config from an ini-style config file """
         if not os.path.exists(filename):
             raise LintConfigError(f"Invalid file path: {filename}")
         self._config_path = os.path.realpath(filename)

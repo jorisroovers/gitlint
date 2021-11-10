@@ -56,7 +56,7 @@ assert_root(){
     fi
 }
 
-# Utility method that prints SUCCESS if a test was succesful, or FAIL together with the test output
+# Utility method that prints SUCCESS if a test was successful, or FAIL together with the test output
 handle_test_result(){
     EXIT_CODE=$1
     RESULT="$2"

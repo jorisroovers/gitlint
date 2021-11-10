@@ -170,7 +170,7 @@ class UserRuleTests(BaseTestCase):
             class MyRuleClass(parent_class):
                 id = "UC1"
 
-            # Rule class must have an name
+            # Rule class must have a name
             expected_msg = "User-defined rule class 'MyRuleClass' must have a 'name' attribute"
             with self.assertRaisesMessage(UserRuleError, expected_msg):
                 assert_valid_rule_class(MyRuleClass)
