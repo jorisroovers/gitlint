@@ -388,6 +388,7 @@ contrib=contrib-title-conventional-commits,CC1
 ### staged
 
 Fetch additional meta-data from the local repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
+Useful if checking other properties of a commit besides just the message.
 
 | Default value | gitlint version | commandline flag | environment variable |
 | ------------- | --------------- | ---------------- | -------------------- |

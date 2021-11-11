@@ -164,7 +164,8 @@ Options:
   --ignore-stdin           Ignore any stdin data. Useful for running in CI
                            server.
   --staged                 Read staged commit meta-info from the local
-                           repository.
+                           repository. Useful if checking other properties of
+                           a commit besides just the message.
   --fail-without-commits   Hard fail when the target commit range is empty.
   -v, --verbose            Verbosity, more v's for more verbose output
                            (e.g.: -v, -vv, -vvv). [default: -vvv]
