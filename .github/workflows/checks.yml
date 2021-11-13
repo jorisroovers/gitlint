@@ -109,13 +109,13 @@ jobs:
         run: gitlint --version
 
       - name: Tests (sanity)
-        run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py::CLITests::test_lint"
+        run: tools\windows\run_tests.bat "gitlint-core\gitlint\tests\cli\test_cli.py::CLITests::test_lint"
 
       - name: Tests (ignore cli\*)
-        run: pytest --ignore gitlint\tests\cli -rw -s gitlint
+        run: pytest --ignore gitlint-core\gitlint\tests\cli -rw -s gitlint-core
 
       - name: Tests (test_cli.py only - continue-on-error:true)
-        run: tools\windows\run_tests.bat "gitlint\tests\cli\test_cli.py"
+        run: tools\windows\run_tests.bat "gitlint-core\gitlint\tests\cli\test_cli.py"
         continue-on-error: true # Known to fail at this point
 
       - name: Tests (all - continue-on-error:true)
@@ -127,10 +127,10 @@ jobs:
         continue-on-error: true # Known to fail at this point
 
       - name: PEP8
-        run: flake8 gitlint qa examples
+        run: flake8 gitlint-core qa examples
 
       - name: PyLint
-        run: pylint gitlint qa --rcfile=".pylintrc" -r n
+        run: pylint gitlint-core\gitlint qa --rcfile=".pylintrc" -r n
 
       # Re-add git version control so we can run gitlint on itself.
       - name: Re-add git version control to code

@@ -1,6 +1,7 @@
 -   id: gitlint
     name: gitlint
     language: python
+    additional_dependencies: ["./gitlint-core[trusted-deps]"]
     entry: gitlint
     args: [--staged, --msg-filename]
     stages: [commit-msg]

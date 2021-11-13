@@ -374,7 +374,7 @@ class ReleaseConfigurationRule(ConfigurationRule):
 ```
 
 For all available properties and methods on the `config` object, have a look at the
-[LintConfig class](https://github.com/jorisroovers/gitlint/blob/main/gitlint/config.py). Please do not use any
+[LintConfig class](https://github.com/jorisroovers/gitlint/blob/main/gitlint-core/gitlint/config.py). Please do not use any
 properties or methods starting with an underscore, as those are subject to change.
 
 
@@ -385,7 +385,7 @@ As long as you stick with simple rules that are similar to the sample user-defin
 should be able to discover and execute them. While clearly you can run any python code you want in your rules,
 you might run into some issues if you don't follow the conventions that gitlint requires.
 
-While the [rule finding source-code](https://github.com/jorisroovers/gitlint/blob/main/gitlint/rule_finder.py) is the
+While the [rule finding source-code](https://github.com/jorisroovers/gitlint/blob/main/gitlint-core/gitlint/rule_finder.py) is the
 ultimate source of truth, here are some of the requirements that gitlint enforces.
 
 ### Rule class requirements
