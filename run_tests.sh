@@ -76,7 +76,7 @@ handle_test_result(){
 
 run_pep8_check(){
     # FLAKE 8
-    target=${testargs:-"gitlint qa examples"}
+    target=${testargs:-"gitlint-core qa examples"}
     echo -ne "Running flake8..."
     RESULT=$(flake8 $target)
     local exit_code=$?
@@ -88,7 +88,7 @@ run_unit_tests(){
     clean
     # py.test -s  => print standard output (i.e. show print statement output)
     #         -rw => print warnings
-    target=${testargs:-"gitlint"}
+    target=${testargs:-"gitlint-core"}
     coverage run -m pytest -rw -s $target
     TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
@@ -129,7 +129,7 @@ run_git_check(){
 
 run_lint_check(){
     echo -ne "Running pylint...${RED}"
-    target=${testargs:-"gitlint qa"}
+    target=${testargs:-"gitlint-core/gitlint qa"}
     RESULT=$(pylint $target --rcfile=".pylintrc" -r n)
     local exit_code=$?
     handle_test_result $exit_code "$RESULT"
@@ -149,14 +149,14 @@ run_build_test(){
 
     # Update the version to include a timestamp
     echo -n "Writing new version to file..."
-    version_file="$temp_dir/gitlint/__init__.py"
+    version_file="$temp_dir/gitlint-core/gitlint/__init__.py"
     version_str="$(cat $version_file)"
     version_str="${version_str:0:${#version_str}-1}-$datestr\""
     echo "$version_str" > $version_file
     echo -e "${GREEN}DONE${NO_COLOR}"
     # Attempt to build the package
     echo "Building package ..."
-    pushd "$temp_dir"
+    pushd "$temp_dir/gitlint-core"
     # Copy stdout file descriptor so we can both print output to stdout as well as capture it in a variable
     # https://stackoverflow.com/questions/12451278/bash-capture-stdout-to-a-variable-but-still-display-it-in-the-console
     exec 5>&1
@@ -183,7 +183,7 @@ run_stats(){
     echo "*** Docs ***"
     echo "    Markdown: $(cat docs/*.md | wc -l | tr -d " ") lines"
     echo "*** Tests ***"
-    nr_unit_tests=$(py.test gitlint/ --collect-only | grep TestCaseFunction | wc -l)
+    nr_unit_tests=$(py.test gitlint-core/ --collect-only | grep TestCaseFunction | wc -l)
     nr_integration_tests=$(py.test qa/ --collect-only | grep TestCaseFunction | wc -l)
     echo "    Unit Tests: ${nr_unit_tests//[[:space:]]/}"
     echo "    Integration Tests: ${nr_integration_tests//[[:space:]]/}"
@@ -212,10 +212,8 @@ run_stats(){
 
 clean(){
     echo -n "Cleaning the *.pyc, site/, build/, dist/ and all __pycache__ directories..."
-    find gitlint -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
-    find qa -type d  -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
-    find gitlint -iname *.pyc -exec rm -rf {} \; 2> /dev/null
-    find qa -iname *.pyc -exec rm -rf {} \; 2> /dev/null
+    find gitlint-core qa -type d -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
+    find gitlint-core qa -iname "*.pyc" -exec rm -rf {} \; 2> /dev/null
     rm -rf "site" "dist" "build"
     echo -e "${GREEN}DONE${NO_COLOR}"
 }

@@ -55,4 +55,4 @@ ignore-merge-commits=false
 # This is useful for when developers often erroneously edit certain files or git submodules.
 # By specifying this rule, developers can only change the file when they explicitly reference
 # it in the commit message.
-files=gitlint/rules.py,README.md
+files=gitlint-core/gitlint/rules.py,README.md
