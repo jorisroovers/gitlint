@@ -23,7 +23,7 @@ Source code on `github.com/jorisroovers/gitlint`_.
 """
 
 
-version = "0.17.0"
+version = "0.18.0dev"
 
 setup(
     name="gitlint",
