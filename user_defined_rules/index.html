@@ -585,14 +585,14 @@ class ReleaseConfigurationRule(ConfigurationRule):
             commit.my_property = &quot;This is my property&quot;
 </code></pre>
 <p>For all available properties and methods on the <code>config</code> object, have a look at the
-<a href="https://github.com/jorisroovers/gitlint/blob/main/gitlint/config.py">LintConfig class</a>. Please do not use any
+<a href="https://github.com/jorisroovers/gitlint/blob/main/gitlint-core/gitlint/config.py">LintConfig class</a>. Please do not use any
 properties or methods starting with an underscore, as those are subject to change.</p>
 <h2 id="rule-requirements">Rule requirements</h2>
 <p>As long as you stick with simple rules that are similar to the sample user-defined rules (see the
 <a href="https://github.com/jorisroovers/gitlint/blob/main/examples/my_commit_rules.py">examples</a> directory), gitlint
 should be able to discover and execute them. While clearly you can run any python code you want in your rules,
 you might run into some issues if you don't follow the conventions that gitlint requires.</p>
-<p>While the <a href="https://github.com/jorisroovers/gitlint/blob/main/gitlint/rule_finder.py">rule finding source-code</a> is the
+<p>While the <a href="https://github.com/jorisroovers/gitlint/blob/main/gitlint-core/gitlint/rule_finder.py">rule finding source-code</a> is the
 ultimate source of truth, here are some of the requirements that gitlint enforces.</p>
 <h3 id="rule-class-requirements">Rule class requirements</h3>
 <ul>

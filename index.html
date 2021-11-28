@@ -173,6 +173,10 @@ useful throughout the years.</li>
 <pre><code class="language-sh"># Pip is recommended to install the latest version
 pip install gitlint
 
+# Alternative: by default, gitlint is installed with pinned dependencies. 
+# To install gitlint with looser dependency requirements, only install gitlint-core.
+pip install gitlint-core
+
 # Community maintained packages:
 brew install gitlint       # Homebrew (macOS)
 sudo port install gitlint  # Macports (macOS)
@@ -400,7 +404,7 @@ general <code>ignore-merge-commits</code>, <code>ignore-revert-commits</code>,  
 <a href="configuration/">using one of the various ways to configure gitlint</a>.</p>
 <h2 id="ignoring-commits">Ignoring commits</h2>
 <p>You can configure gitlint to ignore specific commits or parts of a commit.</p>
-<p>One way to do this, is to by <a href="configuration/#commit-specific-config">adding a gitline-ignore line to your commit message</a>.</p>
+<p>One way to do this, is by <a href="configuration/#commit-specific-config">adding a gitlint-ignore line to your commit message</a>.</p>
 <p>If you have a case where you want to ignore a certain type of commits all-together, you can
 use gitlint's <em>ignore</em> rules.
 Here's a few examples snippets from a <code>.gitlint</code> file:</p>
@@ -577,6 +581,6 @@ to 252.</p>
 </html>
 
 <!--
-MkDocs version : 1.2.2
-Build Date UTC : 2021-10-08 17:08:14.064730+00:00
+MkDocs version : 1.2.3
+Build Date UTC : 2021-11-28 12:33:56.376301+00:00
 -->

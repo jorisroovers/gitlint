@@ -136,7 +136,7 @@ that's open to a lot of change and input.</p>
 <h2 id="guidelines">Guidelines</h2>
 <p>When contributing code, please consider all the parts that are typically required:</p>
 <ul>
-<li><a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint/tests">Unit tests</a> (automatically
+<li><a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/tests">Unit tests</a> (automatically
   <a href="https://github.com/jorisroovers/gitlint/actions">enforced by CI</a>). Please consider writing
   new ones for your functionality, not only updating existing ones to make the build pass.</li>
 <li><a href="https://github.com/jorisroovers/gitlint/tree/main/qa">Integration tests</a> (also automatically
@@ -221,8 +221,8 @@ Then, we suggest taking the following approach to add a Contrib rule:</p>
 <ol>
 <li><strong>Write your rule as a <a href="../user_defined_rules">user-defined rule</a></strong>. In terms of code, Contrib rules are identical to
    user-defined rules, they just happen to have their code sit within the gitlint codebase itself.</li>
-<li><strong>Add your user-defined rule to gitlint</strong>. You should put your file(s) in the <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint/contrib/rules">gitlint/contrib/rules</a> directory.</li>
-<li><strong>Write unit tests</strong>. The gitlint codebase contains <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint/tests/contrib/rules">Contrib rule test files you can copy and modify</a>.</li>
+<li><strong>Add your user-defined rule to gitlint</strong>. You should put your file(s) in the <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/contrib/rules">gitlint/contrib/rules</a> directory.</li>
+<li><strong>Write unit tests</strong>. The gitlint codebase contains <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/tests/contrib/rules">Contrib rule test files you can copy and modify</a>.</li>
 <li><strong>Write documentation</strong>. In particular, you should update the <a href="https://github.com/jorisroovers/gitlint/blob/main/docs/contrib_rules.md">gitlint/docs/contrib_rules.md</a> file with details on your Contrib rule.</li>
 <li><strong>Create a Pull Request</strong>: code review typically requires a bit of back and forth. Thanks for your contribution!</li>
 </ol>
