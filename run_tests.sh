@@ -214,7 +214,7 @@ clean(){
     echo -n "Cleaning the *.pyc, site/, build/, dist/ and all __pycache__ directories..."
     find gitlint-core qa -type d -name "__pycache__" -exec rm -rf {} \; 2> /dev/null
     find gitlint-core qa -iname "*.pyc" -exec rm -rf {} \; 2> /dev/null
-    rm -rf "site" "dist" "build"
+    rm -rf "site" "dist" "build" "gitlint-core/dist" "gitlint-core/build"
     echo -e "${GREEN}DONE${NO_COLOR}"
 }
 
