@@ -38,6 +38,10 @@ useful throughout the years.
 # Pip is recommended to install the latest version
 pip install gitlint
 
+# Alternative: by default, gitlint is installed with pinned dependencies. 
+# To install gitlint with looser dependency requirements, only install gitlint-core.
+pip install gitlint-core
+
 # Community maintained packages:
 brew install gitlint       # Homebrew (macOS)
 sudo port install gitlint  # Macports (macOS)
