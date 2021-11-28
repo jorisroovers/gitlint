@@ -1,5 +1,11 @@
 # Changelog #
 
+## v0.17.0 (2021-11-28) ##
+Contributors:
+Special thanks to all contributors for this release, in particular [andersk](https://github.com/andersk) and [sigmavirus24](https://github.com/sigmavirus24).
+
+- Gitlint is now split in 2 packages: `gitlint` and `gitlint-core`. This allows users to install gitlint without pinned dependencies (which is the default) ([#162](https://github.com/jorisroovers/gitlint/issues/162))
+- Under-the-hood: dependencies updated
 ## v0.16.0 (2021-10-08) ##
 
 Contributors:
