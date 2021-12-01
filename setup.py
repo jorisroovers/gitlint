@@ -57,6 +57,7 @@ setup(
     project_urls={
         'Documentation': 'https://jorisroovers.github.io/gitlint',
         'Source': 'https://github.com/jorisroovers/gitlint',
+        'Changelog': 'https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md',
     },
     license='MIT',
 )
