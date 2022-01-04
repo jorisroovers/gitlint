@@ -132,6 +132,8 @@ class CLIHookTests(BaseTestCase):
         for i in range(0, len(set_editors)):
             if set_editors[i]:
                 os.environ['EDITOR'] = set_editors[i]
+            else:
+                os.environ.pop('EDITOR', None)
 
             with self.patch_input(['e', 'e', 'n']):
                 with self.tempdir() as tmpdir:
