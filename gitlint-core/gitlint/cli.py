@@ -24,7 +24,10 @@ USAGE_ERROR_CODE = 253
 GIT_CONTEXT_ERROR_CODE = 254
 CONFIG_ERROR_CODE = 255
 
-DEFAULT_CONFIG_FILE = ".gitlint"
+DEFAULT_CONFIG_FILES = [
+    ".gitlint",
+    ".gitlint.ini",
+]
 # -n: disable swap files. This fixes a vim error on windows (E303: Unable to open swap file for <path>)
 DEFAULT_COMMIT_MSG_EDITOR = "vim -n"
 
@@ -61,7 +64,7 @@ def log_system_info():
     LOG.debug("DEFAULT_ENCODING: %s", gitlint.utils.DEFAULT_ENCODING)
 
 
-def build_config(  # pylint: disable=too-many-arguments
+def build_config(  # pylint: disable=too-many-arguments, too-many-branches
         target, config_path, c, extra_path, ignore, contrib, ignore_stdin, staged, fail_without_commits, verbose,
         silent, debug
 ):
@@ -71,8 +74,10 @@ def build_config(  # pylint: disable=too-many-arguments
     # First, load default config or config from configfile
     if config_path:
         config_builder.set_from_config_file(config_path)
-    elif os.path.exists(DEFAULT_CONFIG_FILE):
-        config_builder.set_from_config_file(DEFAULT_CONFIG_FILE)
+    else:
+        file = next(filter(os.path.exists, DEFAULT_CONFIG_FILES), None)
+        if file is not None:
+            config_builder.set_from_config_file(file)
 
     # Then process any commandline configuration flags
     config_builder.set_config_from_string_list(c)
@@ -211,7 +216,7 @@ class ContextObj:
               type=click.Path(exists=True, resolve_path=True, file_okay=False, readable=True),
               help="Path of the target git repository. [default: current working directory]")
 @click.option('-C', '--config', type=click.Path(exists=True, dir_okay=False, readable=True, resolve_path=True),
-              help=f"Config file location [default: {DEFAULT_CONFIG_FILE}]")
+              help=f"Config file location [default: {DEFAULT_CONFIG_FILES[0]}]")
 @click.option('-c', multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
                    "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
@@ -432,7 +437,7 @@ def run_hook(ctx):
 @click.pass_context
 def generate_config(ctx):
     """ Generates a sample gitlint config file. """
-    path = click.prompt('Please specify a location for the sample gitlint config file', default=DEFAULT_CONFIG_FILE)
+    path = click.prompt('Please specify a location for the sample gitlint config file', default=DEFAULT_CONFIG_FILES[0])
     path = os.path.realpath(path)
     dir_name = os.path.dirname(path)
     if not os.path.exists(dir_name):

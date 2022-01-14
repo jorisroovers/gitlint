@@ -14,6 +14,9 @@ You can also use a different config file like so:
 gitlint --config myconfigfile.ini 
 ```
 
+Without the `--config` flag, gitlint will look for `.gitlint` and `.gitlint.ini`
+in the current directory in that order.
+
 The block below shows a sample `.gitlint` file. Details about rule config options can be found on the
 [Rules](rules.md) page, details about the `[general]` section can be found in the
 [General Configuration](configuration.md#general-configuration) section of this page.
