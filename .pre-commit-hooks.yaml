@@ -6,3 +6,11 @@
   entry: gitlint
   args: [--staged, --msg-filename]
   stages: [commit-msg]
+- id: gitlint-ci
+  name: gitlint
+  language: python
+  additional_dependencies: ["./gitlint-core[trusted-deps]"]
+  entry: gitlint
+  always_run: true
+  pass_filenames: false
+  stages: [manual]
