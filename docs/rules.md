@@ -25,7 +25,7 @@ B4    | body-first-line-empty       | >= 0.1.0          | First line of the body
 B5    | body-min-length             | >= 0.4.0          | Body length must be at least 20 characters
 B6    | body-is-missing             | >= 0.4.0          | Body message must be specified
 B7    | body-changed-file-mention   | >= 0.4.0          | Body must contain references to certain files if those files are changed in the last commit
-B8    | body-match-regex            | >= 0.14.0         | Title must match a given regex (default: None)
+B8    | body-match-regex            | >= 0.14.0         | Body must match a given regex (default: None)
 M1    | author-valid-email          | >= 0.9.0          | Author email address must be a valid email address
 I1    | ignore-by-title             | >= 0.10.0         | Ignore a commit based on matching its title
 I2    | ignore-by-body              | >= 0.10.0         | Ignore a commit based on matching its body
@@ -273,7 +273,7 @@ B8    | body-match-regex            | >= 0.14         | Body must match a given 
 
 Name                  | gitlint version | Default      | Description
 ----------------------|-----------------|--------------|----------------------------------
-regex                 | >= 0.14         | None         |  [Python regex](https://docs.python.org/library/re.html) that the title should match.
+regex                 | >= 0.14         | None         |  [Python regex](https://docs.python.org/library/re.html) that the body should match.
 
 ### Examples
 
