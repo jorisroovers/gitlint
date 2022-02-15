@@ -54,6 +54,21 @@ class LineRule(Rule):
     """ Class representing rules that act on a line by line basis """
     pass
 
+class ConfigurationRuleTarget:
+    """ Base class for ConfigurationRule targets. A ConfigurationRuleTarget specifies where a given rule will be applied
+    (e.g. entire commit message, or every line in the commit message). """
+    pass
+
+
+class Commit(ConfigurationRuleTarget):
+    """ Target class used for rules that apply to a commit message title """
+    pass
+
+
+class Line(ConfigurationRuleTarget):
+    """ Target class used for rules that apply to a commit message body """
+    pass
+
 
 class LineRuleTarget:
     """ Base class for LineRule targets. A LineRuleTarget specifies where a given rule will be applied
@@ -399,24 +414,20 @@ class IgnoreByBody(ConfigurationRule):
 class IgnoreBodyLines(ConfigurationRule):
     name = "ignore-body-lines"
     id = "I3"
-    options_spec = [RegexOption('regex', None, "Regex matching lines of the body that should be ignored")]
+    options_spec = [RegexOption('regex', None, "Regex matching lines of the body that should be ignored"),
+                    StrOption('ignore', "all", "Comma-separated list of rules to ignore")]
 
-    def apply(self, _, commit):
+    target = Line
+
+    def apply(self, config, line):
         # If no regex is specified, immediately return
         if not self.options['regex'].value:
             return
 
-        new_body = []
-        for line in commit.message.body:
-            if self.options['regex'].value.match(line):
-                debug_msg = "Ignoring line '%s' because it matches '%s'"
-                self.log.debug(debug_msg, line, self.options['regex'].value.pattern)
-            else:
-                new_body.append(line)
-
-        commit.message.body = new_body
-        commit.message.full = "\n".join([commit.message.title] + new_body)
-
+        if self.options['regex'].value.match(line):
+            debug_msg = "Ignoring line '%s' because it matches '%s'"
+            self.log.debug(debug_msg, line, self.options['regex'].value.pattern)
+            config.ignore = self.options['ignore'].value
 
 class IgnoreByAuthorName(ConfigurationRule):
     name = "ignore-by-author-name"
