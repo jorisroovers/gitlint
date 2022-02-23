@@ -136,7 +136,7 @@ regex=^US[1-9][0-9]*
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
-T1    | title-min-length            | >=              | Title length must be &gt; 5 chars.
+T8    | title-min-length            | >= 0.14.0	      | Title length must be &gt; 5 chars.
 
 
 ### Options
