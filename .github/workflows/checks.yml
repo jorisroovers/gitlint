@@ -10,7 +10,7 @@ jobs:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", pypy3]
         os: ["macos-latest", "ubuntu-latest"]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
@@ -81,7 +81,7 @@ jobs:
       matrix:
         python-version: [3.6]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
