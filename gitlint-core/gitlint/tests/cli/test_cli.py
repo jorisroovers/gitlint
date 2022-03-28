@@ -456,6 +456,28 @@ class CLITests(BaseTestCase):
             self.assertEqual(stderr.getvalue(), expected_output)
             self.assertEqual(result.exit_code, 2)
 
+    @patch('gitlint.cli.get_stdin_data', return_value="Test tïtle\n")
+    def test_extra_path_environment(self, _):
+        """ Test for GITLINT_EXTRA_PATH environment variable """
+        # Test setting extra-path to a directory from an environment variable
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            extra_path = self.get_sample_path("user_rules")
+            result = self.cli.invoke(cli.cli, env={"GITLINT_EXTRA_PATH": extra_path})
+
+            expected_output = "1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
+                              "3: B6 Body message is missing\n"
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 2)
+
+        # Test extra-path pointing to a file from an environment variable
+        with patch('gitlint.display.stderr', new=StringIO()) as stderr:
+            extra_path = self.get_sample_path(os.path.join("user_rules", "my_commit_rules.py"))
+            result = self.cli.invoke(cli.cli, env={"GITLINT_EXTRA_PATH": extra_path})
+            expected_output = "1: UC1 Commit violåtion 1: \"Contënt 1\"\n" + \
+                              "3: B6 Body message is missing\n"
+            self.assertEqual(stderr.getvalue(), expected_output)
+            self.assertEqual(result.exit_code, 2)
+
     @patch('gitlint.cli.get_stdin_data', return_value="Test tïtle\n\nMy body that is long enough")
     def test_contrib(self, _):
         # Test enabled contrib rules
