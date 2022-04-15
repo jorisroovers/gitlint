@@ -22,7 +22,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
  - **Easily integrated**: Gitlint is designed to work [with your own scripts or CI system](#using-gitlint-in-a-ci-environment).
  - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
-[community](http://addamhardy.com/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks.html),
+[community](https://addamhardy.com/2013-06-05-good-commit-messages-and-enforcing-them-with-git-hooks),
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
