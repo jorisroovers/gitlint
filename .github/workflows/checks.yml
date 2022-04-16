@@ -7,7 +7,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", pypy3]
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", pypy-3.9]
         os: ["macos-latest", "ubuntu-latest"]
     steps:
       - uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
         run: mv .git ._git
 
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.1
         with:
           python-version: ${{ matrix.python-version }}
 
