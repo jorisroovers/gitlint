@@ -312,6 +312,20 @@ GITLINT_TARGET=/home/joe/myrepo/ gitlint     # using env variable
 [general]
 target=/home/joe/myrepo/
 ```
+### config
+
+Path where gitlint looks for a config file.
+
+Default value              |  gitlint version | commandline flag  | environment variable   
+---------------------------|------------------|-------------------|-----------------------
+`.gitlint`                 | >= 0.1.0         | `--config`        | `GITLINT_CONFIG`
+
+#### Examples
+```sh
+gitlint --config=/home/joe/gitlint.ini
+gitlint -C /home/joe/gitlint.ini      # different way of doing the same
+GITLINT_CONFIG=/home/joe/gitlint.ini  # using env variable
+```
 
 ### extra-path
 
