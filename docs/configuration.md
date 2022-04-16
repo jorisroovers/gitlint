@@ -318,13 +318,13 @@ Path where gitlint looks for a config file.
 
 Default value              |  gitlint version | commandline flag  | environment variable   
 ---------------------------|------------------|-------------------|-----------------------
- (empty)                   | >= 0.18.0        | `--config`        | `GITLINT_CONFIG`
+`.gitlint`                 | >= 0.1.0         | `--config`        | `GITLINT_CONFIG`
 
 #### Examples
 ```sh
-gitlint --config=~/.config/gitlint/gitlint.ini
-gitlint -C ~/.gitlint
-GITLINT_CONFIG=~/.gitlint gitlint
+gitlint --config=/home/joe/gitlint.ini
+gitlint -C /home/joe/gitlint.ini      # different way of doing the same
+GITLINT_CONFIG=/home/joe/gitlint.ini  # using env variable
 ```
 
 ### extra-path
