@@ -133,6 +133,7 @@ class CLIHookTests(BaseTestCase):
             if set_editors[i]:
                 os.environ['EDITOR'] = set_editors[i]
             else:
+                # When set_editors[i] == None, ensure we don't fallback to EDITOR set in shell invocating the tests
                 os.environ.pop('EDITOR', None)
 
             with self.patch_input(['e', 'e', 'n']):
