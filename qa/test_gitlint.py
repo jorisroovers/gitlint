@@ -178,7 +178,7 @@ class IntegrationTests(BaseTestCase):
         expected = "Missing git configuration: please set user.email\n"
         self.assertEqualStdout(output, expected)
 
-    def test_git_errors(self):
+    def test_git_empty_repo(self):
         # Repo has no commits: caused by `git log`
         empty_git_repo = self.create_tmp_git_repo()
         output = gitlint(_cwd=empty_git_repo, _tty_in=True, _ok_code=[self.GIT_CONTEXT_ERROR_CODE])
@@ -186,12 +186,13 @@ class IntegrationTests(BaseTestCase):
         expected = "Current branch has no commits. Gitlint requires at least one commit to function.\n"
         self.assertEqualStdout(output, expected)
 
-        # Repo has no commits will not caused by `git rev-parse`
-        expected = """\
-1: T3 Title has trailing punctuation (.): "WIP: Pïpe test."
-1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: Pïpe test."
-3: B6 Body message is missing
-"""
+    def test_git_empty_repo_staged(self):
+        """ When repo is empty, we can still use gitlint when using --staged flag and piping a message into it """
+        empty_git_repo = self.create_tmp_git_repo()
+        expected = ("1: T3 Title has trailing punctuation (.): \"WIP: Pïpe test.\"\n"
+                    "1: T5 Title contains the word \'WIP\' (case-insensitive): \"WIP: Pïpe test.\"\n"
+                    "3: B6 Body message is missing\n")
+
         output = gitlint(echo("WIP: Pïpe test."), "--staged", _cwd=empty_git_repo, _tty_in=False,
                          _err_to_out=True, _ok_code=[3])
         self.assertEqualStdout(output, expected)

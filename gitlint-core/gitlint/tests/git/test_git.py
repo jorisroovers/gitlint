@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from unittest.mock import patch
+from unittest.mock import patch, call
 
 from gitlint.shell import ErrorReturnCode, CommandNotFound
 
@@ -64,8 +64,12 @@ class GitTests(BaseTestCase):
 
         # assert that commit message was read using git command
         sh.git.assert_called_once_with("log", "-1", "--pretty=%H", **self.expected_sh_special_args)
-        sh.git.reset_mock()
 
+    @patch('gitlint.git.sh')
+    def test_git_no_commits_get_branch(self, sh):
+        """ Check that we can still read the current branch name when there's no commits. This is useful when
+            when trying to lint the first commit using the --staged flag.
+        """
         # Unknown reference 'HEAD' commits: returned by 'git rev-parse'
         err = (b"HEAD"
                b"fatal: ambiguous argument 'HEAD': unknown revision or path not in the working tree."
@@ -79,11 +83,17 @@ class GitTests(BaseTestCase):
         ]
 
         context = GitContext.from_commit_msg("test")
-        assert context.current_branch == 'test-branch'
+        self.assertEqual(context.current_branch, 'test-branch')
 
-        # assert that commit message was read using git command
-        sh.git.assert_any_call("rev-parse", "--abbrev-ref", "HEAD", _tty_out=False, _cwd=None)
-        sh.git.assert_any_call("branch", "--show-current", _tty_out=False, _cwd=None)
+        # assert that we try using `git rev-parse` first, and if that fails (as will be the case with the first commit),
+        #  we fallback to `git branch --show-current` to determine the current branch name.
+        expected_calls = [
+            call("config", "--get", "core.commentchar", _tty_out=False, _cwd=None, _ok_code=[0, 1]),
+            call("rev-parse", "--abbrev-ref", "HEAD", _tty_out=False, _cwd=None),
+            call("branch", "--show-current", _tty_out=False, _cwd=None)
+        ]
+
+        self.assertEqual(sh.git.mock_calls, expected_calls)
 
     @patch("gitlint.git._git")
     def test_git_commentchar(self, git):
