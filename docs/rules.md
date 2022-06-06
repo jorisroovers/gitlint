@@ -10,15 +10,15 @@ what you're looking for.
 
 ID    | Name                        | gitlint version   | Description
 ------|-----------------------------|-------------------|-------------------------------------------
-T1    | title-max-length            | >= 0.1.0          | Title length must be &lt; 72 chars.
+T1    | title-max-length            | >= 0.1.0          | Title length must be &lt;= 72 chars.
 T2    | title-trailing-whitespace   | >= 0.1.0          | Title cannot have trailing whitespace (space or tab)
 T3    | title-trailing-punctuation  | >= 0.1.0          | Title cannot have trailing punctuation (?:!.,;)
 T4    | title-hard-tab              | >= 0.1.0          | Title cannot contain hard tab characters (\t)
 T5    | title-must-not-contain-word | >= 0.1.0          | Title cannot contain certain words (default: "WIP")
 T6    | title-leading-whitespace    | >= 0.4.0          | Title cannot have leading whitespace (space or tab)
 T7    | title-match-regex           | >= 0.5.0          | Title must match a given regex (default: None)
-T8    | title-min-length            | >= 0.14.0         | Title length must be &gt; 5 chars.
-B1    | body-max-line-length        | >= 0.1.0          | Lines in the body must be &lt; 80 chars
+T8    | title-min-length            | >= 0.14.0         | Title length must be &gt;= 5 chars.
+B1    | body-max-line-length        | >= 0.1.0          | Lines in the body must be &lt;= 80 chars
 B2    | body-trailing-whitespace    | >= 0.1.0          | Body cannot have trailing whitespace (space or tab)
 B3    | body-hard-tab               | >= 0.1.0          | Body cannot contain hard tab characters (\t)
 B4    | body-first-line-empty       | >= 0.1.0          | First line of the body (second line of commit message) must be empty
@@ -38,7 +38,7 @@ I4    | ignore-by-author-name       | >= 0.16.0         | Ignore a commit based 
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
-T1    | title-max-length            | >= 0.1          | Title length must be &lt; 72 chars.
+T1    | title-max-length            | >= 0.1          | Title length must be &lt;= 72 chars.
 
 ### Options
 
@@ -136,7 +136,7 @@ regex=^US[1-9][0-9]*
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
-T8    | title-min-length            | >= 0.14.0	      | Title length must be &gt; 5 chars.
+T8    | title-min-length            | >= 0.14.0	      | Title length must be &gt;= 5 chars.
 
 
 ### Options
@@ -159,7 +159,7 @@ min-length=3
 
 ID    | Name                        | gitlint version | Description
 ------|-----------------------------|-----------------|-------------------------------------------
-B1    | body-max-line-length        | >= 0.1          | Lines in the body must be &lt; 80 chars
+B1    | body-max-line-length        | >= 0.1          | Lines in the body must be &lt;= 80 chars
 
 ### Options
 
