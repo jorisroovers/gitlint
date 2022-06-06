@@ -122,7 +122,7 @@ class BaseTestCase(TestCase):
 
     def create_tmpfile(self, content):
         """ Utility method to create temp files. These are cleaned at the end of the test """
-        # Not using a context manager to avoid unneccessary identation in test code
+        # Not using a context manager to avoid unnecessary indentation in test code
         tmpfile, tmpfilepath = tempfile.mkstemp()
         self.tmpfiles.append(tmpfilepath)
         with io.open(tmpfile, "w", encoding=DEFAULT_ENCODING) as f:

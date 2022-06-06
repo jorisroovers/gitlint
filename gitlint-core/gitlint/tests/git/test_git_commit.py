@@ -490,7 +490,7 @@ class GitCommitTests(BaseTestCase):
         # We use a fixup commit, just to test a non-default path
         context = GitContext.from_staged_commit("fixup! Foōbar 123\n\ncömmit-body\n", "fåke/path")
 
-        # git calls we're expexting
+        # git calls we're expecting
         expected_calls = [
             call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
             call('config', '--get', 'user.name', **self.expected_sh_special_args),

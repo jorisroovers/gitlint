@@ -18,7 +18,7 @@ Special thanks to all contributors for this release, in particular [sigmavirus24
 - Bugfixes:
   - [contrib-title-conventional-commits (CT1)](https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits)  now properly enforces the commit type ([#185](https://github.com/jorisroovers/gitlint/issues/185))
   - [contrib-title-conventional-commits (CT1)](https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits) now supports the BREAKING CHANGE symbol "!" ([#186](https://github.com/jorisroovers/gitlint/issues/186))
-- Heads-up: [Python 3.6 will become EOL at the end of 2021](https://endoflife.date/python). It's likely that future gitlint releases will stop supporting Python 3.6 as a result. We will continue to support Python 3.6 as long as its easily doable, which in practice usually means as long as our dependencies support it.
+- Heads-up: [Python 3.6 will become EOL at the end of 2021](https://endoflife.date/python). It's likely that future gitlint releases will stop supporting Python 3.6 as a result. We will continue to support Python 3.6 as long as it's easily doable, which in practice usually means as long as our dependencies support it.
 - Under-the-hood: dependencies updated, test and github action improvements.
 ## v0.15.1 (2021-04-16) ##
 

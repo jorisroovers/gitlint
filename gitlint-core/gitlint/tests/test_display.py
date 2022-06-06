@@ -33,7 +33,7 @@ class DisplayTests(BaseTestCase):
                 display.vvv("tëst3.2", exact=True)
                 self.assertEqual("tëst2\n", stdout.getvalue())
 
-            # standard error should be empty throughtout all of this
+            # standard error should be empty throughout all of this
             self.assertEqual('', stderr.getvalue())
 
     def test_e(self):
@@ -59,5 +59,5 @@ class DisplayTests(BaseTestCase):
                 display.eee("tëst3.2", exact=True)
                 self.assertEqual("tëst2\n", stderr.getvalue())
 
-            # standard output should be empty throughtout all of this
+            # standard output should be empty throughout all of this
             self.assertEqual('', stdout.getvalue())

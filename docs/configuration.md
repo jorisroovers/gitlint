@@ -45,7 +45,7 @@ ignore-revert-commits=true
 ignore-fixup-commits=true
 ignore-squash-commits=true
 
-# Ignore any data send to gitlint via stdin
+# Ignore any data sent to gitlint via stdin
 ignore-stdin=true
 
 # Fetch additional meta-data from the local repository when manually passing a 
