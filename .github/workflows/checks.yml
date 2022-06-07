@@ -47,7 +47,7 @@ jobs:
       #   run: coveralls
 
       - name: Integration Tests
-        run: ./run_tests.sh -i
+        run: script -e -c "./run_tests.sh -i"
 
       - name: Integration Tests (GITLINT_USE_SH_LIB=0)
         env:
