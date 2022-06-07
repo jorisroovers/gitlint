@@ -15,7 +15,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
       # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
-      # code by temporarily renaming the .git directory. 
+      # code by temporarily renaming the .git directory.
       # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
       - name: Temporarily remove git version control from code
         run: mv .git ._git
@@ -30,6 +30,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r test-requirements.txt
+
+      - name: printenv
+        run: |
+          printenv
 
       - name: Unit Tests
         run: ./run_tests.sh
@@ -86,11 +90,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
       # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
-      # code by temporarily renaming the .git directory. 
+      # code by temporarily renaming the .git directory.
       # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
       - name: Temporarily remove git version control from code
         run: Rename-Item .git ._git
-    
+
       - name: Setup python
         uses: actions/setup-python@v3.1.2
         with:
