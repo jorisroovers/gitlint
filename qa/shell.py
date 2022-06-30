@@ -8,7 +8,7 @@ from qa.utils import USE_SH_LIB, DEFAULT_ENCODING
 if USE_SH_LIB:
     from sh import git, echo, gitlint  # pylint: disable=unused-import,no-name-in-module,import-error
     gitlint = gitlint.bake(_unify_ttys=True, _tty_in=True)  # pylint: disable=invalid-name
-    git = git.bake(_unify_ttys=True, _tty_in=True)
+
     # import exceptions separately, this makes it a little easier to mock them out in the unit tests
     from sh import CommandNotFound, ErrorReturnCode, RunningCommand  # pylint: disable=import-error
 else:
