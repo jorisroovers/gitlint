@@ -3,6 +3,7 @@
 import re
 
 import arrow
+import pytest
 
 from qa.shell import echo, git, gitlint
 from qa.base import BaseTestCase
@@ -94,6 +95,7 @@ class CommitsTests(BaseTestCase):
         output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[254])
         self.assertEqual(output.exit_code, 254)
 
+    @pytest.mark.skip(reason="temp skipping to focus on CI issue")
     def test_lint_staged_stdin(self):
         """ Tests linting a staged commit. Gitint should lint the passed commit message andfetch additional meta-data
             from the underlying repository. The easiest way to test this is by inspecting `--debug` output.

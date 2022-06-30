@@ -28,8 +28,8 @@ else:
             self.full_cmd = full_cmd
             # TODO(jorisroovers): The 'sh' library by default will merge stdout and stderr. We mimic this behavior
             # for now until we fully remove the 'sh' library.
-            # self._stdout = stdout + stderr.decode(DEFAULT_ENCODING)
-            self._stdout = stdout
+            self._stdout = stdout + stderr.decode(DEFAULT_ENCODING)
+            # self._stdout = stdout + stderr
             self._stderr = stderr
             self.exit_code = exitcode
 

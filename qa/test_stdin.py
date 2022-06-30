@@ -6,10 +6,13 @@ from qa.shell import echo, gitlint
 from qa.base import BaseTestCase
 from qa.utils import DEFAULT_ENCODING
 
+import pytest
+
 
 class StdInTests(BaseTestCase):
     """ Integration tests for various STDIN scenarios for gitlint """
 
+    @pytest.mark.skip(reason="focus on CI issue")
     def test_stdin_pipe(self):
         """ Test piping input into gitlint.
             This is the equivalent of doing:
@@ -22,6 +25,7 @@ class StdInTests(BaseTestCase):
                          _cwd=self.tmp_git_repo, _tty_in=False, _err_to_out=True, _ok_code=[3])
         self.assertEqualStdout(output, self.get_expected("test_stdin/test_stdin_pipe_1"))
 
+    @pytest.mark.skip(reason="focus on CI issue")
     def test_stdin_pipe_empty(self):
         """ Test the scenario where no TTY is attached and nothing is piped into gitlint. This occurs in
             CI runners like Jenkins and Gitlab, see https://github.com/jorisroovers/gitlint/issues/42 for details.

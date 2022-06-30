@@ -22,4 +22,4 @@ how to get started - it's easy!
 
 We maintain a [loose roadmap on our wiki](https://github.com/jorisroovers/gitlint/wiki/Roadmap).
 
-Just a test to fix macos CI builds
+Just atest to fix macos CI builds
