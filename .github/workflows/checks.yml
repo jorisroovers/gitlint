@@ -46,11 +46,18 @@ jobs:
       #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       #   run: coveralls
 
+      - name: git config
+        run: |
+          git config --list
+          echo -----------------------------
+
       - name: gitlint issue298
         run: gitlint issue298
 
       - name: test issue298
         run: ./run_tests.sh -i  qa/test_issue298.py
+        env:
+          TERM: xterm-color
         continue-on-error: true # Known to fail at this point
 
       - name: test issue298 (GITLINT_QA_USE_SH_LIB=0)
