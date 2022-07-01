@@ -360,6 +360,12 @@ def uninstall_hook(ctx):
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
 
 
+@cli.command("issue298")
+@click.pass_context
+def issue298(ctx):
+    click.echo("gitlint: " + click.style("This is a test", fg='red'))
+
+
 @cli.command("run-hook")
 @click.pass_context
 def run_hook(ctx):
