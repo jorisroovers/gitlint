@@ -1,35 +1,37 @@
 #!/bin/sh
 ### gitlint commit-msg hook start ###
 
-# Determine whether we have a tty available by trying to access it.
-# This allows us to deal with UI based gitclient's like Atlassian SourceTree.
-# NOTE: "exec < /dev/tty" sets stdin to the keyboard
-stdin_available=1
-(exec < /dev/tty) 2> /dev/null || stdin_available=0
+gitlint issue298
 
-if [ $stdin_available -eq 1 ]; then
-    # Now that we know we have a functional tty, set stdin to it so we can ask the user questions :-)
-    exec < /dev/tty
+# # Determine whether we have a tty available by trying to access it.
+# # This allows us to deal with UI based gitclient's like Atlassian SourceTree.
+# # NOTE: "exec < /dev/tty" sets stdin to the keyboard
+# stdin_available=1
+# (exec < /dev/tty) 2> /dev/null || stdin_available=0
 
-    # On Windows, we need to explicitly set our stdout to the tty to make terminal editing work (e.g. vim)
-    # See SO for windows detection in bash (slight modified to work on plain shell (not bash)): 
-    # https://stackoverflow.com/questions/394230/how-to-detect-the-os-from-a-bash-script
-    if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "win32" ]; then
-        exec > /dev/tty
-    fi
-fi
+# if [ $stdin_available -eq 1 ]; then
+#     # Now that we know we have a functional tty, set stdin to it so we can ask the user questions :-)
+#     exec < /dev/tty
 
-gitlint --staged --msg-filename "$1" run-hook
-exit_code=$?
+#     # On Windows, we need to explicitly set our stdout to the tty to make terminal editing work (e.g. vim)
+#     # See SO for windows detection in bash (slight modified to work on plain shell (not bash)): 
+#     # https://stackoverflow.com/questions/394230/how-to-detect-the-os-from-a-bash-script
+#     if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "win32" ]; then
+#         exec > /dev/tty
+#     fi
+# fi
 
-# If we fail to find the gitlint binary (command not found), let's retry by executing as a python module.
-# This is the case for Atlassian SourceTree, where $PATH deviates from the user's shell $PATH.
-if [ $exit_code -eq 127 ]; then
-    echo "Fallback to python module execution"
-    python -m gitlint.cli --staged --msg-filename "$1" run-hook
-    exit_code=$?
-fi
+# gitlint --staged --msg-filename "$1" run-hook
+# exit_code=$?
 
-exit $exit_code
+# # If we fail to find the gitlint binary (command not found), let's retry by executing as a python module.
+# # This is the case for Atlassian SourceTree, where $PATH deviates from the user's shell $PATH.
+# if [ $exit_code -eq 127 ]; then
+#     echo "Fallback to python module execution"
+#     python -m gitlint.cli --staged --msg-filename "$1" run-hook
+#     exit_code=$?
+# fi
 
-### gitlint commit-msg hook end ###
+# exit $exit_code
+
+# ### gitlint commit-msg hook end ###

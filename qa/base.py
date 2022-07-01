@@ -46,7 +46,7 @@ class BaseTestCase(TestCase):
 
     def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
-        # output = output.stdout.decode(DEFAULT_ENCODING)
+        output = output.stdout.decode(DEFAULT_ENCODING)
         output = output.replace('\r', '')
         self.assertMultiLineEqual(output, expected)
 
@@ -112,7 +112,6 @@ class BaseTestCase(TestCase):
         # Create file and add to git
         test_filename = self.create_file(git_repo)
         git("add", test_filename, _cwd=git_repo)
-        # https://amoffat.github.io/sh/#interactive-callbacks
         if not ok_code:
             ok_code = [0]
 
