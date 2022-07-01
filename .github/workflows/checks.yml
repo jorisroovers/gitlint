@@ -47,7 +47,17 @@ jobs:
       #   run: coveralls
 
       - name: gitlint issue298
-        run: gitlint issue 298
+        run: gitlint issue298
+
+      - name: test issue298
+        run: ./run_tests.sh -i  qa/test_issue298.py
+        continue-on-error: true # Known to fail at this point
+
+      - name: test issue298 (GITLINT_QA_USE_SH_LIB=0)
+        env:
+          GITLINT_QA_USE_SH_LIB: 0
+        run: ./run_tests.sh -i  qa/test_issue298.py
+        continue-on-error: true # Known to fail at this point
 
       - name: Integration Tests
         run: script -e -c "./run_tests.sh -i"
