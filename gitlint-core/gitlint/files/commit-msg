@@ -7,25 +7,25 @@
 stdin_available=1
 (exec < /dev/tty) 2> /dev/null || stdin_available=0
 
-gitlint issue298
-
 echo "STDIN AVAILABLE: $stdin_available"
+
+if [ $stdin_available -eq 1 ]; then
+    echo  "set stdin to tty"
+    # Now that we know we have a functional tty, set stdin to it so we can ask the user questions :-)
+    exec < /dev/tty
+
+    # # On Windows, we need to explicitly set our stdout to the tty to make terminal editing work (e.g. vim)
+    # # See SO for windows detection in bash (slight modified to work on plain shell (not bash)): 
+    # # https://stackoverflow.com/questions/394230/how-to-detect-the-os-from-a-bash-script
+    # if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "win32" ]; then
+    #     exec > /dev/tty
+    # fi
+fi
+
+gitlint issue298
 
 echo -e "\033[31m TEST in red \033[0m"
 
-
-
-# if [ $stdin_available -eq 1 ]; then
-#     # Now that we know we have a functional tty, set stdin to it so we can ask the user questions :-)
-#     exec < /dev/tty
-
-#     # On Windows, we need to explicitly set our stdout to the tty to make terminal editing work (e.g. vim)
-#     # See SO for windows detection in bash (slight modified to work on plain shell (not bash)): 
-#     # https://stackoverflow.com/questions/394230/how-to-detect-the-os-from-a-bash-script
-#     if [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "win32" ]; then
-#         exec > /dev/tty
-#     fi
-# fi
 
 # gitlint --staged --msg-filename "$1" run-hook
 # exit_code=$?
