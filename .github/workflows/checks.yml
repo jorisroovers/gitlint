@@ -16,6 +16,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
+      - name: git config before removal
+        run: |
+          git config --list
+          echo -----------------------------
+
       # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
       # code by temporarily renaming the .git directory.
       # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
@@ -62,7 +67,7 @@ jobs:
           TERM: xterm-color
         continue-on-error: true # Known to fail at this point
 
-      - name: gitlint issue298
+      - name: running commit-msg directly
         run: gitlint-core/gitlint/files/commit-msg
         continue-on-error: true
 
