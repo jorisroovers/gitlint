@@ -3,6 +3,8 @@
 
 gitlint issue298
 
+echo -e "\033[31m TEST in red \033[0m"
+
 # # Determine whether we have a tty available by trying to access it.
 # # This allows us to deal with UI based gitclient's like Atlassian SourceTree.
 # # NOTE: "exec < /dev/tty" sets stdin to the keyboard
