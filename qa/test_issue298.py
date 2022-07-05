@@ -23,6 +23,11 @@ class Issue298(BaseTestCase):
         output = gitlint("issue298")
         self.assertEqualStdout(output, "gitlint: \x1b[31mThis is a test\x1b[0m\n")
 
+    def test_issue298_no_tty(self):
+        from sh import gitlint as mygitlint
+        output = mygitlint("issue298")
+        self.assertEqualStdout(output, "gitlint: \x1b[31mThis is a test\x1b[0m\n")
+
     def test_commit(self):
         self.create_simple_commit("This ïs a title\n\nBody contënt that should work",
                                                   out=self._interact, tty_in=True)

@@ -68,7 +68,20 @@ jobs:
         continue-on-error: true # Known to fail at this point
 
       - name: running commit-msg directly
-        run: gitlint-core/gitlint/files/commit-msg
+        run: |
+          chmod +x gitlint-core/gitlint/files/commit-msg
+          gitlint-core/gitlint/files/commit-msg
+        continue-on-error: true
+
+      - name: running colorama test
+        run: |
+          python colors.py
+        continue-on-error: true
+
+      - name: running indirect test
+        run: |
+          chmod +x ./indirect.sh
+          ./indirect.sh
         continue-on-error: true
 
       - name: test issue298 (GITLINT_QA_USE_SH_LIB=0)
