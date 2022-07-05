@@ -1,6 +1,6 @@
 #! /bin/sh
 
-exec < /dev/tty
+# exec < /dev/tty
 
 gitlint issue298
 
