@@ -72,6 +72,7 @@ jobs:
         continue-on-error: true # Known to fail at this point
 
       - name: running commit-msg directly
+        shell: 'script -q -e -c "bash {0}"'
         run: |
           chmod +x gitlint-core/gitlint/files/commit-msg
           gitlint-core/gitlint/files/commit-msg
@@ -95,7 +96,8 @@ jobs:
         continue-on-error: true # Known to fail at this point
 
       - name: Integration Tests
-        run: script -e -c "./run_tests.sh -i"
+        shell: 'script -q -e -c "bash {0}"'
+        run: ./run_tests.sh -i
 
       - name: Integration Tests (GITLINT_USE_SH_LIB=0)
         env:
