@@ -61,6 +61,10 @@ jobs:
       - name: gitlint issue298
         run: gitlint issue298
 
+      - name: gitlint issue298 (TTY tried to attach)
+        shell: 'script -q -e -c "bash {0}"'
+        run: gitlint issue298
+
       - name: test issue298
         run: ./run_tests.sh -i  qa/test_issue298.py
         env:
