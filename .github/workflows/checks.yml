@@ -66,10 +66,17 @@ jobs:
 
       - name: gitlint issue298 (TTY tried to attach)
         shell: 'script -q -e -c "bash {0}"'
-        run: gitlint issue298
+        run: |
+          gitlint issue298
 
       - name: test issue298
-        run: ./run_tests.sh -i  qa/test_issue298.py
+        run: |
+          GITLINT_BIN=$(which gitlint)
+          gitlint(){
+            script -q -e -c "$GITLINT_BIN --version"
+          }
+          ./run_tests.sh -i  qa/test_issue298.py
+
         env:
           TERM: xterm-color
         continue-on-error: true # Known to fail at this point

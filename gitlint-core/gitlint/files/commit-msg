@@ -22,10 +22,10 @@ if [ $stdin_available -eq 1 ]; then
     # fi
 fi
 
-script -q -e -c "gitlint issue298"
+# script -q -e -c "gitlint issue298"
+gitlint issue298
 
-echo -e "\033[31m TEST in red \033[0m"
-
+echo "\033[31m TEST in red \033[0m"
 
 # gitlint --staged --msg-filename "$1" run-hook
 exit_code=$?
