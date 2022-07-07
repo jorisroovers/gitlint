@@ -31,4 +31,6 @@ class Issue298(BaseTestCase):
     def test_commit(self):
         self.create_simple_commit("This ïs a title\n\nBody contënt that should work",
                                                   out=self._interact, tty_in=True)
-        self.assertEqual("gitlint: \x1b[31mThis is a test\x1b[0m\n", self.githook_output[0])
+        print(self.githook_output)
+        # breakpoint()
+        self.assertEqual("gitlint: \x1b[31mThis is a test\x1b[0m\n", self.githook_output[1])
