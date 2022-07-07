@@ -13,6 +13,7 @@ if [ $stdin_available -eq 1 ]; then
     echo  "set stdin to tty"
     # Now that we know we have a functional tty, set stdin to it so we can ask the user questions :-)
     exec < /dev/tty
+    ls /dev
 
     # # On Windows, we need to explicitly set our stdout to the tty to make terminal editing work (e.g. vim)
     # # See SO for windows detection in bash (slight modified to work on plain shell (not bash)): 
