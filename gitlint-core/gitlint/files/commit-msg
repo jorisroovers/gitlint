@@ -23,7 +23,7 @@ if [ $stdin_available -eq 1 ]; then
     # fi
 fi
 
-gitlint issue298
+script -q -e -c "bash gitlint issue298"
 
 echo -e "\033[31m TEST in red \033[0m"
 
