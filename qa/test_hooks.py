@@ -67,7 +67,9 @@ class HookTests(BaseTestCase):
                            f"[master {short_hash}] This ïs a title\n",
                            " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
                            f" create mode 100644 {test_filename}\n"]
-        self.assertListEqual(expected_output, self.githook_output)
+
+        for output, expected in zip(self.githook_output, expected_output):
+            self.assertMultiLineEqual(output.replace('\r', ''), expected.replace('\r', ''))
 
     def test_commit_hook_continue(self):
         self.responses = ["y"]
@@ -86,9 +88,7 @@ class HookTests(BaseTestCase):
 
         # assert len(self.githook_output) == len(expected_output)
         for output, expected in zip(self.githook_output, expected_output):
-            self.assertMultiLineEqual(
-                output.replace('\r', ''),
-                expected.replace('\r', ''))
+            self.assertMultiLineEqual(output.replace('\r', ''), expected.replace('\r', ''))
 
     def test_commit_hook_abort(self):
         self.responses = ["n"]
@@ -108,7 +108,10 @@ class HookTests(BaseTestCase):
                             "Contënt on the second line\n",
                             "-----------------------------------------------\n"]
 
-        self.assertListEqual(expected_output, self.githook_output)
+        for output, expected in zip(self.githook_output, expected_output):
+            self.assertMultiLineEqual(output.replace('\r', ''), expected.replace('\r', ''))
+
+        
 
     def test_commit_hook_edit(self):
         self.responses = ["e", "y"]
