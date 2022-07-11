@@ -27,7 +27,9 @@ fi
 
 # echo "\033[31m TEST in red \033[0m"
 
-script -e -q -c  "gitlint --staged --msg-filename \"$1\" run-hook"
+gitlint --staged --msg-filename \"$1\" run-hook
+
+# script -e -q -c  "gitlint --staged --msg-filename \"$1\" run-hook"
 exit_code=$?
 
 # If we fail to find the gitlint binary (command not found), let's retry by executing as a python module.

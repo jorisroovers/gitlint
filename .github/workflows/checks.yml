@@ -81,11 +81,19 @@ jobs:
           TERM: xterm-color
         continue-on-error: true # Known to fail at this point
 
+      - name: Patch commit-msg hook
+        run: |
+          # Escape "$1" to \"$1\"
+          sed -i -E '/^gitlint/ s/("\$1")/\\\1\\/' gitlint-core/gitlint/files/commit-msg
+          # Replace `gitlint <args>` with `script -e -q -c "gitlint <args>"`
+          sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
+        continue-on-error: true
+
       - name: running commit-msg directly
         shell: 'script -q -e -c "bash {0}"'
         run: |
           chmod +x gitlint-core/gitlint/files/commit-msg
-          gitlint-core/gitlint/files/commit-msg
+          cat gitlint-core/gitlint/files/commit-msg
         continue-on-error: true
 
       - name: running colorama test
