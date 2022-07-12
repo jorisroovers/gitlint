@@ -41,9 +41,9 @@ jobs:
           pip install -r requirements.txt
           pip install -r test-requirements.txt
 
-      - name: printenv
-        run: |
-          printenv
+      # - name: printenv
+      #   run: |
+      #     printenv
 
       # - name: Unit Tests
       #   run: ./run_tests.sh
@@ -61,25 +61,25 @@ jobs:
           git config --global color.ui true
           git config --global color.interactive true
 
-      - name: gitlint issue298
-        run: gitlint issue298
+      # - name: gitlint issue298
+      #   run: gitlint issue298
 
-      - name: gitlint issue298 (TTY tried to attach)
-        shell: 'script -q -e -c "bash {0}"'
-        run: |
-          gitlint issue298
+      # - name: gitlint issue298 (TTY tried to attach)
+      #   shell: 'script -q -e -c "bash {0}"'
+      #   run: |
+      #     gitlint issue298
 
-      - name: test issue298
-        run: |
-          GITLINT_BIN=$(which gitlint)
-          gitlint(){
-            script -q -e -c "$GITLINT_BIN --version"
-          }
-          ./run_tests.sh -i  qa/test_issue298.py
+      # - name: test issue298
+      #   run: |
+      #     GITLINT_BIN=$(which gitlint)
+      #     gitlint(){
+      #       script -q -e -c "$GITLINT_BIN --version"
+      #     }
+      #     ./run_tests.sh -i  qa/test_issue298.py
 
-        env:
-          TERM: xterm-color
-        continue-on-error: true # Known to fail at this point
+      #   env:
+      #     TERM: xterm-color
+      #   continue-on-error: true # Known to fail at this point
 
       - name: Patch commit-msg hook
         run: |
@@ -89,30 +89,30 @@ jobs:
           sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
         continue-on-error: true
 
-      - name: running commit-msg directly
-        shell: 'script -q -e -c "bash {0}"'
-        run: |
-          chmod +x gitlint-core/gitlint/files/commit-msg
-          cat gitlint-core/gitlint/files/commit-msg
-        continue-on-error: true
+      # - name: running commit-msg directly
+      #   shell: 'script -q -e -c "bash {0}"'
+      #   run: |
+      #     chmod +x gitlint-core/gitlint/files/commit-msg
+      #     cat gitlint-core/gitlint/files/commit-msg
+      #   continue-on-error: true
 
-      - name: running colorama test
-        run: |
-          python colors.py
-        continue-on-error: true
+      # - name: running colorama test
+      #   run: |
+      #     python colors.py
+      #   continue-on-error: true
 
-      - name: running indirect test
-        shell: 'script -q -e -c "bash {0}"'
-        run: |
-          chmod +x ./indirect.sh
-          ./indirect.sh
-        continue-on-error: true
+      # - name: running indirect test
+      #   shell: 'script -q -e -c "bash {0}"'
+      #   run: |
+      #     chmod +x ./indirect.sh
+      #     ./indirect.sh
+      #   continue-on-error: true
 
-      - name: test issue298 (GITLINT_QA_USE_SH_LIB=0)
-        env:
-          GITLINT_QA_USE_SH_LIB: 0
-        run: ./run_tests.sh -i  qa/test_issue298.py
-        continue-on-error: true # Known to fail at this point
+      # - name: test issue298 (GITLINT_QA_USE_SH_LIB=0)
+      #   env:
+      #     GITLINT_QA_USE_SH_LIB: 0
+      #   run: ./run_tests.sh -i  qa/test_issue298.py
+      #   continue-on-error: true # Known to fail at this point
 
       - name: Integration Tests
         shell: 'script -q -e -c "bash {0}"'
