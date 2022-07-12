@@ -17,8 +17,8 @@ jobs:
       # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
       # code by temporarily renaming the .git directory.
       # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
-      - name: Temporarily remove git version control from code
-        run: mv .git ._git
+      # - name: Temporarily remove git version control from code
+      #   run: mv .git ._git
 
       - name: Setup python
         uses: actions/setup-python@v3.1.2
@@ -57,6 +57,10 @@ jobs:
       - name: Output commit-msg hook (after)
         run: |
           cat gitlint-core/gitlint/files/commit-msg
+
+      - name: git diff
+        run: |
+          git diff
 
       - name: Integration Tests
         shell: 'script -q -e -c "bash {0}"'
