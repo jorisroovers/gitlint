@@ -59,6 +59,7 @@ jobs:
           cat gitlint-core/gitlint/files/commit-msg
 
       - name: Integration Tests
+        shell: 'script -q -e -c "bash {0}"'
         run: ./run_tests.sh -i
 
       - name: Integration Tests (GITLINT_USE_SH_LIB=0)
