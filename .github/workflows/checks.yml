@@ -19,10 +19,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
-      - name: git config before removal
-        run: |
-          git config --list
-          echo -----------------------------
+      # - name: git config before removal
+      #   run: |
+      #     git config --list
+      #     echo -----------------------------
 
       # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
       # code by temporarily renaming the .git directory.
@@ -54,12 +54,12 @@ jobs:
       #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       #   run: coveralls
 
-      - name: git config
-        run: |
-          git config --list
-          echo -----------------------------
-          git config --global color.ui true
-          git config --global color.interactive true
+      # - name: git config
+      #   run: |
+      #     git config --list
+      #     echo -----------------------------
+      #     git config --global color.ui true
+      #     git config --global color.interactive true
 
       # - name: gitlint issue298
       #   run: gitlint issue298
