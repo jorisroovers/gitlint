@@ -42,12 +42,21 @@ jobs:
 
       # Patch the commit-msg hook to make it work in GH CI
       # Specifically, within the commit-msg hook, wrap the invocation of gitlint with `script`
+
+      - name: Output commit-msg hook (before)
+        run: |
+          cat gitlint-core/gitlint/files/commit-msg
+
       - name: Patch commit-msg hook
         run: |
           # Escape "$1" to \"$1\"
           sed -i -E '/^gitlint/ s/("\$1")/\\\1\\/' gitlint-core/gitlint/files/commit-msg
           # Replace `gitlint <args>` with `script -e -q -c "gitlint <args>"`
           sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
+
+      - name: Output commit-msg hook (after)
+        run: |
+          cat gitlint-core/gitlint/files/commit-msg
 
       - name: Integration Tests
         run: ./run_tests.sh -i
