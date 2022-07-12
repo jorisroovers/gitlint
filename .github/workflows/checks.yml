@@ -5,9 +5,9 @@ on: [push, pull_request]
 jobs:
   checks:
     runs-on: "ubuntu-latest"
-    defaults:
-      run:
-        shell: 'script -q -e -c "bash {0}"'
+    # defaults:
+    #   run:
+    #     shell: 'script -q -e -c "bash {0}"'
     env:
       PY_COLORS: "1"
     strategy:
@@ -115,7 +115,7 @@ jobs:
       #   continue-on-error: true # Known to fail at this point
 
       - name: Integration Tests
-        shell: 'script -q -e -c "bash {0}"'
+        # shell: 'script -q -e -c "bash {0}"'
         run: ./run_tests.sh -i
 
       - name: Integration Tests (GITLINT_USE_SH_LIB=0)
