@@ -8,8 +8,8 @@ jobs:
     # defaults:
     #   run:
     #     shell: 'script -q -e -c "bash {0}"'
-    env:
-      PY_COLORS: "1"
+    # env:
+    #   PY_COLORS: "1"
     strategy:
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9", "3.10", pypy-3.9]
