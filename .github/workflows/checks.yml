@@ -84,7 +84,7 @@ jobs:
       - name: Patch commit-msg hook
         run: |
           # Escape "$1" to \"$1\"
-          sed -i -E '/^gitlint/ s/("\$1")/\\\1\\/' gitlint-core/gitlint/files/commit-msg
+          sed -i -E '/^gitlint/ s/"/\\"/g' gitlint-core/gitlint/files/commit-msg
           # Replace `gitlint <args>` with `script -e -q -c "gitlint <args>"`
           sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
         continue-on-error: true

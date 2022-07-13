@@ -27,6 +27,8 @@ fi
 
 # echo "\033[31m TEST in red \033[0m"
 
+# gitlint --staged --msg-filename $1 run-hook
+
 gitlint --staged --msg-filename "$1" run-hook
 
 # script -e -q -c  "gitlint --staged --msg-filename \"$1\" run-hook"
