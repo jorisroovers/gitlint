@@ -97,7 +97,7 @@ Short example `.gitlint` file ([full reference](configuration.md)):
 # their id or by their full name
 ignore=body-is-missing,T3
 
-# Ignore any data send to gitlint via stdin
+# Ignore any data sent to gitlint via stdin
 ignore-stdin=true
 
 # Configure title-max-length rule, set title length to 80 (72 = default)

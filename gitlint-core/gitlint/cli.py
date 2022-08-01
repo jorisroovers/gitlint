@@ -113,7 +113,7 @@ def build_config(  # pylint: disable=too-many-arguments
 
 
 def get_stdin_data():
-    """ Helper function that returns data send to stdin or False if nothing is send """
+    """ Helper function that returns data sent to stdin or False if nothing is sent """
     # STDIN can only be 3 different types of things ("modes")
     #  1. An interactive terminal device (i.e. a TTY -> sys.stdin.isatty() or stat.S_ISCHR)
     #  2. A (named) pipe (stat.S_ISFIFO)
