@@ -11,4 +11,3 @@ class DisallowFixupSquashCommit(CommitRule):
         if commit.is_squash_commit:
             return [RuleViolation(self.id, "Squash commits are not allowed", line_nr=1)]
 
-        return []
