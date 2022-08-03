@@ -7,7 +7,7 @@ from gitlint.contrib.rules.signedoff_by import SignedOffBy
 from gitlint.config import LintConfig
 
 
-class ContribSignedOffByTests(BaseTestCase):
+class ContribDisallowFixupSquashCommitTests(BaseTestCase):
 
     def test_enable(self):
         # Test that rule can be enabled in config
@@ -16,7 +16,7 @@ class ContribSignedOffByTests(BaseTestCase):
             config.contrib = [rule_ref]
             self.assertIn(DisallowFixupSquashCommit(), config.rules)
 
-    def test_signedoff_by(self):
+    def test_disallow_fixup_squash_commit(self):
         # No violations when no 'fixup!' line and no 'squash!' line is present
         rule = DisallowFixupSquashCommit()
         violations = rule.validate(self.gitcommit("Föobar\n\nMy Body"))
