@@ -1,8 +1,8 @@
 from gitlint.rules import CommitRule, RuleViolation
 
-class BlockFixupSquash(CommitRule):
-    name = "block-fixup-squash"
-    id = "BF1"
+class DisallowFixupSquashCommit(CommitRule):
+    name = "contrib-disallow-fixup-squash"
+    id = "CC2"
 
     def validate(self, commit):
         if commit.is_fixup_commit:
