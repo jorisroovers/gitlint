@@ -1,6 +1,10 @@
 from gitlint.rules import CommitRule, RuleViolation
 
 class DisallowCleanupCommits(CommitRule):
+    """ This rule checks the commits for "fixup!"/"squash!"/"amend!" commits
+    and rejects them.
+    """
+
     name = "contrib-disallow-cleanup-commits"
     id = "CC2"
 
