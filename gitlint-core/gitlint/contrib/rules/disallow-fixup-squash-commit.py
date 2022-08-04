@@ -1,7 +1,7 @@
 from gitlint.rules import CommitRule, RuleViolation
 
-class DisallowFixupSquashCommit(CommitRule):
-    name = "contrib-disallow-fixup-squash"
+class DisallowCleanupCommits(CommitRule):
+    name = "contrib-disallow-cleanup-commits"
     id = "CC2"
 
     def validate(self, commit):

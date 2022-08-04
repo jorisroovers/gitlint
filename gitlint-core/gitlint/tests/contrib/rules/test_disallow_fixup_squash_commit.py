@@ -2,23 +2,23 @@
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import RuleViolation
-from gitlint.contrib.rules.signedoff_by import SignedOffBy
+from gitlint.contrib.rules.disallow_cleanup import DisallowCleanupCommits
 
 from gitlint.config import LintConfig
 
 
-class ContribDisallowFixupSquashCommitTests(BaseTestCase):
+class ContribDisallowCleanupCommitsTest(BaseTestCase):
 
     def test_enable(self):
         # Test that rule can be enabled in config
         for rule_ref in ['CC2', 'contrib-disallow-fixup-squash']:
             config = LintConfig()
             config.contrib = [rule_ref]
-            self.assertIn(DisallowFixupSquashCommit(), config.rules)
+            self.assertIn(DisallowCleanupCommits(), config.rules)
 
     def test_disallow_fixup_squash_commit(self):
         # No violations when no 'fixup!' line and no 'squash!' line is present
-        rule = DisallowFixupSquashCommit()
+        rule = DisallowCleanupCommits()
         violations = rule.validate(self.gitcommit("Föobar\n\nMy Body"))
         self.assertListEqual([], violations)
 
