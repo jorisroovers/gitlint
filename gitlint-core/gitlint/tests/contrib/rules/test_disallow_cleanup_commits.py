@@ -2,16 +2,15 @@
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import RuleViolation
-from gitlint.contrib.rules.disallow_cleanup import DisallowCleanupCommits
+from gitlint.contrib.rules.disallow_cleanup_commits import DisallowCleanupCommits
 
 from gitlint.config import LintConfig
-
 
 class ContribDisallowCleanupCommitsTest(BaseTestCase):
 
     def test_enable(self):
         # Test that rule can be enabled in config
-        for rule_ref in ['CC2', 'contrib-disallow-fixup-squash']:
+        for rule_ref in ['CC2', 'contrib-disallow-cleanup-commits']:
             config = LintConfig()
             config.contrib = [rule_ref]
             self.assertIn(DisallowCleanupCommits(), config.rules)
