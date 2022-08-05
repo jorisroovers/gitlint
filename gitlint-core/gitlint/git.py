@@ -156,6 +156,10 @@ class GitCommit:
         return self.message.title.startswith("squash!")
 
     @property
+    def is_fixup_amend_commit(self):
+        return self.message.title.startswith("amend!")
+
+    @property
     def is_revert_commit(self):
         return self.message.title.startswith("Revert")
 
