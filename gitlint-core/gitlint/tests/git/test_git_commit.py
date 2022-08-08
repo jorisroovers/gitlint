@@ -60,8 +60,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(last_commit.parents, ["åbc"])
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
-        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_fixup_amend_commit)
+        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_revert_commit)
 
         # First 2 'git log' calls should've happened at this point
@@ -115,8 +115,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(last_commit.parents, ["åbc"])
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
-        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_fixup_amend_commit)
+        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_revert_commit)
 
         # First 2 'git log' calls should've happened at this point
@@ -169,8 +169,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(last_commit.parents, ["åbc"])
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
-        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_fixup_amend_commit)
+        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_revert_commit)
 
         # First 2 'git log' calls should've happened at this point
@@ -223,8 +223,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(last_commit.parents, ["åbc", "def"])
         self.assertTrue(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
-        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_fixup_amend_commit)
+        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_revert_commit)
 
         # First 2 'git log' calls should've happened at this point
@@ -240,8 +240,8 @@ class GitCommitTests(BaseTestCase):
 
     @patch('gitlint.git.sh')
     def test_get_latest_commit_fixup_squash_commit(self, sh):
-        commit_types = ["fixup", "squash"]
-        for commit_type in commit_types:
+        commit_prefixes = {"fixup": "is_fixup_commit", "squash": "is_squash_commit", "amend": "is_fixup_amend_commit"}
+        for commit_type in commit_prefixes.keys():
             sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
             sh.git.side_effect = [
@@ -282,8 +282,7 @@ class GitCommitTests(BaseTestCase):
             self.assertEqual(sh.git.mock_calls, expected_calls[:3])
 
             # Asserting that squash and fixup are correct
-            for type in commit_types:
-                attr = "is_" + type + "_commit"
+            for type, attr in commit_prefixes.items():
                 self.assertEqual(getattr(last_commit, attr), commit_type == type)
 
             self.assertFalse(last_commit.is_merge_commit)
@@ -339,8 +338,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(commit.branches, [])
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
-        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_fixup_amend_commit)
+        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
@@ -360,8 +359,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(commit.branches, [])
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
-        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_fixup_amend_commit)
+        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
@@ -382,8 +381,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(commit.branches, [])
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
-        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_fixup_amend_commit)
+        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
@@ -429,8 +428,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(commit.branches, [])
         self.assertTrue(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
-        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_fixup_amend_commit)
+        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
@@ -452,8 +451,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(commit.branches, [])
         self.assertFalse(commit.is_merge_commit)
         self.assertFalse(commit.is_fixup_commit)
-        self.assertFalse(commit.is_squash_commit)
         self.assertFalse(commit.is_fixup_amend_commit)
+        self.assertFalse(commit.is_squash_commit)
         self.assertTrue(commit.is_revert_commit)
         self.assertEqual(len(gitcontext.commits), 1)
 
@@ -531,8 +530,8 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(last_commit.parents, [])
         self.assertFalse(last_commit.is_merge_commit)
         self.assertTrue(last_commit.is_fixup_commit)
-        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_fixup_amend_commit)
+        self.assertFalse(last_commit.is_squash_commit)
         self.assertFalse(last_commit.is_revert_commit)
 
         self.assertListEqual(last_commit.branches, ["my-brånch"])

@@ -79,6 +79,7 @@ Author: gitlint-test-user <gitlint@test.com>
 Date:   {date}
 is-merge-commit:  False
 is-fixup-commit:  False
+is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
 Branches: ['master']

@@ -192,6 +192,7 @@ commit.date                    | datetime       | Python `datetime` object repre
 commit.is_merge_commit         | boolean        | Boolean indicating whether the commit is a merge commit or not.
 commit.is_revert_commit        | boolean        | Boolean indicating whether the commit is a revert commit or not.
 commit.is_fixup_commit         | boolean        | Boolean indicating whether the commit is a fixup commit or not.
+commit.is_fixup_amend_commit   | boolean        | Boolean indicating whether the commit is a (fixup) amend commit or not.
 commit.is_squash_commit        | boolean        | Boolean indicating whether the commit is a squash commit or not.
 commit.parents                 | string[]       | List of parent commit `sha`s (only for merge commits).
 commit.changed_files           | string[]       | List of files changed in the commit (relative paths).

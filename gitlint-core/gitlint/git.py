@@ -171,6 +171,7 @@ class GitCommit:
                 f"Date:   {date_str}\n"
                 f"is-merge-commit:  {self.is_merge_commit}\n"
                 f"is-fixup-commit:  {self.is_fixup_commit}\n"
+                f"is-fixup-amend-commit: {self.is_fixup_amend_commit}\n"
                 f"is-squash-commit: {self.is_squash_commit}\n"
                 f"is-revert-commit: {self.is_revert_commit}\n"
                 f"Branches: {self.branches}\n"
@@ -184,6 +185,7 @@ class GitCommit:
                 and self.author_email == other.author_email
                 and self.date == other.date and self.parents == other.parents
                 and self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit
+                and self.is_fixup_amend_commit == other.is_fixup_amend_commit
                 and self.is_squash_commit == other.is_squash_commit and self.is_revert_commit == other.is_revert_commit
                 and self.changed_files == other.changed_files and self.branches == other.branches) # noqa
 

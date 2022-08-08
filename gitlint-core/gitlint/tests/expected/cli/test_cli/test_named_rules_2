@@ -78,6 +78,7 @@ Author: None <None>
 Date:   None
 is-merge-commit:  False
 is-fixup-commit:  False
+is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
 Branches: []
