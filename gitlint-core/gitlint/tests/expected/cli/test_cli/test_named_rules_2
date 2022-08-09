@@ -13,6 +13,7 @@ contrib: []
 ignore: 
 ignore-merge-commits: True
 ignore-fixup-commits: True
+ignore-fixup-amend-commits: True
 ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False

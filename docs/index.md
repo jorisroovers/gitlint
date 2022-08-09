@@ -292,9 +292,9 @@ done
 
 
 ## Merge, fixup, squash and revert commits
-_Introduced in gitlint v0.7.0 (merge), v0.9.0 (fixup, squash) and v0.13.0 (revert)_
+_Introduced in gitlint v0.7.0 (merge), v0.9.0 (fixup, squash), v0.13.0 (revert) and v0.18.0 (fixup=amend)_
 
-**Gitlint ignores merge, revert, fixup and squash commits by default.**
+**Gitlint ignores merge, revert, fixup, and squash commits by default.**
 
 For merge and revert commits, the rationale for ignoring them is
 that most users keep git's default messages for these commits (i.e *Merge/Revert "[original commit message]"*).
@@ -304,14 +304,14 @@ For example, a common case is that *"Merge:"* being auto-prepended triggers a
 [title-max-length](rules.md#t1-title-max-length) violation. Most users don't want this, so we disable linting
 on Merge and Revert commits by default.
 
-For [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) and [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits, the rationale is that these are temporary
+For [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) and [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) (including [fixup=amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)) commits, the rationale is that these are temporary
 commits that will be squashed into a different commit, and hence the commit messages for these commits are very
-short-lived and not intended to make it into the final commit history. In addition, by prepending *"fixup!"* or
-*"squash!"* to your commit message, certain gitlint rules might be violated
+short-lived and not intended to make it into the final commit history. In addition, by prepending *"fixup!"*,
+*"amend!"* or *"squash!"* to your commit message, certain gitlint rules might be violated
 (e.g. [title-max-length](rules.md#t1-title-max-length)) which is often undesirable.
 
 In case you *do* want to lint these commit messages, you can disable this behavior by setting the
-general `ignore-merge-commits`, `ignore-revert-commits`,  `ignore-fixup-commits` or
+general `ignore-merge-commits`, `ignore-revert-commits`,  `ignore-fixup-commits`, `ignore-fixup-amend-commits` or
 `ignore-squash-commits` option to `false`
 [using one of the various ways to configure gitlint](configuration.md).
 
