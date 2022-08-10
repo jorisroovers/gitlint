@@ -30,4 +30,7 @@ class ContribDisallowCleanupCommitsTest(BaseTestCase):
         violations = rule.validate(self.gitcommit("!squash Föobar\n\nMy Body"))
         expected_violation = RuleViolation("CC1", "Squash commits are not allowed", line_nr=1)
         self.assertListEqual(violations, [expected_violation])
-
+       # Assert violation when 'amend!' in title
+        violations = rule.validate(self.gitcommit("!amend Föobar\n\nMy Body"))
+        expected_violation = RuleViolation("CC1", "Amend commits are not allowed", line_nr=1)
+        self.assertListEqual(violations, [expected_violation])
