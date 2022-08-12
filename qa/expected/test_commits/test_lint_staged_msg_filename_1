@@ -14,6 +14,7 @@ contrib: []
 ignore: 
 ignore-merge-commits: True
 ignore-fixup-commits: True
+ignore-fixup-amend-commits: True
 ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False
@@ -79,6 +80,7 @@ Author: gitlint-test-user <gitlint@test.com>
 Date:   {staged_date}
 is-merge-commit:  False
 is-fixup-commit:  False
+is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
 Branches: ['master']

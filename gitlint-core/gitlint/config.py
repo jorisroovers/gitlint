@@ -32,7 +32,7 @@ class LintConfigError(GitlintError):
     pass
 
 
-class LintConfig:
+class LintConfig:  # pylint: disable=too-many-instance-attributes
     """ Class representing gitlint configuration.
         Contains active config as well as number of methods to easily get/set the config.
     """
@@ -65,6 +65,8 @@ class LintConfig:
         self._verbosity = options.IntOption('verbosity', 3, "Verbosity")
         self._ignore_merge_commits = options.BoolOption('ignore-merge-commits', True, "Ignore merge commits")
         self._ignore_fixup_commits = options.BoolOption('ignore-fixup-commits', True, "Ignore fixup commits")
+        self._ignore_fixup_amend_commits = options.BoolOption('ignore-fixup-amend-commits', True,
+                                                              "Ignore fixup amend commits")
         self._ignore_squash_commits = options.BoolOption('ignore-squash-commits', True, "Ignore squash commits")
         self._ignore_revert_commits = options.BoolOption('ignore-revert-commits', True, "Ignore revert commits")
         self._debug = options.BoolOption('debug', False, "Enable debug mode")
@@ -117,6 +119,15 @@ class LintConfig:
     @handle_option_error
     def ignore_fixup_commits(self, value):
         return self._ignore_fixup_commits.set(value)
+
+    @property
+    def ignore_fixup_amend_commits(self):
+        return self._ignore_fixup_amend_commits.value
+
+    @ignore_fixup_amend_commits.setter
+    @handle_option_error
+    def ignore_fixup_amend_commits(self, value):
+        return self._ignore_fixup_amend_commits.set(value)
 
     @property
     def ignore_squash_commits(self):
@@ -283,6 +294,7 @@ class LintConfig:
             self.contrib == other.contrib and \
             self.ignore_merge_commits == other.ignore_merge_commits and \
             self.ignore_fixup_commits == other.ignore_fixup_commits and \
+            self.ignore_fixup_amend_commits == other.ignore_fixup_amend_commits and \
             self.ignore_squash_commits == other.ignore_squash_commits and \
             self.ignore_revert_commits == other.ignore_revert_commits and \
             self.ignore_stdin == other.ignore_stdin and \
@@ -301,6 +313,7 @@ class LintConfig:
                 f"ignore: {','.join(self.ignore)}\n"
                 f"ignore-merge-commits: {self.ignore_merge_commits}\n"
                 f"ignore-fixup-commits: {self.ignore_fixup_commits}\n"
+                f"ignore-fixup-amend-commits: {self.ignore_fixup_amend_commits}\n"
                 f"ignore-squash-commits: {self.ignore_squash_commits}\n"
                 f"ignore-revert-commits: {self.ignore_revert_commits}\n"
                 f"ignore-stdin: {self.ignore_stdin}\n"

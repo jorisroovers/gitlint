@@ -61,11 +61,7 @@ class IntegrationTests(BaseTestCase):
 
         # Make a small modification to the commit and commit it using fixup commit
         with io.open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=DEFAULT_ENCODING) as fh:
-            # Wanted to write a unicode string, but that's obnoxious if you want to do it across Python 2 and 3.
-            # https://stackoverflow.com/questions/22392377/
-            # error-writing-a-file-with-file-write-in-python-unicodeencodeerror
-            # So just keeping it simple - ASCII will here
-            fh.write("Appending some stuff\n")
+            fh.write("Appending söme stuff\n")
 
         git("add", test_filename, _cwd=self.tmp_git_repo)
 
@@ -80,6 +76,34 @@ class IntegrationTests(BaseTestCase):
         output = gitlint("-c", "general.ignore-fixup-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
         expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"fixup! Cömmit on WIP master\"\n" + \
             "3: B6 Body message is missing\n"
+
+        self.assertEqualStdout(output, expected)
+
+    def test_fixup_amend_commit(self):
+        # Create a normal commit and assert that it has a violation
+        test_filename = self.create_simple_commit("Cömmit on WIP master\n\nSimple bödy that is long enough")
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
+        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
+        self.assertEqualStdout(output, expected)
+
+        # Make a small modification to the commit and commit it using fixup=amend commit
+        with io.open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=DEFAULT_ENCODING) as fh:
+            fh.write("Appending söme stuff\n")
+
+        git("add", test_filename, _cwd=self.tmp_git_repo)
+
+        # We have to use --no-edit to avoid git starting $EDITOR to modify the commit message that is being amended
+        git("commit", "--no-edit", f"--fixup=amend:{self.get_last_commit_hash()}", _cwd=self.tmp_git_repo)
+
+        # Assert that gitlint does not show an error for the fixup commit
+        output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True)
+        # No need to check exit code, the command above throws an exception on > 0 exit codes
+        self.assertEqualStdout(output, "")
+
+        # Make sure that if we set the ignore-fixup-commits option to false that we do still see the violations
+        output = gitlint("-c", "general.ignore-fixup-amend-commits=false",
+                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
+        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"amend! Cömmit on WIP master\"\n"
 
         self.assertEqualStdout(output, expected)
 

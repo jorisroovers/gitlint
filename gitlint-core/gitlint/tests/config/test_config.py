@@ -45,6 +45,7 @@ class LintConfigTests(BaseTestCase):
         # Check that default general options are correct
         self.assertTrue(config.ignore_merge_commits)
         self.assertTrue(config.ignore_fixup_commits)
+        self.assertTrue(config.ignore_fixup_amend_commits)
         self.assertTrue(config.ignore_squash_commits)
         self.assertTrue(config.ignore_revert_commits)
 
@@ -75,6 +76,10 @@ class LintConfigTests(BaseTestCase):
         # ignore_fixup_commit
         config.set_general_option("ignore-fixup-commits", "false")
         self.assertFalse(config.ignore_fixup_commits)
+
+        # ignore_fixup_amend_commit
+        config.set_general_option("ignore-fixup-amend-commits", "false")
+        self.assertFalse(config.ignore_fixup_amend_commits)
 
         # ignore_squash_commit
         config.set_general_option("ignore-squash-commits", "false")
@@ -218,8 +223,8 @@ class LintConfigTests(BaseTestCase):
                 config.verbosity = value
 
         # invalid ignore_xxx_commits
-        ignore_attributes = ["ignore_merge_commits", "ignore_fixup_commits", "ignore_squash_commits",
-                             "ignore_revert_commits"]
+        ignore_attributes = ["ignore_merge_commits", "ignore_fixup_commits", "ignore_fixup_amend_commits",
+                             "ignore_squash_commits", "ignore_revert_commits"]
         incorrect_values = [-1, 4, "föo"]
         for attribute in ignore_attributes:
             for value in incorrect_values:
@@ -262,6 +267,7 @@ class LintConfigTests(BaseTestCase):
         attrs = [("verbosity", 1), ("rules", []), ("ignore_stdin", True), ("debug", True),
                  ("ignore", ["T1"]), ("staged", True), ("_config_path", self.get_sample_path()),
                  ("ignore_merge_commits", False), ("ignore_fixup_commits", False),
+                 ("ignore_fixup_amend_commits", False),
                  ("ignore_squash_commits", False), ("ignore_revert_commits", False),
                  ("extra_path", self.get_sample_path("user_rules")), ("target", self.get_sample_path()),
                  ("contrib", ["CC1"])]

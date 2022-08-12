@@ -13,6 +13,7 @@ contrib: []
 ignore: title-trailing-whitespace,B2
 ignore-merge-commits: False
 ignore-fixup-commits: True
+ignore-fixup-amend-commits: True
 ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False
@@ -79,6 +80,7 @@ Author: test åuthor1 <test-email1@föo.com>
 Date:   2016-12-03 15:28:15 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
+is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
 Branches: ['commit-1-branch-1', 'commit-1-branch-2']
@@ -98,6 +100,7 @@ Author: test åuthor2 <test-email2@föo.com>
 Date:   2016-12-04 15:28:15 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
+is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
 Branches: ['commit-2-branch-1', 'commit-2-branch-2']
@@ -116,6 +119,7 @@ Author: test åuthor3 <test-email3@föo.com>
 Date:   2016-12-05 15:28:15 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
+is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
 Branches: ['commit-3-branch-1', 'commit-3-branch-2']

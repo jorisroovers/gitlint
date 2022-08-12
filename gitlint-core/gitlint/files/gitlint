@@ -14,10 +14,11 @@
 # verbosity should be a value between 1 and 3, the commandline -v flags take precedence over this
 # verbosity = 2
 
-# By default gitlint will ignore merge, revert, fixup and squash commits. 
+# By default gitlint will ignore merge, revert, fixup, fixup=amend, and squash commits. 
 # ignore-merge-commits=true
 # ignore-revert-commits=true
 # ignore-fixup-commits=true
+# ignore-fixup-amend-commits=true
 # ignore-squash-commits=true
 
 # Ignore any data sent to gitlint via stdin

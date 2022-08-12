@@ -13,6 +13,7 @@ contrib: []
 ignore: 
 ignore-merge-commits: True
 ignore-fixup-commits: True
+ignore-fixup-amend-commits: True
 ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False
@@ -80,6 +81,7 @@ Author: föo user <föo@bar.com>
 Date:   2020-02-19 12:18:46 +0100
 is-merge-commit:  False
 is-fixup-commit:  False
+is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
 Branches: ['my-branch']

@@ -39,10 +39,11 @@ ignore=title-trailing-punctuation, T3
 # precedence over this
 verbosity = 2
 
-# By default gitlint will ignore merge, revert, fixup and squash commits.
+# By default gitlint will ignore merge, revert, fixup, fixup=amend, and squash commits.
 ignore-merge-commits=true
 ignore-revert-commits=true
 ignore-fixup-commits=true
+ignore-fixup-amend-commits=true
 ignore-squash-commits=true
 
 # Ignore any data sent to gitlint via stdin
@@ -492,6 +493,25 @@ gitlint -c general.ignore-fixup-commits=false
 #.gitlint
 [general]
 ignore-fixup-commits=false
+```
+
+### ignore-fixup-amend-commits
+
+Whether or not to ignore [fixup=amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt) commits.
+
+Default value  |  gitlint version | commandline flag  | environment variable  
+---------------|------------------|-------------------|-----------------------
+ true          | >= 0.18.0        | Not Available     | Not Available  
+
+#### Examples
+```sh
+# CLI
+gitlint -c general.ignore-fixup-amend-commits=false
+```
+```ini
+#.gitlint
+[general]
+ignore-fixup-amend-commits=false
 ```
 
 ### ignore-squash-commits
