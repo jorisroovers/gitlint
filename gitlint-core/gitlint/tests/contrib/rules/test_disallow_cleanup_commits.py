@@ -19,7 +19,7 @@ class ContribDisallowCleanupCommitsTest(BaseTestCase):
         # No violations when no 'fixup!' line and no 'squash!' line is present
         rule = DisallowCleanupCommits()
         violations = rule.validate(self.gitcommit("Föobar\n\nMy Body"))
-        self.assertListEqual([], violations)
+        self.assertIsNone(violations)
 
         # Assert violation when 'fixup!' in title
         violations = rule.validate(self.gitcommit("fixup! Föobar\n\nMy Body"))
