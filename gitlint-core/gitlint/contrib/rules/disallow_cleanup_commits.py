@@ -15,6 +15,6 @@ class DisallowCleanupCommits(CommitRule):
         if commit.is_squash_commit:
             return [RuleViolation(self.id, "Squash commits are not allowed", line_nr=1)]
 
-        if commit.message.title.startswith("amend!"):
+        if commit.is_fixup_amend_commit:
             return [RuleViolation(self.id, "Amend commits are not allowed", line_nr=1)]
 
