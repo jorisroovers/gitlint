@@ -42,6 +42,7 @@ ID    | Name                                | gitlint version   | Description
 ------|-------------------------------------|------------------ |-------------------------------------------
 CT1   | contrib-title-conventional-commits  | >= 0.12.0         | Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit message style on the title.
 CC1   | contrib-body-requires-signed-off-by | >= 0.12.0         | Commit body must contain a `Signed-off-by` line.
+CC2   | contrib-disallow-cleanup-commits    | >= 0.18.0         | Commit title must not contain `fixup!`, `squash!`, `amend!`.
 
 ## CT1: contrib-title-conventional-commits ##
 
@@ -62,6 +63,12 @@ ID    | Name                                  | gitlint version    | Description
 ------|---------------------------------------|--------------------|-------------------------------------------
 CC1   | contrib-body-requires-signed-off-by   | >= 0.12.0          | Commit body must contain a `Signed-off-by` line. This means, a line that starts with the `Signed-off-by` keyword.
 
+
+## CC2: contrib-disallow-cleanup-commits ##
+
+ID    | Name                             | gitlint version    | Description
+------|----------------------------------|--------------------|-------------------------------------------
+CC2   | contrib-disallow-cleanup-commits | >= 0.18.0          | Commit title must not contain `fixup!`, `squash!` or `amend!`. This means `git commit --fixup` and `git commit --squash` commits are not allowed.
 
 ## Contributing Contrib rules
 We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the [Contributing](contributing) page on how to get started.
