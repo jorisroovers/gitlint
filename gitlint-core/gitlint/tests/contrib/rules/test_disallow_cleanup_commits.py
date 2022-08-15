@@ -6,6 +6,7 @@ from gitlint.contrib.rules.disallow_cleanup_commits import DisallowCleanupCommit
 
 from gitlint.config import LintConfig
 
+
 class ContribDisallowCleanupCommitsTest(BaseTestCase):
 
     def test_enable(self):
@@ -19,18 +20,19 @@ class ContribDisallowCleanupCommitsTest(BaseTestCase):
         # No violations when no 'fixup!' line and no 'squash!' line is present
         rule = DisallowCleanupCommits()
         violations = rule.validate(self.gitcommit("Föobar\n\nMy Body"))
-        self.assertIsNone(violations)
+        self.assertListEqual(violations, [])
 
         # Assert violation when 'fixup!' in title
         violations = rule.validate(self.gitcommit("fixup! Föobar\n\nMy Body"))
-        expected_violation = RuleViolation("CC1", "Fixup commits are not allowed", line_nr=1)
+        expected_violation = RuleViolation("CC2", "Fixup commits are not allowed", line_nr=1)
         self.assertListEqual(violations, [expected_violation])
 
         # Assert violation when 'squash!' in title
-        violations = rule.validate(self.gitcommit("!squash Föobar\n\nMy Body"))
-        expected_violation = RuleViolation("CC1", "Squash commits are not allowed", line_nr=1)
+        violations = rule.validate(self.gitcommit("squash! Föobar\n\nMy Body"))
+        expected_violation = RuleViolation("CC2", "Squash commits are not allowed", line_nr=1)
         self.assertListEqual(violations, [expected_violation])
-       # Assert violation when 'amend!' in title
-        violations = rule.validate(self.gitcommit("!amend Föobar\n\nMy Body"))
-        expected_violation = RuleViolation("CC1", "Amend commits are not allowed", line_nr=1)
+
+        # Assert violation when 'amend!' in title
+        violations = rule.validate(self.gitcommit("amend! Föobar\n\nMy Body"))
+        expected_violation = RuleViolation("CC2", "Amend commits are not allowed", line_nr=1)
         self.assertListEqual(violations, [expected_violation])

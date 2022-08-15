@@ -1,5 +1,6 @@
 from gitlint.rules import CommitRule, RuleViolation
 
+
 class DisallowCleanupCommits(CommitRule):
     """ This rule checks the commits for "fixup!"/"squash!"/"amend!" commits
     and rejects them.
@@ -18,3 +19,4 @@ class DisallowCleanupCommits(CommitRule):
         if commit.is_fixup_amend_commit:
             return [RuleViolation(self.id, "Amend commits are not allowed", line_nr=1)]
 
+        return []
