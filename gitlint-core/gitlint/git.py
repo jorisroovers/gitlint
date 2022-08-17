@@ -374,7 +374,7 @@ class GitContext(PropertyCache):
         return context
 
     @staticmethod
-    def from_local_repository(repository_path, refspec=None, commit_hash=None):
+    def from_local_repository(repository_path, refspec=None, commit_hashes=None):
         """ Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
         :param refspec: The commit(s) to retrieve (mutually exclusive with `commit_hash`)
@@ -385,11 +385,13 @@ class GitContext(PropertyCache):
 
         if refspec:
             sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
-        elif commit_hash:  # Single commit, just pass it to `git log -1`
+        elif commit_hashes:  # One or more commit hashes, just pass it to `git log -1`
             # Even though we have already been passed the commit hash, we ask git to retrieve this hash and
             # return it to us. This way we verify that the passed hash is a valid hash for the target repo and we
             # also convert it to the full hash format (we might have been passed a short hash).
-            sha_list = [_git("log", "-1", commit_hash, "--pretty=%H", _cwd=repository_path).replace("\n", "")]
+            sha_list = []
+            for commit_hash in commit_hashes:
+                sha_list.append(_git("log", "-1", commit_hash, "--pretty=%H", _cwd=repository_path).replace("\n", ""))
         else:  # If no refspec is defined, fallback to the last commit on the current branch
             # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
             # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into

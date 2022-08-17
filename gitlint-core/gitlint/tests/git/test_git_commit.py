@@ -143,7 +143,7 @@ class GitCommitTests(BaseTestCase):
             "foöbar\n* hürdur\n"
         ]
 
-        context = GitContext.from_local_repository("fåke/path", commit_hash=sample_hash)
+        context = GitContext.from_local_repository("fåke/path", commit_hashes=[sample_hash])
         # assert that commit info was read using git command
         expected_calls = [
             call("log", "-1", sample_hash, "--pretty=%H",  **self.expected_sh_special_args),

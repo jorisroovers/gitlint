@@ -177,7 +177,21 @@ def build_git_context(lint_config, msg_filename, commit_hash, refspec):
     if commit_hash and refspec:
         raise GitLintUsageError("--commit and --commits are mutually exclusive, use one or the other.")
 
-    return GitContext.from_local_repository(lint_config.target, refspec=refspec, commit_hash=commit_hash)
+    # 3.1 Linting a range of commits
+    if refspec:
+        # 3.1.1 Not real refspec, but comma-separated list of commit hashes
+        if "," in refspec:
+            commit_hashes = [hash.strip() for hash in refspec.split(",")]
+            return GitContext.from_local_repository(lint_config.target, commit_hashes=commit_hashes)
+        # 3.1.2 Real refspec
+        return GitContext.from_local_repository(lint_config.target, refspec=refspec)
+
+    # 3.2 Linting a specific commit
+    if commit_hash:
+        return GitContext.from_local_repository(lint_config.target, commit_hashes=[commit_hash])
+
+    # 3.3 Fallback to linting the current HEAD
+    return GitContext.from_local_repository(lint_config.target)
 
 
 def handle_gitlint_error(ctx, exc):
