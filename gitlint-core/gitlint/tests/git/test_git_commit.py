@@ -185,6 +185,85 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(sh.git.mock_calls, expected_calls)
 
     @patch('gitlint.git.sh')
+    def test_from_local_repository_multiple_commit_hashes(self, sh):
+
+        hashes = ["åbc123", "dęf456", "ghí789"]
+        sh.git.side_effect = [
+            *hashes,
+            f"test åuthor {hashes[0]}\x00test-emåil-{hashes[0]}@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            f"cömmit-title {hashes[0]}\n\ncömmit-body {hashes[0]}",
+            "#",  # git config --get core.commentchar
+            f"test åuthor {hashes[1]}\x00test-emåil-{hashes[1]}@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            f"cömmit-title {hashes[1]}\n\ncömmit-body {hashes[1]}",
+            f"test åuthor {hashes[2]}\x00test-emåil-{hashes[2]}@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            f"cömmit-title {hashes[2]}\n\ncömmit-body {hashes[2]}",
+            f"file1-{hashes[0]}.txt\npåth/to/file2.txt\n",
+            f"file1-{hashes[1]}.txt\npåth/to/file2.txt\n",
+            f"file1-{hashes[2]}.txt\npåth/to/file2.txt\n",
+            f"foöbar-{hashes[0]}\n* hürdur\n",
+            f"foöbar-{hashes[1]}\n* hürdur\n",
+            f"foöbar-{hashes[2]}\n* hürdur\n"
+        ]
+
+        expected_calls = [
+            call("log", "-1", hashes[0], "--pretty=%H",  **self.expected_sh_special_args),
+            call("log", "-1", hashes[1], "--pretty=%H",  **self.expected_sh_special_args),
+            call("log", "-1", hashes[2], "--pretty=%H",  **self.expected_sh_special_args),
+            call("log", hashes[0], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
+            call("log", hashes[1], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call("log", hashes[2], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', hashes[0],
+                 **self.expected_sh_special_args),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', hashes[1],
+                 **self.expected_sh_special_args),
+            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', hashes[2],
+                 **self.expected_sh_special_args),
+            call('branch', '--contains', hashes[0], **self.expected_sh_special_args),
+            call('branch', '--contains', hashes[1], **self.expected_sh_special_args),
+            call('branch', '--contains', hashes[2], **self.expected_sh_special_args)
+        ]
+
+        context = GitContext.from_local_repository("fåke/path", commit_hashes=hashes)
+
+        # Only first set of 'git log' calls should've happened at this point
+        self.assertEqual(sh.git.mock_calls, expected_calls[:3])
+
+        for i, commit in enumerate(context.commits):
+            expected_hash = hashes[i]
+            self.assertIsInstance(commit, LocalGitCommit)
+            self.assertEqual(commit.sha, expected_hash)
+            self.assertEqual(commit.message.title, f"cömmit-title {expected_hash}")
+            self.assertEqual(commit.message.body, ["", f"cömmit-body {expected_hash}"])
+            self.assertEqual(commit.author_name, f"test åuthor {expected_hash}")
+            self.assertEqual(commit.author_email, f"test-emåil-{expected_hash}@foo.com")
+            self.assertEqual(commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
+                                                            tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+            self.assertListEqual(commit.parents, ["åbc"])
+            self.assertFalse(commit.is_merge_commit)
+            self.assertFalse(commit.is_fixup_commit)
+            self.assertFalse(commit.is_fixup_amend_commit)
+            self.assertFalse(commit.is_squash_commit)
+            self.assertFalse(commit.is_revert_commit)
+
+        # All 'git log' calls should've happened at this point
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:7])
+
+        for i, commit in enumerate(context.commits):
+            expected_hash = hashes[i]
+            self.assertListEqual(commit.changed_files, [f"file1-{expected_hash}.txt", "påth/to/file2.txt"])
+
+        # 'git diff-tree' should have happened at this point
+        self.assertListEqual(sh.git.mock_calls, expected_calls[:10])
+
+        for i, commit in enumerate(context.commits):
+            expected_hash = hashes[i]
+            self.assertListEqual(commit.branches, [f"foöbar-{expected_hash}", "hürdur"])
+
+        # All expected calls should've happened at this point
+        self.assertListEqual(sh.git.mock_calls, expected_calls)
+
+    @patch('gitlint.git.sh')
     def test_get_latest_commit_merge_commit(self, sh):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 

@@ -1,0 +1,11 @@
+Commit {commit_sha2}:
+1: T3 Title has trailing punctuation (.): "Sïmple title2."
+3: B6 Body message is missing
+
+Commit {commit_sha1}:
+1: T3 Title has trailing punctuation (.): "Sïmple title1."
+3: B6 Body message is missing
+
+Commit {commit_sha4}:
+1: T3 Title has trailing punctuation (.): "Sïmple title4."
+3: B6 Body message is missing

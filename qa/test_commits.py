@@ -40,6 +40,27 @@ class CommitsTests(BaseTestCase):
         expected_kwargs = {'commit_sha1': commit_sha1, 'commit_sha2': commit_sha2}
         self.assertEqualStdout(output, self.get_expected("test_commits/test_violations_1", expected_kwargs))
 
+    def test_csv_hash_list(self):
+        """ Test linting multiple commits (comma-separated) with violations """
+        git("checkout", "-b", "test-branch-commits-violations-base", _cwd=self.tmp_git_repo)
+        self.create_simple_commit("Sïmple title1.\n")
+        commit_sha1 = self.get_last_commit_hash()[:10]
+        git("checkout", "-b", "test-branch-commits-violations", _cwd=self.tmp_git_repo)
+
+        self.create_simple_commit("Sïmple title2.\n")
+        commit_sha2 = self.get_last_commit_hash()[:10]
+        self.create_simple_commit("Sïmple title3.\n")
+        self.create_simple_commit("Sïmple title4.\n")
+        commit_sha4 = self.get_last_commit_hash()[:10]
+
+        # Lint subset of the commits in a specific order, passed in via csv list
+        output = gitlint("--commits", f"{commit_sha2},{commit_sha1},{commit_sha4}",
+                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[6])
+
+        self.assertEqual(output.exit_code, 6)
+        expected_kwargs = {'commit_sha1': commit_sha1, 'commit_sha2': commit_sha2, 'commit_sha4': commit_sha4}
+        self.assertEqualStdout(output, self.get_expected("test_commits/test_csv_hash_list_1", expected_kwargs))
+
     def test_lint_empty_commit_range(self):
         """ Tests `gitlint --commits <sha>^...<sha>` --fail-without-commits where the provided range is empty. """
         self.create_simple_commit("Sïmple title.\n")
