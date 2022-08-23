@@ -140,7 +140,8 @@ Options:
                            (e.g.: -c T1.line-length=80). Flag can be
                            used multiple times to set multiple config values.
   --commit TEXT            Hash (SHA) of specific commit to lint.
-  --commits TEXT           The range of commits to lint. [default: HEAD]
+  --commits TEXT           The range of commits (refspec or comma-separated
+                           hashes) to lint. [default: HEAD]
   -e, --extra-path PATH    Path to a directory or python module with extra
                            user-defined rules
   --ignore TEXT            Ignore rules (comma-separated by id or name).
@@ -267,10 +268,16 @@ You can also lint multiple commits at once like so:
 gitlint --commits "019cf40...d6bc75a"
 # You can also use git's special references:
 gitlint --commits "origin..HEAD"
+
+# You can also pass multiple, comma separated commit hashes:
+gitlint --commits 019cf40,c50eb150,d6bc75a
 ```
 
 The `--commits` flag takes a **single** refspec argument or commit range. Basically, any range that is understood
 by [git rev-list](https://git-scm.com/docs/git-rev-list) as a single argument will work.
+
+Alternatively, you can pass `--commits` a comma-separated list of commit hashes (both short and full-length SHAs work).
+Gitlint will lint these in the order you passed.
 
 For cases where the `--commits` option doesn't provide the flexibility you need, you can always use a simple shell
 script to lint an arbitrary set of commits, like shown in the example below.
@@ -278,7 +285,7 @@ script to lint an arbitrary set of commits, like shown in the example below.
 ```sh
 #!/bin/sh
 
-for commit in $(git rev-list master); do
+for commit in $(git rev-list my-branch); do
     echo "Commit $commit"
     gitlint --commit $commit
     echo "--------"
@@ -435,8 +442,8 @@ of violations counted by the exit code is 252. Note that gitlint does not have a
 it can detect, it will just always return with exit code 252 when the number of violations is greater than or equal
 to 252.
 
-Exit Code  | Description
------------|------------------------------------------------------------
-253        | Wrong invocation of the `gitlint` command.
-254        | Something went wrong when invoking git.
-255        | Invalid gitlint configuration
+| Exit Code | Description                                |
+| --------- | ------------------------------------------ |
+| 253       | Wrong invocation of the `gitlint` command. |
+| 254       | Something went wrong when invoking git.    |
+| 255       | Invalid gitlint configuration              |
