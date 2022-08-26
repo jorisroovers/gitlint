@@ -239,7 +239,8 @@ class ContextObj:
 @click.option('--ignore', envvar='GITLINT_IGNORE', default="", help="Ignore rules (comma-separated by id or name).")
 @click.option('--contrib', envvar='GITLINT_CONTRIB', default="",
               help="Contrib rules to enable (comma-separated by id or name).")
-@click.option('--msg-filename', type=click.File(), help="Path to a file containing a commit-msg.")
+@click.option('--msg-filename', type=click.File(encoding=gitlint.utils.DEFAULT_ENCODING),
+              help="Path to a file containing a commit-msg.")
 @click.option('--ignore-stdin', envvar='GITLINT_IGNORE_STDIN', is_flag=True,
               help="Ignore any stdin data. Useful for running in CI server.")
 @click.option('--staged', envvar='GITLINT_STAGED', is_flag=True,
