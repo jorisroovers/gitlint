@@ -20,4 +20,4 @@ All contributions are welcome and very much appreciated!
 See [jorisroovers.github.io/gitlint/contributing](http://jorisroovers.github.io/gitlint/contributing) for details on
 how to get started - it's easy!
 
-We maintain a [loose roadmap on our wiki](https://github.com/jorisroovers/gitlint/wiki/Roadmap).
+We maintain a [loose project plan on Github Projects](https://github.com/users/jorisroovers/projects/1/views/1).
