@@ -16,22 +16,18 @@ from gitlint.shell import ErrorReturnCode
 class GitCommitTests(BaseTestCase):
 
     # Expected special_args passed to 'sh'
-    expected_sh_special_args = {
-        '_tty_out': False,
-        '_cwd': "fåke/path"
-    }
+    expected_sh_special_args = {"_tty_out": False, "_cwd": "fåke/path"}
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_get_latest_commit(self, sh):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
         sh.git.side_effect = [
             sample_sha,
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
-            "cömmit-title\n\ncömmit-body",
+            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "cömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
-            "foöbar\n* hürdur\n"
+            "foöbar\n* hürdur\n",
         ]
 
         context = GitContext.from_local_repository("fåke/path")
@@ -39,10 +35,17 @@ class GitCommitTests(BaseTestCase):
         expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
-            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
-                 **self.expected_sh_special_args),
-            call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
+            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
+            call(
+                "diff-tree",
+                "--no-commit-id",
+                "--name-only",
+                "-r",
+                "--root",
+                sample_sha,
+                **self.expected_sh_special_args,
+            ),
+            call("branch", "--contains", sample_sha, **self.expected_sh_special_args),
         ]
 
         # Only first 'git log' call should've happened at this point
@@ -55,8 +58,9 @@ class GitCommitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, ["", "cömmit-body"])
         self.assertEqual(last_commit.author_name, "test åuthor")
         self.assertEqual(last_commit.author_email, "test-emåil@foo.com")
-        self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
-                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+        self.assertEqual(
+            last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15, tzinfo=dateutil.tz.tzoffset("+0100", 3600))
+        )
         self.assertListEqual(last_commit.parents, ["åbc"])
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
@@ -75,18 +79,17 @@ class GitCommitTests(BaseTestCase):
         # All expected calls should've happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls)
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_from_local_repository_specific_refspec(self, sh):
         sample_refspec = "åbc123..def456"
         sample_sha = "åbc123"
 
         sh.git.side_effect = [
             sample_sha,  # git rev-list <sample_refspec>
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
-            "cömmit-title\n\ncömmit-body",
+            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "cömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
-            "foöbar\n* hürdur\n"
+            "foöbar\n* hürdur\n",
         ]
 
         context = GitContext.from_local_repository("fåke/path", refspec=sample_refspec)
@@ -94,10 +97,17 @@ class GitCommitTests(BaseTestCase):
         expected_calls = [
             call("rev-list", sample_refspec, **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
-            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
-                 **self.expected_sh_special_args),
-            call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
+            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
+            call(
+                "diff-tree",
+                "--no-commit-id",
+                "--name-only",
+                "-r",
+                "--root",
+                sample_sha,
+                **self.expected_sh_special_args,
+            ),
+            call("branch", "--contains", sample_sha, **self.expected_sh_special_args),
         ]
 
         # Only first 'git log' call should've happened at this point
@@ -110,8 +120,9 @@ class GitCommitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, ["", "cömmit-body"])
         self.assertEqual(last_commit.author_name, "test åuthor")
         self.assertEqual(last_commit.author_email, "test-emåil@foo.com")
-        self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
-                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+        self.assertEqual(
+            last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15, tzinfo=dateutil.tz.tzoffset("+0100", 3600))
+        )
         self.assertListEqual(last_commit.parents, ["åbc"])
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
@@ -130,28 +141,34 @@ class GitCommitTests(BaseTestCase):
         # All expected calls should've happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls)
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_from_local_repository_specific_commit_hash(self, sh):
         sample_hash = "åbc123"
 
         sh.git.side_effect = [
             sample_hash,  # git log -1 <sample_hash>
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
-            "cömmit-title\n\ncömmit-body",
+            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "cömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
-            "foöbar\n* hürdur\n"
+            "foöbar\n* hürdur\n",
         ]
 
         context = GitContext.from_local_repository("fåke/path", commit_hashes=[sample_hash])
         # assert that commit info was read using git command
         expected_calls = [
-            call("log", "-1", sample_hash, "--pretty=%H",  **self.expected_sh_special_args),
+            call("log", "-1", sample_hash, "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_hash, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
-            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_hash,
-                 **self.expected_sh_special_args),
-            call('branch', '--contains', sample_hash, **self.expected_sh_special_args)
+            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
+            call(
+                "diff-tree",
+                "--no-commit-id",
+                "--name-only",
+                "-r",
+                "--root",
+                sample_hash,
+                **self.expected_sh_special_args,
+            ),
+            call("branch", "--contains", sample_hash, **self.expected_sh_special_args),
         ]
 
         # Only first 'git log' call should've happened at this point
@@ -164,8 +181,9 @@ class GitCommitTests(BaseTestCase):
         self.assertEqual(last_commit.message.body, ["", "cömmit-body"])
         self.assertEqual(last_commit.author_name, "test åuthor")
         self.assertEqual(last_commit.author_email, "test-emåil@foo.com")
-        self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
-                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+        self.assertEqual(
+            last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15, tzinfo=dateutil.tz.tzoffset("+0100", 3600))
+        )
         self.assertListEqual(last_commit.parents, ["åbc"])
         self.assertFalse(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
@@ -184,7 +202,7 @@ class GitCommitTests(BaseTestCase):
         # All expected calls should've happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls)
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_from_local_repository_multiple_commit_hashes(self, sh):
 
         hashes = ["åbc123", "dęf456", "ghí789"]
@@ -202,26 +220,29 @@ class GitCommitTests(BaseTestCase):
             f"file1-{hashes[2]}.txt\npåth/to/file2.txt\n",
             f"foöbar-{hashes[0]}\n* hürdur\n",
             f"foöbar-{hashes[1]}\n* hürdur\n",
-            f"foöbar-{hashes[2]}\n* hürdur\n"
+            f"foöbar-{hashes[2]}\n* hürdur\n",
         ]
 
         expected_calls = [
-            call("log", "-1", hashes[0], "--pretty=%H",  **self.expected_sh_special_args),
-            call("log", "-1", hashes[1], "--pretty=%H",  **self.expected_sh_special_args),
-            call("log", "-1", hashes[2], "--pretty=%H",  **self.expected_sh_special_args),
+            call("log", "-1", hashes[0], "--pretty=%H", **self.expected_sh_special_args),
+            call("log", "-1", hashes[1], "--pretty=%H", **self.expected_sh_special_args),
+            call("log", "-1", hashes[2], "--pretty=%H", **self.expected_sh_special_args),
             call("log", hashes[0], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
-            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
+            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
             call("log", hashes[1], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call("log", hashes[2], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', hashes[0],
-                 **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', hashes[1],
-                 **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', hashes[2],
-                 **self.expected_sh_special_args),
-            call('branch', '--contains', hashes[0], **self.expected_sh_special_args),
-            call('branch', '--contains', hashes[1], **self.expected_sh_special_args),
-            call('branch', '--contains', hashes[2], **self.expected_sh_special_args)
+            call(
+                "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", hashes[0], **self.expected_sh_special_args
+            ),
+            call(
+                "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", hashes[1], **self.expected_sh_special_args
+            ),
+            call(
+                "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", hashes[2], **self.expected_sh_special_args
+            ),
+            call("branch", "--contains", hashes[0], **self.expected_sh_special_args),
+            call("branch", "--contains", hashes[1], **self.expected_sh_special_args),
+            call("branch", "--contains", hashes[2], **self.expected_sh_special_args),
         ]
 
         context = GitContext.from_local_repository("fåke/path", commit_hashes=hashes)
@@ -237,8 +258,9 @@ class GitCommitTests(BaseTestCase):
             self.assertEqual(commit.message.body, ["", f"cömmit-body {expected_hash}"])
             self.assertEqual(commit.author_name, f"test åuthor {expected_hash}")
             self.assertEqual(commit.author_email, f"test-emåil-{expected_hash}@foo.com")
-            self.assertEqual(commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
-                                                            tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+            self.assertEqual(
+                commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15, tzinfo=dateutil.tz.tzoffset("+0100", 3600))
+            )
             self.assertListEqual(commit.parents, ["åbc"])
             self.assertFalse(commit.is_merge_commit)
             self.assertFalse(commit.is_fixup_commit)
@@ -263,17 +285,16 @@ class GitCommitTests(BaseTestCase):
         # All expected calls should've happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls)
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_get_latest_commit_merge_commit(self, sh):
         sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
         sh.git.side_effect = [
             sample_sha,
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc def\n"
-            "Merge \"foo bår commit\"",
+            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc def\n" 'Merge "foo bår commit"',
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
-            "foöbar\n* hürdur\n"
+            "foöbar\n* hürdur\n",
         ]
 
         context = GitContext.from_local_repository("fåke/path")
@@ -281,10 +302,17 @@ class GitCommitTests(BaseTestCase):
         expected_calls = [
             call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
             call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
-            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
-                 **self.expected_sh_special_args),
-            call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
+            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
+            call(
+                "diff-tree",
+                "--no-commit-id",
+                "--name-only",
+                "-r",
+                "--root",
+                sample_sha,
+                **self.expected_sh_special_args,
+            ),
+            call("branch", "--contains", sample_sha, **self.expected_sh_special_args),
         ]
 
         # Only first 'git log' call should've happened at this point
@@ -293,12 +321,13 @@ class GitCommitTests(BaseTestCase):
         last_commit = context.commits[-1]
         self.assertIsInstance(last_commit, LocalGitCommit)
         self.assertEqual(last_commit.sha, sample_sha)
-        self.assertEqual(last_commit.message.title, "Merge \"foo bår commit\"")
+        self.assertEqual(last_commit.message.title, 'Merge "foo bår commit"')
         self.assertEqual(last_commit.message.body, [])
         self.assertEqual(last_commit.author_name, "test åuthor")
         self.assertEqual(last_commit.author_email, "test-emåil@foo.com")
-        self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
-                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+        self.assertEqual(
+            last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15, tzinfo=dateutil.tz.tzoffset("+0100", 3600))
+        )
         self.assertListEqual(last_commit.parents, ["åbc", "def"])
         self.assertTrue(last_commit.is_merge_commit)
         self.assertFalse(last_commit.is_fixup_commit)
@@ -317,7 +346,7 @@ class GitCommitTests(BaseTestCase):
         # All expected calls should've happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls)
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_get_latest_commit_fixup_squash_commit(self, sh):
         commit_prefixes = {"fixup": "is_fixup_commit", "squash": "is_squash_commit", "amend": "is_fixup_amend_commit"}
         for commit_type in commit_prefixes.keys():
@@ -326,10 +355,10 @@ class GitCommitTests(BaseTestCase):
             sh.git.side_effect = [
                 sample_sha,
                 "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
-                f"{commit_type}! \"foo bår commit\"",
+                f'{commit_type}! "foo bår commit"',
                 "#",  # git config --get core.commentchar
                 "file1.txt\npåth/to/file2.txt\n",
-                "foöbar\n* hürdur\n"
+                "foöbar\n* hürdur\n",
             ]
 
             context = GitContext.from_local_repository("fåke/path")
@@ -337,10 +366,17 @@ class GitCommitTests(BaseTestCase):
             expected_calls = [
                 call("log", "-1", "--pretty=%H", **self.expected_sh_special_args),
                 call("log", sample_sha, "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
-                call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-                call('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', sample_sha,
-                     **self.expected_sh_special_args),
-                call('branch', '--contains', sample_sha, **self.expected_sh_special_args)
+                call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
+                call(
+                    "diff-tree",
+                    "--no-commit-id",
+                    "--name-only",
+                    "-r",
+                    "--root",
+                    sample_sha,
+                    **self.expected_sh_special_args,
+                ),
+                call("branch", "--contains", sample_sha, **self.expected_sh_special_args),
             ]
 
             # Only first 'git log' call should've happened at this point
@@ -349,12 +385,13 @@ class GitCommitTests(BaseTestCase):
             last_commit = context.commits[-1]
             self.assertIsInstance(last_commit, LocalGitCommit)
             self.assertEqual(last_commit.sha, sample_sha)
-            self.assertEqual(last_commit.message.title, f"{commit_type}! \"foo bår commit\"")
+            self.assertEqual(last_commit.message.title, f'{commit_type}! "foo bår commit"')
             self.assertEqual(last_commit.message.body, [])
             self.assertEqual(last_commit.author_name, "test åuthor")
             self.assertEqual(last_commit.author_email, "test-emåil@foo.com")
-            self.assertEqual(last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15,
-                                                                 tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+            self.assertEqual(
+                last_commit.date, datetime.datetime(2016, 12, 3, 15, 28, 15, tzinfo=dateutil.tz.tzoffset("+0100", 3600))
+            )
             self.assertListEqual(last_commit.parents, ["åbc"])
 
             # First 2 'git log' calls should've happened at this point
@@ -384,11 +421,13 @@ class GitCommitTests(BaseTestCase):
         gitcontext = GitContext.from_commit_msg(self.get_sample("commit_message/sample1"))
 
         expected_title = "Commit title contåining 'WIP', as well as trailing punctuation."
-        expected_body = ["This line should be empty",
-                         "This is the first line of the commit message body and it is meant to test a " +
-                         "line that exceeds the maximum line length of 80 characters.",
-                         "This line has a tråiling space. ",
-                         "This line has a trailing tab.\t"]
+        expected_body = [
+            "This line should be empty",
+            "This is the first line of the commit message body and it is meant to test a "
+            + "line that exceeds the maximum line length of 80 characters.",
+            "This line has a tråiling space. ",
+            "This line has a trailing tab.\t",
+        ]
         expected_full = expected_title + "\n" + "\n".join(expected_body)
         expected_original = expected_full + (
             "\n# This is a cömmented  line\n"
@@ -513,13 +552,13 @@ class GitCommitTests(BaseTestCase):
         self.assertEqual(len(gitcontext.commits), 1)
 
     def test_from_commit_msg_revert_commit(self):
-        commit_msg = "Revert \"Prev commit message\"\n\nThis reverts commit a8ad67e04164a537198dea94a4fde81c5592ae9c."
+        commit_msg = 'Revert "Prev commit message"\n\nThis reverts commit a8ad67e04164a537198dea94a4fde81c5592ae9c.'
         gitcontext = GitContext.from_commit_msg(commit_msg)
         commit = gitcontext.commits[-1]
 
         self.assertIsInstance(commit, GitCommit)
         self.assertFalse(isinstance(commit, LocalGitCommit))
-        self.assertEqual(commit.message.title, "Revert \"Prev commit message\"")
+        self.assertEqual(commit.message.title, 'Revert "Prev commit message"')
         self.assertEqual(commit.message.body, ["", "This reverts commit a8ad67e04164a537198dea94a4fde81c5592ae9c."])
         self.assertEqual(commit.message.full, commit_msg)
         self.assertEqual(commit.message.original, commit_msg)
@@ -562,16 +601,16 @@ class GitCommitTests(BaseTestCase):
             for type, commit_attr_name in commit_prefixes.items():
                 self.assertEqual(getattr(commit, commit_attr_name), commit_type == type)
 
-    @patch('gitlint.git.sh')
-    @patch('arrow.now')
+    @patch("gitlint.git.sh")
+    @patch("arrow.now")
     def test_staged_commit(self, now, sh):
         # StagedLocalGitCommit()
 
         sh.git.side_effect = [
-            "#",                               # git config --get core.commentchar
-            "test åuthor\n",                   # git config --get user.name
-            "test-emåil@foo.com\n",            # git config --get user.email
-            "my-brånch\n",                     # git rev-parse --abbrev-ref HEAD
+            "#",  # git config --get core.commentchar
+            "test åuthor\n",  # git config --get user.name
+            "test-emåil@foo.com\n",  # git config --get user.email
+            "my-brånch\n",  # git rev-parse --abbrev-ref HEAD
             "file1.txt\npåth/to/file2.txt\n",
         ]
         now.side_effect = [arrow.get("2020-02-19T12:18:46.675182+01:00")]
@@ -581,11 +620,11 @@ class GitCommitTests(BaseTestCase):
 
         # git calls we're expecting
         expected_calls = [
-            call('config', '--get', 'core.commentchar', _ok_code=[0, 1], **self.expected_sh_special_args),
-            call('config', '--get', 'user.name', **self.expected_sh_special_args),
-            call('config', '--get', 'user.email', **self.expected_sh_special_args),
+            call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
+            call("config", "--get", "user.name", **self.expected_sh_special_args),
+            call("config", "--get", "user.email", **self.expected_sh_special_args),
             call("rev-parse", "--abbrev-ref", "HEAD", **self.expected_sh_special_args),
-            call("diff", "--staged", "--name-only", "-r", **self.expected_sh_special_args)
+            call("diff", "--staged", "--name-only", "-r", **self.expected_sh_special_args),
         ]
 
         last_commit = context.commits[-1]
@@ -602,8 +641,9 @@ class GitCommitTests(BaseTestCase):
         self.assertEqual(last_commit.author_email, "test-emåil@foo.com")
         self.assertListEqual(sh.git.mock_calls, expected_calls[0:3])
 
-        self.assertEqual(last_commit.date, datetime.datetime(2020, 2, 19, 12, 18, 46,
-                                                             tzinfo=dateutil.tz.tzoffset("+0100", 3600)))
+        self.assertEqual(
+            last_commit.date, datetime.datetime(2020, 2, 19, 12, 18, 46, tzinfo=dateutil.tz.tzoffset("+0100", 3600))
+        )
         now.assert_called_once()
 
         self.assertListEqual(last_commit.parents, [])
@@ -619,13 +659,13 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
         self.assertListEqual(sh.git.mock_calls, expected_calls[0:5])
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_staged_commit_with_missing_username(self, sh):
         # StagedLocalGitCommit()
 
         sh.git.side_effect = [
-            "#",                               # git config --get core.commentchar
-            ErrorReturnCode('git config --get user.name', b"", b""),
+            "#",  # git config --get core.commentchar
+            ErrorReturnCode("git config --get user.name", b"", b""),
         ]
 
         expected_msg = "Missing git configuration: please set user.name"
@@ -633,14 +673,14 @@ class GitCommitTests(BaseTestCase):
             ctx = GitContext.from_staged_commit("Foōbar 123\n\ncömmit-body\n", "fåke/path")
             [str(commit) for commit in ctx.commits]
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_staged_commit_with_missing_email(self, sh):
         # StagedLocalGitCommit()
 
         sh.git.side_effect = [
-            "#",                               # git config --get core.commentchar
-            "test åuthor\n",                   # git config --get user.name
-            ErrorReturnCode('git config --get user.name', b"", b""),
+            "#",  # git config --get core.commentchar
+            "test åuthor\n",  # git config --get user.name
+            ErrorReturnCode("git config --get user.name", b"", b""),
         ]
 
         expected_msg = "Missing git configuration: please set user.email"
@@ -650,7 +690,7 @@ class GitCommitTests(BaseTestCase):
 
     def test_gitcommitmessage_equality(self):
         commit_message1 = GitCommitMessage(GitContext(), "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])
-        attrs = ['original', 'full', 'title', 'body']
+        attrs = ["original", "full", "title", "body"]
         self.object_equality_test(commit_message1, attrs, {"context": commit_message1.context})
 
     @patch("gitlint.git._git")
@@ -663,14 +703,32 @@ class GitCommitTests(BaseTestCase):
         now = datetime.datetime.utcnow()
         context1 = GitContext()
         commit_message1 = GitCommitMessage(context1, "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])
-        commit1 = GitCommit(context1, commit_message1, "shä", now, "Jöhn Smith", "jöhn.smith@test.com", None,
-                            ["föo/bar"], ["brånch1", "brånch2"])
+        commit1 = GitCommit(
+            context1,
+            commit_message1,
+            "shä",
+            now,
+            "Jöhn Smith",
+            "jöhn.smith@test.com",
+            None,
+            ["föo/bar"],
+            ["brånch1", "brånch2"],
+        )
         context1.commits = [commit1]
 
         context2 = GitContext()
         commit_message2 = GitCommitMessage(context2, "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])
-        commit2 = GitCommit(context2, commit_message1, "shä", now, "Jöhn Smith", "jöhn.smith@test.com", None,
-                            ["föo/bar"], ["brånch1", "brånch2"])
+        commit2 = GitCommit(
+            context2,
+            commit_message1,
+            "shä",
+            now,
+            "Jöhn Smith",
+            "jöhn.smith@test.com",
+            None,
+            ["föo/bar"],
+            ["brånch1", "brånch2"],
+        )
         context2.commits = [commit2]
 
         self.assertEqual(context1, context2)
@@ -678,15 +736,26 @@ class GitCommitTests(BaseTestCase):
         self.assertEqual(commit1, commit2)
 
         # Check that objects are unequal when changing a single attribute
-        kwargs = {'message': commit1.message, 'sha': commit1.sha, 'date': commit1.date,
-                  'author_name': commit1.author_name, 'author_email': commit1.author_email, 'parents': commit1.parents,
-                  'changed_files': commit1.changed_files, 'branches': commit1.branches}
+        kwargs = {
+            "message": commit1.message,
+            "sha": commit1.sha,
+            "date": commit1.date,
+            "author_name": commit1.author_name,
+            "author_email": commit1.author_email,
+            "parents": commit1.parents,
+            "changed_files": commit1.changed_files,
+            "branches": commit1.branches,
+        }
 
         self.object_equality_test(commit1, kwargs.keys(), {"context": commit1.context})
 
         # Check that the is_* attributes that are affected by the commit message affect equality
-        special_messages = {'is_merge_commit': "Merge: foöbar", 'is_fixup_commit': "fixup! foöbar",
-                            'is_squash_commit': "squash! foöbar", 'is_revert_commit': "Revert: foöbar"}
+        special_messages = {
+            "is_merge_commit": "Merge: foöbar",
+            "is_fixup_commit": "fixup! foöbar",
+            "is_squash_commit": "squash! foöbar",
+            "is_revert_commit": "Revert: foöbar",
+        }
         for key in special_messages:
             kwargs_copy = copy.deepcopy(kwargs)
             clone1 = GitCommit(context=commit1.context, **kwargs_copy)

@@ -8,7 +8,7 @@ logging.basicConfig()
 
 
 class GitLinter:
-    """ Main linter class. This is where rules actually get applied. See the lint() method. """
+    """Main linter class. This is where rules actually get applied. See the lint() method."""
 
     def __init__(self, config):
         self.config = config
@@ -16,34 +16,48 @@ class GitLinter:
         self.display = display.Display(config)
 
     def should_ignore_rule(self, rule):
-        """ Determines whether a rule should be ignored based on the general list of commits to ignore """
+        """Determines whether a rule should be ignored based on the general list of commits to ignore"""
         return rule.id in self.config.ignore or rule.name in self.config.ignore
 
     @property
     def configuration_rules(self):
-        return [rule for rule in self.config.rules if
-                isinstance(rule, gitlint_rules.ConfigurationRule) and not self.should_ignore_rule(rule)]
+        return [
+            rule
+            for rule in self.config.rules
+            if isinstance(rule, gitlint_rules.ConfigurationRule) and not self.should_ignore_rule(rule)
+        ]
 
     @property
     def title_line_rules(self):
-        return [rule for rule in self.config.rules if
-                isinstance(rule, gitlint_rules.LineRule) and
-                rule.target == gitlint_rules.CommitMessageTitle and not self.should_ignore_rule(rule)]
+        return [
+            rule
+            for rule in self.config.rules
+            if isinstance(rule, gitlint_rules.LineRule)
+            and rule.target == gitlint_rules.CommitMessageTitle
+            and not self.should_ignore_rule(rule)
+        ]
 
     @property
     def body_line_rules(self):
-        return [rule for rule in self.config.rules if
-                isinstance(rule, gitlint_rules.LineRule) and
-                rule.target == gitlint_rules.CommitMessageBody and not self.should_ignore_rule(rule)]
+        return [
+            rule
+            for rule in self.config.rules
+            if isinstance(rule, gitlint_rules.LineRule)
+            and rule.target == gitlint_rules.CommitMessageBody
+            and not self.should_ignore_rule(rule)
+        ]
 
     @property
     def commit_rules(self):
-        return [rule for rule in self.config.rules if isinstance(rule, gitlint_rules.CommitRule) and
-                not self.should_ignore_rule(rule)]
+        return [
+            rule
+            for rule in self.config.rules
+            if isinstance(rule, gitlint_rules.CommitRule) and not self.should_ignore_rule(rule)
+        ]
 
     @staticmethod
     def _apply_line_rules(lines, commit, rules, line_nr_start):
-        """ Iterates over the lines in a given list of lines and validates a given list of rules against each line """
+        """Iterates over the lines in a given list of lines and validates a given list of rules against each line"""
         all_violations = []
         line_nr = line_nr_start
         for line in lines:
@@ -58,7 +72,7 @@ class GitLinter:
 
     @staticmethod
     def _apply_commit_rules(rules, commit):
-        """ Applies a set of rules against a given commit and gitcontext """
+        """Applies a set of rules against a given commit and gitcontext"""
         all_violations = []
         for rule in rules:
             violations = rule.validate(commit)
@@ -67,7 +81,7 @@ class GitLinter:
         return all_violations
 
     def lint(self, commit):
-        """ Lint the last commit in a given git context by applying all ignore, title, body and commit rules. """
+        """Lint the last commit in a given git context by applying all ignore, title, body and commit rules."""
         LOG.debug("Linting commit %s", commit.sha or "[SHA UNKNOWN]")
         LOG.debug("Commit Object\n" + str(commit))
 
@@ -78,8 +92,7 @@ class GitLinter:
         # Skip linting if this is a special commit type that is configured to be ignored
         ignore_commit_types = ["merge", "squash", "fixup", "fixup_amend", "revert"]
         for commit_type in ignore_commit_types:
-            if getattr(commit, f"is_{commit_type}_commit") and \
-               getattr(self.config, f"ignore_{commit_type}_commits"):
+            if getattr(commit, f"is_{commit_type}_commit") and getattr(self.config, f"ignore_{commit_type}_commits"):
                 return []
 
         violations = []
@@ -95,12 +108,12 @@ class GitLinter:
         return violations
 
     def print_violations(self, violations):
-        """ Print a given set of violations to the standard error output """
+        """Print a given set of violations to the standard error output"""
         for v in violations:
             line_nr = v.line_nr if v.line_nr else "-"
             self.display.e(f"{line_nr}: {v.rule_id}", exact=True)
             self.display.ee(f"{line_nr}: {v.rule_id} {v.message}", exact=True)
             if v.content:
-                self.display.eee(f"{line_nr}: {v.rule_id} {v.message}: \"{v.content}\"", exact=True)
+                self.display.eee(f'{line_nr}: {v.rule_id} {v.message}: "{v.content}"', exact=True)
             else:
                 self.display.eee(f"{line_nr}: {v.rule_id} {v.message}", exact=True)

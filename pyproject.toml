@@ -1,0 +1,4 @@
+[tool.black]
+line-length = 120
+exclude = "gitlint-core/gitlint/tests/samples/user_rules/import_exception/invalid_python.py"
+# include = '\.pyi?$'

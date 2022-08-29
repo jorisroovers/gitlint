@@ -9,22 +9,16 @@ from gitlint.git import GitContext
 class GitContextTests(BaseTestCase):
 
     # Expected special_args passed to 'sh'
-    expected_sh_special_args = {
-        '_tty_out': False,
-        '_cwd': "fåke/path"
-    }
+    expected_sh_special_args = {"_tty_out": False, "_cwd": "fåke/path"}
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_gitcontext(self, sh):
 
-        sh.git.side_effect = [
-            "#",  # git config --get core.commentchar
-            "\nfoöbar\n"
-        ]
+        sh.git.side_effect = ["#", "\nfoöbar\n"]  # git config --get core.commentchar
 
         expected_calls = [
             call("config", "--get", "core.commentchar", _ok_code=[0, 1], **self.expected_sh_special_args),
-            call("rev-parse", "--abbrev-ref", "HEAD", **self.expected_sh_special_args)
+            call("rev-parse", "--abbrev-ref", "HEAD", **self.expected_sh_special_args),
         ]
 
         context = GitContext("fåke/path")
@@ -38,12 +32,12 @@ class GitContextTests(BaseTestCase):
         self.assertEqual(context.current_branch, "foöbar")
         self.assertEqual(sh.git.mock_calls, expected_calls)
 
-    @patch('gitlint.git.sh')
+    @patch("gitlint.git.sh")
     def test_gitcontext_equality(self, sh):
 
         sh.git.side_effect = [
-            "û\n",          # context1: git config --get core.commentchar
-            "û\n",          # context2: git config --get core.commentchar
+            "û\n",  # context1: git config --get core.commentchar
+            "û\n",  # context2: git config --get core.commentchar
             "my-brånch\n",  # context1: git rev-parse --abbrev-ref HEAD
             "my-brånch\n",  # context2: git rev-parse --abbrev-ref HEAD
         ]
@@ -68,17 +62,17 @@ class GitContextTests(BaseTestCase):
         # Different comment_char
         context3 = GitContext("fåke/path")
         context3.commits = ["fōo", "bår"]
-        sh.git.side_effect = ([
-            "ç\n",                      # context3: git config --get core.commentchar
-            "my-brånch\n"               # context3: git rev-parse --abbrev-ref HEAD
-        ])
+        sh.git.side_effect = [
+            "ç\n",  # context3: git config --get core.commentchar
+            "my-brånch\n",  # context3: git rev-parse --abbrev-ref HEAD
+        ]
         self.assertNotEqual(context1, context3)
 
         # Different current_branch
         context4 = GitContext("fåke/path")
         context4.commits = ["fōo", "bår"]
-        sh.git.side_effect = ([
-            "û\n",                      # context4: git config --get core.commentchar
-            "different-brånch\n"        # context4: git rev-parse --abbrev-ref HEAD
-        ])
+        sh.git.side_effect = [
+            "û\n",  # context4: git config --get core.commentchar
+            "different-brånch\n",  # context4: git rev-parse --abbrev-ref HEAD
+        ]
         self.assertNotEqual(context1, context4)

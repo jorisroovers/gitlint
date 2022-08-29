@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import RuleViolation
@@ -7,10 +6,9 @@ from gitlint.config import LintConfig
 
 
 class ContribConventionalCommitTests(BaseTestCase):
-
     def test_enable(self):
         # Test that rule can be enabled in config
-        for rule_ref in ['CT1', 'contrib-title-conventional-commits']:
+        for rule_ref in ["CT1", "contrib-title-conventional-commits"]:
             config = LintConfig()
             config.contrib = [rule_ref]
             self.assertIn(ConventionalCommit(), config.rules)
@@ -24,28 +22,41 @@ class ContribConventionalCommitTests(BaseTestCase):
             self.assertListEqual([], violations)
 
         # assert violation on wrong type
-        expected_violation = RuleViolation("CT1", "Title does not start with one of fix, feat, chore, docs,"
-                                                  " style, refactor, perf, test, revert, ci, build", "bår: foo")
+        expected_violation = RuleViolation(
+            "CT1",
+            "Title does not start with one of fix, feat, chore, docs,"
+            " style, refactor, perf, test, revert, ci, build",
+            "bår: foo",
+        )
         violations = rule.validate("bår: foo", None)
         self.assertListEqual([expected_violation], violations)
 
         # assert violation when use strange chars after correct type
-        expected_violation = RuleViolation("CT1", "Title does not start with one of fix, feat, chore, docs,"
-                                                  " style, refactor, perf, test, revert, ci, build",
-                                                  "feat_wrong_chars: föo")
+        expected_violation = RuleViolation(
+            "CT1",
+            "Title does not start with one of fix, feat, chore, docs,"
+            " style, refactor, perf, test, revert, ci, build",
+            "feat_wrong_chars: föo",
+        )
         violations = rule.validate("feat_wrong_chars: föo", None)
         self.assertListEqual([expected_violation], violations)
 
         # assert violation when use strange chars after correct type
-        expected_violation = RuleViolation("CT1", "Title does not start with one of fix, feat, chore, docs,"
-                                                  " style, refactor, perf, test, revert, ci, build",
-                                                  "feat_wrong_chars(scope): föo")
+        expected_violation = RuleViolation(
+            "CT1",
+            "Title does not start with one of fix, feat, chore, docs,"
+            " style, refactor, perf, test, revert, ci, build",
+            "feat_wrong_chars(scope): föo",
+        )
         violations = rule.validate("feat_wrong_chars(scope): föo", None)
         self.assertListEqual([expected_violation], violations)
 
         # assert violation on wrong format
-        expected_violation = RuleViolation("CT1", "Title does not follow ConventionalCommits.org format "
-                                                  "'type(optional-scope): description'", "fix föo")
+        expected_violation = RuleViolation(
+            "CT1",
+            "Title does not follow ConventionalCommits.org format " "'type(optional-scope): description'",
+            "fix föo",
+        )
         violations = rule.validate("fix föo", None)
         self.assertListEqual([expected_violation], violations)
 
@@ -58,7 +69,7 @@ class ContribConventionalCommitTests(BaseTestCase):
         self.assertListEqual([], violations)
 
         # assert no violation when adding new type
-        rule = ConventionalCommit({'types': ["föo", "bär"]})
+        rule = ConventionalCommit({"types": ["föo", "bär"]})
         for typ in ["föo", "bär"]:
             violations = rule.validate(typ + ": hür dur", None)
             self.assertListEqual([], violations)
@@ -69,7 +80,7 @@ class ContribConventionalCommitTests(BaseTestCase):
         self.assertListEqual([expected_violation], violations)
 
         # assert no violation when adding new type named with numbers
-        rule = ConventionalCommit({'types': ["föo123", "123bär"]})
+        rule = ConventionalCommit({"types": ["föo123", "123bär"]})
         for typ in ["föo123", "123bär"]:
             violations = rule.validate(typ + ": hür dur", None)
             self.assertListEqual([], violations)

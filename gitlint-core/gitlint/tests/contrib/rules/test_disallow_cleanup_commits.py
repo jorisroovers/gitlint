@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import RuleViolation
@@ -8,10 +7,9 @@ from gitlint.config import LintConfig
 
 
 class ContribDisallowCleanupCommitsTest(BaseTestCase):
-
     def test_enable(self):
         # Test that rule can be enabled in config
-        for rule_ref in ['CC2', 'contrib-disallow-cleanup-commits']:
+        for rule_ref in ["CC2", "contrib-disallow-cleanup-commits"]:
             config = LintConfig()
             config.contrib = [rule_ref]
             self.assertIn(DisallowCleanupCommits(), config.rules)

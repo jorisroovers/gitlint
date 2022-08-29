@@ -20,8 +20,8 @@ from qa.utils import DEFAULT_ENCODING
 
 
 class BaseTestCase(TestCase):
-    """ Base class of which all gitlint integration test classes are derived.
-        Provides a number of convenience methods. """
+    """Base class of which all gitlint integration test classes are derived.
+    Provides a number of convenience methods."""
 
     # In case of assert failures, print the full error message
     maxDiff = None
@@ -32,7 +32,7 @@ class BaseTestCase(TestCase):
     GITLINT_USAGE_ERROR = 253
 
     def setUp(self):
-        """ Sets up the integration tests by creating a new temporary git repository """
+        """Sets up the integration tests by creating a new temporary git repository"""
         self.tmpfiles = []
         self.tmp_git_repos = []
         self.tmp_git_repo = self.create_tmp_git_repo()
@@ -47,7 +47,7 @@ class BaseTestCase(TestCase):
     def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
         output = output.stdout.decode(DEFAULT_ENCODING)
-        output = output.replace('\r', '')
+        output = output.replace("\r", "")
         self.assertMultiLineEqual(output, expected)
 
     @staticmethod
@@ -56,7 +56,7 @@ class BaseTestCase(TestCase):
         return os.path.realpath(f"/tmp/gitlint-test-{timestamp}")
 
     def create_tmp_git_repo(self):
-        """ Creates a temporary git repository and returns its directory path """
+        """Creates a temporary git repository and returns its directory path"""
         tmp_git_repo = self.generate_temp_path()
         self.tmp_git_repos.append(tmp_git_repo)
 
@@ -78,28 +78,28 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def create_file(parent_dir):
-        """ Creates a file inside a passed directory. Returns filename."""
+        """Creates a file inside a passed directory. Returns filename."""
         test_filename = "test-fïle-" + str(uuid4())
         # pylint: disable=consider-using-with
-        io.open(os.path.join(parent_dir, test_filename), 'a', encoding=DEFAULT_ENCODING).close()
+        io.open(os.path.join(parent_dir, test_filename), "a", encoding=DEFAULT_ENCODING).close()
         return test_filename
 
     @staticmethod
     def create_environment(envvars=None):
-        """ Creates a copy of the current os.environ and adds/overwrites a given set of variables to it """
+        """Creates a copy of the current os.environ and adds/overwrites a given set of variables to it"""
         environment = os.environ.copy()
         if envvars:
             environment.update(envvars)
         return environment
 
     def create_tmp_git_config(self, contents):
-        """ Creates an environment with the GIT_CONFIG variable set to a file with the given contents. """
+        """Creates an environment with the GIT_CONFIG variable set to a file with the given contents."""
         tmp_config = self.create_tmpfile(contents)
         return self.create_environment({"GIT_CONFIG": tmp_config})
 
     def create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):
-        """ Creates a simple commit with an empty test file.
-            :param message: Commit message for the commit. """
+        """Creates a simple commit with an empty test file.
+        :param message: Commit message for the commit."""
 
         git_repo = self.tmp_git_repo if git_repo is None else git_repo
 
@@ -116,12 +116,21 @@ class BaseTestCase(TestCase):
         if not ok_code:
             ok_code = [0]
 
-        git("commit", "-m", message, _cwd=git_repo, _err_to_out=True, _out=out, _tty_in=tty_in,
-            _ok_code=ok_code, _env=environment)
+        git(
+            "commit",
+            "-m",
+            message,
+            _cwd=git_repo,
+            _err_to_out=True,
+            _out=out,
+            _tty_in=tty_in,
+            _ok_code=ok_code,
+            _env=environment,
+        )
         return test_filename
 
     def create_tmpfile(self, content):
-        """ Utility method to create temp files. These are cleaned at the end of the test """
+        """Utility method to create temp files. These are cleaned at the end of the test"""
         # Not using a context manager to avoid unnecessary indentation in test code
         tmpfile, tmpfilepath = tempfile.mkstemp()
         self.tmpfiles.append(tmpfilepath)
@@ -149,8 +158,8 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def get_expected(filename="", variable_dict=None):
-        """ Utility method to read an 'expected' file and return it as a string. Optionally replace template variables
-        specified by variable_dict. """
+        """Utility method to read an 'expected' file and return it as a string. Optionally replace template variables
+        specified by variable_dict."""
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
         with io.open(expected_path, encoding=DEFAULT_ENCODING) as file:
@@ -162,20 +171,25 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def get_system_info_dict():
-        """ Returns a dict with items related to system values logged by `gitlint --debug` """
+        """Returns a dict with items related to system values logged by `gitlint --debug`"""
         expected_gitlint_version = gitlint("--version").replace("gitlint, version ", "").strip()
         expected_git_version = git("--version").strip()
-        return {'platform': platform.platform(), 'python_version': sys.version,
-                'git_version': expected_git_version, 'gitlint_version': expected_gitlint_version,
-                'GITLINT_USE_SH_LIB': BaseTestCase.GITLINT_USE_SH_LIB, 'DEFAULT_ENCODING': DEFAULT_ENCODING}
+        return {
+            "platform": platform.platform(),
+            "python_version": sys.version,
+            "git_version": expected_git_version,
+            "gitlint_version": expected_gitlint_version,
+            "GITLINT_USE_SH_LIB": BaseTestCase.GITLINT_USE_SH_LIB,
+            "DEFAULT_ENCODING": DEFAULT_ENCODING,
+        }
 
     def get_debug_vars_last_commit(self, git_repo=None):
-        """ Returns a dict with items related to `gitlint --debug` output for the last commit. """
+        """Returns a dict with items related to `gitlint --debug` output for the last commit."""
         target_repo = git_repo if git_repo else self.tmp_git_repo
         commit_sha = self.get_last_commit_hash(git_repo=target_repo)
         expected_date = git("log", "-1", "--pretty=%ai", _tty_out=False, _cwd=target_repo)
         expected_date = arrow.get(str(expected_date), "YYYY-MM-DD HH:mm:ss Z").format("YYYY-MM-DD HH:mm:ss Z")
 
         expected_kwargs = self.get_system_info_dict()
-        expected_kwargs.update({'target': target_repo, 'commit_sha': commit_sha, 'commit_date': expected_date})
+        expected_kwargs.update({"target": target_repo, "commit_sha": commit_sha, "commit_date": expected_date})
         return expected_kwargs

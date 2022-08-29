@@ -36,7 +36,7 @@ class ReleaseConfigurationRule(ConfigurationRule):
     id = "UCR1"
 
     # A rule MAY have an option_spec if its behavior should be configurable.
-    options_spec = [IntOption('custom-verbosity', 2, "Gitlint verbosity for release commits")]
+    options_spec = [IntOption("custom-verbosity", 2, "Gitlint verbosity for release commits")]
 
     def apply(self, config, commit):
         self.log.debug("ReleaseConfigurationRule: This will be visible when running `gitlint --debug`")
@@ -60,7 +60,7 @@ class ReleaseConfigurationRule(ConfigurationRule):
             # config.set_general_option(<general-option>, <value>)
             config.set_general_option("verbosity", 2)
             # Wwe can also use custom options to make this configurable
-            config.set_general_option("verbosity", self.options['custom-verbosity'].value)
+            config.set_general_option("verbosity", self.options["custom-verbosity"].value)
 
             # Strip any lines starting with $ from the commit message
             # (this only affects how gitlint sees your commit message, it does

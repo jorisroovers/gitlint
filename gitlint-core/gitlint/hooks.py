@@ -17,7 +17,7 @@ class GitHookInstallerError(GitlintError):
 
 
 class GitHookInstaller:
-    """ Utility class that provides methods for installing and uninstalling the gitlint commitmsg hook. """
+    """Utility class that provides methods for installing and uninstalling the gitlint commitmsg hook."""
 
     @staticmethod
     def commit_msg_hook_path(lint_config):
@@ -25,7 +25,7 @@ class GitHookInstaller:
 
     @staticmethod
     def _assert_git_repo(target):
-        """ Asserts that a given target directory is a git repository """
+        """Asserts that a given target directory is a git repository"""
         hooks_dir = git_hooks_dir(target)
         if not os.path.isdir(hooks_dir):
             raise GitHookInstallerError(f"{target} is not a git repository.")
@@ -36,8 +36,9 @@ class GitHookInstaller:
         dest_path = GitHookInstaller.commit_msg_hook_path(lint_config)
         if os.path.exists(dest_path):
             raise GitHookInstallerError(
-                f"There is already a commit-msg hook file present in {dest_path}.\n" +
-                "gitlint currently does not support appending to an existing commit-msg file.")
+                f"There is already a commit-msg hook file present in {dest_path}.\n"
+                "gitlint currently does not support appending to an existing commit-msg file."
+            )
 
         # copy hook file
         shutil.copy(COMMIT_MSG_HOOK_SRC_PATH, dest_path)
@@ -55,8 +56,10 @@ class GitHookInstaller:
         with io.open(dest_path, encoding=DEFAULT_ENCODING) as fp:
             lines = fp.readlines()
             if len(lines) < 2 or lines[1] != GITLINT_HOOK_IDENTIFIER:
-                msg = f"The commit-msg hook in {dest_path} was not installed by gitlint (or it was modified).\n" + \
-                      "Uninstallation of 3th party or modified gitlint hooks is not supported."
+                msg = (
+                    f"The commit-msg hook in {dest_path} was not installed by gitlint (or it was modified).\n"
+                    "Uninstallation of 3th party or modified gitlint hooks is not supported."
+                )
                 raise GitHookInstallerError(msg)
 
         # If we are sure it's a gitlint hook, go ahead and remove it

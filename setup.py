@@ -45,19 +45,19 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Quality Assurance",
         "Topic :: Software Development :: Testing",
-        "License :: OSI Approved :: MIT License"
+        "License :: OSI Approved :: MIT License",
     ],
     python_requires=">=3.6",
     install_requires=[
-        'gitlint-core[trusted-deps]==' + version,
+        "gitlint-core[trusted-deps]==" + version,
     ],
-    keywords='gitlint git lint',
-    author='Joris Roovers',
-    url='https://jorisroovers.github.io/gitlint',
+    keywords="gitlint git lint",
+    author="Joris Roovers",
+    url="https://jorisroovers.github.io/gitlint",
     project_urls={
-        'Documentation': 'https://jorisroovers.github.io/gitlint',
-        'Source': 'https://github.com/jorisroovers/gitlint',
-        'Changelog': 'https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md',
+        "Documentation": "https://jorisroovers.github.io/gitlint",
+        "Source": "https://github.com/jorisroovers/gitlint",
+        "Changelog": "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md",
     },
-    license='MIT',
+    license="MIT",
 )

@@ -5,21 +5,23 @@ from gitlint.options import IntOption, StrOption, ListOption
 
 
 class GitContextRule(CommitRule):
-    """ Rule that tests whether we can correctly access certain gitcontext properties """
+    """Rule that tests whether we can correctly access certain gitcontext properties"""
+
     name = "gïtcontext"
     id = "UC1"
 
     def validate(self, commit):
         violations = [
             RuleViolation(self.id, f"GitContext.current_branch: {commit.context.current_branch}", line_nr=1),
-            RuleViolation(self.id, f"GitContext.commentchar: {commit.context.commentchar}", line_nr=1)
+            RuleViolation(self.id, f"GitContext.commentchar: {commit.context.commentchar}", line_nr=1),
         ]
 
         return violations
 
 
 class GitCommitRule(CommitRule):
-    """ Rule that tests whether we can correctly access certain commit properties """
+    """Rule that tests whether we can correctly access certain commit properties"""
+
     name = "gïtcommit"
     id = "UC2"
 
@@ -33,7 +35,8 @@ class GitCommitRule(CommitRule):
 
 
 class GitlintConfigurationRule(ConfigurationRule):
-    """ Rule that tests whether we can correctly access the config as well as modify the commit message """
+    """Rule that tests whether we can correctly access the config as well as modify the commit message"""
+
     name = "cönfigrule"
     id = "UC3"
 
@@ -50,13 +53,16 @@ class GitlintConfigurationRule(ConfigurationRule):
 
 
 class ConfigurableCommitRule(CommitRule):
-    """ Rule that tests that we can add configuration to user-defined rules """
+    """Rule that tests that we can add configuration to user-defined rules"""
+
     name = "configürable"
     id = "UC4"
 
-    options_spec = [IntOption("int-öption", 2, "int-öption description"),
-                    StrOption("str-öption", "föo", "int-öption description"),
-                    ListOption("list-öption", ["foo", "bar"], "list-öption description")]
+    options_spec = [
+        IntOption("int-öption", 2, "int-öption description"),
+        StrOption("str-öption", "föo", "int-öption description"),
+        ListOption("list-öption", ["foo", "bar"], "list-öption description"),
+    ]
 
     def validate(self, _):
         violations = [

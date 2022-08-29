@@ -9,8 +9,14 @@ from gitlint.options import IntOption, BoolOption, StrOption, ListOption, PathOp
 
 class RuleOptionTests(BaseTestCase):
     def test_option_equality(self):
-        options = {IntOption: 123, StrOption: "foöbar", BoolOption: False, ListOption: ["a", "b"],
-                   PathOption: ".", RegexOption: "^foöbar(.*)"}
+        options = {
+            IntOption: 123,
+            StrOption: "foöbar",
+            BoolOption: False,
+            ListOption: ["a", "b"],
+            PathOption: ".",
+            RegexOption: "^foöbar(.*)",
+        }
         for clazz, val in options.items():
             # 2 options are equal if their name, value and description match
             option1 = clazz("test-öption", val, "Test Dëscription")
@@ -97,7 +103,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, True)
 
         # error on incorrect value
-        incorrect_values = [1, -1, "foo", "bår", ["foo"], {'foo': "bar"}, None]
+        incorrect_values = [1, -1, "foo", "bår", ["foo"], {"foo": "bar"}, None]
         for value in incorrect_values:
             with self.assertRaisesMessage(RuleOptionError, "Option 'tëst-name' must be either 'true' or 'false'"):
                 option.set(value)
@@ -197,7 +203,7 @@ class RuleOptionTests(BaseTestCase):
         self.assertEqual(option.value, self.get_sample_path())
 
         # Expect exception if path type is invalid
-        option.type = 'föo'
+        option.type = "föo"
         expected = "Option tëst-directory type must be one of: 'file', 'dir', 'both' (current: 'föo')"
         with self.assertRaisesMessage(RuleOptionError, expected):
             option.set("haha")

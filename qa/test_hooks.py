@@ -6,15 +6,17 @@ from qa.base import BaseTestCase
 
 
 class HookTests(BaseTestCase):
-    """ Integration tests for gitlint commitmsg hooks"""
+    """Integration tests for gitlint commitmsg hooks"""
 
-    VIOLATIONS = ['gitlint: checking commit message...\n',
-                  '1: T3 Title has trailing punctuation (.): "WIP: This ïs a title."\n',
-                  '1: T5 Title contains the word \'WIP\' (case-insensitive): "WIP: This ïs a title."\n',
-                  '2: B4 Second line is not empty: "Contënt on the second line"\n',
-                  '3: B6 Body message is missing\n',
-                  '-----------------------------------------------\n',
-                  'gitlint: \x1b[31mYour commit message contains violations.\x1b[0m\n']
+    VIOLATIONS = [
+        "gitlint: checking commit message...\n",
+        '1: T3 Title has trailing punctuation (.): "WIP: This ïs a title."\n',
+        "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This ïs a title.\"\n",
+        '2: B4 Second line is not empty: "Contënt on the second line"\n',
+        "3: B6 Body message is missing\n",
+        "-----------------------------------------------\n",
+        "gitlint: \x1b[31mYour commit message contains violations.\x1b[0m\n",
+    ]
 
     def setUp(self):
         super().setUp()
@@ -29,16 +31,18 @@ class HookTests(BaseTestCase):
 
         # install git commit-msg hook and assert output
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
-        expected_installed = ("Successfully installed gitlint commit-msg hook in "
-                              f"{self.tmp_git_repo}/.git/hooks/commit-msg\n")
+        expected_installed = (
+            "Successfully installed gitlint commit-msg hook in " f"{self.tmp_git_repo}/.git/hooks/commit-msg\n"
+        )
 
         self.assertEqualStdout(output_installed, expected_installed)
 
     def tearDown(self):
         # uninstall git commit-msg hook and assert output
         output_uninstalled = gitlint("uninstall-hook", _cwd=self.tmp_git_repo)
-        expected_uninstalled = ("Successfully uninstalled gitlint commit-msg hook from "
-                                f"{self.tmp_git_repo}/.git/hooks/commit-msg\n")
+        expected_uninstalled = (
+            "Successfully uninstalled gitlint commit-msg hook from " f"{self.tmp_git_repo}/.git/hooks/commit-msg\n"
+        )
 
         self.assertEqualStdout(output_uninstalled, expected_uninstalled)
         super().tearDown()
@@ -58,62 +62,72 @@ class HookTests(BaseTestCase):
             self.response_index = (self.response_index + 1) % len(self.responses)
 
     def test_commit_hook_no_violations(self):
-        test_filename = self.create_simple_commit("This ïs a title\n\nBody contënt that should work",
-                                                  out=self._interact, tty_in=True)
+        test_filename = self.create_simple_commit(
+            "This ïs a title\n\nBody contënt that should work", out=self._interact, tty_in=True
+        )
 
         short_hash = self.get_last_commit_short_hash()
-        expected_output = ["gitlint: checking commit message...\n",
-                           "gitlint: \x1b[32mOK\x1b[0m (no violations in commit message)\n",
-                           f"[master {short_hash}] This ïs a title\n",
-                           " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
-                           f" create mode 100644 {test_filename}\n"]
+        expected_output = [
+            "gitlint: checking commit message...\n",
+            "gitlint: \x1b[32mOK\x1b[0m (no violations in commit message)\n",
+            f"[master {short_hash}] This ïs a title\n",
+            " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
+            f" create mode 100644 {test_filename}\n",
+        ]
         for output, expected in zip(self.githook_output, expected_output):
-            self.assertMultiLineEqual(output.replace('\r', ''), expected.replace('\r', ''))
+            self.assertMultiLineEqual(output.replace("\r", ""), expected.replace("\r", ""))
 
     def test_commit_hook_continue(self):
         self.responses = ["y"]
-        test_filename = self.create_simple_commit("WIP: This ïs a title.\nContënt on the second line",
-                                                  out=self._interact, tty_in=True)
+        test_filename = self.create_simple_commit(
+            "WIP: This ïs a title.\nContënt on the second line", out=self._interact, tty_in=True
+        )
 
         # Determine short commit-msg hash, needed to determine expected output
         short_hash = self.get_last_commit_short_hash()
 
         expected_output = self._violations()
-        expected_output += ["Continue with commit anyways (this keeps the current commit message)? " +
-                            "[y(es)/n(no)/e(dit)] " +
-                            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
-                            " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
-                            f" create mode 100644 {test_filename}\n"]
+        expected_output += [
+            "Continue with commit anyways (this keeps the current commit message)? "
+            "[y(es)/n(no)/e(dit)] "
+            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
+            " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
+            f" create mode 100644 {test_filename}\n",
+        ]
 
         for output, expected in zip(self.githook_output, expected_output):
-            self.assertMultiLineEqual(output.replace('\r', ''), expected.replace('\r', ''))
+            self.assertMultiLineEqual(output.replace("\r", ""), expected.replace("\r", ""))
 
     def test_commit_hook_abort(self):
         self.responses = ["n"]
-        test_filename = self.create_simple_commit("WIP: This ïs a title.\nContënt on the second line",
-                                                  out=self._interact, ok_code=1, tty_in=True)
+        test_filename = self.create_simple_commit(
+            "WIP: This ïs a title.\nContënt on the second line", out=self._interact, ok_code=1, tty_in=True
+        )
         git("rm", "-f", test_filename, _cwd=self.tmp_git_repo)
 
         # Determine short commit-msg hash, needed to determine expected output
 
         expected_output = self._violations()
-        expected_output += ["Continue with commit anyways (this keeps the current commit message)? " +
-                            "[y(es)/n(no)/e(dit)] " +
-                            "Commit aborted.\n",
-                            "Your commit message: \n",
-                            "-----------------------------------------------\n",
-                            "WIP: This ïs a title.\n",
-                            "Contënt on the second line\n",
-                            "-----------------------------------------------\n"]
+        expected_output += [
+            "Continue with commit anyways (this keeps the current commit message)? "
+            "[y(es)/n(no)/e(dit)] "
+            "Commit aborted.\n",
+            "Your commit message: \n",
+            "-----------------------------------------------\n",
+            "WIP: This ïs a title.\n",
+            "Contënt on the second line\n",
+            "-----------------------------------------------\n",
+        ]
 
         for output, expected in zip(self.githook_output, expected_output):
-            self.assertMultiLineEqual(output.replace('\r', ''), expected.replace('\r', ''))
+            self.assertMultiLineEqual(output.replace("\r", ""), expected.replace("\r", ""))
 
     def test_commit_hook_edit(self):
         self.responses = ["e", "y"]
         env = {"EDITOR": ":"}
-        test_filename = self.create_simple_commit("WIP: This ïs a title.\nContënt on the second line",
-                                                  out=self._interact, env=env, tty_in=True)
+        test_filename = self.create_simple_commit(
+            "WIP: This ïs a title.\nContënt on the second line", out=self._interact, env=env, tty_in=True
+        )
         git("rm", "-f", test_filename, _cwd=self.tmp_git_repo)
 
         short_hash = git("rev-parse", "--short", "HEAD", _cwd=self.tmp_git_repo, _tty_in=True).replace("\n", "")
@@ -121,20 +135,23 @@ class HookTests(BaseTestCase):
         # Determine short commit-msg hash, needed to determine expected output
 
         expected_output = self._violations()
-        expected_output += ['Continue with commit anyways (this keeps the current commit message)? ' +
-                            '[y(es)/n(no)/e(dit)] ' + self._violations()[0]]
+        expected_output += [
+            "Continue with commit anyways (this keeps the current commit message)? [y(es)/n(no)/e(dit)] "
+            + self._violations()[0]
+        ]
         expected_output += self._violations()[1:]
-        expected_output += ['Continue with commit anyways (this keeps the current commit message)? ' +
-                            "[y(es)/n(no)/e(dit)] " +
-                            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
-                            " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
-                            f" create mode 100644 {test_filename}\n"]
+        expected_output += [
+            "Continue with commit anyways (this keeps the current commit message)? [y(es)/n(no)/e(dit)] "
+            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
+            " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
+            f" create mode 100644 {test_filename}\n",
+        ]
 
         for output, expected in zip(self.githook_output, expected_output):
-            self.assertMultiLineEqual(output.replace('\r', ''), expected.replace('\r', ''))
+            self.assertMultiLineEqual(output.replace("\r", ""), expected.replace("\r", ""))
 
     def test_commit_hook_worktree(self):
-        """ Tests that hook installation and un-installation also work in git worktrees.
+        """Tests that hook installation and un-installation also work in git worktrees.
         Test steps:
             ```sh
             git init <tmpdir>

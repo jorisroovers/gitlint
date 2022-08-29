@@ -4,7 +4,6 @@ from gitlint.rules import Rule, RuleViolation
 
 
 class RuleTests(BaseTestCase):
-
     def test_rule_equality(self):
         self.assertEqual(Rule(), Rule())
         # Ensure rules are not equal if they differ on their attributes

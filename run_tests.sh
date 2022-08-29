@@ -75,10 +75,10 @@ handle_test_result(){
 }
 
 run_pep8_check(){
-    # FLAKE 8
-    target=${testargs:-"gitlint-core qa examples"}
-    echo -ne "Running flake8..."
-    RESULT=$(flake8 $target)
+    # BLACK
+    target=${testargs:-"."}
+    echo -ne "Running black --check..."
+    RESULT=$(black --check $target)
     local exit_code=$?
     handle_test_result $exit_code "$RESULT"
     return $exit_code

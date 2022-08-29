@@ -17,7 +17,7 @@ class BodyRuleTests(BaseTestCase):
         self.assertListEqual(violations, [expected_violation])
 
         # set line length to 120, and check no violation on length 73
-        rule = rules.BodyMaxLineLength({'line-length': 120})
+        rule = rules.BodyMaxLineLength({"line-length": 120})
         violations = rule.validate("å" * 73, None)
         self.assertIsNone(violations)
 
@@ -100,13 +100,13 @@ class BodyRuleTests(BaseTestCase):
         # set line length to 120, and check violation on length 21
         expected_violation = rules.RuleViolation("B5", "Body message is too short (21<120)", "å" * 21, 3)
 
-        rule = rules.BodyMinLength({'min-length': 120})
+        rule = rules.BodyMinLength({"min-length": 120})
         commit = self.gitcommit("Title\n\n{0}\n".format("å" * 21))  # pylint: disable=consider-using-f-string
         violations = rule.validate(commit)
         self.assertListEqual(violations, [expected_violation])
 
         # Make sure we don't get the error if the body-length is exactly the min-length
-        rule = rules.BodyMinLength({'min-length': 8})
+        rule = rules.BodyMinLength({"min-length": 8})
         commit = self.gitcommit("Tïtle\n\n{0}\n".format("å" * 8))  # pylint: disable=consider-using-f-string
         violations = rule.validate(commit)
         self.assertIsNone(violations)
@@ -145,7 +145,7 @@ class BodyRuleTests(BaseTestCase):
         self.assertIsNone(violations)
 
         # assert error for merge commits if ignore-merge-commits is disabled
-        rule = rules.BodyMissing({'ignore-merge-commits': False})
+        rule = rules.BodyMissing({"ignore-merge-commits": False})
         violations = rule.validate(commit)
         expected_violation = rules.RuleViolation("B6", "Body message is missing", None, 3)
         self.assertListEqual(violations, [expected_violation])
@@ -159,7 +159,7 @@ class BodyRuleTests(BaseTestCase):
         self.assertIsNone(violations)
 
         # assert no error when no files have changed but certain files need to be mentioned on change
-        rule = rules.BodyChangedFileMention({'files': "bar.txt,föo/test.py"})
+        rule = rules.BodyChangedFileMention({"files": "bar.txt,föo/test.py"})
         commit = self.gitcommit("This is a test\n\nHere is a mention of föo/test.py")
         violations = rule.validate(commit)
         self.assertIsNone(violations)
@@ -201,29 +201,29 @@ class BodyRuleTests(BaseTestCase):
 
         # assert no violation on matching regex
         # (also note that first body line - in between title and rest of body - is ignored)
-        rule = rules.BodyRegexMatches({'regex': "^Bödy(.*)"})
+        rule = rules.BodyRegexMatches({"regex": "^Bödy(.*)"})
         violations = rule.validate(commit)
         self.assertIsNone(violations)
 
         # assert we can do end matching (and last empty line is ignored)
         # (also note that first body line - in between title and rest of body - is ignored)
-        rule = rules.BodyRegexMatches({'regex': "My-Commit-Tag: föo$"})
+        rule = rules.BodyRegexMatches({"regex": "My-Commit-Tag: föo$"})
         violations = rule.validate(commit)
         self.assertIsNone(violations)
 
         # common use-case: matching that a given line is present
-        rule = rules.BodyRegexMatches({'regex': "(.*)Föo(.*)"})
+        rule = rules.BodyRegexMatches({"regex": "(.*)Föo(.*)"})
         violations = rule.validate(commit)
         self.assertIsNone(violations)
 
         # assert violation on non-matching body
-        rule = rules.BodyRegexMatches({'regex': "^Tëst(.*)Foo"})
+        rule = rules.BodyRegexMatches({"regex": "^Tëst(.*)Foo"})
         violations = rule.validate(commit)
         expected_violation = rules.RuleViolation("B8", "Body does not match regex (^Tëst(.*)Foo)", None, 6)
         self.assertListEqual(violations, [expected_violation])
 
         # assert no violation on None regex
-        rule = rules.BodyRegexMatches({'regex': None})
+        rule = rules.BodyRegexMatches({"regex": None})
         violations = rule.validate(commit)
         self.assertIsNone(violations)
 
@@ -231,6 +231,6 @@ class BodyRuleTests(BaseTestCase):
         bodies = ["åbc", "åbc\n", "åbc\nföo\n", "åbc\n\n", "åbc\nföo\nblå", "åbc\nföo\nblå\n"]
         for body in bodies:
             commit = self.gitcommit(body)
-            rule = rules.BodyRegexMatches({'regex': ".*"})
+            rule = rules.BodyRegexMatches({"regex": ".*"})
             violations = rule.validate(commit)
             self.assertIsNone(violations)
