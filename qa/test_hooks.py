@@ -32,7 +32,7 @@ class HookTests(BaseTestCase):
         # install git commit-msg hook and assert output
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
         expected_installed = (
-            "Successfully installed gitlint commit-msg hook in " f"{self.tmp_git_repo}/.git/hooks/commit-msg\n"
+            f"Successfully installed gitlint commit-msg hook in {self.tmp_git_repo}/.git/hooks/commit-msg\n"
         )
 
         self.assertEqualStdout(output_installed, expected_installed)
@@ -41,7 +41,7 @@ class HookTests(BaseTestCase):
         # uninstall git commit-msg hook and assert output
         output_uninstalled = gitlint("uninstall-hook", _cwd=self.tmp_git_repo)
         expected_uninstalled = (
-            "Successfully uninstalled gitlint commit-msg hook from " f"{self.tmp_git_repo}/.git/hooks/commit-msg\n"
+            f"Successfully uninstalled gitlint commit-msg hook from {self.tmp_git_repo}/.git/hooks/commit-msg\n"
         )
 
         self.assertEqualStdout(output_uninstalled, expected_uninstalled)

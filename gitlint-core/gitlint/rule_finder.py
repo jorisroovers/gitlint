@@ -104,9 +104,9 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):  # pylint: disable
     ):
         msg = (
             f"{rule_type} rule class '{clazz.__name__}' "
-            + f"must extend from {rules.CommitRule.__module__}.{rules.LineRule.__name__}, "
-            + f"{rules.CommitRule.__module__}.{rules.CommitRule.__name__} or "
-            + f"{rules.CommitRule.__module__}.{rules.ConfigurationRule.__name__}"
+            f"must extend from {rules.CommitRule.__module__}.{rules.LineRule.__name__}, "
+            f"{rules.CommitRule.__module__}.{rules.CommitRule.__name__} or "
+            f"{rules.CommitRule.__module__}.{rules.ConfigurationRule.__name__}"
         )
         raise rules.UserRuleError(msg)
 

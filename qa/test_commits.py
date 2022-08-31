@@ -9,7 +9,7 @@ from qa.base import BaseTestCase
 
 
 class CommitsTests(BaseTestCase):
-    """Integration tests for the --commits argument, i.e. linting multiple commits at once or linting specific commits"""
+    """Integration tests for the --commits argument, i.e. linting multiple commits or linting specific commits"""
 
     def test_successful(self):
         """Test linting multiple commits without violations"""

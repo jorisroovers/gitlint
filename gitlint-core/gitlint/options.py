@@ -76,7 +76,6 @@ class IntOption(RuleOption):
 
 
 class BoolOption(RuleOption):
-
     # explicit choice to not annotate with @allow_none: Booleans must be False or True, they cannot be unset.
     def set(self, value):
         value = str(value).strip().lower()
@@ -120,7 +119,7 @@ class PathOption(RuleOption):
         elif self.type == "both":
             if not os.path.isdir(value) and not os.path.isfile(value):
                 error_msg = (
-                    f"Option {self.name} must be either an existing directory or file " f"(current value: '{value}')"
+                    f"Option {self.name} must be either an existing directory or file (current value: '{value}')"
                 )
         else:
             error_msg = f"Option {self.name} type must be one of: 'file', 'dir', 'both' (current: '{self.type}')"

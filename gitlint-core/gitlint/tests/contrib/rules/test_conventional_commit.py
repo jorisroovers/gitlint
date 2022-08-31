@@ -24,8 +24,7 @@ class ContribConventionalCommitTests(BaseTestCase):
         # assert violation on wrong type
         expected_violation = RuleViolation(
             "CT1",
-            "Title does not start with one of fix, feat, chore, docs,"
-            " style, refactor, perf, test, revert, ci, build",
+            "Title does not start with one of fix, feat, chore, docs, style, refactor, perf, test, revert, ci, build",
             "bår: foo",
         )
         violations = rule.validate("bår: foo", None)
@@ -34,8 +33,7 @@ class ContribConventionalCommitTests(BaseTestCase):
         # assert violation when use strange chars after correct type
         expected_violation = RuleViolation(
             "CT1",
-            "Title does not start with one of fix, feat, chore, docs,"
-            " style, refactor, perf, test, revert, ci, build",
+            "Title does not start with one of fix, feat, chore, docs, style, refactor, perf, test, revert, ci, build",
             "feat_wrong_chars: föo",
         )
         violations = rule.validate("feat_wrong_chars: föo", None)
@@ -44,8 +42,7 @@ class ContribConventionalCommitTests(BaseTestCase):
         # assert violation when use strange chars after correct type
         expected_violation = RuleViolation(
             "CT1",
-            "Title does not start with one of fix, feat, chore, docs,"
-            " style, refactor, perf, test, revert, ci, build",
+            "Title does not start with one of fix, feat, chore, docs, style, refactor, perf, test, revert, ci, build",
             "feat_wrong_chars(scope): föo",
         )
         violations = rule.validate("feat_wrong_chars(scope): föo", None)
@@ -54,7 +51,7 @@ class ContribConventionalCommitTests(BaseTestCase):
         # assert violation on wrong format
         expected_violation = RuleViolation(
             "CT1",
-            "Title does not follow ConventionalCommits.org format " "'type(optional-scope): description'",
+            "Title does not follow ConventionalCommits.org format 'type(optional-scope): description'",
             "fix föo",
         )
         violations = rule.validate("fix föo", None)

@@ -63,7 +63,7 @@ class CLITests(BaseTestCase):
         """Test for basic simple linting functionality"""
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360",
-            "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "commït-title\n\ncommït-body",
+            "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncommït-title\n\ncommït-body",
             "#",  # git config --get core.commentchar
             "commit-1-branch-1\ncommit-1-branch-2\n",
             "file1.txt\npåth/to/file2.txt\n",
@@ -79,24 +79,29 @@ class CLITests(BaseTestCase):
     def test_lint_multiple_commits(self, sh, _):
         """Test for --commits option"""
 
+        # fmt: off
         sh.git.side_effect = [
-            "6f29bf81a8322a04071bb794666e48c443a90360\n"
-            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"  # git rev-list <SHA>
+            "6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "commït-title1\n\ncommït-body1",
-            "#",  # git config --get core.commentchar
-            "commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",  # git diff-tree
-            # git log --pretty <FORMAT> <SHA>
-            "test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n" "commït-title2\n\ncommït-body2",
-            "commit-2-branch-1\ncommit-2-branch-2\n",  # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",  # git diff-tree
-            # git log --pretty <FORMAT> <SHA>
-            "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n" "commït-title3\n\ncommït-body3",
-            "commit-3-branch-1\ncommit-3-branch-2\n",  # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",  # git diff-tree
+            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            "commït-title1\n\ncommït-body1",
+            "#",                                           # git config --get core.commentchar
+            "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
+            "test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
+            "commït-title2\n\ncommït-body2",
+            "commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
+            "commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
+            "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
+            "commït-title3\n\ncommït-body3",
+            "commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
+            "commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
+        # fmt: on
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
@@ -108,27 +113,30 @@ class CLITests(BaseTestCase):
     def test_lint_multiple_commits_config(self, sh, _):
         """Test for --commits option where some of the commits have gitlint config in the commit message"""
 
+        # fmt: off
         # Note that the second commit title has a trailing period that is being ignored by gitlint-ignore: T3
         sh.git.side_effect = [
-            "6f29bf81a8322a04071bb794666e48c443a90360\n"
-            + "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"  # git rev-list <SHA>
-            + "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+            "6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
+            "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "commït-title1\n\ncommït-body1",
-            "#",  # git config --get core.commentchar
-            "commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",  # git diff-tree
-            # git log --pretty <FORMAT> <SHA>
+            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            "commït-title1\n\ncommït-body1",
+            "#",                                           # git config --get core.commentchar
+            "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             "test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             "commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
-            "commit-2-branch-1\ncommit-2-branch-2\n",  # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",  # git diff-tree
-            # git log --pretty <FORMAT> <SHA>
+            "commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
+            "commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             "commït-title3.\n\ncommït-body3",
-            "commit-3-branch-1\ncommit-3-branch-2\n",  # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",  # git diff-tree
+            "commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
+            "commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
+        # fmt: on
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commits", "foo...bar"])
@@ -141,30 +149,33 @@ class CLITests(BaseTestCase):
     def test_lint_multiple_commits_configuration_rules(self, sh, _):
         """Test for --commits option where where we have configured gitlint to ignore certain rules for certain commits"""
 
+        # fmt: off
         # Note that the second commit
         sh.git.side_effect = [
-            "6f29bf81a8322a04071bb794666e48c443a90360\n"
-            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"  # git rev-list <SHA>
+            "6f29bf81a8322a04071bb794666e48c443a90360\n" +  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n" +
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "commït-title1\n\ncommït-body1",
-            "#",  # git config --get core.commentchar
-            "commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",  # git diff-tree
-            # git log --pretty <FORMAT> <SHA>
+            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            "commït-title1\n\ncommït-body1",
+            "#",                                           # git config --get core.commentchar
+            "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             "test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             # Normally T3 violation (trailing punctuation), but this commit is ignored because of
             # config below
             "commït-title2.\n\ncommït-body2\n",
-            "commit-2-branch-1\ncommit-2-branch-2\n",  # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",  # git diff-tree
-            # git log --pretty <FORMAT> <SHA>
+            "commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
+            "commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
+                                                            # git log --pretty <FORMAT> <SHA>
             "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             # Normally T1 and B5 violations, now only T1 because we're ignoring B5 in config below
             "commït-title3.\n\ncommït-body3 foo",
-            "commit-3-branch-1\ncommit-3-branch-2\n",  # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",  # git diff-tree
+            "commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
+            "commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
+        # fmt: on
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
             result = self.cli.invoke(
@@ -197,15 +208,17 @@ class CLITests(BaseTestCase):
     def test_lint_commit(self, sh, _):
         """Test for --commit option"""
 
+        # fmt: off
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360\n",  # git log -1 <SHA> --pretty=%H
             # git log --pretty <FORMAT> <SHA>
             "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             "WIP: commït-title1\n\ncommït-body1",
-            "#",  # git config --get core.commentchar
-            "commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",  # git diff-tree
+            "#",                                           # git config --get core.commentchar
+            "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
         ]
+        # fmt: on
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
             result = self.cli.invoke(cli.cli, ["--commit", "foo"])
@@ -253,7 +266,7 @@ class CLITests(BaseTestCase):
         """Test for ignoring stdin when --ignore-stdin flag is enabled"""
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360",
-            "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "commït-title\n\ncommït-body",
+            "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncommït-title\n\ncommït-body",
             "#",  # git config --get core.commentchar
             "commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
             "file1.txt\npåth/to/file2.txt\n",  # git diff-tree
@@ -296,13 +309,15 @@ class CLITests(BaseTestCase):
     def test_lint_staged_msg_filename(self, sh, _):
         """Test for ignoring stdin when --ignore-stdin flag is enabled"""
 
+        # fmt: off
         sh.git.side_effect = [
-            "#",  # git config --get core.commentchar
-            "föo user\n",  # git config --get user.name
-            "föo@bar.com\n",  # git config --get user.email
-            "my-branch\n",  # git rev-parse --abbrev-ref HEAD (=current branch)
-            "commit-1/file-1\ncommit-1/file-2\n",  # git diff-tree
+            "#",                                         # git config --get core.commentchar
+            "föo user\n",                                # git config --get user.name
+            "föo@bar.com\n",                             # git config --get user.email
+            "my-branch\n",                               # git rev-parse --abbrev-ref HEAD (=current branch)
+            "commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
         ]
+        # fmt: on
 
         with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "msg")
@@ -325,10 +340,8 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         self.assertEqual(
             result.output,
-            (
-                "Error: The 'staged' option (--staged) can only be used when using "
-                "'--msg-filename' or when piping data to gitlint via stdin.\n"
-            ),
+            "Error: The 'staged' option (--staged) can only be used when using "
+            "'--msg-filename' or when piping data to gitlint via stdin.\n",
         )
 
     @patch("gitlint.cli.get_stdin_data", return_value=False)
@@ -336,7 +349,7 @@ class CLITests(BaseTestCase):
     def test_fail_without_commits(self, sh, _):
         """Test for --debug option"""
 
-        sh.git.side_effect = ["", ""]  # First 2 invocations of git rev-list
+        sh.git.side_effect = ["", ""]  # First invocation of git rev-list  # Second invocation of git rev-list
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
             # By default, gitlint should silently exit with code GITLINT_SUCCESS when there are no commits
@@ -390,8 +403,8 @@ class CLITests(BaseTestCase):
         # -vv
         expected_output = (
             "1: T2 Title has trailing whitespace\n"
-            "1: T5 Title contains the word 'WIP' (case-insensitive)\n"
-            "3: B6 Body message is missing\n"
+            + "1: T5 Title contains the word 'WIP' (case-insensitive)\n"
+            + "3: B6 Body message is missing\n"
         )
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -412,23 +425,27 @@ class CLITests(BaseTestCase):
     def test_debug(self, sh, _):
         """Test for --debug option"""
 
+        # fmt: off
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360\n"  # git rev-list <SHA>
             "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00abc\n" "commït-title1\n\ncommït-body1",
-            "#",  # git config --get core.commentchar
-            "commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",  # git diff-tree
+            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00abc\n"
+            "commït-title1\n\ncommït-body1",
+            "#",                                         # git config --get core.commentchar
+            "commit-1-branch-1\ncommit-1-branch-2\n",    # git branch --contains <sha>
+            "commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
             "test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00abc\n"
             "commït-title2.\n\ncommït-body2",
-            "commit-2-branch-1\ncommit-2-branch-2\n",  # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",  # git diff-tree
-            "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00abc\n" "föobar\nbar",
-            "commit-3-branch-1\ncommit-3-branch-2\n",  # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",  # git diff-tree
+            "commit-2-branch-1\ncommit-2-branch-2\n",    # git branch --contains <sha>
+            "commit-2/file-1\ncommit-2/file-2\n",        # git diff-tree
+            "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00abc\n"
+            "föobar\nbar",
+            "commit-3-branch-1\ncommit-3-branch-2\n",     # git branch --contains <sha>
+            "commit-3/file-1\ncommit-3/file-2\n",         # git diff-tree
         ]
+        # fmt: on
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
             config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
@@ -598,7 +615,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, self.GITLINT_SUCCESS_CODE)
         expected_msg = (
             "Please specify a location for the sample gitlint config file [.gitlint]: tëstfile\n"
-            f"Successfully generated {os.path.realpath('tëstfile')}\n"
+            + f"Successfully generated {os.path.realpath('tëstfile')}\n"
         )
         self.assertEqual(result.output, expected_msg)
         generate_config.assert_called_once_with(os.path.realpath("tëstfile"))
@@ -612,7 +629,7 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
         expected_msg = (
             f"Please specify a location for the sample gitlint config file [.gitlint]: {fake_path}\n"
-            f"Error: Directory '{fake_dir}' does not exist.\n"
+            + f"Error: Directory '{fake_dir}' does not exist.\n"
         )
         self.assertEqual(result.output, expected_msg)
 

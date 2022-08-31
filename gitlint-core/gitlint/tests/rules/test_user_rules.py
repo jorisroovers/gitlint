@@ -148,7 +148,6 @@ class UserRuleTests(BaseTestCase):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_id(self):
-
         for parent_class in [rules.LineRule, rules.CommitRule]:
 
             class MyRuleClass(parent_class):
@@ -190,7 +189,6 @@ class UserRuleTests(BaseTestCase):
                 assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_option_spec(self):
-
         for parent_class in [rules.LineRule, rules.CommitRule]:
 
             class MyRuleClass(parent_class):
@@ -212,7 +210,6 @@ class UserRuleTests(BaseTestCase):
                 assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_validate(self):
-
         baseclasses = [rules.LineRule, rules.CommitRule]
         for clazz in baseclasses:
 

@@ -272,8 +272,7 @@ class CLIHookTests(BaseTestCase):
         """
         sh.git.side_effect = [
             "6f29bf81a8322a04071bb794666e48c443a90360",
-            "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
-            "WIP: commït-title\n\ncommït-body",
+            "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\nWIP: commït-title\n\ncommït-body",
             "#",  # git config --get core.commentchar
             "commit-1-branch-1\ncommit-1-branch-2\n",
             "file1.txt\npåth/to/file2.txt\n",

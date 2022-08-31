@@ -35,7 +35,7 @@ class LintConfigTests(BaseTestCase):
         # invalid option value
         expected_error_msg = (
             "'föo' is not a valid value for option 'title-max-length.line-length'. "
-            + "Option 'line-length' must be a positive integer (current value: 'föo')."
+            "Option 'line-length' must be a positive integer (current value: 'föo')."
         )
         with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config.set_rule_option("title-max-length", "line-length", "föo")

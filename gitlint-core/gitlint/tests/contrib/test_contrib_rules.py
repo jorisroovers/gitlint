@@ -8,7 +8,6 @@ from gitlint import rule_finder, rules
 
 
 class ContribRuleTests(BaseTestCase):
-
     CONTRIB_DIR = os.path.dirname(os.path.realpath(contrib_rules.__file__))
 
     def test_contrib_tests_exist(self):
@@ -22,10 +21,10 @@ class ContribRuleTests(BaseTestCase):
         # Find all python files in the contrib dir and assert there's a corresponding test file
         for filename in os.listdir(self.CONTRIB_DIR):
             if filename.endswith(".py") and filename not in ["__init__.py"]:
-                expected_test_file = "test_" + filename
+                expected_test_file = f"test_{filename}"
                 error_msg = (
                     "Every Contrib Rule must have associated tests. "
-                    + f"Expected test file {os.path.join(contrib_tests_dir, expected_test_file)} not found."
+                    f"Expected test file {os.path.join(contrib_tests_dir, expected_test_file)} not found."
                 )
                 self.assertIn(expected_test_file, contrib_test_files, error_msg)
 

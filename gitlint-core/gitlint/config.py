@@ -311,7 +311,7 @@ class LintConfig:  # pylint: disable=too-many-instance-attributes
         # config-path is not a user exposed variable, so don't print it under the general section
         return (
             f"config-path: {self._config_path}\n"
-            f"[GENERAL]\n"
+            "[GENERAL]\n"
             f"extra-path: {self.extra_path}\n"
             f"contrib: {self.contrib}\n"
             f"ignore: {','.join(self.ignore)}\n"
@@ -518,7 +518,6 @@ class LintConfigBuilder:
             for option_name, option_value in section_dict.items():
                 # Skip over the general section, as we've already done that above
                 if section_name != "general":
-
                     # If the section name contains a colon (:), then this section is defining a Named Rule
                     # Which means we need to instantiate that Named Rule in the config.
                     if self.RULE_QUALIFIER_SYMBOL in section_name:

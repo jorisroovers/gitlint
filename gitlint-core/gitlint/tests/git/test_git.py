@@ -10,7 +10,6 @@ from gitlint.git import GitContext, GitContextError, GitNotInstalledError, git_c
 
 
 class GitTests(BaseTestCase):
-
     # Expected special_args passed to 'sh'
     expected_sh_special_args = {"_tty_out": False, "_cwd": "fåke/path"}
 

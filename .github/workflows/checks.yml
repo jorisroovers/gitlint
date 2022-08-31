@@ -58,8 +58,8 @@ jobs:
           GITLINT_USE_SH_LIB: 0
         run: ./run_tests.sh -i
 
-      - name: PEP8
-        run: ./run_tests.sh -p
+      - name: Code formatting (black)
+        run: ./run_tests.sh -f
 
       - name: PyLint
         run: ./run_tests.sh -l
@@ -136,8 +136,8 @@ jobs:
         run: pytest -rw -s qa
         continue-on-error: true # Known to fail at this point
 
-      - name: PEP8
-        run: flake8 gitlint-core qa examples
+      - name: Code formatting (black)
+        run: black .
 
       - name: PyLint
         run: pylint gitlint-core\gitlint qa --rcfile=".pylintrc" -r n

@@ -14,7 +14,6 @@ from gitlint.shell import ErrorReturnCode
 
 
 class GitCommitTests(BaseTestCase):
-
     # Expected special_args passed to 'sh'
     expected_sh_special_args = {"_tty_out": False, "_cwd": "fåke/path"}
 
@@ -24,7 +23,7 @@ class GitCommitTests(BaseTestCase):
 
         sh.git.side_effect = [
             sample_sha,
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "cömmit-title\n\ncömmit-body",
+            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
             "foöbar\n* hürdur\n",
@@ -86,7 +85,7 @@ class GitCommitTests(BaseTestCase):
 
         sh.git.side_effect = [
             sample_sha,  # git rev-list <sample_refspec>
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "cömmit-title\n\ncömmit-body",
+            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
             "foöbar\n* hürdur\n",
@@ -147,7 +146,7 @@ class GitCommitTests(BaseTestCase):
 
         sh.git.side_effect = [
             sample_hash,  # git log -1 <sample_hash>
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n" "cömmit-title\n\ncömmit-body",
+            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
             "foöbar\n* hürdur\n",
@@ -204,7 +203,6 @@ class GitCommitTests(BaseTestCase):
 
     @patch("gitlint.git.sh")
     def test_from_local_repository_multiple_commit_hashes(self, sh):
-
         hashes = ["åbc123", "dęf456", "ghí789"]
         sh.git.side_effect = [
             *hashes,
@@ -291,7 +289,7 @@ class GitCommitTests(BaseTestCase):
 
         sh.git.side_effect = [
             sample_sha,
-            "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc def\n" 'Merge "foo bår commit"',
+            'test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc def\nMerge "foo bår commit"',
             "#",  # git config --get core.commentchar
             "file1.txt\npåth/to/file2.txt\n",
             "foöbar\n* hürdur\n",
@@ -429,8 +427,8 @@ class GitCommitTests(BaseTestCase):
             "This line has a trailing tab.\t",
         ]
         expected_full = expected_title + "\n" + "\n".join(expected_body)
-        expected_original = expected_full + (
-            "\n# This is a cömmented  line\n"
+        expected_original = (
+            expected_full + "\n# This is a cömmented  line\n"
             "# ------------------------ >8 ------------------------\n"
             "# Anything after this line should be cleaned up\n"
             "# this line appears on `git commit -v` command\n"

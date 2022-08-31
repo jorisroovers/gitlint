@@ -7,13 +7,11 @@ from gitlint.git import GitContext
 
 
 class GitContextTests(BaseTestCase):
-
     # Expected special_args passed to 'sh'
     expected_sh_special_args = {"_tty_out": False, "_cwd": "fåke/path"}
 
     @patch("gitlint.git.sh")
     def test_gitcontext(self, sh):
-
         sh.git.side_effect = ["#", "\nfoöbar\n"]  # git config --get core.commentchar
 
         expected_calls = [
@@ -34,7 +32,6 @@ class GitContextTests(BaseTestCase):
 
     @patch("gitlint.git.sh")
     def test_gitcontext_equality(self, sh):
-
         sh.git.side_effect = [
             "û\n",  # context1: git config --get core.commentchar
             "û\n",  # context2: git config --get core.commentchar
