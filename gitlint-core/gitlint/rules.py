@@ -39,7 +39,7 @@ class Rule:
             and self.name == other.name
             and self.options == other.options
             and self.target == other.target
-        )  # noqa
+        )
 
     def __str__(self):
         return f"{self.id} {self.name}"  # pragma: no cover

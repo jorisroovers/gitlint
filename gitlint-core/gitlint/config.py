@@ -305,7 +305,7 @@ class LintConfig:  # pylint: disable=too-many-instance-attributes
             and self.debug == other.debug
             and self.ignore == other.ignore
             and self._config_path == other._config_path
-        )  # noqa
+        )
 
     def __str__(self):
         # config-path is not a user exposed variable, so don't print it under the general section

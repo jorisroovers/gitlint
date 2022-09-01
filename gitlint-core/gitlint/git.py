@@ -132,7 +132,7 @@ class GitCommitMessage:
             and self.full == other.full
             and self.title == other.title
             and self.body == other.body
-        )  # noqa
+        )
 
 
 class GitCommit:
@@ -218,7 +218,7 @@ class GitCommit:
             and self.is_revert_commit == other.is_revert_commit
             and self.changed_files == other.changed_files
             and self.branches == other.branches
-        )  # noqa
+        )
 
 
 class LocalGitCommit(GitCommit, PropertyCache):
@@ -458,4 +458,4 @@ class GitContext(PropertyCache):
             and self.repository_path == other.repository_path
             and self.commentchar == other.commentchar
             and self.current_branch == other.current_branch
-        )  # noqa
+        )
