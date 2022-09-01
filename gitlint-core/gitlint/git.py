@@ -4,6 +4,7 @@ import os
 import arrow
 
 from gitlint import shell as sh
+
 # import exceptions separately, this makes it a little easier to mock them out in the unit tests
 from gitlint.shell import CommandNotFound, ErrorReturnCode
 
@@ -18,15 +19,17 @@ LOG = logging.getLogger(__name__)
 
 
 class GitContextError(GitlintError):
-    """ Exception indicating there is an issue with the git context """
+    """Exception indicating there is an issue with the git context"""
+
     pass
 
 
 class GitNotInstalledError(GitContextError):
     def __init__(self):
         super().__init__(
-            "'git' command not found. You need to install git to use gitlint on a local repository. " +
-            "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git.")
+            "'git' command not found. You need to install git to use gitlint on a local repository. "
+            "See https://git-scm.com/book/en/v2/Getting-Started-Installing-Git on how to install git."
+        )
 
 
 class GitExitCodeError(GitContextError):
@@ -37,8 +40,8 @@ class GitExitCodeError(GitContextError):
 
 
 def _git(*command_parts, **kwargs):
-    """ Convenience function for running git commands. Automatically deals with exceptions and unicode. """
-    git_kwargs = {'_tty_out': False}
+    """Convenience function for running git commands. Automatically deals with exceptions and unicode."""
+    git_kwargs = {"_tty_out": False}
     git_kwargs.update(kwargs)
     try:
         LOG.debug(command_parts)
@@ -46,7 +49,7 @@ def _git(*command_parts, **kwargs):
         # If we reach this point and the result has an exit_code that is larger than 0, this means that we didn't
         # get an exception (which is the default sh behavior for non-zero exit codes) and so the user is expecting
         # a non-zero exit code -> just return the entire result
-        if hasattr(result, 'exit_code') and result.exit_code > 0:
+        if hasattr(result, "exit_code") and result.exit_code > 0:
             return result
         return str(result)
     except CommandNotFound as e:
@@ -54,11 +57,13 @@ def _git(*command_parts, **kwargs):
     except ErrorReturnCode as e:  # Something went wrong while executing the git command
         error_msg = e.stderr.strip()
         error_msg_lower = error_msg.lower()
-        if '_cwd' in git_kwargs and b"not a git repository" in error_msg_lower:
+        if "_cwd" in git_kwargs and b"not a git repository" in error_msg_lower:
             raise GitContextError(f"{git_kwargs['_cwd']} is not a git repository.") from e
 
-        if (b"does not have any commits yet" in error_msg_lower or
-                b"ambiguous argument 'head': unknown revision" in error_msg_lower):
+        if (
+            b"does not have any commits yet" in error_msg_lower
+            or b"ambiguous argument 'head': unknown revision" in error_msg_lower
+        ):
             msg = "Current branch has no commits. Gitlint requires at least one commit to function."
             raise GitContextError(msg) from e
 
@@ -66,34 +71,35 @@ def _git(*command_parts, **kwargs):
 
 
 def git_version():
-    """ Determine the git version installed on this host by calling git --version"""
+    """Determine the git version installed on this host by calling git --version"""
     return _git("--version").replace("\n", "")
 
 
 def git_commentchar(repository_path=None):
-    """ Shortcut for retrieving comment char from git config """
+    """Shortcut for retrieving comment char from git config"""
     commentchar = _git("config", "--get", "core.commentchar", _cwd=repository_path, _ok_code=[0, 1])
     # git will return an exit code of 1 if it can't find a config value, in this case we fall-back to # as commentchar
-    if hasattr(commentchar, 'exit_code') and commentchar.exit_code == 1:  # pylint: disable=no-member
+    if hasattr(commentchar, "exit_code") and commentchar.exit_code == 1:  # pylint: disable=no-member
         commentchar = "#"
     return commentchar.replace("\n", "")
 
 
 def git_hooks_dir(repository_path):
-    """ Determine hooks directory for a given target dir """
+    """Determine hooks directory for a given target dir"""
     hooks_dir = _git("rev-parse", "--git-path", "hooks", _cwd=repository_path)
     hooks_dir = hooks_dir.replace("\n", "")
     return os.path.realpath(os.path.join(repository_path, hooks_dir))
 
 
 class GitCommitMessage:
-    """ Class representing a git commit message. A commit message consists of the following:
-      - context: The `GitContext` this commit message is part of
-      - original: The actual commit message as returned by `git log`
-      - full: original, but stripped of any comments
-      - title: the first line of full
-      - body: all lines following the title
+    """Class representing a git commit message. A commit message consists of the following:
+    - context: The `GitContext` this commit message is part of
+    - original: The actual commit message as returned by `git log`
+    - full: original, but stripped of any comments
+    - title: the first line of full
+    - body: all lines following the title
     """
+
     def __init__(self, context, original=None, full=None, title=None, body=None):
         self.context = context
         self.original = original
@@ -103,7 +109,7 @@ class GitCommitMessage:
 
     @staticmethod
     def from_full_message(context, commit_msg_str):
-        """  Parses a full git commit message by parsing a given string into the different parts of a commit message """
+        """Parses a full git commit message by parsing a given string into the different parts of a commit message"""
         all_lines = commit_msg_str.splitlines()
         cutline = f"{context.commentchar} ------------------------ >8 ------------------------"
         try:
@@ -120,19 +126,34 @@ class GitCommitMessage:
         return self.full
 
     def __eq__(self, other):
-        return (isinstance(other, GitCommitMessage) and self.original == other.original
-                and self.full == other.full and self.title == other.title and self.body == other.body)  # noqa
+        return (
+            isinstance(other, GitCommitMessage)
+            and self.original == other.original
+            and self.full == other.full
+            and self.title == other.title
+            and self.body == other.body
+        )  # noqa
 
 
 class GitCommit:
-    """ Class representing a git commit.
-        A commit consists of: context, message, author name, author email, date, list of parent commit shas,
-        list of changed files, list of branch names.
-        In the context of gitlint, only the git context and commit message are required.
+    """Class representing a git commit.
+    A commit consists of: context, message, author name, author email, date, list of parent commit shas,
+    list of changed files, list of branch names.
+    In the context of gitlint, only the git context and commit message are required.
     """
 
-    def __init__(self, context, message, sha=None, date=None, author_name=None,  # pylint: disable=too-many-arguments
-                 author_email=None, parents=None, changed_files=None, branches=None):
+    def __init__(
+        self,
+        context,
+        message,
+        sha=None,
+        date=None,
+        author_name=None,  # pylint: disable=too-many-arguments
+        author_email=None,
+        parents=None,
+        changed_files=None,
+        branches=None,
+    ):
         self.context = context
         self.message = message
         self.sha = sha
@@ -165,51 +186,62 @@ class GitCommit:
 
     def __str__(self):
         date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
-        return (f"--- Commit Message ----\n{self.message}\n"
-                "--- Meta info ---------\n"
-                f"Author: {self.author_name} <{self.author_email}>\n"
-                f"Date:   {date_str}\n"
-                f"is-merge-commit:  {self.is_merge_commit}\n"
-                f"is-fixup-commit:  {self.is_fixup_commit}\n"
-                f"is-fixup-amend-commit: {self.is_fixup_amend_commit}\n"
-                f"is-squash-commit: {self.is_squash_commit}\n"
-                f"is-revert-commit: {self.is_revert_commit}\n"
-                f"Branches: {self.branches}\n"
-                f"Changed Files: {self.changed_files}\n"
-                "-----------------------")
+        return (
+            f"--- Commit Message ----\n{self.message}\n"
+            "--- Meta info ---------\n"
+            f"Author: {self.author_name} <{self.author_email}>\n"
+            f"Date:   {date_str}\n"
+            f"is-merge-commit:  {self.is_merge_commit}\n"
+            f"is-fixup-commit:  {self.is_fixup_commit}\n"
+            f"is-fixup-amend-commit: {self.is_fixup_amend_commit}\n"
+            f"is-squash-commit: {self.is_squash_commit}\n"
+            f"is-revert-commit: {self.is_revert_commit}\n"
+            f"Branches: {self.branches}\n"
+            f"Changed Files: {self.changed_files}\n"
+            "-----------------------"
+        )
 
     def __eq__(self, other):
         # skip checking the context as context refers back to this obj, this will trigger a cyclic dependency
-        return (isinstance(other, GitCommit) and self.message == other.message
-                and self.sha == other.sha and self.author_name == other.author_name
-                and self.author_email == other.author_email
-                and self.date == other.date and self.parents == other.parents
-                and self.is_merge_commit == other.is_merge_commit and self.is_fixup_commit == other.is_fixup_commit
-                and self.is_fixup_amend_commit == other.is_fixup_amend_commit
-                and self.is_squash_commit == other.is_squash_commit and self.is_revert_commit == other.is_revert_commit
-                and self.changed_files == other.changed_files and self.branches == other.branches) # noqa
+        return (
+            isinstance(other, GitCommit)
+            and self.message == other.message
+            and self.sha == other.sha
+            and self.author_name == other.author_name
+            and self.author_email == other.author_email
+            and self.date == other.date
+            and self.parents == other.parents
+            and self.is_merge_commit == other.is_merge_commit
+            and self.is_fixup_commit == other.is_fixup_commit
+            and self.is_fixup_amend_commit == other.is_fixup_amend_commit
+            and self.is_squash_commit == other.is_squash_commit
+            and self.is_revert_commit == other.is_revert_commit
+            and self.changed_files == other.changed_files
+            and self.branches == other.branches
+        )  # noqa
 
 
 class LocalGitCommit(GitCommit, PropertyCache):
-    """ Class representing a git commit that exists in the local git repository.
-        This class uses lazy loading: it defers reading information from the local git repository until the associated
-        property is accessed for the first time. Properties are then cached for subsequent access.
+    """Class representing a git commit that exists in the local git repository.
+    This class uses lazy loading: it defers reading information from the local git repository until the associated
+    property is accessed for the first time. Properties are then cached for subsequent access.
 
-        This approach ensures that we don't do 'expensive' git calls when certain properties are not actually used.
-        In addition, reading the required info when it's needed rather than up front avoids adding delay during gitlint
-        startup time and reduces gitlint's memory footprint.
-     """
+    This approach ensures that we don't do 'expensive' git calls when certain properties are not actually used.
+    In addition, reading the required info when it's needed rather than up front avoids adding delay during gitlint
+    startup time and reduces gitlint's memory footprint.
+    """
+
     def __init__(self, context, sha):  # pylint: disable=super-init-not-called
         PropertyCache.__init__(self)
         self.context = context
         self.sha = sha
 
     def _log(self):
-        """ Does a call to `git log` to determine a bunch of information about the commit. """
+        """Does a call to `git log` to determine a bunch of information about the commit."""
         long_format = "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B"
         raw_commit = _git("log", self.sha, "-1", long_format, _cwd=self.context.repository_path).split("\n")
 
-        (name, email, date, parents), commit_msg = raw_commit[0].split('\x00'), "\n".join(raw_commit[1:])
+        (name, email, date, parents), commit_msg = raw_commit[0].split("\x00"), "\n".join(raw_commit[1:])
 
         commit_parents = parents.split(" ")
         commit_is_merge_commit = len(commit_parents) > 1
@@ -222,8 +254,16 @@ class LocalGitCommit(GitCommit, PropertyCache):
         # Create Git commit object with the retrieved info
         commit_msg_obj = GitCommitMessage.from_full_message(self.context, commit_msg)
 
-        self._cache.update({'message': commit_msg_obj, 'author_name': name, 'author_email': email, 'date': commit_date,
-                            'parents': commit_parents, 'is_merge_commit': commit_is_merge_commit})
+        self._cache.update(
+            {
+                "message": commit_msg_obj,
+                "author_name": name,
+                "author_email": email,
+                "date": commit_date,
+                "parents": commit_parents,
+                "is_merge_commit": commit_is_merge_commit,
+            }
+        )
 
     @property
     def message(self):
@@ -257,7 +297,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
             # safely do this since git branches cannot contain '*' anywhere, so if we find an '*' we know it's output
             # from the git CLI and not part of the branch name. See https://git-scm.com/docs/git-check-ref-format
             # We also drop the last empty line from the output.
-            self._cache['branches'] = [branch.replace("*", "").strip() for branch in branches[:-1]]
+            self._cache["branches"] = [branch.replace("*", "").strip() for branch in branches[:-1]]
 
         return self._try_cache("branches", cache_branches)
 
@@ -268,18 +308,25 @@ class LocalGitCommit(GitCommit, PropertyCache):
     @property
     def changed_files(self):
         def cache_changed_files():
-            self._cache['changed_files'] = _git("diff-tree", "--no-commit-id", "--name-only", "-r", "--root",
-                                                self.sha, _cwd=self.context.repository_path).split()
+            self._cache["changed_files"] = _git(
+                "diff-tree",
+                "--no-commit-id",
+                "--name-only",
+                "-r",
+                "--root",
+                self.sha,
+                _cwd=self.context.repository_path,
+            ).split()
 
         return self._try_cache("changed_files", cache_changed_files)
 
 
 class StagedLocalGitCommit(GitCommit, PropertyCache):
-    """ Class representing a git commit that has been staged, but not committed.
+    """Class representing a git commit that has been staged, but not committed.
 
-        Other than the commit message itself (and changed files), a lot of information is actually not known at staging
-        time, since the commit hasn't happened yet. However, we can make educated guesses based on existing repository
-        information.
+    Other than the commit message itself (and changed files), a lot of information is actually not known at staging
+    time, since the commit hasn't happened yet. However, we can make educated guesses based on existing repository
+    information.
     """
 
     def __init__(self, context, commit_message):  # pylint: disable=super-init-not-called
@@ -326,7 +373,7 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
 
 
 class GitContext(PropertyCache):
-    """ Class representing the git context in which gitlint is operating: a data object storing information about
+    """Class representing the git context in which gitlint is operating: a data object storing information about
     the git repository that gitlint is linting.
     """
 
@@ -352,7 +399,7 @@ class GitContext(PropertyCache):
 
     @staticmethod
     def from_commit_msg(commit_msg_str):
-        """ Determines git context based on a commit message.
+        """Determines git context based on a commit message.
         :param commit_msg_str: Full git commit message.
         """
         context = GitContext()
@@ -363,7 +410,7 @@ class GitContext(PropertyCache):
 
     @staticmethod
     def from_staged_commit(commit_msg_str, repository_path):
-        """ Determines git context based on a commit message that is a staged commit for a local git repository.
+        """Determines git context based on a commit message that is a staged commit for a local git repository.
         :param commit_msg_str: Full git commit message.
         :param repository_path: Path to the git repository to retrieve the context from
         """
@@ -375,7 +422,7 @@ class GitContext(PropertyCache):
 
     @staticmethod
     def from_local_repository(repository_path, refspec=None, commit_hashes=None):
-        """ Retrieves the git context from a local git repository.
+        """Retrieves the git context from a local git repository.
         :param repository_path: Path to the git repository to retrieve the context from
         :param refspec: The commit(s) to retrieve (mutually exclusive with `commit_hash`)
         :param commit_hash: Hash of the commit to retrieve (mutually exclusive with `refspec`)
@@ -405,6 +452,10 @@ class GitContext(PropertyCache):
         return context
 
     def __eq__(self, other):
-        return (isinstance(other, GitContext) and self.commits == other.commits
-                and self.repository_path == other.repository_path
-                and self.commentchar == other.commentchar and self.current_branch == other.current_branch)  # noqa
+        return (
+            isinstance(other, GitContext)
+            and self.commits == other.commits
+            and self.repository_path == other.repository_path
+            and self.commentchar == other.commentchar
+            and self.current_branch == other.current_branch
+        )  # noqa

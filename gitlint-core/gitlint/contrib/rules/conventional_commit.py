@@ -7,7 +7,7 @@ RULE_REGEX = re.compile(r"([^(]+?)(\([^)]+?\))?!?: .+")
 
 
 class ConventionalCommit(LineRule):
-    """ This rule enforces the spec at https://www.conventionalcommits.org/. """
+    """This rule enforces the spec at https://www.conventionalcommits.org/."""
 
     name = "contrib-title-conventional-commits"
     id = "CT1"
@@ -31,7 +31,7 @@ class ConventionalCommit(LineRule):
         else:
             line_commit_type = match.group(1)
             if line_commit_type not in self.options["types"].value:
-                opt_str = ', '.join(self.options['types'].value)
+                opt_str = ", ".join(self.options["types"].value)
                 violations.append(RuleViolation(self.id, f"Title does not start with one of {opt_str}", line))
 
         return violations

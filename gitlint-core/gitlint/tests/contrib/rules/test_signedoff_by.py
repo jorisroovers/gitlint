@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import RuleViolation
@@ -8,10 +7,9 @@ from gitlint.config import LintConfig
 
 
 class ContribSignedOffByTests(BaseTestCase):
-
     def test_enable(self):
         # Test that rule can be enabled in config
-        for rule_ref in ['CC1', 'contrib-body-requires-signed-off-by']:
+        for rule_ref in ["CC1", "contrib-body-requires-signed-off-by"]:
             config = LintConfig()
             config.contrib = [rule_ref]
             self.assertIn(SignedOffBy(), config.rules)

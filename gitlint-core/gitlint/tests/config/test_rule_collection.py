@@ -7,7 +7,6 @@ from gitlint.tests.base import BaseTestCase
 
 
 class RuleCollectionTests(BaseTestCase):
-
     def test_add_rule(self):
         collection = RuleCollection()
         collection.add_rule(rules.TitleMaxLength, "my-rüle", {"my_attr": "föo", "my_attr2": 123})
@@ -29,18 +28,18 @@ class RuleCollectionTests(BaseTestCase):
 
         # find by id
         expected = rules.TitleMaxLength()
-        rule = collection.find_rule('T1')
+        rule = collection.find_rule("T1")
         self.assertEqual(rule, expected)
         self.assertEqual(rule.my_attr, "föo")
 
         # find by name
         expected2 = rules.TitleTrailingWhitespace()
-        rule = collection.find_rule('title-trailing-whitespace')
+        rule = collection.find_rule("title-trailing-whitespace")
         self.assertEqual(rule, expected2)
         self.assertEqual(rule.my_attr, "föo")
 
         # find non-existing
-        rule = collection.find_rule(u'föo')
+        rule = collection.find_rule("föo")
         self.assertIsNone(rule)
 
     def test_delete_rules_by_attr(self):

@@ -33,7 +33,7 @@ class UserRuleTests(BaseTestCase):
         # Do some basic asserts on our user rule
         self.assertEqual(classes[0].id, "UC1")
         self.assertEqual(classes[0].name, "my-üser-commit-rule")
-        expected_option = options.IntOption('violation-count', 1, "Number of violåtions to return")
+        expected_option = options.IntOption("violation-count", 1, "Number of violåtions to return")
         self.assertListEqual(classes[0].options_spec, [expected_option])
         self.assertTrue(hasattr(classes[0], "validate"))
 
@@ -44,10 +44,15 @@ class UserRuleTests(BaseTestCase):
         self.assertListEqual(violations, [rules.RuleViolation("UC1", "Commit violåtion 1", "Contënt 1", 1)])
 
         # Have it return more violations
-        rule_class.options['violation-count'].value = 2
+        rule_class.options["violation-count"].value = 2
         violations = rule_class.validate("false-commit-object (ignored)")
-        self.assertListEqual(violations, [rules.RuleViolation("UC1", "Commit violåtion 1", "Contënt 1", 1),
-                                          rules.RuleViolation("UC1", "Commit violåtion 2", "Contënt 2", 2)])
+        self.assertListEqual(
+            violations,
+            [
+                rules.RuleViolation("UC1", "Commit violåtion 1", "Contënt 1", 1),
+                rules.RuleViolation("UC1", "Commit violåtion 2", "Contënt 2", 2),
+            ],
+        )
 
     def test_extra_path_specified_by_file(self):
         # Test that find_rule_classes can handle an extra path given as a file name instead of a directory
@@ -96,23 +101,23 @@ class UserRuleTests(BaseTestCase):
 
     def test_assert_valid_rule_class(self):
         class MyLineRuleClass(rules.LineRule):
-            id = 'UC1'
-            name = 'my-lïne-rule'
+            id = "UC1"
+            name = "my-lïne-rule"
             target = rules.CommitMessageTitle
 
             def validate(self):
                 pass
 
         class MyCommitRuleClass(rules.CommitRule):
-            id = 'UC2'
-            name = 'my-cömmit-rule'
+            id = "UC2"
+            name = "my-cömmit-rule"
 
             def validate(self):
                 pass
 
         class MyConfigurationRuleClass(rules.ConfigurationRule):
-            id = 'UC3'
-            name = 'my-cönfiguration-rule'
+            id = "UC3"
+            name = "my-cönfiguration-rule"
 
             def apply(self):
                 pass
@@ -125,8 +130,9 @@ class UserRuleTests(BaseTestCase):
     def test_assert_valid_rule_class_negative(self):
         # general test to make sure that incorrect rules will raise an exception
         user_rule_path = self.get_sample_path("user_rules/incorrect_linerule")
-        with self.assertRaisesMessage(UserRuleError,
-                                      "User-defined rule class 'MyUserLineRule' must have a 'validate' method"):
+        with self.assertRaisesMessage(
+            UserRuleError, "User-defined rule class 'MyUserLineRule' must have a 'validate' method"
+        ):
             find_rule_classes(user_rule_path)
 
     def test_assert_valid_rule_class_negative_parent(self):
@@ -134,13 +140,14 @@ class UserRuleTests(BaseTestCase):
         class MyRuleClass:
             pass
 
-        expected_msg = "User-defined rule class 'MyRuleClass' must extend from gitlint.rules.LineRule, " + \
-                       "gitlint.rules.CommitRule or gitlint.rules.ConfigurationRule"
+        expected_msg = (
+            "User-defined rule class 'MyRuleClass' must extend from gitlint.rules.LineRule, "
+            "gitlint.rules.CommitRule or gitlint.rules.ConfigurationRule"
+        )
         with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_id(self):
-
         for parent_class in [rules.LineRule, rules.CommitRule]:
 
             class MyRuleClass(parent_class):
@@ -159,8 +166,9 @@ class UserRuleTests(BaseTestCase):
             # Rule ids must not start with one of the reserved id letters
             for letter in ["T", "R", "B", "M", "I"]:
                 MyRuleClass.id = letter + "1"
-                expected_msg = f"The id '{letter}' of 'MyRuleClass' is invalid. " + \
-                               "Gitlint reserves ids starting with R,T,B,M,I"
+                expected_msg = (
+                    f"The id '{letter}' of 'MyRuleClass' is invalid. Gitlint reserves ids starting with R,T,B,M,I"
+                )
                 with self.assertRaisesMessage(UserRuleError, expected_msg):
                     assert_valid_rule_class(MyRuleClass)
 
@@ -181,7 +189,6 @@ class UserRuleTests(BaseTestCase):
                 assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_option_spec(self):
-
         for parent_class in [rules.LineRule, rules.CommitRule]:
 
             class MyRuleClass(parent_class):
@@ -190,8 +197,10 @@ class UserRuleTests(BaseTestCase):
 
             # if set, option_spec must be a list of gitlint options
             MyRuleClass.options_spec = "föo"
-            expected_msg = "The options_spec attribute of user-defined rule class 'MyRuleClass' must be a list " + \
+            expected_msg = (
+                "The options_spec attribute of user-defined rule class 'MyRuleClass' must be a list "
                 "of gitlint.options.RuleOption"
+            )
             with self.assertRaisesMessage(UserRuleError, expected_msg):
                 assert_valid_rule_class(MyRuleClass)
 
@@ -201,21 +210,23 @@ class UserRuleTests(BaseTestCase):
                 assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_validate(self):
-
         baseclasses = [rules.LineRule, rules.CommitRule]
         for clazz in baseclasses:
+
             class MyRuleClass(clazz):
                 id = "UC1"
                 name = "my-rüle-class"
 
-            with self.assertRaisesMessage(UserRuleError,
-                                          "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+            with self.assertRaisesMessage(
+                UserRuleError, "User-defined rule class 'MyRuleClass' must have a 'validate' method"
+            ):
                 assert_valid_rule_class(MyRuleClass)
 
             # validate attribute - not a method
             MyRuleClass.validate = "föo"
-            with self.assertRaisesMessage(UserRuleError,
-                                          "User-defined rule class 'MyRuleClass' must have a 'validate' method"):
+            with self.assertRaisesMessage(
+                UserRuleError, "User-defined rule class 'MyRuleClass' must have a 'validate' method"
+            ):
                 assert_valid_rule_class(MyRuleClass)
 
     def test_assert_valid_rule_class_negative_apply(self):
@@ -241,8 +252,10 @@ class UserRuleTests(BaseTestCase):
                 pass
 
         # no target
-        expected_msg = "The target attribute of the user-defined LineRule class 'MyRuleClass' must be either " + \
-                       "gitlint.rules.CommitMessageTitle or gitlint.rules.CommitMessageBody"
+        expected_msg = (
+            "The target attribute of the user-defined LineRule class 'MyRuleClass' must be either "
+            "gitlint.rules.CommitMessageTitle or gitlint.rules.CommitMessageBody"
+        )
         with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 

@@ -18,7 +18,7 @@ from gitlint.utils import LOG_FORMAT, DEFAULT_ENCODING
 
 
 class BaseTestCase(unittest.TestCase):
-    """ Base class of which all gitlint unit test classes are derived. Provides a number of convenience methods. """
+    """Base class of which all gitlint unit test classes are derived. Provides a number of convenience methods."""
 
     # In case of assert failures, print the full error message
     maxDiff = None
@@ -30,13 +30,13 @@ class BaseTestCase(unittest.TestCase):
     def setUp(self):
         self.logcapture = LogCapture()
         self.logcapture.setFormatter(logging.Formatter(LOG_FORMAT))
-        logging.getLogger('gitlint').setLevel(logging.DEBUG)
-        logging.getLogger('gitlint').handlers = [self.logcapture]
+        logging.getLogger("gitlint").setLevel(logging.DEBUG)
+        logging.getLogger("gitlint").handlers = [self.logcapture]
 
         # Make sure we don't propagate anything to child loggers, we need to do this explicitly here
         # because if you run a specific test file like test_lint.py, we won't be calling the setupLogging() method
         # in gitlint.cli that normally takes care of this
-        logging.getLogger('gitlint').propagate = False
+        logging.getLogger("gitlint").propagate = False
 
     @staticmethod
     @contextlib.contextmanager
@@ -57,7 +57,7 @@ class BaseTestCase(unittest.TestCase):
 
     @staticmethod
     def get_sample(filename=""):
-        """ Read and return the contents of a file in gitlint/tests/samples """
+        """Read and return the contents of a file in gitlint/tests/samples"""
         sample_path = BaseTestCase.get_sample_path(filename)
         with io.open(sample_path, encoding=DEFAULT_ENCODING) as content:
             sample = content.read()
@@ -65,15 +65,15 @@ class BaseTestCase(unittest.TestCase):
 
     @staticmethod
     def patch_input(side_effect):
-        """ Patches the built-in input() with a provided side-effect """
+        """Patches the built-in input() with a provided side-effect"""
         module_path = "builtins.input"
         patched_module = patch(module_path, side_effect=side_effect)
         return patched_module
 
     @staticmethod
     def get_expected(filename="", variable_dict=None):
-        """ Utility method to read an expected file from gitlint/tests/expected and return it as a string.
-        Optionally replace template variables specified by variable_dict. """
+        """Utility method to read an expected file from gitlint/tests/expected and return it as a string.
+        Optionally replace template variables specified by variable_dict."""
         expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)
         with io.open(expected_path, encoding=DEFAULT_ENCODING) as content:
             expected = content.read()
@@ -87,8 +87,8 @@ class BaseTestCase(unittest.TestCase):
         return os.path.join(BaseTestCase.SAMPLES_DIR, "user_rules")
 
     @staticmethod
-    def gitcontext(commit_msg_str, changed_files=None, ):
-        """ Utility method to easily create gitcontext objects based on a given commit msg string and an optional set of
+    def gitcontext(commit_msg_str, changed_files=None):
+        """Utility method to easily create gitcontext objects based on a given commit msg string and an optional set of
         changed files"""
         with patch("gitlint.git.git_commentchar") as comment_char:
             comment_char.return_value = "#"
@@ -100,7 +100,7 @@ class BaseTestCase(unittest.TestCase):
 
     @staticmethod
     def gitcommit(commit_msg_str, changed_files=None, **kwargs):
-        """ Utility method to easily create git commit given a commit msg string and an optional set of changed files"""
+        """Utility method to easily create git commit given a commit msg string and an optional set of changed files"""
         gitcontext = BaseTestCase.gitcontext(commit_msg_str, changed_files)
         commit = gitcontext.commits[-1]
         for attr, value in kwargs.items():
@@ -108,31 +108,31 @@ class BaseTestCase(unittest.TestCase):
         return commit
 
     def assert_logged(self, expected):
-        """ Asserts that the logs match an expected string or list.
-            This method knows how to compare a passed list of log lines as well as a newline concatenated string
-            of all loglines. """
+        """Asserts that the logs match an expected string or list.
+        This method knows how to compare a passed list of log lines as well as a newline concatenated string
+        of all loglines."""
         if isinstance(expected, list):
             self.assertListEqual(self.logcapture.messages, expected)
         else:
             self.assertEqual("\n".join(self.logcapture.messages), expected)
 
     def assert_log_contains(self, line):
-        """ Asserts that a certain line is in the logs """
+        """Asserts that a certain line is in the logs"""
         self.assertIn(line, self.logcapture.messages)
 
     def assertRaisesRegex(self, expected_exception, expected_regex, *args, **kwargs):
-        """ Pass-through method to unittest.TestCase.assertRaisesRegex that applies re.escape() to the passed
-            `expected_regex`. This is useful to automatically escape all file paths that might be present in the regex.
+        """Pass-through method to unittest.TestCase.assertRaisesRegex that applies re.escape() to the passed
+        `expected_regex`. This is useful to automatically escape all file paths that might be present in the regex.
         """
         return super().assertRaisesRegex(expected_exception, re.escape(expected_regex), *args, **kwargs)
 
     def clearlog(self):
-        """ Clears the log capture """
+        """Clears the log capture"""
         self.logcapture.clear()
 
     @contextlib.contextmanager
     def assertRaisesMessage(self, expected_exception, expected_msg):  # pylint: disable=invalid-name
-        """ Asserts an exception has occurred with a given error message """
+        """Asserts an exception has occurred with a given error message"""
         try:
             yield
         except expected_exception as exc:
@@ -149,10 +149,10 @@ class BaseTestCase(unittest.TestCase):
         raise self.fail(f"Expected to raise {expected_exception.__name__}, didn't get an exception at all")
 
     def object_equality_test(self, obj, attr_list, ctor_kwargs=None):
-        """ Helper function to easily implement object equality tests.
-            Creates an object clone for every passed attribute and checks for (in)equality
-            of the original object with the clone based on those attributes' values.
-            This function assumes all attributes in `attr_list` can be passed to the ctor of `obj.__class__`.
+        """Helper function to easily implement object equality tests.
+        Creates an object clone for every passed attribute and checks for (in)equality
+        of the original object with the clone based on those attributes' values.
+        This function assumes all attributes in `attr_list` can be passed to the ctor of `obj.__class__`.
         """
         if not ctor_kwargs:
             ctor_kwargs = {}
@@ -178,7 +178,7 @@ class BaseTestCase(unittest.TestCase):
 
 
 class LogCapture(logging.Handler):
-    """ Mock logging handler used to capture any log messages during tests."""
+    """Mock logging handler used to capture any log messages during tests."""
 
     def __init__(self, *args, **kwargs):
         logging.Handler.__init__(self, *args, **kwargs)

@@ -14,24 +14,27 @@ class LintConfigBuilderTests(BaseTestCase):
         config = config_builder.build()
 
         # assert some defaults
-        self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 72)
-        self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 80)
-        self.assertListEqual(config.get_rule_option('title-must-not-contain-word', 'words'), ["WIP"])
+        self.assertEqual(config.get_rule_option("title-max-length", "line-length"), 72)
+        self.assertEqual(config.get_rule_option("body-max-line-length", "line-length"), 80)
+        self.assertListEqual(config.get_rule_option("title-must-not-contain-word", "words"), ["WIP"])
         self.assertEqual(config.verbosity, 3)
 
         # Make some changes and check blueprint
-        config_builder.set_option('title-max-length', 'line-length', 100)
-        config_builder.set_option('general', 'verbosity', 2)
-        config_builder.set_option('title-must-not-contain-word', 'words', ["foo", "bar"])
-        expected_blueprint = {'title-must-not-contain-word': {'words': ['foo', 'bar']},
-                              'title-max-length': {'line-length': 100}, 'general': {'verbosity': 2}}
+        config_builder.set_option("title-max-length", "line-length", 100)
+        config_builder.set_option("general", "verbosity", 2)
+        config_builder.set_option("title-must-not-contain-word", "words", ["foo", "bar"])
+        expected_blueprint = {
+            "title-must-not-contain-word": {"words": ["foo", "bar"]},
+            "title-max-length": {"line-length": 100},
+            "general": {"verbosity": 2},
+        }
         self.assertDictEqual(config_builder._config_blueprint, expected_blueprint)
 
         # Build config and verify that the changes have occurred and no other changes
         config = config_builder.build()
-        self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 100)
-        self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 80)  # should be unchanged
-        self.assertListEqual(config.get_rule_option('title-must-not-contain-word', 'words'), ["foo", "bar"])
+        self.assertEqual(config.get_rule_option("title-max-length", "line-length"), 100)
+        self.assertEqual(config.get_rule_option("body-max-line-length", "line-length"), 80)  # should be unchanged
+        self.assertListEqual(config.get_rule_option("title-must-not-contain-word", "words"), ["foo", "bar"])
         self.assertEqual(config.verbosity, 2)
 
     def test_set_from_commit_ignore_all(self):
@@ -82,8 +85,8 @@ class LintConfigBuilderTests(BaseTestCase):
         self.assertIsNone(config.extra_path)
         self.assertEqual(config.ignore, ["title-trailing-whitespace", "B2"])
 
-        self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 20)
-        self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 30)
+        self.assertEqual(config.get_rule_option("title-max-length", "line-length"), 20)
+        self.assertEqual(config.get_rule_option("body-max-line-length", "line-length"), 30)
 
     def test_set_from_config_file_negative(self):
         config_builder = LintConfigBuilder()
@@ -129,8 +132,10 @@ class LintConfigBuilderTests(BaseTestCase):
         path = self.get_sample_path("config/invalid-option-value")
         config_builder = LintConfigBuilder()
         config_builder.set_from_config_file(path)
-        expected_error_msg = "'föo' is not a valid value for option 'title-max-length.line-length'. " + \
-                             "Option 'line-length' must be a positive integer (current value: 'föo')."
+        expected_error_msg = (
+            "'föo' is not a valid value for option 'title-max-length.line-length'. "
+            "Option 'line-length' must be a positive integer (current value: 'föo')."
+        )
         with self.assertRaisesMessage(LintConfigError, expected_error_msg):
             config_builder.build()
 
@@ -139,14 +144,19 @@ class LintConfigBuilderTests(BaseTestCase):
 
         # change and assert changes
         config_builder = LintConfigBuilder()
-        config_builder.set_config_from_string_list(['general.verbosity=1', 'title-max-length.line-length=60',
-                                                    'body-max-line-length.line-length=120',
-                                                    "title-must-not-contain-word.words=håha"])
+        config_builder.set_config_from_string_list(
+            [
+                "general.verbosity=1",
+                "title-max-length.line-length=60",
+                "body-max-line-length.line-length=120",
+                "title-must-not-contain-word.words=håha",
+            ]
+        )
 
         config = config_builder.build()
-        self.assertEqual(config.get_rule_option('title-max-length', 'line-length'), 60)
-        self.assertEqual(config.get_rule_option('body-max-line-length', 'line-length'), 120)
-        self.assertListEqual(config.get_rule_option('title-must-not-contain-word', 'words'), ["håha"])
+        self.assertEqual(config.get_rule_option("title-max-length", "line-length"), 60)
+        self.assertEqual(config.get_rule_option("body-max-line-length", "line-length"), 120)
+        self.assertListEqual(config.get_rule_option("title-must-not-contain-word", "words"), ["håha"])
         self.assertEqual(config.verbosity, 1)
 
     def test_set_config_from_string_list_negative(self):
@@ -175,12 +185,12 @@ class LintConfigBuilderTests(BaseTestCase):
         # no period between rule and option names
         expected_msg = "'föobar=1' is an invalid configuration option. Use '<rule>.<option>=<value>'"
         with self.assertRaisesMessage(LintConfigError, expected_msg):
-            config_builder.set_config_from_string_list([u'föobar=1'])
+            config_builder.set_config_from_string_list(["föobar=1"])
 
     def test_rebuild_config(self):
         # normal config build
         config_builder = LintConfigBuilder()
-        config_builder.set_option('general', 'verbosity', 3)
+        config_builder.set_option("general", "verbosity", 3)
         lint_config = config_builder.build()
         self.assertEqual(lint_config.verbosity, 3)
 
@@ -193,9 +203,9 @@ class LintConfigBuilderTests(BaseTestCase):
 
     def test_clone(self):
         config_builder = LintConfigBuilder()
-        config_builder.set_option('general', 'verbosity', 2)
-        config_builder.set_option('title-max-length', 'line-length', 100)
-        expected = {'title-max-length': {'line-length': 100}, 'general': {'verbosity': 2}}
+        config_builder.set_option("general", "verbosity", 2)
+        config_builder.set_option("title-max-length", "line-length", 100)
+        expected = {"title-max-length": {"line-length": 100}, "general": {"verbosity": 2}}
         self.assertDictEqual(config_builder._config_blueprint, expected)
 
         # Clone and verify that the blueprint is the same as the original
@@ -203,7 +213,7 @@ class LintConfigBuilderTests(BaseTestCase):
         self.assertDictEqual(cloned_builder._config_blueprint, expected)
 
         # Modify the original and make sure we're not modifying the clone (i.e. check that the copy is a deep copy)
-        config_builder.set_option('title-max-length', 'line-length', 120)
+        config_builder.set_option("title-max-length", "line-length", 120)
         self.assertDictEqual(cloned_builder._config_blueprint, expected)
 
     def test_named_rules(self):
@@ -215,17 +225,22 @@ class LintConfigBuilderTests(BaseTestCase):
 
         # Add a named rule by setting an option in the config builder that follows the named rule pattern
         # Assert that whitespace in the rule name is stripped
-        rule_qualifiers = [u'T7:my-extra-rüle', u' T7 :   my-extra-rüle  ', u'\tT7:\tmy-extra-rüle\t',
-                           u'T7:\t\n  \tmy-extra-rüle\t\n\n', "title-match-regex:my-extra-rüle"]
+        rule_qualifiers = [
+            "T7:my-extra-rüle",
+            " T7 :   my-extra-rüle  ",
+            "\tT7:\tmy-extra-rüle\t",
+            "T7:\t\n  \tmy-extra-rüle\t\n\n",
+            "title-match-regex:my-extra-rüle",
+        ]
         for rule_qualifier in rule_qualifiers:
             config_builder = LintConfigBuilder()
-            config_builder.set_option(rule_qualifier, 'regex', "föo")
+            config_builder.set_option(rule_qualifier, "regex", "föo")
 
             expected_rules = copy.deepcopy(default_rules)
-            my_rule = rules.TitleRegexMatches({'regex': "föo"})
+            my_rule = rules.TitleRegexMatches({"regex": "föo"})
             my_rule.id = rules.TitleRegexMatches.id + ":my-extra-rüle"
             my_rule.name = rules.TitleRegexMatches.name + ":my-extra-rüle"
-            expected_rules._rules[u'T7:my-extra-rüle'] = my_rule
+            expected_rules._rules["T7:my-extra-rüle"] = my_rule
             self.assertEqual(config_builder.build().rules, expected_rules)
 
             # assert that changing an option on the newly added rule is passed correctly to the RuleCollection
@@ -233,20 +248,20 @@ class LintConfigBuilderTests(BaseTestCase):
             # to the same rule
             for other_rule_qualifier in rule_qualifiers:
                 cb = config_builder.clone()
-                cb.set_option(other_rule_qualifier, 'regex', other_rule_qualifier + "bōr")
+                cb.set_option(other_rule_qualifier, "regex", other_rule_qualifier + "bōr")
                 # before setting the expected rule option value correctly, the RuleCollection should be different
                 self.assertNotEqual(cb.build().rules, expected_rules)
                 # after setting the option on the expected rule, it should be equal
-                my_rule.options['regex'].set(other_rule_qualifier + "bōr")
+                my_rule.options["regex"].set(other_rule_qualifier + "bōr")
                 self.assertEqual(cb.build().rules, expected_rules)
-                my_rule.options['regex'].set("wrong")
+                my_rule.options["regex"].set("wrong")
 
     def test_named_rules_negative(self):
         # T7 = title-match-regex
         # Invalid rule name
         for invalid_name in ["", " ", "    ", "\t", "\n", "å b", "å:b", "åb:", ":åb"]:
             config_builder = LintConfigBuilder()
-            config_builder.set_option(f"T7:{invalid_name}", 'regex', "tëst")
+            config_builder.set_option(f"T7:{invalid_name}", "regex", "tëst")
             expected_msg = f"The rule-name part in 'T7:{invalid_name}' cannot contain whitespace, colons or be empty"
             with self.assertRaisesMessage(LintConfigError, expected_msg):
                 config_builder.build()

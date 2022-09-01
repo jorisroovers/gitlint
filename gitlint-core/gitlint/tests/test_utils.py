@@ -7,13 +7,12 @@ from gitlint.tests.base import BaseTestCase
 
 
 class UtilsTests(BaseTestCase):
-
     def tearDown(self):
         # Since we're messing around with `utils.PLATFORM_IS_WINDOWS` during these tests, we need to reset
         # its value after we're done this doesn't influence other tests
         utils.PLATFORM_IS_WINDOWS = utils.platform_is_windows()
 
-    @patch('os.environ')
+    @patch("os.environ")
     def test_use_sh_library(self, patched_env):
         patched_env.get.return_value = "1"
         self.assertEqual(utils.use_sh_library(), True)
@@ -33,7 +32,7 @@ class UtilsTests(BaseTestCase):
         utils.PLATFORM_IS_WINDOWS = False
         self.assertEqual(utils.use_sh_library(), True)
 
-    @patch('gitlint.utils.locale')
+    @patch("gitlint.utils.locale")
     def test_default_encoding_non_windows(self, mocked_locale):
         utils.PLATFORM_IS_WINDOWS = False
         mocked_locale.getpreferredencoding.return_value = "foöbar"
@@ -43,7 +42,7 @@ class UtilsTests(BaseTestCase):
         mocked_locale.getpreferredencoding.return_value = False
         self.assertEqual(utils.getpreferredencoding(), "UTF-8")
 
-    @patch('os.environ')
+    @patch("os.environ")
     def test_default_encoding_windows(self, patched_env):
         utils.PLATFORM_IS_WINDOWS = True
         # Mock out os.environ

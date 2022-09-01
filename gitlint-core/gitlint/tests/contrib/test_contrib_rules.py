@@ -8,13 +8,12 @@ from gitlint import rule_finder, rules
 
 
 class ContribRuleTests(BaseTestCase):
-
     CONTRIB_DIR = os.path.dirname(os.path.realpath(contrib_rules.__file__))
 
     def test_contrib_tests_exist(self):
-        """ Tests that every contrib rule file has an associated test file.
-            While this doesn't guarantee that every contrib rule has associated tests (as we don't check the content
-            of the tests file), it's a good leading indicator. """
+        """Tests that every contrib rule file has an associated test file.
+        While this doesn't guarantee that every contrib rule has associated tests (as we don't check the content
+        of the tests file), it's a good leading indicator."""
 
         contrib_tests_dir = os.path.dirname(os.path.realpath(contrib_tests.__file__))
         contrib_test_files = os.listdir(contrib_tests_dir)
@@ -22,16 +21,18 @@ class ContribRuleTests(BaseTestCase):
         # Find all python files in the contrib dir and assert there's a corresponding test file
         for filename in os.listdir(self.CONTRIB_DIR):
             if filename.endswith(".py") and filename not in ["__init__.py"]:
-                expected_test_file = "test_" + filename
-                error_msg = "Every Contrib Rule must have associated tests. " + \
-                            f"Expected test file {os.path.join(contrib_tests_dir, expected_test_file)} not found."
+                expected_test_file = f"test_{filename}"
+                error_msg = (
+                    "Every Contrib Rule must have associated tests. "
+                    f"Expected test file {os.path.join(contrib_tests_dir, expected_test_file)} not found."
+                )
                 self.assertIn(expected_test_file, contrib_test_files, error_msg)
 
     def test_contrib_rule_naming_conventions(self):
-        """ Tests that contrib rules follow certain naming conventions.
-            We can test for this at test time (and not during runtime like rule_finder.assert_valid_rule_class does)
-            because these are contrib rules: once they're part of gitlint they can't change unless they pass this test
-            again.
+        """Tests that contrib rules follow certain naming conventions.
+        We can test for this at test time (and not during runtime like rule_finder.assert_valid_rule_class does)
+        because these are contrib rules: once they're part of gitlint they can't change unless they pass this test
+        again.
         """
         rule_classes = rule_finder.find_rule_classes(self.CONTRIB_DIR)
 
@@ -47,10 +48,10 @@ class ContribRuleTests(BaseTestCase):
                     self.assertTrue(clazz.id.startswith("CB"))
 
     def test_contrib_rule_uniqueness(self):
-        """ Tests that all contrib rules have unique identifiers.
-            We can test for this at test time (and not during runtime like rule_finder.assert_valid_rule_class does)
-            because these are contrib rules: once they're part of gitlint they can't change unless they pass this test
-            again.
+        """Tests that all contrib rules have unique identifiers.
+        We can test for this at test time (and not during runtime like rule_finder.assert_valid_rule_class does)
+        because these are contrib rules: once they're part of gitlint they can't change unless they pass this test
+        again.
         """
         rule_classes = rule_finder.find_rule_classes(self.CONTRIB_DIR)
 
@@ -61,7 +62,7 @@ class ContribRuleTests(BaseTestCase):
         self.assertEqual(len(set(class_ids)), len(class_ids))
 
     def test_contrib_rule_instantiated(self):
-        """ Tests that all contrib rules can be instantiated without errors. """
+        """Tests that all contrib rules can be instantiated without errors."""
         rule_classes = rule_finder.find_rule_classes(self.CONTRIB_DIR)
 
         # No exceptions = what we want :-)

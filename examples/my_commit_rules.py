@@ -27,20 +27,20 @@ class BodyMaxLineCount(CommitRule):
     id = "UC1"
 
     # A rule MAY have an option_spec if its behavior should be configurable.
-    options_spec = [IntOption('max-line-count', 3, "Maximum body line count")]
+    options_spec = [IntOption("max-line-count", 3, "Maximum body line count")]
 
     def validate(self, commit):
         self.log.debug("BodyMaxLineCount: This will be visible when running `gitlint --debug`")
 
         line_count = len(commit.message.body)
-        max_line_count = self.options['max-line-count'].value
+        max_line_count = self.options["max-line-count"].value
         if line_count > max_line_count:
             message = f"Body contains too many lines ({line_count} > {max_line_count})"
             return [RuleViolation(self.id, message, line_nr=1)]
 
 
 class SignedOffBy(CommitRule):
-    """ This rule will enforce that each commit contains a "Signed-off-by" line.
+    """This rule will enforce that each commit contains a "Signed-off-by" line.
     We keep things simple here and just check whether the commit body contains a line that starts with "Signed-off-by".
     """
 
@@ -61,8 +61,8 @@ class SignedOffBy(CommitRule):
 
 
 class BranchNamingConventions(CommitRule):
-    """ This rule will enforce that a commit is part of a branch that meets certain naming conventions.
-        See GitFlow for real-world example of this: https://nvie.com/posts/a-successful-git-branching-model/
+    """This rule will enforce that a commit is part of a branch that meets certain naming conventions.
+    See GitFlow for real-world example of this: https://nvie.com/posts/a-successful-git-branching-model/
     """
 
     # A rule MUST have a human friendly name
@@ -72,13 +72,13 @@ class BranchNamingConventions(CommitRule):
     id = "UC3"
 
     # A rule MAY have an option_spec if its behavior should be configurable.
-    options_spec = [ListOption('branch-prefixes', ["feature/", "hotfix/", "release/"], "Allowed branch prefixes")]
+    options_spec = [ListOption("branch-prefixes", ["feature/", "hotfix/", "release/"], "Allowed branch prefixes")]
 
     def validate(self, commit):
         self.log.debug("BranchNamingConventions: This line will be visible when running `gitlint --debug`")
 
         violations = []
-        allowed_branch_prefixes = self.options['branch-prefixes'].value
+        allowed_branch_prefixes = self.options["branch-prefixes"].value
         for branch in commit.branches:
             valid_branch_name = False
 

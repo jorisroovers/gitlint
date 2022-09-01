@@ -37,12 +37,13 @@ LOG = logging.getLogger("gitlint.cli")
 
 
 class GitLintUsageError(GitlintError):
-    """ Exception indicating there is an issue with how gitlint is used. """
+    """Exception indicating there is an issue with how gitlint is used."""
+
     pass
 
 
 def setup_logging():
-    """ Setup gitlint logging """
+    """Setup gitlint logging"""
     root_log = logging.getLogger("gitlint")
     root_log.propagate = False  # Don't propagate to child loggers, the gitlint root logger handles everything
     handler = logging.StreamHandler()
@@ -62,10 +63,20 @@ def log_system_info():
 
 
 def build_config(  # pylint: disable=too-many-arguments
-        target, config_path, c, extra_path, ignore, contrib, ignore_stdin, staged, fail_without_commits, verbose,
-        silent, debug
+    target,
+    config_path,
+    c,
+    extra_path,
+    ignore,
+    contrib,
+    ignore_stdin,
+    staged,
+    fail_without_commits,
+    verbose,
+    silent,
+    debug,
 ):
-    """ Creates a LintConfig object based on a set of commandline parameters. """
+    """Creates a LintConfig object based on a set of commandline parameters."""
     config_builder = LintConfigBuilder()
     # Config precedence:
     # First, load default config or config from configfile
@@ -79,33 +90,33 @@ def build_config(  # pylint: disable=too-many-arguments
 
     # Finally, overwrite with any convenience commandline flags
     if ignore:
-        config_builder.set_option('general', 'ignore', ignore)
+        config_builder.set_option("general", "ignore", ignore)
 
     if contrib:
-        config_builder.set_option('general', 'contrib', contrib)
+        config_builder.set_option("general", "contrib", contrib)
 
     if ignore_stdin:
-        config_builder.set_option('general', 'ignore-stdin', ignore_stdin)
+        config_builder.set_option("general", "ignore-stdin", ignore_stdin)
 
     if silent:
-        config_builder.set_option('general', 'verbosity', 0)
+        config_builder.set_option("general", "verbosity", 0)
     elif verbose > 0:
-        config_builder.set_option('general', 'verbosity', verbose)
+        config_builder.set_option("general", "verbosity", verbose)
 
     if extra_path:
-        config_builder.set_option('general', 'extra-path', extra_path)
+        config_builder.set_option("general", "extra-path", extra_path)
 
     if target:
-        config_builder.set_option('general', 'target', target)
+        config_builder.set_option("general", "target", target)
 
     if debug:
-        config_builder.set_option('general', 'debug', debug)
+        config_builder.set_option("general", "debug", debug)
 
     if staged:
-        config_builder.set_option('general', 'staged', staged)
+        config_builder.set_option("general", "staged", staged)
 
     if fail_without_commits:
-        config_builder.set_option('general', 'fail-without-commits', fail_without_commits)
+        config_builder.set_option("general", "fail-without-commits", fail_without_commits)
 
     config = config_builder.build()
 
@@ -113,7 +124,7 @@ def build_config(  # pylint: disable=too-many-arguments
 
 
 def get_stdin_data():
-    """ Helper function that returns data sent to stdin or False if nothing is sent """
+    """Helper function that returns data sent to stdin or False if nothing is sent"""
     # STDIN can only be 3 different types of things ("modes")
     #  1. An interactive terminal device (i.e. a TTY -> sys.stdin.isatty() or stat.S_ISCHR)
     #  2. A (named) pipe (stat.S_ISFIFO)
@@ -145,7 +156,7 @@ def get_stdin_data():
 
 
 def build_git_context(lint_config, msg_filename, commit_hash, refspec):
-    """ Builds a git context based on passed parameters and order of precedence """
+    """Builds a git context based on passed parameters and order of precedence"""
 
     # Determine which GitContext method to use if a custom message is passed
     from_commit_msg = GitContext.from_commit_msg
@@ -168,8 +179,10 @@ def build_git_context(lint_config, msg_filename, commit_hash, refspec):
             return from_commit_msg(stdin_input)
 
     if lint_config.staged:
-        raise GitLintUsageError("The 'staged' option (--staged) can only be used when using '--msg-filename' or "
-                                "when piping data to gitlint via stdin.")
+        raise GitLintUsageError(
+            "The 'staged' option (--staged) can only be used when using '--msg-filename' or "
+            "when piping data to gitlint via stdin."
+        )
 
     # 3. Fallback to reading from local repository
     LOG.debug("No --msg-filename flag, no or empty data passed to stdin. Using the local repo.")
@@ -195,7 +208,7 @@ def build_git_context(lint_config, msg_filename, commit_hash, refspec):
 
 
 def handle_gitlint_error(ctx, exc):
-    """ Helper function to handle exceptions """
+    """Helper function to handle exceptions"""
     if isinstance(exc, GitContextError):
         click.echo(exc)
         ctx.exit(GIT_CONTEXT_ERROR_CODE)
@@ -208,7 +221,7 @@ def handle_gitlint_error(ctx, exc):
 
 
 class ContextObj:
-    """ Simple class to hold data that is passed between Click commands via the Click context. """
+    """Simple class to hold data that is passed between Click commands via the Click context."""
 
     def __init__(self, config, config_builder, commit_hash, refspec, msg_filename, gitcontext=None):
         self.config = config
@@ -219,6 +232,7 @@ class ContextObj:
         self.gitcontext = gitcontext
 
 
+# fmt: off
 @click.group(invoke_without_command=True, context_settings={'max_content_width': 120},
              epilog="When no COMMAND is specified, gitlint defaults to 'gitlint lint'.")
 @click.option('--target', envvar='GITLINT_TARGET',
@@ -263,7 +277,6 @@ def cli(  # pylint: disable=too-many-arguments
 
         Documentation: http://jorisroovers.github.io/gitlint
     """
-
     try:
         if debug:
             logging.getLogger("gitlint").setLevel(logging.DEBUG)
@@ -273,8 +286,8 @@ def cli(  # pylint: disable=too-many-arguments
 
         # Get the lint config from the commandline parameters and
         # store it in the context (click allows storing an arbitrary object in ctx.obj).
-        config, config_builder = build_config(target, config, c, extra_path, ignore, contrib, ignore_stdin, staged,
-                                              fail_without_commits, verbose, silent, debug)
+        config, config_builder = build_config(target, config, c, extra_path, ignore, contrib, ignore_stdin,
+                                              staged, fail_without_commits, verbose, silent, debug)
         LOG.debug("Configuration\n%s", config)
 
         ctx.obj = ContextObj(config, config_builder, commit, commits, msg_filename)
@@ -285,12 +298,13 @@ def cli(  # pylint: disable=too-many-arguments
 
     except GitlintError as e:
         handle_gitlint_error(ctx, e)
+# fmt: on
 
 
 @cli.command("lint")
 @click.pass_context
 def lint(ctx):
-    """ Lints a git repository [default command] """
+    """Lints a git repository [default command]"""
     lint_config = ctx.obj.config
     refspec = ctx.obj.refspec
     commit_hash = ctx.obj.commit_hash
@@ -312,7 +326,7 @@ def lint(ctx):
             raise GitLintUsageError(f'No commits in range "{refspec}"')
         ctx.exit(GITLINT_SUCCESS)
 
-    LOG.debug('Linting %d commit(s)', number_of_commits)
+    LOG.debug("Linting %d commit(s)", number_of_commits)
     general_config_builder = ctx.obj.config_builder
     last_commit = gitcontext.commits[-1]
 
@@ -351,7 +365,7 @@ def lint(ctx):
 @cli.command("install-hook")
 @click.pass_context
 def install_hook(ctx):
-    """ Install gitlint as a git commit-msg hook. """
+    """Install gitlint as a git commit-msg hook."""
     try:
         hooks.GitHookInstaller.install_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
@@ -365,7 +379,7 @@ def install_hook(ctx):
 @cli.command("uninstall-hook")
 @click.pass_context
 def uninstall_hook(ctx):
-    """ Uninstall gitlint commit-msg hook. """
+    """Uninstall gitlint commit-msg hook."""
     try:
         hooks.GitHookInstaller.uninstall_commit_msg_hook(ctx.obj.config)
         hook_path = hooks.GitHookInstaller.commit_msg_hook_path(ctx.obj.config)
@@ -379,7 +393,7 @@ def uninstall_hook(ctx):
 @cli.command("run-hook")
 @click.pass_context
 def run_hook(ctx):
-    """ Runs the gitlint commit-msg hook. """
+    """Runs the gitlint commit-msg hook."""
 
     exit_code = 1
     while exit_code > 0:
@@ -395,16 +409,18 @@ def run_hook(ctx):
 
             exit_code = e.exit_code
             if exit_code == GITLINT_SUCCESS:
-                click.echo("gitlint: " + click.style("OK", fg='green') + " (no violations in commit message)")
+                click.echo("gitlint: " + click.style("OK", fg="green") + " (no violations in commit message)")
                 continue
 
             click.echo("-----------------------------------------------")
-            click.echo("gitlint: " + click.style("Your commit message contains violations.", fg='red'))
+            click.echo("gitlint: " + click.style("Your commit message contains violations.", fg="red"))
 
             value = None
             while value not in ["y", "n", "e"]:
-                click.echo("Continue with commit anyways (this keeps the current commit message)? "
-                           "[y(es)/n(no)/e(dit)] ", nl=False)
+                click.echo(
+                    "Continue with commit anyways (this keeps the current commit message)? [y(es)/n(no)/e(dit)] ",
+                    nl=False,
+                )
 
                 # Ideally, we'd want to use click.getchar() or click.prompt() to get user's input here instead of
                 # input(). However, those functions currently don't support getting answers from stdin.
@@ -448,15 +464,15 @@ def run_hook(ctx):
 @cli.command("generate-config")
 @click.pass_context
 def generate_config(ctx):
-    """ Generates a sample gitlint config file. """
-    path = click.prompt('Please specify a location for the sample gitlint config file', default=DEFAULT_CONFIG_FILE)
+    """Generates a sample gitlint config file."""
+    path = click.prompt("Please specify a location for the sample gitlint config file", default=DEFAULT_CONFIG_FILE)
     path = os.path.realpath(path)
     dir_name = os.path.dirname(path)
     if not os.path.exists(dir_name):
         click.echo(f"Error: Directory '{dir_name}' does not exist.", err=True)
         ctx.exit(USAGE_ERROR_CODE)
     elif os.path.exists(path):
-        click.echo(f"Error: File \"{path}\" already exists.", err=True)
+        click.echo(f'Error: File "{path}" already exists.', err=True)
         ctx.exit(USAGE_ERROR_CODE)
 
     LintConfigGenerator.generate_config(path)

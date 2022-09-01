@@ -4,9 +4,8 @@ from gitlint.cache import PropertyCache, cache
 
 
 class CacheTests(BaseTestCase):
-
     class MyClass(PropertyCache):
-        """ Simple class that has cached properties, used for testing. """
+        """Simple class that has cached properties, used for testing."""
 
         def __init__(self):
             PropertyCache.__init__(self)

@@ -11,7 +11,7 @@ import locale
 # and just executed at import-time.
 
 ########################################################################################################################
-LOG_FORMAT = '%(levelname)s: %(name)s %(message)s'
+LOG_FORMAT = "%(levelname)s: %(name)s %(message)s"
 
 ########################################################################################################################
 # PLATFORM_IS_WINDOWS
@@ -31,7 +31,7 @@ PLATFORM_IS_WINDOWS = platform_is_windows()
 
 
 def use_sh_library():
-    gitlint_use_sh_lib_env = os.environ.get('GITLINT_USE_SH_LIB', None)
+    gitlint_use_sh_lib_env = os.environ.get("GITLINT_USE_SH_LIB", None)
     if gitlint_use_sh_lib_env:
         return gitlint_use_sh_lib_env == "1"
     return not PLATFORM_IS_WINDOWS
@@ -44,8 +44,8 @@ USE_SH_LIB = use_sh_library()
 
 
 def getpreferredencoding():
-    """ Modified version of local.getpreferredencoding() that takes into account LC_ALL, LC_CTYPE, LANG env vars
-        on windows and falls back to UTF-8. """
+    """Modified version of local.getpreferredencoding() that takes into account LC_ALL, LC_CTYPE, LANG env vars
+    on windows and falls back to UTF-8."""
     fallback_encoding = "UTF-8"
     default_encoding = locale.getpreferredencoding() or fallback_encoding
 
@@ -61,7 +61,7 @@ def getpreferredencoding():
                 # If encoding contains a dot: split and use second part, otherwise use everything
                 dot_index = encoding.find(".")
                 if dot_index != -1:
-                    default_encoding = encoding[dot_index + 1:]
+                    default_encoding = encoding[dot_index + 1 :]
                 else:
                     default_encoding = encoding
                 break

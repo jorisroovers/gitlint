@@ -8,7 +8,7 @@ from qa.utils import DEFAULT_ENCODING
 
 
 class IntegrationTests(BaseTestCase):
-    """ Simple set of integration tests for gitlint """
+    """Simple set of integration tests for gitlint"""
 
     def test_successful(self):
         # Test for STDIN with and without a TTY attached
@@ -17,8 +17,8 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, "")
 
     def test_successful_gitconfig(self):
-        """ Test gitlint when the underlying repo has specific git config set.
-        In the past, we've had issues with gitlint failing on some of these, so this acts as a regression test. """
+        """Test gitlint when the underlying repo has specific git config set.
+        In the past, we've had issues with gitlint failing on some of these, so this acts as a regression test."""
 
         # Different commentchar (Note: tried setting this to a special unicode char, but git doesn't like that)
         git("config", "--add", "core.commentchar", "$", _cwd=self.tmp_git_repo)
@@ -74,8 +74,10 @@ class IntegrationTests(BaseTestCase):
 
         # Make sure that if we set the ignore-fixup-commits option to false that we do still see the violations
         output = gitlint("-c", "general.ignore-fixup-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"fixup! Cömmit on WIP master\"\n" + \
+        expected = (
+            "1: T5 Title contains the word 'WIP' (case-insensitive): \"fixup! Cömmit on WIP master\"\n"
             "3: B6 Body message is missing\n"
+        )
 
         self.assertEqualStdout(output, expected)
 
@@ -101,8 +103,9 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, "")
 
         # Make sure that if we set the ignore-fixup-commits option to false that we do still see the violations
-        output = gitlint("-c", "general.ignore-fixup-amend-commits=false",
-                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
+        output = gitlint(
+            "-c", "general.ignore-fixup-amend-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1]
+        )
         expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"amend! Cömmit on WIP master\"\n"
 
         self.assertEqualStdout(output, expected)
@@ -117,10 +120,11 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, "")
 
         # Assert that we do see the error if we disable the ignore-revert-commits option
-        output = gitlint("-c", "general.ignore-revert-commits=false",
-                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
+        output = gitlint(
+            "-c", "general.ignore-revert-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1]
+        )
         self.assertEqual(output.exit_code, 1)
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Revert \"WIP: Cömmit on master.\"\"\n"
+        expected = '1: T5 Title contains the word \'WIP\' (case-insensitive): "Revert "WIP: Cömmit on master.""\n'
         self.assertEqualStdout(output, expected)
 
     def test_squash_commit(self):
@@ -148,10 +152,13 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, "")
 
         # Make sure that if we set the ignore-squash-commits option to false that we do still see the violations
-        output = gitlint("-c", "general.ignore-squash-commits=false",
-                         _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"squash! Cömmit on WIP master\"\n" + \
-            "3: B5 Body message is too short (14<20): \"Töo short body\"\n"
+        output = gitlint(
+            "-c", "general.ignore-squash-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2]
+        )
+        expected = (
+            "1: T5 Title contains the word 'WIP' (case-insensitive): \"squash! Cömmit on WIP master\"\n"
+            '3: B5 Body message is too short (14<20): "Töo short body"\n'
+        )
 
         self.assertEqualStdout(output, expected)
 
@@ -167,7 +174,7 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_1"))
 
     def test_msg_filename_no_tty(self):
-        """ Make sure --msg-filename option also works with no TTY attached """
+        """Make sure --msg-filename option also works with no TTY attached"""
         tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename NO TTY test.")
 
         # We need to set _err_to_out explicitly for sh to merge stdout and stderr output in case there's
@@ -175,30 +182,29 @@ class IntegrationTests(BaseTestCase):
         # http://amoffat.github.io/sh/sections/special_arguments.html?highlight=_tty_in#err-to-out
         # We need to pass some whitespace to _in as sh will otherwise hang, see
         # https://github.com/amoffat/sh/issues/427
-        output = gitlint("--msg-filename", tmp_commit_msg_file, _in=" ",
-                         _tty_in=False, _err_to_out=True, _ok_code=[3])
+        output = gitlint("--msg-filename", tmp_commit_msg_file, _in=" ", _tty_in=False, _err_to_out=True, _ok_code=[3])
 
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_no_tty_1"))
 
     def test_no_git_name_set(self):
-        """ Ensure we print out a helpful message if user.name is not set """
+        """Ensure we print out a helpful message if user.name is not set"""
         tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename NO name test.")
         # Name is checked before email so this isn't strictly
         # necessary but seems good for consistency.
         env = self.create_tmp_git_config("[user]\n  email = test-emåil@foo.com\n")
-        output = gitlint("--staged", "--msg-filename", tmp_commit_msg_file,
-                         _ok_code=[self.GIT_CONTEXT_ERROR_CODE],
-                         _env=env)
+        output = gitlint(
+            "--staged", "--msg-filename", tmp_commit_msg_file, _ok_code=[self.GIT_CONTEXT_ERROR_CODE], _env=env
+        )
         expected = "Missing git configuration: please set user.name\n"
         self.assertEqualStdout(output, expected)
 
     def test_no_git_email_set(self):
-        """ Ensure we print out a helpful message if user.email is not set """
+        """Ensure we print out a helpful message if user.email is not set"""
         tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename NO email test.")
         env = self.create_tmp_git_config("[user]\n  name = test åuthor\n")
-        output = gitlint("--staged", "--msg-filename", tmp_commit_msg_file,
-                         _ok_code=[self.GIT_CONTEXT_ERROR_CODE],
-                         _env=env)
+        output = gitlint(
+            "--staged", "--msg-filename", tmp_commit_msg_file, _ok_code=[self.GIT_CONTEXT_ERROR_CODE], _env=env
+        )
         expected = "Missing git configuration: please set user.email\n"
         self.assertEqualStdout(output, expected)
 
@@ -211,12 +217,15 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, expected)
 
     def test_git_empty_repo_staged(self):
-        """ When repo is empty, we can still use gitlint when using --staged flag and piping a message into it """
+        """When repo is empty, we can still use gitlint when using --staged flag and piping a message into it"""
         empty_git_repo = self.create_tmp_git_repo()
-        expected = ("1: T3 Title has trailing punctuation (.): \"WIP: Pïpe test.\"\n"
-                    "1: T5 Title contains the word \'WIP\' (case-insensitive): \"WIP: Pïpe test.\"\n"
-                    "3: B6 Body message is missing\n")
+        expected = (
+            '1: T3 Title has trailing punctuation (.): "WIP: Pïpe test."\n'
+            "1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: Pïpe test.\"\n"
+            "3: B6 Body message is missing\n"
+        )
 
-        output = gitlint(echo("WIP: Pïpe test."), "--staged", _cwd=empty_git_repo, _tty_in=False,
-                         _err_to_out=True, _ok_code=[3])
+        output = gitlint(
+            echo("WIP: Pïpe test."), "--staged", _cwd=empty_git_repo, _tty_in=False, _err_to_out=True, _ok_code=[3]
+        )
         self.assertEqualStdout(output, expected)

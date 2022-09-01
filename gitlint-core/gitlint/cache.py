@@ -1,31 +1,31 @@
 class PropertyCache:
-    """ Mixin class providing a simple cache. """
+    """Mixin class providing a simple cache."""
 
     def __init__(self):
         self._cache = {}
 
     def _try_cache(self, cache_key, cache_populate_func):
-        """ Tries to get a value from the cache identified by `cache_key`.
-            If no value is found in the cache, do a function call to `cache_populate_func` to populate the cache
-            and then return the value from the cache. """
+        """Tries to get a value from the cache identified by `cache_key`.
+        If no value is found in the cache, do a function call to `cache_populate_func` to populate the cache
+        and then return the value from the cache."""
         if cache_key not in self._cache:
             cache_populate_func()
         return self._cache[cache_key]
 
 
 def cache(original_func=None, cachekey=None):  # pylint: disable=unused-argument
-    """ Cache decorator. Caches function return values.
-        Requires the parent class to extend and initialize PropertyCache.
-        Usage:
-            # Use function name as cache key
-            @cache
-            def myfunc(args):
-                ...
+    """Cache decorator. Caches function return values.
+    Requires the parent class to extend and initialize PropertyCache.
+    Usage:
+        # Use function name as cache key
+        @cache
+        def myfunc(args):
+            ...
 
-            # Specify cache key
-            @cache(cachekey="foobar")
-            def myfunc(args):
-                ...
+        # Specify cache key
+        @cache(cachekey="foobar")
+        def myfunc(args):
+            ...
     """
 
     # Decorators with optional arguments are a bit convoluted in python, see some of the links below for details.
@@ -41,6 +41,7 @@ def cache(original_func=None, cachekey=None):  # pylint: disable=unused-argument
             def cache_func_result():
                 # Call decorated function and store its result in the cache
                 args[0]._cache[cachekey] = func(*args)
+
             return args[0]._try_cache(cachekey, cache_func_result)
 
         return wrapped

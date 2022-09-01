@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
-from gitlint.rules import TitleMaxLength, TitleTrailingWhitespace, TitleHardTab, TitleMustNotContainWord, \
-    TitleTrailingPunctuation, TitleLeadingWhitespace, TitleRegexMatches, RuleViolation, TitleMinLength
+from gitlint.rules import (
+    TitleMaxLength,
+    TitleTrailingWhitespace,
+    TitleHardTab,
+    TitleMustNotContainWord,
+    TitleTrailingPunctuation,
+    TitleLeadingWhitespace,
+    TitleRegexMatches,
+    RuleViolation,
+    TitleMinLength,
+)
 
 
 class TitleRuleTests(BaseTestCase):
@@ -18,7 +27,7 @@ class TitleRuleTests(BaseTestCase):
         self.assertListEqual(violations, [expected_violation])
 
         # set line length to 120, and check no violation on length 73
-        rule = TitleMaxLength({'line-length': 120})
+        rule = TitleMaxLength({"line-length": 120})
         violations = rule.validate("å" * 73, None)
         self.assertIsNone(violations)
 
@@ -85,31 +94,37 @@ class TitleRuleTests(BaseTestCase):
 
         # match literally
         violations = rule.validate("WIP This is å test", None)
-        expected_violation = RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                           "WIP This is å test")
+        expected_violation = RuleViolation(
+            "T5", "Title contains the word 'WIP' (case-insensitive)", "WIP This is å test"
+        )
         self.assertListEqual(violations, [expected_violation])
 
         # match case insensitive
         violations = rule.validate("wip This is å test", None)
-        expected_violation = RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                           "wip This is å test")
+        expected_violation = RuleViolation(
+            "T5", "Title contains the word 'WIP' (case-insensitive)", "wip This is å test"
+        )
         self.assertListEqual(violations, [expected_violation])
 
         # match if there is a colon after the word
         violations = rule.validate("WIP:This is å test", None)
-        expected_violation = RuleViolation("T5", "Title contains the word 'WIP' (case-insensitive)",
-                                           "WIP:This is å test")
+        expected_violation = RuleViolation(
+            "T5", "Title contains the word 'WIP' (case-insensitive)", "WIP:This is å test"
+        )
         self.assertListEqual(violations, [expected_violation])
 
         # match multiple words
-        rule = TitleMustNotContainWord({'words': "wip,test,å"})
+        rule = TitleMustNotContainWord({"words": "wip,test,å"})
         violations = rule.validate("WIP:This is å test", None)
-        expected_violation = RuleViolation("T5", "Title contains the word 'wip' (case-insensitive)",
-                                           "WIP:This is å test")
-        expected_violation2 = RuleViolation("T5", "Title contains the word 'test' (case-insensitive)",
-                                            "WIP:This is å test")
-        expected_violation3 = RuleViolation("T5", "Title contains the word 'å' (case-insensitive)",
-                                            "WIP:This is å test")
+        expected_violation = RuleViolation(
+            "T5", "Title contains the word 'wip' (case-insensitive)", "WIP:This is å test"
+        )
+        expected_violation2 = RuleViolation(
+            "T5", "Title contains the word 'test' (case-insensitive)", "WIP:This is å test"
+        )
+        expected_violation3 = RuleViolation(
+            "T5", "Title contains the word 'å' (case-insensitive)", "WIP:This is å test"
+        )
         self.assertListEqual(violations, [expected_violation, expected_violation2, expected_violation3])
 
     def test_leading_whitespace(self):
@@ -143,12 +158,12 @@ class TitleRuleTests(BaseTestCase):
         self.assertIsNone(violations)
 
         # assert no violation on matching regex
-        rule = TitleRegexMatches({'regex': "^US[0-9]*: å"})
+        rule = TitleRegexMatches({"regex": "^US[0-9]*: å"})
         violations = rule.validate(commit.message.title, commit)
         self.assertIsNone(violations)
 
         # assert violation when no matching regex
-        rule = TitleRegexMatches({'regex': "^UÅ[0-9]*"})
+        rule = TitleRegexMatches({"regex": "^UÅ[0-9]*"})
         violations = rule.validate(commit.message.title, commit)
         expected_violation = RuleViolation("T7", "Title does not match regex (^UÅ[0-9]*)", "US1234: åbc")
         self.assertListEqual(violations, [expected_violation])
@@ -166,12 +181,12 @@ class TitleRuleTests(BaseTestCase):
         self.assertListEqual(violations, [expected_violation])
 
         # set line length to 3, and check no violation on length 4
-        rule = TitleMinLength({'min-length': 3})
+        rule = TitleMinLength({"min-length": 3})
         violations = rule.validate("å" * 4, None)
         self.assertIsNone(violations)
 
         # assert no violations on length 3 (this asserts we've implemented a *strict* less than)
-        rule = TitleMinLength({'min-length': 3})
+        rule = TitleMinLength({"min-length": 3})
         violations = rule.validate("å" * 3, None)
         self.assertIsNone(violations)
 
