@@ -52,7 +52,7 @@ class GitTests(BaseTestCase):
     @patch("gitlint.git.sh")
     def test_git_no_commits_error(self, sh):
         # No commits: returned by 'git log'
-        err = b"fatal: your current branch 'master' does not have any commits yet"
+        err = b"fatal: your current branch 'main' does not have any commits yet"
 
         sh.git.side_effect = ErrorReturnCode("git log -1 --pretty=%H", b"", err)
 

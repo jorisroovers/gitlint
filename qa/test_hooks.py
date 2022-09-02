@@ -70,7 +70,7 @@ class HookTests(BaseTestCase):
         expected_output = [
             "gitlint: checking commit message...\n",
             "gitlint: \x1b[32mOK\x1b[0m (no violations in commit message)\n",
-            f"[master {short_hash}] This ïs a title\n",
+            f"[main {short_hash}] This ïs a title\n",
             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
             f" create mode 100644 {test_filename}\n",
         ]
@@ -90,7 +90,7 @@ class HookTests(BaseTestCase):
         expected_output += [
             "Continue with commit anyways (this keeps the current commit message)? "
             "[y(es)/n(no)/e(dit)] "
-            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
+            f"[main {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
             f" create mode 100644 {test_filename}\n",
         ]
@@ -142,7 +142,7 @@ class HookTests(BaseTestCase):
         expected_output += self._violations()[1:]
         expected_output += [
             "Continue with commit anyways (this keeps the current commit message)? [y(es)/n(no)/e(dit)] "
-            f"[master {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
+            f"[main {short_hash}] WIP: This ïs a title. Contënt on the second line\n",
             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
             f" create mode 100644 {test_filename}\n",
         ]

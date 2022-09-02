@@ -1448,7 +1448,7 @@
     ],
     [
       0.002767,
-      "\u001b[1;1H\u001b[93m  1 \r\n  2 \u001b[m\u001b[96m# Please enter the commit message for your changes. Lines starting\u001b[m\r\n\u001b[93m  3 \u001b[m\u001b[96m# with '#' will be ignored, and an empty message aborts the commit.\u001b[m\r\n\u001b[93m  4 \u001b[m\u001b[96m# On branch \u001b[m\u001b[38;5;224mmaster\u001b[m\r\n\u001b[93m  5 \u001b[m\u001b[96m# \u001b[m\u001b[38;5;81mChanges to be committed:\u001b[m\r\n\u001b[93m  6 \u001b[m\u001b[96m#   \u001b[m\u001b[38;5;121mnew file\u001b[m\u001b[96m: \u001b[m\u001b[95m  foo.txt\u001b[m\r\n\u001b[93m  7 \u001b[m\u001b[96m#\u001b[m\r\n\u001b[94m~                                                                                                     \u001b[9;1H~                                                                                                     \u001b[10;1H~                                                                                                     \u001b[11;1H~                                                                                                     \u001b[12;1H~                                                                                                     \u001b[13;1H~                                                                        "
+      "\u001b[1;1H\u001b[93m  1 \r\n  2 \u001b[m\u001b[96m# Please enter the commit message for your changes. Lines starting\u001b[m\r\n\u001b[93m  3 \u001b[m\u001b[96m# with '#' will be ignored, and an empty message aborts the commit.\u001b[m\r\n\u001b[93m  4 \u001b[m\u001b[96m# On branch \u001b[m\u001b[38;5;224mmain\u001b[m\r\n\u001b[93m  5 \u001b[m\u001b[96m# \u001b[m\u001b[38;5;81mChanges to be committed:\u001b[m\r\n\u001b[93m  6 \u001b[m\u001b[96m#   \u001b[m\u001b[38;5;121mnew file\u001b[m\u001b[96m: \u001b[m\u001b[95m  foo.txt\u001b[m\r\n\u001b[93m  7 \u001b[m\u001b[96m#\u001b[m\r\n\u001b[94m~                                                                                                     \u001b[9;1H~                                                                                                     \u001b[10;1H~                                                                                                     \u001b[11;1H~                                                                                                     \u001b[12;1H~                                                                                                     \u001b[13;1H~                                                                        "
     ],
     [
       0.000062,
@@ -2432,7 +2432,7 @@
     ],
     [
       0.004763,
-      "[master 4b1f92d] WIP: This is an patchset that I need to continue working on!\r\n"
+      "[main 4b1f92d] WIP: This is an patchset that I need to continue working on!\r\n"
     ],
     [
       0.001504,

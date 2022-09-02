@@ -85,7 +85,7 @@ is-fixup-commit:  False
 is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
-Branches: ['master']
+Branches: ['main']
 Changed Files: {changed_files}
 -----------------------
 1: T1 Title exceeds max length (42>20)

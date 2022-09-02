@@ -1,5 +1,5 @@
 1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: Thi$ is å title"
 1: UC2 Body does not contain a 'Signed-off-by' line
-1: UC3 Branch name 'master' does not start with one of ['feature/', 'hotfix/', 'release/']
+1: UC3 Branch name 'main' does not start with one of ['feature/', 'hotfix/', 'release/']
 1: UL1 Title contains the special character '$': "WIP: Thi$ is å title"
 2: B4 Second line is not empty: "Content on the second line"

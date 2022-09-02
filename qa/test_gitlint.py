@@ -27,8 +27,8 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, "")
 
     def test_successful_merge_commit(self):
-        # Create branch on master
-        self.create_simple_commit("Cömmit on master\n\nSimple bödy")
+        # Create branch on main
+        self.create_simple_commit("Cömmit on main\n\nSimple bödy")
 
         # Create test branch, add a commit and determine the commit hash
         git("checkout", "-b", "test-branch", _cwd=self.tmp_git_repo)
@@ -37,10 +37,10 @@ class IntegrationTests(BaseTestCase):
         self.create_simple_commit(f"{commit_title}\n\nSïmple body")
         hash = self.get_last_commit_hash()
 
-        # Checkout master and merge the commit
+        # Checkout main and merge the commit
         # We explicitly set the title of the merge commit to the title of the previous commit as this or similar
         # behavior is what many tools do that handle merges (like github, gerrit, etc).
-        git("checkout", "master", _cwd=self.tmp_git_repo)
+        git("checkout", "main", _cwd=self.tmp_git_repo)
         git("merge", "--no-ff", "-m", f"Merge '{commit_title}'", hash, _cwd=self.tmp_git_repo)
 
         # Run gitlint and assert output is empty
@@ -54,9 +54,9 @@ class IntegrationTests(BaseTestCase):
 
     def test_fixup_commit(self):
         # Create a normal commit and assert that it has a violation
-        test_filename = self.create_simple_commit("Cömmit on WIP master\n\nSimple bödy that is long enough")
+        test_filename = self.create_simple_commit("Cömmit on WIP main\n\nSimple bödy that is long enough")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
+        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP main\"\n"
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using fixup commit
@@ -75,7 +75,7 @@ class IntegrationTests(BaseTestCase):
         # Make sure that if we set the ignore-fixup-commits option to false that we do still see the violations
         output = gitlint("-c", "general.ignore-fixup-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
         expected = (
-            "1: T5 Title contains the word 'WIP' (case-insensitive): \"fixup! Cömmit on WIP master\"\n"
+            "1: T5 Title contains the word 'WIP' (case-insensitive): \"fixup! Cömmit on WIP main\"\n"
             "3: B6 Body message is missing\n"
         )
 
@@ -83,9 +83,9 @@ class IntegrationTests(BaseTestCase):
 
     def test_fixup_amend_commit(self):
         # Create a normal commit and assert that it has a violation
-        test_filename = self.create_simple_commit("Cömmit on WIP master\n\nSimple bödy that is long enough")
+        test_filename = self.create_simple_commit("Cömmit on WIP main\n\nSimple bödy that is long enough")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
+        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP main\"\n"
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using fixup=amend commit
@@ -106,12 +106,12 @@ class IntegrationTests(BaseTestCase):
         output = gitlint(
             "-c", "general.ignore-fixup-amend-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1]
         )
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"amend! Cömmit on WIP master\"\n"
+        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"amend! Cömmit on WIP main\"\n"
 
         self.assertEqualStdout(output, expected)
 
     def test_revert_commit(self):
-        self.create_simple_commit("WIP: Cömmit on master.\n\nSimple bödy")
+        self.create_simple_commit("WIP: Cömmit on main.\n\nSimple bödy")
         hash = self.get_last_commit_hash()
         git("revert", hash, _cwd=self.tmp_git_repo)
 
@@ -124,14 +124,14 @@ class IntegrationTests(BaseTestCase):
             "-c", "general.ignore-revert-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1]
         )
         self.assertEqual(output.exit_code, 1)
-        expected = '1: T5 Title contains the word \'WIP\' (case-insensitive): "Revert "WIP: Cömmit on master.""\n'
+        expected = '1: T5 Title contains the word \'WIP\' (case-insensitive): "Revert "WIP: Cömmit on main.""\n'
         self.assertEqualStdout(output, expected)
 
     def test_squash_commit(self):
         # Create a normal commit and assert that it has a violation
-        test_filename = self.create_simple_commit("Cömmit on WIP master\n\nSimple bödy that is long enough")
+        test_filename = self.create_simple_commit("Cömmit on WIP main\n\nSimple bödy that is long enough")
         output = gitlint(_cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[1])
-        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP master\"\n"
+        expected = "1: T5 Title contains the word 'WIP' (case-insensitive): \"Cömmit on WIP main\"\n"
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using squash commit
@@ -156,7 +156,7 @@ class IntegrationTests(BaseTestCase):
             "-c", "general.ignore-squash-commits=false", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2]
         )
         expected = (
-            "1: T5 Title contains the word 'WIP' (case-insensitive): \"squash! Cömmit on WIP master\"\n"
+            "1: T5 Title contains the word 'WIP' (case-insensitive): \"squash! Cömmit on WIP main\"\n"
             '3: B5 Body message is too short (14<20): "Töo short body"\n'
         )
 

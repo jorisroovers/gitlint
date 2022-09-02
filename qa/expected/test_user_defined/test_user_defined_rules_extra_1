@@ -1,7 +1,7 @@
 1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: Thi$ is å title"
-1: UC1 GitContext.current_branch: master
+1: UC1 GitContext.current_branch: main
 1: UC1 GitContext.commentchar: #
-1: UC2 GitCommit.branches: ['master']
+1: UC2 GitCommit.branches: ['main']
 1: UC2 GitCommit.custom_prop: foöbar
 1: UC4 int-öption: 2
 1: UC4 str-öption: föo

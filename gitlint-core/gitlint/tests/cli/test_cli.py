@@ -657,9 +657,9 @@ class CLITests(BaseTestCase):
     def test_no_commits_in_range(self, sh, _):
         """Test for --commits with the specified range being empty."""
         sh.git.side_effect = lambda *_args, **_kwargs: ""
-        result = self.cli.invoke(cli.cli, ["--commits", "master...HEAD"])
+        result = self.cli.invoke(cli.cli, ["--commits", "main...HEAD"])
 
-        self.assert_log_contains('DEBUG: gitlint.cli No commits in range "master...HEAD"')
+        self.assert_log_contains('DEBUG: gitlint.cli No commits in range "main...HEAD"')
         self.assertEqual(result.exit_code, self.GITLINT_SUCCESS_CODE)
 
     @patch("gitlint.cli.get_stdin_data", return_value="WIP: tëst tïtle")

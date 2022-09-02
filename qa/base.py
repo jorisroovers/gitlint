@@ -60,7 +60,7 @@ class BaseTestCase(TestCase):
         tmp_git_repo = self.generate_temp_path()
         self.tmp_git_repos.append(tmp_git_repo)
 
-        git("init", tmp_git_repo)
+        git("init", "--initial-branch", "main", tmp_git_repo)
         # configuring name and email is required in every git repot
         git("config", "user.name", "gitlint-test-user", _cwd=tmp_git_repo)
         git("config", "user.email", "gitlint@test.com", _cwd=tmp_git_repo)

@@ -85,7 +85,7 @@ is-fixup-commit:  False
 is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
-Branches: ['master']
+Branches: ['main']
 Changed Files: {changed_files}
 -----------------------
 1: T3 Title has trailing punctuation (.): "WIP: Pïpe test."
