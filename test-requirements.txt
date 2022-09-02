@@ -1,4 +1,4 @@
-black==22.6.0
+black==22.8.0
 coverage==6.2
 python-coveralls==2.9.3
 radon==5.1.0
