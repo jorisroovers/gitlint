@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import print_function
 from setuptools import setup, find_packages
 import io
 import re
@@ -32,7 +31,7 @@ Source code on `github.com/jorisroovers/gitlint`_.
 # shamelessly stolen from mkdocs' setup.py: https://github.com/mkdocs/mkdocs/blob/master/setup.py
 def get_version(package):
     """Return package version as listed in `__version__` in `init.py`."""
-    init_py = io.open(os.path.join(package, "__init__.py"), encoding="UTF-8").read()
+    init_py = open(os.path.join(package, "__init__.py"), encoding="UTF-8").read()
     return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
 
 

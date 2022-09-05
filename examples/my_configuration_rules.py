@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from gitlint.rules import ConfigurationRule
 from gitlint.options import IntOption
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 from qa.shell import gitlint
 from qa.base import BaseTestCase

@@ -1,7 +1,6 @@
 from configparser import ConfigParser, Error as ConfigParserError
 
 import copy
-import io
 import re
 import os
 import shutil
@@ -376,8 +375,7 @@ class RuleCollection:
                 del self._rules[rule.id]
 
     def __iter__(self):
-        for rule in self._rules.values():
-            yield rule
+        yield from self._rules.values()
 
     def __eq__(self, other):
         return isinstance(other, RuleCollection) and self._rules == other._rules
@@ -454,7 +452,7 @@ class LintConfigBuilder:
         try:
             parser = ConfigParser()
 
-            with io.open(filename, encoding=DEFAULT_ENCODING) as config_file:
+            with open(filename, encoding=DEFAULT_ENCODING) as config_file:
                 parser.read_file(config_file, filename)
 
             for section_name in parser.sections():

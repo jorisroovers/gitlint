@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import copy
 
 from gitlint.tests.base import BaseTestCase

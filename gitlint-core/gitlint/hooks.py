@@ -1,4 +1,3 @@
-import io
 import shutil
 import os
 import stat
@@ -53,7 +52,7 @@ class GitHookInstaller:
         if not os.path.exists(dest_path):
             raise GitHookInstallerError(f"There is no commit-msg hook present in {dest_path}.")
 
-        with io.open(dest_path, encoding=DEFAULT_ENCODING) as fp:
+        with open(dest_path, encoding=DEFAULT_ENCODING) as fp:
             lines = fp.readlines()
             if len(lines) < 2 or lines[1] != GITLINT_HOOK_IDENTIFIER:
                 msg = (

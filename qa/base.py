@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return,
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 
-import io
 import os
 import platform
 import shutil
@@ -81,7 +79,7 @@ class BaseTestCase(TestCase):
         """Creates a file inside a passed directory. Returns filename."""
         test_filename = "test-fïle-" + str(uuid4())
         # pylint: disable=consider-using-with
-        io.open(os.path.join(parent_dir, test_filename), "a", encoding=DEFAULT_ENCODING).close()
+        open(os.path.join(parent_dir, test_filename), "a", encoding=DEFAULT_ENCODING).close()
         return test_filename
 
     @staticmethod
@@ -134,7 +132,7 @@ class BaseTestCase(TestCase):
         # Not using a context manager to avoid unnecessary indentation in test code
         tmpfile, tmpfilepath = tempfile.mkstemp()
         self.tmpfiles.append(tmpfilepath)
-        with io.open(tmpfile, "w", encoding=DEFAULT_ENCODING) as f:
+        with open(tmpfile, "w", encoding=DEFAULT_ENCODING) as f:
             f.write(content)
         return tmpfilepath
 
@@ -162,7 +160,7 @@ class BaseTestCase(TestCase):
         specified by variable_dict."""
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        with io.open(expected_path, encoding=DEFAULT_ENCODING) as file:
+        with open(expected_path, encoding=DEFAULT_ENCODING) as file:
             expected = file.read()
 
             if variable_dict:

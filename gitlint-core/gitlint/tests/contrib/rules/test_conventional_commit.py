@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.rules import RuleViolation
 from gitlint.contrib.rules.conventional_commit import ConventionalCommit

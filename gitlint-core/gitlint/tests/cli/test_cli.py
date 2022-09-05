@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 import io
 import os
 import sys
@@ -29,7 +26,7 @@ class CLITests(BaseTestCase):
     GITLINT_SUCCESS_CODE = 0
 
     def setUp(self):
-        super(CLITests, self).setUp()
+        super().setUp()
         self.cli = CliRunner()
 
         # Patch gitlint.cli.git_version() so that we don't have to patch it separately in every test
@@ -321,7 +318,7 @@ class CLITests(BaseTestCase):
 
         with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "msg")
-            with io.open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
                 f.write("WIP: msg-filename tïtle\n")
 
             with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -371,7 +368,7 @@ class CLITests(BaseTestCase):
 
         with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "msg")
-            with io.open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
                 f.write("Commït title\n")
 
             with patch("gitlint.display.stderr", new=StringIO()) as stderr:

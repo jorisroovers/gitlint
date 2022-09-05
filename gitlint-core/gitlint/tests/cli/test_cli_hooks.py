@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import io
 from io import StringIO
 import os
@@ -23,7 +21,7 @@ class CLIHookTests(BaseTestCase):
     CONFIG_ERROR_CODE = 255
 
     def setUp(self):
-        super(CLIHookTests, self).setUp()
+        super().setUp()
         self.cli = CliRunner()
 
         # Patch gitlint.cli.git_version() so that we don't have to patch it separately in every test
@@ -110,7 +108,7 @@ class CLIHookTests(BaseTestCase):
 
         with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "hür")
-            with io.open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
                 f.write("WIP: tïtle\n")
 
             with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -139,7 +137,7 @@ class CLIHookTests(BaseTestCase):
             with self.patch_input(["e", "e", "n"]):
                 with self.tempdir() as tmpdir:
                     msg_filename = os.path.realpath(os.path.join(tmpdir, "hür"))
-                    with io.open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+                    with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
                         f.write(commit_messages[i] + "\n")
 
                     with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -168,7 +166,7 @@ class CLIHookTests(BaseTestCase):
         with self.patch_input(["n"]):
             with self.tempdir() as tmpdir:
                 msg_filename = os.path.join(tmpdir, "hür")
-                with io.open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+                with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
                     f.write("WIP: höok no\n")
 
                 with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -186,7 +184,7 @@ class CLIHookTests(BaseTestCase):
         with self.patch_input(["y"]):
             with self.tempdir() as tmpdir:
                 msg_filename = os.path.join(tmpdir, "hür")
-                with io.open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+                with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
                     f.write("WIP: höok yes\n")
 
                 with patch("gitlint.display.stderr", new=StringIO()) as stderr:

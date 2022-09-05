@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import sys
 
@@ -72,7 +70,7 @@ class UserRuleTests(BaseTestCase):
         classes = find_rule_classes(user_rule_path)
 
         # convert classes to strings and sort them so we can compare them
-        class_strings = sorted([str(clazz) for clazz in classes])
+        class_strings = sorted(str(clazz) for clazz in classes)
         expected = ["<class 'my_commit_rules.MyUserCommitRule'>", "<class 'parent_package.InitFileRule'>"]
         self.assertListEqual(class_strings, expected)
 

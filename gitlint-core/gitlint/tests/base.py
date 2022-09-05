@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import contextlib
 import copy
-import io
 import logging
 import os
 import re
@@ -59,7 +56,7 @@ class BaseTestCase(unittest.TestCase):
     def get_sample(filename=""):
         """Read and return the contents of a file in gitlint/tests/samples"""
         sample_path = BaseTestCase.get_sample_path(filename)
-        with io.open(sample_path, encoding=DEFAULT_ENCODING) as content:
+        with open(sample_path, encoding=DEFAULT_ENCODING) as content:
             sample = content.read()
         return sample
 
@@ -75,7 +72,7 @@ class BaseTestCase(unittest.TestCase):
         """Utility method to read an expected file from gitlint/tests/expected and return it as a string.
         Optionally replace template variables specified by variable_dict."""
         expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)
-        with io.open(expected_path, encoding=DEFAULT_ENCODING) as content:
+        with open(expected_path, encoding=DEFAULT_ENCODING) as content:
             expected = content.read()
 
         if variable_dict:

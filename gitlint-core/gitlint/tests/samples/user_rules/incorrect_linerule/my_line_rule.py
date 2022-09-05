@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from gitlint.rules import LineRule
 
 
