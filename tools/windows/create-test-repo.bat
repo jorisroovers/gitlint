@@ -15,7 +15,7 @@ set Reponame=gitlint-test-%datetime%
 echo %Reponame%
 
 :: Create git repo
-git init %Reponame%
+git init --initial-branch main %Reponame%
 cd %Reponame%
 
 :: Do some basic config

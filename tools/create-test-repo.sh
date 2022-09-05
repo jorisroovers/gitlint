@@ -11,7 +11,7 @@ echo "pwd=$CWD"
 # Create the repo
 cd /tmp
 reponame=$(date +gitlint-test-%Y-%m-%d_%H-%M-%S)
-git init $reponame
+git init --initial-branch main $reponame
 cd $reponame
 
 # Do some basic config
