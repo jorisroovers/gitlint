@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from collections import OrderedDict
 from gitlint import rules
 from gitlint.config import RuleCollection

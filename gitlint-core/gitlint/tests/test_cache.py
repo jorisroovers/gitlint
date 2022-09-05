@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from gitlint.tests.base import BaseTestCase
 from gitlint.cache import PropertyCache, cache
 

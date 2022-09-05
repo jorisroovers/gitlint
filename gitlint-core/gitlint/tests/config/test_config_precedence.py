@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from io import StringIO
 
 from click.testing import CliRunner

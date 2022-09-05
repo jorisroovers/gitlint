@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 
 from unittest.mock import patch, ANY, mock_open
@@ -85,7 +83,7 @@ class HookTests(BaseTestCase):
         git_hooks_dir.return_value = os.path.join("/föo", "bar", ".git", "hooks")
         lint_config.target = os.path.join("/hür", "dur")
         read_data = "#!/bin/sh\n" + GITLINT_HOOK_IDENTIFIER
-        with patch("gitlint.hooks.io.open", mock_open(read_data=read_data), create=True):
+        with patch("builtins.open", mock_open(read_data=read_data), create=True):
             GitHookInstaller.uninstall_commit_msg_hook(lint_config)
 
         expected_dst = os.path.join(git_hooks_dir.return_value, COMMIT_MSG_HOOK_DST_PATH)
@@ -133,7 +131,7 @@ class HookTests(BaseTestCase):
             "(or it was modified).\nUninstallation of 3th party or modified gitlint hooks "
             "is not supported."
         )
-        with patch("gitlint.hooks.io.open", mock_open(read_data=read_data), create=True):
+        with patch("builtins.open", mock_open(read_data=read_data), create=True):
             with self.assertRaisesMessage(GitHookInstallerError, expected_msg):
                 GitHookInstaller.uninstall_commit_msg_hook(lint_config)
             remove.assert_not_called()

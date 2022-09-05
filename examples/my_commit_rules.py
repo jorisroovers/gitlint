@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption, ListOption
 

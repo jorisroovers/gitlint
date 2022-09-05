@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from io import StringIO
 
 from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error

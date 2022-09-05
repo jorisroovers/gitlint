@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 
 import re
