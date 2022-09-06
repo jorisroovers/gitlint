@@ -1,5 +1,6 @@
 import copy
 import datetime
+from pathlib import Path
 
 import dateutil
 
@@ -8,7 +9,7 @@ import arrow
 from unittest.mock import patch, call
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, GitContextError, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
+from gitlint.git import GitChangedFileStats, GitContext, GitCommit, GitContextError, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
 from gitlint.shell import ErrorReturnCode
 
 
@@ -689,6 +690,11 @@ class GitCommitTests(BaseTestCase):
         commit_message1 = GitCommitMessage(GitContext(), "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])
         attrs = ["original", "full", "title", "body"]
         self.object_equality_test(commit_message1, attrs, {"context": commit_message1.context})
+
+    def test_gitchangedfilestats_equality(self):
+        changed_file_stats = GitChangedFileStats(Path("foö/bar"), 5, 13)
+        attrs = ["filepath", "additions", "deletions"]
+        self.object_equality_test(changed_file_stats, attrs)
 
     @patch("gitlint.git._git")
     def test_gitcommit_equality(self, git):

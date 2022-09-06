@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 import arrow
 
@@ -135,6 +136,31 @@ class GitCommitMessage:
         )
 
 
+class GitChangedFileStats:
+    """Class representing the stats for a changed file in git"""
+
+    def __init__(self, filepath, additions, deletions):
+        self.filepath = filepath
+        self.additions = additions
+        self.deletions = deletions
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, GitChangedFileStats)
+            and self.filepath == other.filepath
+            and self.additions == other.additions
+            and self.deletions == other.deletions
+        )
+
+    def __str__(self) -> str:
+        return f"{self.filepath}: {self.additions} additions, {self.deletions} deletions"
+
+    def __repr__(self) -> str:
+        return (
+            f'GitChangedFileStats(filepath="{self.filepath}", additions={self.additions}, deletions={self.deletions})'
+        )
+
+
 class GitCommit:
     """Class representing a git commit.
     A commit consists of: context, message, author name, author email, date, list of parent commit shas,
@@ -152,6 +178,7 @@ class GitCommit:
         author_email=None,
         parents=None,
         changed_files=None,
+        changed_files_stats=None,
         branches=None,
     ):
         self.context = context
@@ -162,6 +189,7 @@ class GitCommit:
         self.author_email = author_email
         self.parents = parents or []  # parent commit hashes
         self.changed_files = changed_files or []
+        self.changed_files_stats = changed_files_stats or {}
         self.branches = branches or []
 
     @property
@@ -186,6 +214,7 @@ class GitCommit:
 
     def __str__(self):
         date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
+        changed_files_stats_str = "\n\t".join([str(stats) for stats in self.changed_files_stats.values()])
         return (
             f"--- Commit Message ----\n{self.message}\n"
             "--- Meta info ---------\n"
@@ -198,6 +227,7 @@ class GitCommit:
             f"is-revert-commit: {self.is_revert_commit}\n"
             f"Branches: {self.branches}\n"
             f"Changed Files: {self.changed_files}\n"
+            f"Changed Files Stats:\n\t{changed_files_stats_str}\n"
             "-----------------------"
         )
 
@@ -217,6 +247,7 @@ class GitCommit:
             and self.is_squash_commit == other.is_squash_commit
             and self.is_revert_commit == other.is_revert_commit
             and self.changed_files == other.changed_files
+            and self.changed_files_stats == other.changed_files_stats
             and self.branches == other.branches
         )
 
@@ -307,18 +338,32 @@ class LocalGitCommit(GitCommit, PropertyCache):
 
     @property
     def changed_files(self):
-        def cache_changed_files():
-            self._cache["changed_files"] = _git(
+        return self._try_cache("changed_files", self.changed_files_stats)
+
+    @property
+    def changed_files_stats(self):
+        def cache_changed_files_stats():
+            changed_files_stats_raw = _git(
                 "diff-tree",
                 "--no-commit-id",
-                "--name-only",
+                "--numstat",
                 "-r",
                 "--root",
                 self.sha,
                 _cwd=self.context.repository_path,
-            ).split()
+            ).split("\n")
+            changed_files_stats = {}
 
-        return self._try_cache("changed_files", cache_changed_files)
+            for line in changed_files_stats_raw[:-1]:  # drop last empty line
+                line_stats = line.split()
+                changed_file_stat = GitChangedFileStats(Path(line_stats[2]), int(line_stats[0]), int(line_stats[1]))
+                changed_files_stats[line_stats[2]] = changed_file_stat
+                breakpoint()
+
+            self._cache["changed_files_stats"] = changed_files_stats
+            self._cache["changed_files"] = list(changed_files_stats.keys())
+
+        return self._try_cache("changed_files_stats", cache_changed_files_stats)
 
 
 class StagedLocalGitCommit(GitCommit, PropertyCache):
@@ -370,6 +415,12 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     @property
     def changed_files(self):
         return _git("diff", "--staged", "--name-only", "-r", _cwd=self.context.repository_path).split()
+
+    @property
+    def changed_files_stats(self):
+        raise NotImplementedError()
+        # TODO(jroovers): implement this!
+        # return _git("diff", "--staged", "--name-only", "-r", _cwd=self.context.repository_path).split()
 
 
 class GitContext(PropertyCache):
