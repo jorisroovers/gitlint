@@ -2,6 +2,7 @@ black==22.8.0
 coverage==6.2
 python-coveralls==2.9.3
 radon==5.1.0
-pytest==7.0.1;
-pylint==2.13.7;
+pytest==7.0.1
+pylint==2.13.7
+pdbr==0.6.6
 -r requirements.txt
