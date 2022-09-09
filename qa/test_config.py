@@ -73,7 +73,13 @@ class ConfigTests(BaseTestCase):
             output = gitlint("--config", config_path, "--debug", _cwd=target_repo, _tty_in=True, _ok_code=[5])
 
             expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
-            expected_kwargs.update({"config_path": config_path, "changed_files": [filename]})
+            expected_kwargs.update(
+                {
+                    "config_path": config_path,
+                    "changed_files": [filename],
+                    "changed_files_stats": f"{filename}: 0 additions, 0 deletions",
+                }
+            )
             self.assertEqualStdout(
                 output, self.get_expected("test_config/test_config_from_file_debug_1", expected_kwargs)
             )
@@ -103,7 +109,9 @@ class ConfigTests(BaseTestCase):
         )
         output = gitlint(_env=env, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
         expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
-        expected_kwargs.update({"changed_files": [filename]})
+        expected_kwargs.update(
+            {"changed_files": [filename], "changed_files_stats": f"{filename}: 0 additions, 0 deletions"}
+        )
 
         self.assertEqualStdout(output, self.get_expected("test_config/test_config_from_env_1", expected_kwargs))
 

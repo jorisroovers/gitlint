@@ -72,8 +72,8 @@ DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.git ('log', '{commit_sha}', '-1', '--pretty=%aN%x00%aE%x00%ai%x00%P%n%B')
 DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.lint Linting commit {commit_sha}
+DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--numstat', '-r', '--root', '{commit_sha}')
 DEBUG: gitlint.git ('branch', '--contains', '{commit_sha}')
-DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--name-only', '-r', '--root', '{commit_sha}')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 WIP: Thïs is a title thåt is a bit longer.
@@ -90,6 +90,8 @@ is-squash-commit: False
 is-revert-commit: False
 Branches: ['main']
 Changed Files: {changed_files}
+Changed Files Stats:
+  {changed_files_stats}
 -----------------------
 1: CC1 Body does not contain a 'Signed-off-by' line
 1: CT1 Title does not start with one of fix, feat, chore, docs, style, refactor, perf, test, revert, ci, build

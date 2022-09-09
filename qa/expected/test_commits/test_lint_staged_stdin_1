@@ -70,10 +70,10 @@ DEBUG: gitlint.cli Stdin detected and not ignored. Using as input.
 DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
+DEBUG: gitlint.git ('diff', '--staged', '--numstat', '-r')
 DEBUG: gitlint.git ('config', '--get', 'user.name')
 DEBUG: gitlint.git ('config', '--get', 'user.email')
 DEBUG: gitlint.git ('rev-parse', '--abbrev-ref', 'HEAD')
-DEBUG: gitlint.git ('diff', '--staged', '--name-only', '-r')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 WIP: Pïpe test.
@@ -87,6 +87,8 @@ is-squash-commit: False
 is-revert-commit: False
 Branches: ['main']
 Changed Files: {changed_files}
+Changed Files Stats:
+  {changed_files_stats}
 -----------------------
 1: T3 Title has trailing punctuation (.): "WIP: Pïpe test."
 1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: Pïpe test."
