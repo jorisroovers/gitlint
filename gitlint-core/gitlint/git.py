@@ -99,7 +99,7 @@ def _parse_git_changed_file_stats(changed_files_stats_raw):
 
     for line in changed_files_stats_lines[:-1]:  # drop last empty line
         line_stats = line.split()
-        changed_file_stat = GitChangedFileStats(Path(line_stats[2]), int(line_stats[0]), int(line_stats[1]))
+        changed_file_stat = GitChangedFileStats(line_stats[2], int(line_stats[0]), int(line_stats[1]))
         changed_files_stats[line_stats[2]] = changed_file_stat
 
     return changed_files_stats
@@ -153,7 +153,7 @@ class GitChangedFileStats:
     """Class representing the stats for a changed file in git"""
 
     def __init__(self, filepath, additions, deletions):
-        self.filepath = filepath
+        self.filepath = Path(filepath)
         self.additions = additions
         self.deletions = deletions
 
@@ -411,9 +411,7 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     @property
     def changed_files_stats(self):
         def cache_changed_files_stats():
-            changed_files_stats_raw = _git(
-                "diff", "--staged", "--numstat", "-r", _cwd=self.context.repository_path
-            )
+            changed_files_stats_raw = _git("diff", "--staged", "--numstat", "-r", _cwd=self.context.repository_path)
             self._cache["changed_files_stats"] = _parse_git_changed_file_stats(changed_files_stats_raw)
 
         return self._try_cache("changed_files_stats", cache_changed_files_stats)

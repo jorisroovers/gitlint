@@ -62,8 +62,8 @@ class CLITests(BaseTestCase):
             "6f29bf81a8322a04071bb794666e48c443a90360",
             "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncommït-title\n\ncommït-body",
             "#",  # git config --get core.commentchar
+            "1\t4\tfile1.txt\n3\t5\tpåth/to/file2.txt\n",
             "commit-1-branch-1\ncommit-1-branch-2\n",
-            "file1.txt\npåth/to/file2.txt\n",
         ]
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -85,18 +85,18 @@ class CLITests(BaseTestCase):
             "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             "commït-title1\n\ncommït-body1",
             "#",                                           # git config --get core.commentchar
+            "3\t5\tcommit-1/file-1\n1\t4\tcommit-1/file-2\n",          # git diff-tree
             "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
                                                             # git log --pretty <FORMAT> <SHA>
             "test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             "commït-title2\n\ncommït-body2",
+            "8\t3\tcommit-2/file-1\n1\t5\tcommit-2/file-2\n",          # git diff-tree
             "commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
                                                             # git log --pretty <FORMAT> <SHA>
             "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             "commït-title3\n\ncommït-body3",
+            "7\t2\tcommit-3/file-1\n1\t7\tcommit-3/file-2\n",          # git diff-tree
             "commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
         # fmt: on
 
@@ -120,18 +120,18 @@ class CLITests(BaseTestCase):
             "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             "commït-title1\n\ncommït-body1",
             "#",                                           # git config --get core.commentchar
+            "9\t4\tcommit-1/file-1\n0\t2\tcommit-1/file-2\n",          # git diff-tree
             "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
                                                             # git log --pretty <FORMAT> <SHA>
             "test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             "commït-title2.\n\ncommït-body2\ngitlint-ignore: T3\n",
+            "3\t7\tcommit-2/file-1\n4\t6\tcommit-2/file-2\n",          # git diff-tree
             "commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
                                                             # git log --pretty <FORMAT> <SHA>
             "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             "commït-title3.\n\ncommït-body3",
+            "3\t8\tcommit-3/file-1\n1\t4\tcommit-3/file-2\n",          # git diff-tree
             "commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
         # fmt: on
 
@@ -156,21 +156,21 @@ class CLITests(BaseTestCase):
             "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             "commït-title1\n\ncommït-body1",
             "#",                                           # git config --get core.commentchar
+            "5\t9\tcommit-1/file-1\n1\t4\tcommit-1/file-2\n",          # git diff-tree
             "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
                                                             # git log --pretty <FORMAT> <SHA>
             "test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
             # Normally T3 violation (trailing punctuation), but this commit is ignored because of
             # config below
             "commït-title2.\n\ncommït-body2\n",
+            "4\t7\tcommit-2/file-1\n1\t4\tcommit-2/file-2\n",          # git diff-tree
             "commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",          # git diff-tree
                                                             # git log --pretty <FORMAT> <SHA>
             "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
             # Normally T1 and B5 violations, now only T1 because we're ignoring B5 in config below
             "commït-title3.\n\ncommït-body3 foo",
+            "1\t9\tcommit-3/file-1\n3\t7\tcommit-3/file-2\n",          # git diff-tree
             "commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",          # git diff-tree
         ]
         # fmt: on
 
@@ -212,8 +212,8 @@ class CLITests(BaseTestCase):
             "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             "WIP: commït-title1\n\ncommït-body1",
             "#",                                           # git config --get core.commentchar
+            "4\t5\tcommit-1/file-1\n1\t4\tcommit-1/file-2\n",          # git diff-tree
             "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",          # git diff-tree
         ]
         # fmt: on
 
@@ -265,8 +265,8 @@ class CLITests(BaseTestCase):
             "6f29bf81a8322a04071bb794666e48c443a90360",
             "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncommït-title\n\ncommït-body",
             "#",  # git config --get core.commentchar
+            "3\t12\tfile1.txt\n8\t5\tpåth/to/file2.txt\n",  # git diff-tree
             "commit-1-branch-1\ncommit-1-branch-2\n",  # git branch --contains <sha>
-            "file1.txt\npåth/to/file2.txt\n",  # git diff-tree
         ]
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -287,8 +287,8 @@ class CLITests(BaseTestCase):
             "#",  # git config --get core.commentchar
             "föo user\n",  # git config --get user.name
             "föo@bar.com\n",  # git config --get user.email
+            "1\t5\tcommit-1/file-1\n8\t9\tcommit-1/file-2\n",  # git diff-tree
             "my-branch\n",  # git rev-parse --abbrev-ref HEAD (=current branch)
-            "commit-1/file-1\ncommit-1/file-2\n",  # git diff-tree
         ]
 
         with patch("gitlint.display.stderr", new=StringIO()) as stderr:
