@@ -272,8 +272,8 @@ class CLIHookTests(BaseTestCase):
             "6f29bf81a8322a04071bb794666e48c443a90360",
             "test åuthor\x00test-email@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\nWIP: commït-title\n\ncommït-body",
             "#",  # git config --get core.commentchar
+            "1\t5\tfile1.txt\n3\t4\tpåth/to/file2.txt\n",
             "commit-1-branch-1\ncommit-1-branch-2\n",
-            "file1.txt\npåth/to/file2.txt\n",
         ]
 
         with self.patch_input(["e"]):

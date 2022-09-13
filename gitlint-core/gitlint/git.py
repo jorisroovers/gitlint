@@ -229,7 +229,12 @@ class GitCommit:
 
     def __str__(self):
         date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
-        changed_files_stats_str = "\n  " + "\n  ".join([str(stats) for stats in self.changed_files_stats.values()])
+
+        if len(self.changed_files_stats) > 0:
+            changed_files_stats_str = "\n  " + "\n  ".join([str(stats) for stats in self.changed_files_stats.values()])
+        else:
+            changed_files_stats_str = " {}"
+
         return (
             f"--- Commit Message ----\n{self.message}\n"
             "--- Meta info ---------\n"

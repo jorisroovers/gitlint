@@ -285,9 +285,9 @@ class CLITests(BaseTestCase):
 
         sh.git.side_effect = [
             "#",  # git config --get core.commentchar
+            "1\t5\tcommit-1/file-1\n8\t9\tcommit-1/file-2\n",  # git diff-tree
             "föo user\n",  # git config --get user.name
             "föo@bar.com\n",  # git config --get user.email
-            "1\t5\tcommit-1/file-1\n8\t9\tcommit-1/file-2\n",  # git diff-tree
             "my-branch\n",  # git rev-parse --abbrev-ref HEAD (=current branch)
         ]
 
@@ -309,10 +309,10 @@ class CLITests(BaseTestCase):
         # fmt: off
         sh.git.side_effect = [
             "#",                                         # git config --get core.commentchar
+            "3\t4\tcommit-1/file-1\n4\t7\tcommit-1/file-2\n",        # git diff-tree
             "föo user\n",                                # git config --get user.name
             "föo@bar.com\n",                             # git config --get user.email
             "my-branch\n",                               # git rev-parse --abbrev-ref HEAD (=current branch)
-            "commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
         ]
         # fmt: on
 
@@ -430,17 +430,17 @@ class CLITests(BaseTestCase):
             # git log --pretty <FORMAT> <SHA>
             "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00abc\n"
             "commït-title1\n\ncommït-body1",
-            "#",                                         # git config --get core.commentchar
-            "commit-1-branch-1\ncommit-1-branch-2\n",    # git branch --contains <sha>
-            "commit-1/file-1\ncommit-1/file-2\n",        # git diff-tree
+            "#",                                                     # git config --get core.commentchar
+            "5\t8\tcommit-1/file-1\n2\t9\tcommit-1/file-2\n",                    # git diff-tree
+            "commit-1-branch-1\ncommit-1-branch-2\n",                # git branch --contains <sha>
             "test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00abc\n"
             "commït-title2.\n\ncommït-body2",
-            "commit-2-branch-1\ncommit-2-branch-2\n",    # git branch --contains <sha>
-            "commit-2/file-1\ncommit-2/file-2\n",        # git diff-tree
+            "5\t8\tcommit-2/file-1\n7\t9\tcommit-2/file-2\n",        # git diff-tree
+            "commit-2-branch-1\ncommit-2-branch-2\n",                # git branch --contains <sha>
             "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00abc\n"
             "föobar\nbar",
-            "commit-3-branch-1\ncommit-3-branch-2\n",     # git branch --contains <sha>
-            "commit-3/file-1\ncommit-3/file-2\n",         # git diff-tree
+            "1\t4\tcommit-3/file-1\n3\t4\tcommit-3/file-2\n",        # git diff-tree
+            "commit-3-branch-1\ncommit-3-branch-2\n",                # git branch --contains <sha>
         ]
         # fmt: on
 

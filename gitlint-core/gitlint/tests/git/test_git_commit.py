@@ -792,11 +792,14 @@ class GitCommitTests(BaseTestCase):
             "author_name": commit1.author_name,
             "author_email": commit1.author_email,
             "parents": commit1.parents,
-            "changed_files_stats": commit1.changed_files_stats,
             "branches": commit1.branches,
         }
 
-        self.object_equality_test(commit1, kwargs.keys(), {"context": commit1.context})
+        self.object_equality_test(
+            commit1,
+            kwargs.keys(),
+            {"context": commit1.context, "changed_files_stats": {"föo/bar": GitChangedFileStats("föo/bar", 5, 13)}},
+        )
 
         # Check that the is_* attributes that are affected by the commit message affect equality
         special_messages = {
@@ -814,6 +817,10 @@ class GitCommitTests(BaseTestCase):
             clone2 = GitCommit(context=commit1.context, **kwargs_copy)
             clone2.message = GitCommitMessage.from_full_message(context1, "foöbar")
             self.assertNotEqual(clone1, clone2)
+
+        # Check changed_files and changed_files_stats
+        commit2.changed_files_stats = {"föo/bar2": GitChangedFileStats("föo/bar2", 5, 13)}
+        self.assertNotEqual(commit1, commit2)
 
     @patch("gitlint.git.git_commentchar")
     def test_commit_msg_custom_commentchar(self, patched):
