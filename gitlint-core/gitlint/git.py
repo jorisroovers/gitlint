@@ -93,7 +93,8 @@ def git_hooks_dir(repository_path):
 
 
 def _parse_git_changed_file_stats(changed_files_stats_raw):
-    """Parse the output of git diff --numstat and return a dict of filename -> GitChangedFileStats(filename, additions, deletions)"""
+    """Parse the output of git diff --numstat and return a dict of:
+    dict[filename: GitChangedFileStats(filename, additions, deletions)]"""
     changed_files_stats_lines = changed_files_stats_raw.split("\n")
     changed_files_stats = {}
 

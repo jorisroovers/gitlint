@@ -705,8 +705,6 @@ class GitCommitTests(BaseTestCase):
 
     @patch("gitlint.git.sh")
     def test_staged_commit_with_missing_username(self, sh):
-        # StagedLocalGitCommit()
-
         sh.git.side_effect = [
             "#",  # git config --get core.commentchar
             ErrorReturnCode("git config --get user.name", b"", b""),
@@ -715,22 +713,19 @@ class GitCommitTests(BaseTestCase):
         expected_msg = "Missing git configuration: please set user.name"
         with self.assertRaisesMessage(GitContextError, expected_msg):
             ctx = GitContext.from_staged_commit("Foōbar 123\n\ncömmit-body\n", "fåke/path")
-            [str(commit) for commit in ctx.commits]
+            ctx.commits[0].author_name  # accessing this attribute should raise an exception
 
     @patch("gitlint.git.sh")
     def test_staged_commit_with_missing_email(self, sh):
-        # StagedLocalGitCommit()
-
         sh.git.side_effect = [
             "#",  # git config --get core.commentchar
-            "test åuthor\n",  # git config --get user.name
-            ErrorReturnCode("git config --get user.name", b"", b""),
+            ErrorReturnCode("git config --get user.email", b"", b""),
         ]
 
         expected_msg = "Missing git configuration: please set user.email"
         with self.assertRaisesMessage(GitContextError, expected_msg):
             ctx = GitContext.from_staged_commit("Foōbar 123\n\ncömmit-body\n", "fåke/path")
-            [str(commit) for commit in ctx.commits]
+            ctx.commits[0].author_email  # accessing this attribute should raise an exception
 
     def test_gitcommitmessage_equality(self):
         commit_message1 = GitCommitMessage(GitContext(), "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])

@@ -68,10 +68,10 @@ DEBUG: gitlint.cli Using --msg-filename.
 DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
 DEBUG: gitlint.cli Linting 1 commit(s)
 DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
+DEBUG: gitlint.git ('diff', '--staged', '--numstat', '-r')
 DEBUG: gitlint.git ('config', '--get', 'user.name')
 DEBUG: gitlint.git ('config', '--get', 'user.email')
 DEBUG: gitlint.git ('rev-parse', '--abbrev-ref', 'HEAD')
-DEBUG: gitlint.git ('diff', '--staged', '--name-only', '-r')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
 WIP: msg-fïlename test.
@@ -85,6 +85,6 @@ is-squash-commit: False
 is-revert-commit: False
 Branches: ['main']
 Changed Files: []
-Changed Files Stats:
+Changed Files Stats: {{}}
 -----------------------
 DEBUG: gitlint.cli Exit Code = 3
