@@ -191,12 +191,12 @@ class IntegrationTests(BaseTestCase):
         # necessary but seems good for consistency.
         env = self.create_tmp_git_config("[user]\n  email = test-emåil@foo.com\n")
         output = gitlint(
-            "--debug",
             "--staged",
             "--msg-filename",
             tmp_commit_msg_file,
             _ok_code=[self.GIT_CONTEXT_ERROR_CODE],
             _env=env,
+            _cwd=self.tmp_git_repo,
         )
         expected = "Missing git configuration: please set user.name\n"
         self.assertEqualStdout(output, expected)
@@ -206,7 +206,12 @@ class IntegrationTests(BaseTestCase):
         tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename NO email test.")
         env = self.create_tmp_git_config("[user]\n  name = test åuthor\n")
         output = gitlint(
-            "--staged", "--msg-filename", tmp_commit_msg_file, _ok_code=[self.GIT_CONTEXT_ERROR_CODE], _env=env
+            "--staged",
+            "--msg-filename",
+            tmp_commit_msg_file,
+            _ok_code=[self.GIT_CONTEXT_ERROR_CODE],
+            _env=env,
+            _cwd=self.tmp_git_repo,
         )
         expected = "Missing git configuration: please set user.email\n"
         self.assertEqualStdout(output, expected)
