@@ -17,8 +17,8 @@ jobs:
       # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
       # code by temporarily renaming the .git directory.
       # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
-      - name: Temporarily remove git version control from code
-        run: mv .git ._git
+      # - name: Temporarily remove git version control from code
+      #   run: mv .git ._git
 
       - name: Setup python
         uses: actions/setup-python@v4.2.0
@@ -30,6 +30,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -r test-requirements.txt
+
+      # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
+      # PRs get squashed and get a proper commit message during merge.
+      - name: Gitlint check
+        run: ./run_tests.sh -g --debug
+        if: ${{ github.event_name	!= 'pull_request' }}
 
       - name: Unit Tests
         run: ./run_tests.sh

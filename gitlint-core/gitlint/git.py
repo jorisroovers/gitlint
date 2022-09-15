@@ -97,7 +97,7 @@ def _parse_git_changed_file_stats(changed_files_stats_raw):
     dict[filename: GitChangedFileStats(filename, additions, deletions)]"""
     changed_files_stats_lines = changed_files_stats_raw.split("\n")
     changed_files_stats = {}
-
+    LOG.debug("raw %s", changed_files_stats_raw)
     for line in changed_files_stats_lines[:-1]:  # drop last empty line
         line_stats = line.split()
         changed_file_stat = GitChangedFileStats(line_stats[2], int(line_stats[0]), int(line_stats[1]))
