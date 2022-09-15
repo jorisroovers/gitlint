@@ -191,7 +191,12 @@ class IntegrationTests(BaseTestCase):
         # necessary but seems good for consistency.
         env = self.create_tmp_git_config("[user]\n  email = test-emåil@foo.com\n")
         output = gitlint(
-            "--staged", "--msg-filename", tmp_commit_msg_file, _ok_code=[self.GIT_CONTEXT_ERROR_CODE], _env=env
+            "--debug",
+            "--staged",
+            "--msg-filename",
+            tmp_commit_msg_file,
+            _ok_code=[self.GIT_CONTEXT_ERROR_CODE],
+            _env=env,
         )
         expected = "Missing git configuration: please set user.name\n"
         self.assertEqualStdout(output, expected)
