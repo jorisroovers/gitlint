@@ -237,3 +237,23 @@ class IntegrationTests(BaseTestCase):
             echo("WIP: Pïpe test."), "--staged", _cwd=empty_git_repo, _tty_in=False, _err_to_out=True, _ok_code=[3]
         )
         self.assertEqualStdout(output, expected)
+
+    def test_commit_binary_file(self):
+        """When committing a binary file, git shows somewhat different output in diff commands,
+        this test ensures gitlint deals with that correctly"""
+        binary_filename = self.create_simple_commit("Sïmple commit", file_contents=bytes([0x48, 0x00, 0x49, 0x00]))
+        output = gitlint(
+            "--debug",
+            _ok_code=1,
+            _cwd=self.tmp_git_repo,
+        )
+
+        expected_kwargs = self.get_debug_vars_last_commit()
+        expected_kwargs.update(
+            {
+                "changed_files": [binary_filename],
+                "changed_files_stats": (f"{binary_filename}: None additions, None deletions"),
+            }
+        )
+        expected = self.get_expected("test_gitlint/test_commit_binary_file_1", expected_kwargs)
+        self.assertEqualStdout(output, expected)

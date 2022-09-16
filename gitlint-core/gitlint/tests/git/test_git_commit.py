@@ -34,7 +34,7 @@ class GitCommitTests(BaseTestCase):
             sample_sha,
             "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
-            "4\t15\tfile1.txt\n0\t10\tpåth/to/file2.txt\n",
+            "4\t15\tfile1.txt\n-\t-\tpåth/to/file2.bin\n",
             "foöbar\n* hürdur\n",
         ]
 
@@ -79,10 +79,10 @@ class GitCommitTests(BaseTestCase):
         # First 2 'git log' calls should've happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
-        self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
+        self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.bin"])
         expected_file_stats = {
             "file1.txt": GitChangedFileStats("file1.txt", 4, 15),
-            "påth/to/file2.txt": GitChangedFileStats("påth/to/file2.txt", 0, 10),
+            "påth/to/file2.bin": GitChangedFileStats("påth/to/file2.bin", None, None),
         }
         self.assertDictEqual(last_commit.changed_files_stats, expected_file_stats)
 

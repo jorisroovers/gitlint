@@ -75,11 +75,23 @@ class BaseTestCase(TestCase):
         return tmp_git_repo
 
     @staticmethod
-    def create_file(parent_dir):
+    def create_file(parent_dir, content=None):
         """Creates a file inside a passed directory. Returns filename."""
         test_filename = "test-fïle-" + str(uuid4())
-        # pylint: disable=consider-using-with
-        open(os.path.join(parent_dir, test_filename), "a", encoding=DEFAULT_ENCODING).close()
+        full_path = os.path.join(parent_dir, test_filename)
+
+        if content:
+            if isinstance(content, bytes):
+                open_kwargs = {"mode": "wb"}
+            else:
+                open_kwargs = {"mode": "w", "encoding": DEFAULT_ENCODING}
+
+            with open(full_path, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
+                f.write(content)
+        else:
+            # pylint: disable=consider-using-with
+            open(full_path, "a", encoding=DEFAULT_ENCODING).close()
+
         return test_filename
 
     @staticmethod
@@ -95,7 +107,9 @@ class BaseTestCase(TestCase):
         tmp_config = self.create_tmpfile(contents)
         return self.create_environment({"GIT_CONFIG": tmp_config})
 
-    def create_simple_commit(self, message, out=None, ok_code=None, env=None, git_repo=None, tty_in=False):
+    def create_simple_commit(
+        self, message, *, file_contents=None, out=None, ok_code=None, env=None, git_repo=None, tty_in=False
+    ):
         """Creates a simple commit with an empty test file.
         :param message: Commit message for the commit."""
 
@@ -108,7 +122,7 @@ class BaseTestCase(TestCase):
         environment = self.create_environment(env)
 
         # Create file and add to git
-        test_filename = self.create_file(git_repo)
+        test_filename = self.create_file(git_repo, file_contents)
         git("add", test_filename, _cwd=git_repo)
         # https://amoffat.github.io/sh/#interactive-callbacks
         if not ok_code:
@@ -132,8 +146,15 @@ class BaseTestCase(TestCase):
         # Not using a context manager to avoid unnecessary indentation in test code
         tmpfile, tmpfilepath = tempfile.mkstemp()
         self.tmpfiles.append(tmpfilepath)
-        with open(tmpfile, "w", encoding=DEFAULT_ENCODING) as f:
+
+        if isinstance(content, bytes):
+            open_kwargs = {"mode": "wb"}
+        else:
+            open_kwargs = {"mode": "w", "encoding": DEFAULT_ENCODING}
+
+        with open(tmpfile, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
             f.write(content)
+
         return tmpfilepath
 
     @staticmethod
