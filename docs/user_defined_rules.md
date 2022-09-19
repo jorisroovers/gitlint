@@ -196,11 +196,11 @@ The table below outlines the various attributes of that commit object that can b
 | commit.is_fixup_amend_commit                 | `bool`                            | Boolean indicating whether the commit is a (fixup) amend commit or not.              |
 | commit.is_squash_commit                      | `bool`                            | Boolean indicating whether the commit is a squash commit or not.                     |
 | commit.parents                               | `str[]`                           | List of parent commit `sha`s (only for merge commits).                               |
-| commit.changed_files                         | `st[]`                            | List of files changed in the commit (relative paths).                                |
+| commit.changed_files                         | `str[]`                           | List of files changed in the commit (relative paths).                                |
 | commit.changed_files_stats                   | `dict[str, GitChangedFilesStats]` | Dictionary mapping the changed files to a `GitChangedFilesStats` objects             |
 | commit.changed_files_stats["path"].filepath  | `pathlib.Path`                    | Relative path (compared to repo root) of the file that was changed.                  |
 | commit.changed_files_stats["path"].additions | `int`                             | Number of additions in the file.                                                     |
-| commit.changed_files_stats["path"].deletions | `interpret`                       | Number of deletions in the file.                                                     |
+| commit.changed_files_stats["path"].deletions | `int`                             | Number of deletions in the file.                                                     |
 | commit.branches                              | `str[]`                           | List of branch names the commit is part of                                           |
 | commit.context                               | `GitContext`                      | Object pointing to the bigger git context that the commit is part of                 |
 | commit.context.current_branch                | `str`                             | Name of the currently active branch (of local repo)                                  |
@@ -222,12 +222,12 @@ RuleViolation(rule_id, message, content=None, line_nr=None):
 ```
 With the parameters meaning the following:
 
-| Parameter | Type   | Description                                                                                                                                                      |
-| --------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| rule_id   | string | Rule's unique string id                                                                                                                                          |
-| message   | string | Short description of the violation                                                                                                                               |
-| content   | string | (optional) the violating part of commit or line                                                                                                                  |
-| line_nr   | int    | (optional) line number in the commit message where the violation occurs. **Automatically set to the correct line number for `LineRule`s if not set explicitly.** |
+| Parameter | Type  | Description                                                                                                                                                      |
+| --------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| rule_id   | `str` | Rule's unique string id                                                                                                                                          |
+| message   | `str` | Short description of the violation                                                                                                                               |
+| content   | `str` | (optional) the violating part of commit or line                                                                                                                  |
+| line_nr   | `int` | (optional) line number in the commit message where the violation occurs. **Automatically set to the correct line number for `LineRule`s if not set explicitly.** |
 
 A typical `validate(...)` implementation for a `CommitRule` would then be as follows:
 ```python
