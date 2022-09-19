@@ -1,7 +1,8 @@
 DEBUG: gitlint.cli To report issues, please visit https://github.com/jorisroovers/gitlint/issues
 DEBUG: gitlint.cli Platform: {platform}
 DEBUG: gitlint.cli Python version: {python_version}
-DEBUG: gitlint.cli Git version: git version 1.2.3
+DEBUG: gitlint.git ('--version',)
+DEBUG: gitlint.cli Git version: {git_version}
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
 DEBUG: gitlint.cli DEFAULT_ENCODING: {DEFAULT_ENCODING}
@@ -17,7 +18,7 @@ ignore-fixup-amend-commits: True
 ignore-squash-commits: True
 ignore-revert-commits: True
 ignore-stdin: False
-staged: True
+staged: False
 fail-without-commits: False
 verbosity: 3
 debug: True
@@ -62,30 +63,30 @@ target: {target}
   M1: author-valid-email
      regex=[^@ ]+@[^@ ]+\.[^@ ]+
 
-DEBUG: gitlint.cli Fetching additional meta-data from staged commit
-DEBUG: gitlint.cli Using --msg-filename.
-DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
+DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Using the local repo.
+DEBUG: gitlint.git ('log', '-1', '--pretty=%H')
 DEBUG: gitlint.cli Linting 1 commit(s)
-DEBUG: gitlint.lint Linting commit [SHA UNKNOWN]
-DEBUG: gitlint.git ('diff', '--staged', '--numstat', '-r')
-DEBUG: gitlint.git ('config', '--get', 'user.name')
-DEBUG: gitlint.git ('config', '--get', 'user.email')
-DEBUG: gitlint.git ('rev-parse', '--abbrev-ref', 'HEAD')
+DEBUG: gitlint.git ('log', '{commit_sha}', '-1', '--pretty=%aN%x00%aE%x00%ai%x00%P%n%B')
+DEBUG: gitlint.git ('config', '--get', 'core.commentchar')
+DEBUG: gitlint.lint Linting commit {commit_sha}
+DEBUG: gitlint.git ('diff-tree', '--no-commit-id', '--numstat', '-r', '--root', '{commit_sha}')
+DEBUG: gitlint.git ('branch', '--contains', '{commit_sha}')
 DEBUG: gitlint.lint Commit Object
 --- Commit Message ----
-WIP: msg-filename tïtle
+Sïmple commit
+
 --- Meta info ---------
-Author: föo user <föo@bar.com>
-Date:   2020-02-19 12:18:46 +0100
+Author: gitlint-test-user <gitlint@test.com>
+Date:   {commit_date}
 is-merge-commit:  False
 is-fixup-commit:  False
 is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
-Branches: ['my-branch']
-Changed Files: ['commit-1/file-1', 'commit-1/file-2']
+Branches: ['main']
+Changed Files: {changed_files}
 Changed Files Stats:
-  commit-1/file-1: 3 additions, 4 deletions
-  commit-1/file-2: 4 additions, 7 deletions
+  {changed_files_stats}
 -----------------------
-DEBUG: gitlint.cli Exit Code = 2
+3: B6 Body message is missing
+DEBUG: gitlint.cli Exit Code = 1

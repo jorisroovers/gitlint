@@ -10,7 +10,7 @@ import unittest
 
 from unittest.mock import patch
 
-from gitlint.git import GitContext
+from gitlint.git import GitContext, GitChangedFileStats
 from gitlint.utils import LOG_FORMAT, DEFAULT_ENCODING
 
 
@@ -92,7 +92,8 @@ class BaseTestCase(unittest.TestCase):
             gitcontext = GitContext.from_commit_msg(commit_msg_str)
             commit = gitcontext.commits[-1]
             if changed_files:
-                commit.changed_files = changed_files
+                changed_file_stats = {filename: GitChangedFileStats(filename, 8, 3) for filename in changed_files}
+                commit.changed_files_stats = changed_file_stats
             return gitcontext
 
     @staticmethod

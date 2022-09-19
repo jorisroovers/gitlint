@@ -81,5 +81,6 @@ is-squash-commit: False
 is-revert-commit: False
 Branches: []
 Changed Files: []
+Changed Files Stats: {{}}
 -----------------------
 DEBUG: gitlint.cli Exit Code = 3

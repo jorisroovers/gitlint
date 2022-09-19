@@ -179,28 +179,33 @@ Both `CommitRule`s and `LineRule`s take a `commit` object in their `validate(...
 The table below outlines the various attributes of that commit object that can be used during validation.
 
 
-Property                       | Type           | Description
--------------------------------| ---------------|-------------------
-commit.message                 | object         | Python object representing the commit message
-commit.message.original        | string         | Original commit message as returned by git
-commit.message.full            | string         | Full commit message, with comments (lines starting with #) removed.
-commit.message.title           | string         | Title/subject of the commit message: the first line
-commit.message.body            | string[]       | List of lines in the body of the commit message (i.e. starting from the second line)
-commit.author_name             | string         | Name of the author, result of `git log --pretty=%aN`
-commit.author_email            | string         | Email of the author, result of `git log --pretty=%aE`
-commit.date                    | datetime       | Python `datetime` object representing the time of commit
-commit.is_merge_commit         | boolean        | Boolean indicating whether the commit is a merge commit or not.
-commit.is_revert_commit        | boolean        | Boolean indicating whether the commit is a revert commit or not.
-commit.is_fixup_commit         | boolean        | Boolean indicating whether the commit is a fixup commit or not.
-commit.is_fixup_amend_commit   | boolean        | Boolean indicating whether the commit is a (fixup) amend commit or not.
-commit.is_squash_commit        | boolean        | Boolean indicating whether the commit is a squash commit or not.
-commit.parents                 | string[]       | List of parent commit `sha`s (only for merge commits).
-commit.changed_files           | string[]       | List of files changed in the commit (relative paths).
-commit.branches                | string[]       | List of branch names the commit is part of
-commit.context                 | object         | Object pointing to the bigger git context that the commit is part of
-commit.context.current_branch  | string         | Name of the currently active branch (of local repo)
-commit.context.repository_path | string         | Absolute path pointing to the git repository being linted
-commit.context.commits         | object[]       | List of commits gitlint is acting on, NOT all commits in the repo.
+| Property                                     | Type                              | Description                                                                          |
+| -------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------ |
+| commit                                       | `GitCommit`                       | Python object representing the commit                                                |
+| commit.message                               | `GitCommitMessage`                | Python object representing the commit message                                        |
+| commit.message.original                      | `str`                             | Original commit message as returned by git                                           |
+| commit.message.full                          | `str`                             | Full commit message, with comments (lines starting with #) removed.                  |
+| commit.message.title                         | `str`                             | Title/subject of the commit message: the first line                                  |
+| commit.message.body                          | `str[]`                           | List of lines in the body of the commit message (i.e. starting from the second line) |
+| commit.author_name                           | `str`                             | Name of the author, result of `git log --pretty=%aN`                                 |
+| commit.author_email                          | `str`                             | Email of the author, result of `git log --pretty=%aE`                                |
+| commit.date                                  | `datetime.datetime`               | Python `datetime` object representing the time of commit                             |
+| commit.is_merge_commit                       | `bool`                            | Boolean indicating whether the commit is a merge commit or not.                      |
+| commit.is_revert_commit                      | `bool`                            | Boolean indicating whether the commit is a revert commit or not.                     |
+| commit.is_fixup_commit                       | `bool`                            | Boolean indicating whether the commit is a fixup commit or not.                      |
+| commit.is_fixup_amend_commit                 | `bool`                            | Boolean indicating whether the commit is a (fixup) amend commit or not.              |
+| commit.is_squash_commit                      | `bool`                            | Boolean indicating whether the commit is a squash commit or not.                     |
+| commit.parents                               | `str[]`                           | List of parent commit `sha`s (only for merge commits).                               |
+| commit.changed_files                         | `str[]`                           | List of files changed in the commit (relative paths).                                |
+| commit.changed_files_stats                   | `dict[str, GitChangedFilesStats]` | Dictionary mapping the changed files to a `GitChangedFilesStats` objects             |
+| commit.changed_files_stats["path"].filepath  | `pathlib.Path`                    | Relative path (compared to repo root) of the file that was changed.                  |
+| commit.changed_files_stats["path"].additions | `int`                             | Number of additions in the file.                                                     |
+| commit.changed_files_stats["path"].deletions | `int`                             | Number of deletions in the file.                                                     |
+| commit.branches                              | `str[]`                           | List of branch names the commit is part of                                           |
+| commit.context                               | `GitContext`                      | Object pointing to the bigger git context that the commit is part of                 |
+| commit.context.current_branch                | `str`                             | Name of the currently active branch (of local repo)                                  |
+| commit.context.repository_path               | `str`                             | Absolute path pointing to the git repository being linted                            |
+| commit.context.commits                       | `GitCommit[]`                     | List of commits gitlint is acting on, NOT all commits in the repo.                   |
 
 ## Violations
 In order to let gitlint know that there is a violation in the commit being linted, users should have the `validate(...)`
@@ -217,12 +222,12 @@ RuleViolation(rule_id, message, content=None, line_nr=None):
 ```
 With the parameters meaning the following:
 
-Parameter     | Type    |  Description
---------------|---------|--------------------------------
-rule_id       | string  | Rule's unique string id
-message       | string  | Short description of the violation
-content       | string  | (optional) the violating part of commit or line
-line_nr       | int     | (optional) line number in the commit message where the violation occurs. **Automatically set to the correct line number for `LineRule`s if not set explicitly.**
+| Parameter | Type  | Description                                                                                                                                                      |
+| --------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| rule_id   | `str` | Rule's unique string id                                                                                                                                          |
+| message   | `str` | Short description of the violation                                                                                                                               |
+| content   | `str` | (optional) the violating part of commit or line                                                                                                                  |
+| line_nr   | `int` | (optional) line number in the commit message where the violation occurs. **Automatically set to the correct line number for `LineRule`s if not set explicitly.** |
 
 A typical `validate(...)` implementation for a `CommitRule` would then be as follows:
 ```python
@@ -282,14 +287,14 @@ As `options_spec` is a list, you can obviously have multiple options per rule. T
 
 Gitlint supports a variety of different option types, all can be imported from `gitlint.options`:
 
-Option Class      | Use for
-------------------|--------------
-`StrOption `      | Strings
-`IntOption`       | Integers. `IntOption` takes an optional `allow_negative` parameter if you want to allow negative integers.
-`BoolOption`      | Booleans. Valid values: `true`, `false`. Case-insensitive.
-`ListOption`      | List of strings. Comma separated.
-`PathOption`      | Directory or file path. Takes an optional `type` parameter for specifying path type (`file`, `dir` (=default) or `both`).
-`RegexOption`     | String representing a [Python-style regex](https://docs.python.org/library/re.html) - compiled and validated before rules are applied.
+| Option Class  | Use for                                                                                                                                |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `StrOption `  | Strings                                                                                                                                |
+| `IntOption`   | Integers. `IntOption` takes an optional `allow_negative` parameter if you want to allow negative integers.                             |
+| `BoolOption`  | Booleans. Valid values: `true`, `false`. Case-insensitive.                                                                             |
+| `ListOption`  | List of strings. Comma separated.                                                                                                      |
+| `PathOption`  | Directory or file path. Takes an optional `type` parameter for specifying path type (`file`, `dir` (=default) or `both`).              |
+| `RegexOption` | String representing a [Python-style regex](https://docs.python.org/library/re.html) - compiled and validated before rules are applied. |
 
 !!! note
     Gitlint currently does not support options for all possible types (e.g. float, list of int, etc).

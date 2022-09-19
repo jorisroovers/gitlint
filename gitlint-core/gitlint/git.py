@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 import arrow
 
@@ -91,6 +92,25 @@ def git_hooks_dir(repository_path):
     return os.path.realpath(os.path.join(repository_path, hooks_dir))
 
 
+def _parse_git_changed_file_stats(changed_files_stats_raw):
+    """Parse the output of git diff --numstat and return a dict of:
+    dict[filename: GitChangedFileStats(filename, additions, deletions)]"""
+    changed_files_stats_lines = changed_files_stats_raw.split("\n")
+    changed_files_stats = {}
+    for line in changed_files_stats_lines[:-1]:  # drop last empty line
+        line_stats = line.split()
+
+        # If the file is binary, numstat will show "-"
+        # See https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---numstat
+        additions = int(line_stats[0]) if line_stats[0] != "-" else None
+        deletions = int(line_stats[1]) if line_stats[1] != "-" else None
+
+        changed_file_stat = GitChangedFileStats(line_stats[2], additions, deletions)
+        changed_files_stats[line_stats[2]] = changed_file_stat
+
+    return changed_files_stats
+
+
 class GitCommitMessage:
     """Class representing a git commit message. A commit message consists of the following:
     - context: The `GitContext` this commit message is part of
@@ -135,6 +155,31 @@ class GitCommitMessage:
         )
 
 
+class GitChangedFileStats:
+    """Class representing the stats for a changed file in git"""
+
+    def __init__(self, filepath, additions, deletions):
+        self.filepath = Path(filepath)
+        self.additions = additions
+        self.deletions = deletions
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, GitChangedFileStats)
+            and self.filepath == other.filepath
+            and self.additions == other.additions
+            and self.deletions == other.deletions
+        )
+
+    def __str__(self) -> str:
+        return f"{self.filepath}: {self.additions} additions, {self.deletions} deletions"
+
+    def __repr__(self) -> str:
+        return (
+            f'GitChangedFileStats(filepath="{self.filepath}", additions={self.additions}, deletions={self.deletions})'
+        )
+
+
 class GitCommit:
     """Class representing a git commit.
     A commit consists of: context, message, author name, author email, date, list of parent commit shas,
@@ -151,7 +196,7 @@ class GitCommit:
         author_name=None,  # pylint: disable=too-many-arguments
         author_email=None,
         parents=None,
-        changed_files=None,
+        changed_files_stats=None,
         branches=None,
     ):
         self.context = context
@@ -161,7 +206,7 @@ class GitCommit:
         self.author_name = author_name
         self.author_email = author_email
         self.parents = parents or []  # parent commit hashes
-        self.changed_files = changed_files or []
+        self.changed_files_stats = changed_files_stats or {}
         self.branches = branches or []
 
     @property
@@ -184,8 +229,18 @@ class GitCommit:
     def is_revert_commit(self):
         return self.message.title.startswith("Revert")
 
+    @property
+    def changed_files(self):
+        return list(self.changed_files_stats.keys())
+
     def __str__(self):
         date_str = arrow.get(self.date).format(GIT_TIMEFORMAT) if self.date else None
+
+        if len(self.changed_files_stats) > 0:
+            changed_files_stats_str = "\n  " + "\n  ".join([str(stats) for stats in self.changed_files_stats.values()])
+        else:
+            changed_files_stats_str = " {}"
+
         return (
             f"--- Commit Message ----\n{self.message}\n"
             "--- Meta info ---------\n"
@@ -198,6 +253,7 @@ class GitCommit:
             f"is-revert-commit: {self.is_revert_commit}\n"
             f"Branches: {self.branches}\n"
             f"Changed Files: {self.changed_files}\n"
+            f"Changed Files Stats:{changed_files_stats_str}\n"
             "-----------------------"
         )
 
@@ -217,6 +273,7 @@ class GitCommit:
             and self.is_squash_commit == other.is_squash_commit
             and self.is_revert_commit == other.is_revert_commit
             and self.changed_files == other.changed_files
+            and self.changed_files_stats == other.changed_files_stats
             and self.branches == other.branches
         )
 
@@ -306,19 +363,14 @@ class LocalGitCommit(GitCommit, PropertyCache):
         return self._try_cache("is_merge_commit", self._log)
 
     @property
-    def changed_files(self):
-        def cache_changed_files():
-            self._cache["changed_files"] = _git(
-                "diff-tree",
-                "--no-commit-id",
-                "--name-only",
-                "-r",
-                "--root",
-                self.sha,
-                _cwd=self.context.repository_path,
-            ).split()
+    def changed_files_stats(self):
+        def cache_changed_files_stats():
+            changed_files_stats_raw = _git(
+                "diff-tree", "--no-commit-id", "--numstat", "-r", "--root", self.sha, _cwd=self.context.repository_path
+            )
+            self._cache["changed_files_stats"] = _parse_git_changed_file_stats(changed_files_stats_raw)
 
-        return self._try_cache("changed_files", cache_changed_files)
+        return self._try_cache("changed_files_stats", cache_changed_files_stats)
 
 
 class StagedLocalGitCommit(GitCommit, PropertyCache):
@@ -368,8 +420,12 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
         return [self.context.current_branch]
 
     @property
-    def changed_files(self):
-        return _git("diff", "--staged", "--name-only", "-r", _cwd=self.context.repository_path).split()
+    def changed_files_stats(self):
+        def cache_changed_files_stats():
+            changed_files_stats_raw = _git("diff", "--staged", "--numstat", "-r", _cwd=self.context.repository_path)
+            self._cache["changed_files_stats"] = _parse_git_changed_file_stats(changed_files_stats_raw)
+
+        return self._try_cache("changed_files_stats", cache_changed_files_stats)
 
 
 class GitContext(PropertyCache):

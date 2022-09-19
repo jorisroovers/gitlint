@@ -1,5 +1,6 @@
 import copy
 import datetime
+from pathlib import Path
 
 import dateutil
 
@@ -8,7 +9,16 @@ import arrow
 from unittest.mock import patch, call
 
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitCommit, GitContextError, LocalGitCommit, StagedLocalGitCommit, GitCommitMessage
+from gitlint.git import (
+    GitChangedFileStats,
+    GitContext,
+    GitCommit,
+    GitContextError,
+    LocalGitCommit,
+    StagedLocalGitCommit,
+    GitCommitMessage,
+    GitChangedFileStats,
+)
 from gitlint.shell import ErrorReturnCode
 
 
@@ -24,7 +34,7 @@ class GitCommitTests(BaseTestCase):
             sample_sha,
             "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
-            "file1.txt\npåth/to/file2.txt\n",
+            "4\t15\tfile1.txt\n-\t-\tpåth/to/file2.bin\n",
             "foöbar\n* hürdur\n",
         ]
 
@@ -37,7 +47,7 @@ class GitCommitTests(BaseTestCase):
             call(
                 "diff-tree",
                 "--no-commit-id",
-                "--name-only",
+                "--numstat",
                 "-r",
                 "--root",
                 sample_sha,
@@ -69,7 +79,13 @@ class GitCommitTests(BaseTestCase):
         # First 2 'git log' calls should've happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
-        self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
+        self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.bin"])
+        expected_file_stats = {
+            "file1.txt": GitChangedFileStats("file1.txt", 4, 15),
+            "påth/to/file2.bin": GitChangedFileStats("påth/to/file2.bin", None, None),
+        }
+        self.assertDictEqual(last_commit.changed_files_stats, expected_file_stats)
+
         # 'git diff-tree' should have happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
@@ -86,7 +102,7 @@ class GitCommitTests(BaseTestCase):
             sample_sha,  # git rev-list <sample_refspec>
             "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
-            "file1.txt\npåth/to/file2.txt\n",
+            "7\t10\tfile1.txt\n9\t12\tpåth/to/file2.txt\n",
             "foöbar\n* hürdur\n",
         ]
 
@@ -99,7 +115,7 @@ class GitCommitTests(BaseTestCase):
             call(
                 "diff-tree",
                 "--no-commit-id",
-                "--name-only",
+                "--numstat",
                 "-r",
                 "--root",
                 sample_sha,
@@ -132,6 +148,12 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
+        expected_file_stats = {
+            "file1.txt": GitChangedFileStats("file1.txt", 7, 10),
+            "påth/to/file2.txt": GitChangedFileStats("påth/to/file2.txt", 9, 12),
+        }
+        self.assertDictEqual(last_commit.changed_files_stats, expected_file_stats)
+
         # 'git diff-tree' should have happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
@@ -147,7 +169,7 @@ class GitCommitTests(BaseTestCase):
             sample_hash,  # git log -1 <sample_hash>
             "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\ncömmit-title\n\ncömmit-body",
             "#",  # git config --get core.commentchar
-            "file1.txt\npåth/to/file2.txt\n",
+            "8\t3\tfile1.txt\n1\t4\tpåth/to/file2.txt\n",
             "foöbar\n* hürdur\n",
         ]
 
@@ -160,7 +182,7 @@ class GitCommitTests(BaseTestCase):
             call(
                 "diff-tree",
                 "--no-commit-id",
-                "--name-only",
+                "--numstat",
                 "-r",
                 "--root",
                 sample_hash,
@@ -193,6 +215,11 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
+        expected_file_stats = {
+            "file1.txt": GitChangedFileStats("file1.txt", 8, 3),
+            "påth/to/file2.txt": GitChangedFileStats("påth/to/file2.txt", 1, 4),
+        }
+        self.assertDictEqual(last_commit.changed_files_stats, expected_file_stats)
         # 'git diff-tree' should have happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
@@ -212,9 +239,9 @@ class GitCommitTests(BaseTestCase):
             f"cömmit-title {hashes[1]}\n\ncömmit-body {hashes[1]}",
             f"test åuthor {hashes[2]}\x00test-emåil-{hashes[2]}@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
             f"cömmit-title {hashes[2]}\n\ncömmit-body {hashes[2]}",
-            f"file1-{hashes[0]}.txt\npåth/to/file2.txt\n",
-            f"file1-{hashes[1]}.txt\npåth/to/file2.txt\n",
-            f"file1-{hashes[2]}.txt\npåth/to/file2.txt\n",
+            f"2\t5\tfile1-{hashes[0]}.txt\n7\t1\tpåth/to/file2.txt\n",
+            f"2\t5\tfile1-{hashes[1]}.txt\n7\t1\tpåth/to/file2.txt\n",
+            f"2\t5\tfile1-{hashes[2]}.txt\n7\t1\tpåth/to/file2.txt\n",
             f"foöbar-{hashes[0]}\n* hürdur\n",
             f"foöbar-{hashes[1]}\n* hürdur\n",
             f"foöbar-{hashes[2]}\n* hürdur\n",
@@ -229,13 +256,13 @@ class GitCommitTests(BaseTestCase):
             call("log", hashes[1], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call("log", hashes[2], "-1", "--pretty=%aN%x00%aE%x00%ai%x00%P%n%B", **self.expected_sh_special_args),
             call(
-                "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", hashes[0], **self.expected_sh_special_args
+                "diff-tree", "--no-commit-id", "--numstat", "-r", "--root", hashes[0], **self.expected_sh_special_args
             ),
             call(
-                "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", hashes[1], **self.expected_sh_special_args
+                "diff-tree", "--no-commit-id", "--numstat", "-r", "--root", hashes[1], **self.expected_sh_special_args
             ),
             call(
-                "diff-tree", "--no-commit-id", "--name-only", "-r", "--root", hashes[2], **self.expected_sh_special_args
+                "diff-tree", "--no-commit-id", "--numstat", "-r", "--root", hashes[2], **self.expected_sh_special_args
             ),
             call("branch", "--contains", hashes[0], **self.expected_sh_special_args),
             call("branch", "--contains", hashes[1], **self.expected_sh_special_args),
@@ -271,6 +298,11 @@ class GitCommitTests(BaseTestCase):
         for i, commit in enumerate(context.commits):
             expected_hash = hashes[i]
             self.assertListEqual(commit.changed_files, [f"file1-{expected_hash}.txt", "påth/to/file2.txt"])
+            expected_file_stats = {
+                f"file1-{expected_hash}.txt": GitChangedFileStats(f"file1-{expected_hash}.txt", 2, 5),
+                "påth/to/file2.txt": GitChangedFileStats("påth/to/file2.txt", 7, 1),
+            }
+            self.assertDictEqual(commit.changed_files_stats, expected_file_stats)
 
         # 'git diff-tree' should have happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls[:10])
@@ -290,7 +322,7 @@ class GitCommitTests(BaseTestCase):
             sample_sha,
             'test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc def\nMerge "foo bår commit"',
             "#",  # git config --get core.commentchar
-            "file1.txt\npåth/to/file2.txt\n",
+            "6\t2\tfile1.txt\n1\t4\tpåth/to/file2.txt\n",
             "foöbar\n* hürdur\n",
         ]
 
@@ -303,7 +335,7 @@ class GitCommitTests(BaseTestCase):
             call(
                 "diff-tree",
                 "--no-commit-id",
-                "--name-only",
+                "--numstat",
                 "-r",
                 "--root",
                 sample_sha,
@@ -336,6 +368,11 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(sh.git.mock_calls, expected_calls[:3])
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
+        expected_file_stats = {
+            "file1.txt": GitChangedFileStats("file1.txt", 6, 2),
+            "påth/to/file2.txt": GitChangedFileStats("påth/to/file2.txt", 1, 4),
+        }
+        self.assertDictEqual(last_commit.changed_files_stats, expected_file_stats)
         # 'git diff-tree' should have happened at this point
         self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
@@ -354,7 +391,7 @@ class GitCommitTests(BaseTestCase):
                 "test åuthor\x00test-emåil@foo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
                 f'{commit_type}! "foo bår commit"',
                 "#",  # git config --get core.commentchar
-                "file1.txt\npåth/to/file2.txt\n",
+                "8\t2\tfile1.txt\n7\t3\tpåth/to/file2.txt\n",
                 "foöbar\n* hürdur\n",
             ]
 
@@ -367,7 +404,7 @@ class GitCommitTests(BaseTestCase):
                 call(
                     "diff-tree",
                     "--no-commit-id",
-                    "--name-only",
+                    "--numstat",
                     "-r",
                     "--root",
                     sample_sha,
@@ -401,8 +438,12 @@ class GitCommitTests(BaseTestCase):
             self.assertFalse(last_commit.is_merge_commit)
             self.assertFalse(last_commit.is_revert_commit)
             self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
+            expected_file_stats = {
+                "file1.txt": GitChangedFileStats("file1.txt", 8, 2),
+                "påth/to/file2.txt": GitChangedFileStats("påth/to/file2.txt", 7, 3),
+            }
+            self.assertDictEqual(last_commit.changed_files_stats, expected_file_stats)
 
-            self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
             # 'git diff-tree' should have happened at this point
             self.assertListEqual(sh.git.mock_calls, expected_calls[:4])
 
@@ -608,7 +649,7 @@ class GitCommitTests(BaseTestCase):
             "test åuthor\n",  # git config --get user.name
             "test-emåil@foo.com\n",  # git config --get user.email
             "my-brånch\n",  # git rev-parse --abbrev-ref HEAD
-            "file1.txt\npåth/to/file2.txt\n",
+            "4\t2\tfile1.txt\n13\t9\tpåth/to/file2.txt\n",
         ]
         now.side_effect = [arrow.get("2020-02-19T12:18:46.675182+01:00")]
 
@@ -621,7 +662,7 @@ class GitCommitTests(BaseTestCase):
             call("config", "--get", "user.name", **self.expected_sh_special_args),
             call("config", "--get", "user.email", **self.expected_sh_special_args),
             call("rev-parse", "--abbrev-ref", "HEAD", **self.expected_sh_special_args),
-            call("diff", "--staged", "--name-only", "-r", **self.expected_sh_special_args),
+            call("diff", "--staged", "--numstat", "-r", **self.expected_sh_special_args),
         ]
 
         last_commit = context.commits[-1]
@@ -654,12 +695,16 @@ class GitCommitTests(BaseTestCase):
         self.assertListEqual(sh.git.mock_calls, expected_calls[0:4])
 
         self.assertListEqual(last_commit.changed_files, ["file1.txt", "påth/to/file2.txt"])
+        expected_file_stats = {
+            "file1.txt": GitChangedFileStats("file1.txt", 4, 2),
+            "påth/to/file2.txt": GitChangedFileStats("påth/to/file2.txt", 13, 9),
+        }
+        self.assertDictEqual(last_commit.changed_files_stats, expected_file_stats)
+
         self.assertListEqual(sh.git.mock_calls, expected_calls[0:5])
 
     @patch("gitlint.git.sh")
     def test_staged_commit_with_missing_username(self, sh):
-        # StagedLocalGitCommit()
-
         sh.git.side_effect = [
             "#",  # git config --get core.commentchar
             ErrorReturnCode("git config --get user.name", b"", b""),
@@ -668,27 +713,29 @@ class GitCommitTests(BaseTestCase):
         expected_msg = "Missing git configuration: please set user.name"
         with self.assertRaisesMessage(GitContextError, expected_msg):
             ctx = GitContext.from_staged_commit("Foōbar 123\n\ncömmit-body\n", "fåke/path")
-            [str(commit) for commit in ctx.commits]
+            ctx.commits[0].author_name  # accessing this attribute should raise an exception
 
     @patch("gitlint.git.sh")
     def test_staged_commit_with_missing_email(self, sh):
-        # StagedLocalGitCommit()
-
         sh.git.side_effect = [
             "#",  # git config --get core.commentchar
-            "test åuthor\n",  # git config --get user.name
-            ErrorReturnCode("git config --get user.name", b"", b""),
+            ErrorReturnCode("git config --get user.email", b"", b""),
         ]
 
         expected_msg = "Missing git configuration: please set user.email"
         with self.assertRaisesMessage(GitContextError, expected_msg):
             ctx = GitContext.from_staged_commit("Foōbar 123\n\ncömmit-body\n", "fåke/path")
-            [str(commit) for commit in ctx.commits]
+            ctx.commits[0].author_email  # accessing this attribute should raise an exception
 
     def test_gitcommitmessage_equality(self):
         commit_message1 = GitCommitMessage(GitContext(), "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])
         attrs = ["original", "full", "title", "body"]
         self.object_equality_test(commit_message1, attrs, {"context": commit_message1.context})
+
+    def test_gitchangedfilestats_equality(self):
+        changed_file_stats = GitChangedFileStats(Path("foö/bar"), 5, 13)
+        attrs = ["filepath", "additions", "deletions"]
+        self.object_equality_test(changed_file_stats, attrs)
 
     @patch("gitlint.git._git")
     def test_gitcommit_equality(self, git):
@@ -708,7 +755,7 @@ class GitCommitTests(BaseTestCase):
             "Jöhn Smith",
             "jöhn.smith@test.com",
             None,
-            ["föo/bar"],
+            {"föo/bar": GitChangedFileStats("föo/bar", 5, 13)},
             ["brånch1", "brånch2"],
         )
         context1.commits = [commit1]
@@ -723,7 +770,7 @@ class GitCommitTests(BaseTestCase):
             "Jöhn Smith",
             "jöhn.smith@test.com",
             None,
-            ["föo/bar"],
+            {"föo/bar": GitChangedFileStats("föo/bar", 5, 13)},
             ["brånch1", "brånch2"],
         )
         context2.commits = [commit2]
@@ -740,11 +787,14 @@ class GitCommitTests(BaseTestCase):
             "author_name": commit1.author_name,
             "author_email": commit1.author_email,
             "parents": commit1.parents,
-            "changed_files": commit1.changed_files,
             "branches": commit1.branches,
         }
 
-        self.object_equality_test(commit1, kwargs.keys(), {"context": commit1.context})
+        self.object_equality_test(
+            commit1,
+            kwargs.keys(),
+            {"context": commit1.context, "changed_files_stats": {"föo/bar": GitChangedFileStats("föo/bar", 5, 13)}},
+        )
 
         # Check that the is_* attributes that are affected by the commit message affect equality
         special_messages = {
@@ -762,6 +812,10 @@ class GitCommitTests(BaseTestCase):
             clone2 = GitCommit(context=commit1.context, **kwargs_copy)
             clone2.message = GitCommitMessage.from_full_message(context1, "foöbar")
             self.assertNotEqual(clone1, clone2)
+
+        # Check changed_files and changed_files_stats
+        commit2.changed_files_stats = {"föo/bar2": GitChangedFileStats("föo/bar2", 5, 13)}
+        self.assertNotEqual(commit1, commit2)
 
     @patch("gitlint.git.git_commentchar")
     def test_commit_msg_custom_commentchar(self, patched):
