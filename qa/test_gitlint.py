@@ -168,7 +168,7 @@ class IntegrationTests(BaseTestCase):
 
     def test_msg_filename(self):
         tmp_commit_msg_file = self.create_tmpfile("WIP: msg-fïlename test.")
-        output = gitlint("--msg-filename", tmp_commit_msg_file, _tty_in=True, _ok_code=[3])
+        output = gitlint("--msg-filename", tmp_commit_msg_file, _tty_in=True, _cwd=self.tmp_git_repo, _ok_code=[3])
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_1"))
 
     def test_msg_filename_no_tty(self):
@@ -180,7 +180,15 @@ class IntegrationTests(BaseTestCase):
         # http://amoffat.github.io/sh/sections/special_arguments.html?highlight=_tty_in#err-to-out
         # We need to pass some whitespace to _in as sh will otherwise hang, see
         # https://github.com/amoffat/sh/issues/427
-        output = gitlint("--msg-filename", tmp_commit_msg_file, _in=" ", _tty_in=False, _err_to_out=True, _ok_code=[3])
+        output = gitlint(
+            "--msg-filename",
+            tmp_commit_msg_file,
+            _cwd=self.tmp_git_repo,
+            _in=" ",
+            _tty_in=False,
+            _err_to_out=True,
+            _ok_code=[3],
+        )
 
         self.assertEqualStdout(output, self.get_expected("test_gitlint/test_msg_filename_no_tty_1"))
 
