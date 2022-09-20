@@ -89,11 +89,14 @@ run_unit_tests(){
     # py.test -s  => print standard output (i.e. show print statement output)
     #         -rw => print warnings
     target=${testargs:-"gitlint-core"}
-    coverage run -m pytest -rw -s $target
-    TEST_RESULT=$?
     if [ $include_coverage -eq 1 ]; then
+        coverage run -m pytest -rw -s $target
+        TEST_RESULT=$?
         COVERAGE_REPORT=$(coverage report -m)
         echo "$COVERAGE_REPORT"
+    else
+        pytest -rw -s $target
+        TEST_RESULT=$?
     fi
 
     return $TEST_RESULT;
