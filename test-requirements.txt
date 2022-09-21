@@ -6,5 +6,5 @@ radon==5.1.0
 pytest==7.0.1
 pylint==2.13.7; python_version == '3.6'
 pylint==2.15.3; python_version != '3.6'
-pdbr==0.6.6; sys_platform != "win32"
+pdbr==0.7.3; sys_platform != "win32"
 -r requirements.txt
