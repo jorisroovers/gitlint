@@ -251,6 +251,7 @@ class GitCommit:
             f"is-fixup-amend-commit: {self.is_fixup_amend_commit}\n"
             f"is-squash-commit: {self.is_squash_commit}\n"
             f"is-revert-commit: {self.is_revert_commit}\n"
+            f"Parents: {self.parents}\n"
             f"Branches: {self.branches}\n"
             f"Changed Files: {self.changed_files}\n"
             f"Changed Files Stats:{changed_files_stats_str}\n"
@@ -300,7 +301,10 @@ class LocalGitCommit(GitCommit, PropertyCache):
 
         (name, email, date, parents), commit_msg = raw_commit[0].split("\x00"), "\n".join(raw_commit[1:])
 
-        commit_parents = parents.split(" ")
+        if parents == "":
+            commit_parents = []
+        else:
+            commit_parents = parents.split(" ")
         commit_is_merge_commit = len(commit_parents) > 1
 
         # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
