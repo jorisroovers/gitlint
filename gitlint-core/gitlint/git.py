@@ -301,10 +301,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
 
         (name, email, date, parents), commit_msg = raw_commit[0].split("\x00"), "\n".join(raw_commit[1:])
 
-        if parents == "":
-            commit_parents = []
-        else:
-            commit_parents = parents.split(" ")
+        commit_parents = [] if parents == "" else parents.split(" ")
         commit_is_merge_commit = len(commit_parents) > 1
 
         # "YYYY-MM-DD HH:mm:ss Z" -> ISO 8601-like format
