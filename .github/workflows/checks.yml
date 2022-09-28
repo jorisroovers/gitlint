@@ -14,7 +14,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-          fetch-depth: 0 # Fetch all history for all branches and tags (required for gitlint changed files check)
+          # fetch-depth: 0 # Fetch all history for all branches and tags (required for gitlint changed files check)
+
+      - name: Determine commit parents
+        run: |
+          git rev-list --max-parents=0 HEAD
+          echo -------------
+          git log --decorate $(git rev-list --max-parents=0 HEAD)
 
       # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
       # code by temporarily renaming the .git directory.
