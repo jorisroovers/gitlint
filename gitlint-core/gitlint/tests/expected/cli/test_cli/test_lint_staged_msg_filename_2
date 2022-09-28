@@ -82,6 +82,7 @@ is-fixup-commit:  False
 is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
+Parents: []
 Branches: ['my-branch']
 Changed Files: ['commit-1/file-1', 'commit-1/file-2']
 Changed Files Stats:

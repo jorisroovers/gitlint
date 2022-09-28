@@ -428,16 +428,16 @@ class CLITests(BaseTestCase):
             "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n"
             "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
             # git log --pretty <FORMAT> <SHA>
-            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00abc\n"
+            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00a123\n"
             "commït-title1\n\ncommït-body1",
             "#",                                                     # git config --get core.commentchar
             "5\t8\tcommit-1/file-1\n2\t9\tcommit-1/file-2\n",                    # git diff-tree
             "commit-1-branch-1\ncommit-1-branch-2\n",                # git branch --contains <sha>
-            "test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00abc\n"
+            "test åuthor2\x00test-email2@föo.com\x002016-12-04 15:28:15 +0100\x00b123\n"
             "commït-title2.\n\ncommït-body2",
             "5\t8\tcommit-2/file-1\n7\t9\tcommit-2/file-2\n",        # git diff-tree
             "commit-2-branch-1\ncommit-2-branch-2\n",                # git branch --contains <sha>
-            "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00abc\n"
+            "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00c123\n"
             "föobar\nbar",
             "1\t4\tcommit-3/file-1\n3\t4\tcommit-3/file-2\n",        # git diff-tree
             "commit-3-branch-1\ncommit-3-branch-2\n",                # git branch --contains <sha>

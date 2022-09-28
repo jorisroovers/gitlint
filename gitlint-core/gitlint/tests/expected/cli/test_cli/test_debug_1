@@ -83,6 +83,7 @@ is-fixup-commit:  False
 is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
+Parents: ['a123']
 Branches: ['commit-1-branch-1', 'commit-1-branch-2']
 Changed Files: ['commit-1/file-1', 'commit-1/file-2']
 Changed Files Stats:
@@ -106,6 +107,7 @@ is-fixup-commit:  False
 is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
+Parents: ['b123']
 Branches: ['commit-2-branch-1', 'commit-2-branch-2']
 Changed Files: ['commit-2/file-1', 'commit-2/file-2']
 Changed Files Stats:
@@ -128,6 +130,7 @@ is-fixup-commit:  False
 is-fixup-amend-commit: False
 is-squash-commit: False
 is-revert-commit: False
+Parents: ['c123']
 Branches: ['commit-3-branch-1', 'commit-3-branch-2']
 Changed Files: ['commit-3/file-1', 'commit-3/file-2']
 Changed Files Stats:
