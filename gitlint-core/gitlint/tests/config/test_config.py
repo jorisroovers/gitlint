@@ -51,6 +51,7 @@ class LintConfigTests(BaseTestCase):
         self.assertFalse(config.ignore_stdin)
         self.assertFalse(config.staged)
         self.assertFalse(config.fail_without_commits)
+        self.assertFalse(config.regex_style_search)
         self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
         active_rule_classes = tuple(type(rule) for rule in config.rules)
@@ -103,6 +104,10 @@ class LintConfigTests(BaseTestCase):
         # fail-without-commits
         config.set_general_option("fail-without-commits", "true")
         self.assertTrue(config.fail_without_commits)
+
+        # regex-style-search
+        config.set_general_option("regex-style-search", "true")
+        self.assertTrue(config.regex_style_search)
 
         # target
         config.set_general_option("target", self.SAMPLES_DIR)
@@ -243,7 +248,7 @@ class LintConfigTests(BaseTestCase):
         # splitting which means it it will accept just about everything
 
         # invalid boolean options
-        for attribute in ["debug", "staged", "ignore_stdin", "fail_without_commits"]:
+        for attribute in ["debug", "staged", "ignore_stdin", "fail_without_commits", "regex_style_search"]:
             option_name = attribute.replace("_", "-")
             with self.assertRaisesMessage(LintConfigError, f"Option '{option_name}' must be either 'true' or 'false'"):
                 setattr(config, attribute, "föobar")
@@ -274,6 +279,8 @@ class LintConfigTests(BaseTestCase):
             ("verbosity", 1),
             ("rules", []),
             ("ignore_stdin", True),
+            ("fail_without_commits", True),
+            ("regex_style_search", True),
             ("debug", True),
             ("ignore", ["T1"]),
             ("staged", True),

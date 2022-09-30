@@ -59,6 +59,11 @@ staged=true
 # Disabled by default.
 fail-without-commits=true
 
+# Whether to use Python `search` instead of `match` semantics in rules that use
+# regexes. Context: https://github.com/jorisroovers/gitlint/issues/254
+# Disabled by default, but will be enabled by default in the future.
+regex-style-search=true
+
 # Enable debug mode (prints more output). Disabled by default.
 debug=true
 
@@ -217,9 +222,9 @@ using commandline flags or in `[general]` section in a `.gitlint` configuration 
 
 Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
 
-Default value  |  gitlint version | commandline flag  | environment variable
----------------|------------------|-------------------|-----------------------
-`False`        | >= 0.1.0         | `--silent`        | `GITLINT_SILENT`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| `False`       | >= 0.1.0        | `--silent`       | `GITLINT_SILENT`     |
 
 #### Examples
 ```sh
@@ -232,9 +237,9 @@ GITLINT_SILENT=1 gitlint  # using env variable
 
 Amount of output gitlint will show when printing errors.
 
-Default value  |  gitlint version | commandline flag  | environment variable 
----------------|------------------|-------------------|-----------------------
-3              | >= 0.1.0         | `-v`              | `GITLINT_VERBOSITY`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| 3             | >= 0.1.0        | `-v`             | `GITLINT_VERBOSITY`  |
 
 
 #### Examples
@@ -258,9 +263,9 @@ verbosity=2
 
 Comma separated list of rules to ignore (by name or id).
 
-Default value              |  gitlint version | commandline flag  | environment variable   
----------------------------|------------------|-------------------|-----------------------
- [] (=empty list)          | >= 0.1.0         | `--ignore`        | `GITLINT_IGNORE`
+| Default value    | gitlint version | commandline flag | environment variable |
+| ---------------- | --------------- | ---------------- | -------------------- |
+| [] (=empty list) | >= 0.1.0        | `--ignore`       | `GITLINT_IGNORE`     |
 
 #### Examples
 ```sh
@@ -280,9 +285,9 @@ ignore=T1,body-min-length
 
 Enable debugging output.
 
-Default value  |  gitlint version | commandline flag  | environment variable   
----------------|------------------|-------------------|-----------------------
- false         | >= 0.7.1         | `--debug`         | `GITLINT_DEBUG`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| false         | >= 0.7.1        | `--debug`        | `GITLINT_DEBUG`      |
 
 #### Examples
 ```sh
@@ -297,9 +302,9 @@ GITLINT_DEBUG=1 gitlint # using env variable
 
 Target git repository gitlint should be linting against.
 
-Default value              |  gitlint version | commandline flag  | environment variable   
----------------------------|------------------|-------------------|-----------------------
-(empty)                    | >= 0.8.0         | `--target`        | `GITLINT_TARGET`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| (empty)       | >= 0.8.0        | `--target`       | `GITLINT_TARGET`     |
 
 #### Examples
 ```sh
@@ -317,9 +322,9 @@ target=/home/joe/myrepo/
 
 Path where gitlint looks for a config file.
 
-Default value              |  gitlint version | commandline flag  | environment variable   
----------------------------|------------------|-------------------|-----------------------
-`.gitlint`                 | >= 0.1.0         | `--config`        | `GITLINT_CONFIG`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| `.gitlint`    | >= 0.1.0        | `--config`       | `GITLINT_CONFIG`     |
 
 #### Examples
 ```sh
@@ -332,9 +337,9 @@ GITLINT_CONFIG=/home/joe/gitlint.ini  # using env variable
 
 Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 
-Default value              |  gitlint version | commandline flag  | environment variable   
----------------------------|------------------|-------------------|-----------------------
- (empty)                   | >= 0.8.0         | `--extra-path`    | `GITLINT_EXTRA_PATH`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| (empty)       | >= 0.8.0        | `--extra-path`   | `GITLINT_EXTRA_PATH` |
 
 #### Examples
 ```sh
@@ -353,9 +358,9 @@ extra-path=/home/joe/rules/
 
 Comma-separated list of [Contrib rules](contrib_rules) to enable (by name or id).
 
-Default value              |  gitlint version | commandline flag  | environment variable   
----------------------------|------------------|-------------------|-----------------------
- (empty)                   | >= 0.12.0        | `--contrib`       | `GITLINT_CONTRIB`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| (empty)       | >= 0.12.0       | `--contrib`      | `GITLINT_CONTRIB`    |
 
 #### Examples
 ```sh
@@ -376,9 +381,9 @@ contrib=contrib-title-conventional-commits,CC1
 
 Fetch additional meta-data from the local repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
 
-Default value  |  gitlint version | commandline flag  | environment variable   
----------------|------------------|-------------------|-----------------------
- false         | >= 0.13.0        | `--staged`        | `GITLINT_STAGED`
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| false         | >= 0.13.0       | `--staged`       | `GITLINT_STAGED`     |
 
 #### Examples
 ```sh
@@ -399,9 +404,9 @@ Hard fail when the target commit range is empty. Note that gitlint will
 already fail by default on invalid commit ranges. This option is specifically
 to tell gitlint to fail on **valid but empty** commit ranges.
 
-Default value  |  gitlint version | commandline flag  | environment variable   
----------------|------------------|---------------------------|-----------------------
- false         | >= 0.15.2        | `--fail-without-commits`  | `GITLINT_FAIL_WITHOUT_COMMITS`
+| Default value | gitlint version | commandline flag         | environment variable           |
+| ------------- | --------------- | ------------------------ | ------------------------------ |
+| false         | >= 0.15.2       | `--fail-without-commits` | `GITLINT_FAIL_WITHOUT_COMMITS` |
 
 #### Examples
 ```sh
@@ -417,13 +422,42 @@ GITLINT_FAIL_WITHOUT_COMMITS=1 gitlint       # using env variable
 fail-without-commits=true
 ```
 
+---
+### regex-style-search
+
+Whether to use Python `search` instead of `match` semantics in rules that use
+regexes. 
+
+
+!!! important
+    **This is disabled by default, but will be enabled by default in the future.**
+    Gitlint will print a warning when you're using a rule that uses a regex and this
+    option is not enabled.
+    For more context, see [issue #254](https://github.com/jorisroovers/gitlint/issues/254).
+
+
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| false         | >= 0.18.0       | Not Available    | Not Available        |
+
+#### Examples
+```sh
+# CLI
+gitlint -c general.regex-style-search=true
+```
+```ini
+#.gitlint
+[general]
+regex-style-search=true
+```
+---
 ### ignore-stdin
 
 Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
 
-Default value  |  gitlint version | commandline flag  | environment variable   
----------------|------------------|-------------------|-----------------------
- false         | >= 0.12.0        | `--ignore-stdin`  | `GITLINT_IGNORE_STDIN`
+| Default value | gitlint version | commandline flag | environment variable   |
+| ------------- | --------------- | ---------------- | ---------------------- |
+| false         | >= 0.12.0       | `--ignore-stdin` | `GITLINT_IGNORE_STDIN` |
 
 #### Examples
 ```sh
@@ -442,9 +476,9 @@ ignore-stdin=true
 
 Whether or not to ignore merge commits.
 
-Default value  |  gitlint version | commandline flag  | environment variable  
----------------|------------------|-------------------|-----------------------
- true          | >= 0.7.0         | Not Available     | Not Available  
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| true          | >= 0.7.0        | Not Available    | Not Available        |
 
 #### Examples
 ```sh
@@ -461,9 +495,9 @@ ignore-merge-commits=false
 
 Whether or not to ignore revert commits.
 
-Default value  |  gitlint version | commandline flag  | environment variable   
----------------|------------------|-------------------|-----------------------
- true          | >= 0.13.0        | Not Available     | Not Available  
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| true          | >= 0.13.0       | Not Available    | Not Available        |
 
 #### Examples
 ```sh
@@ -480,9 +514,9 @@ ignore-revert-commits=false
 
 Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
 
-Default value  |  gitlint version | commandline flag  | environment variable  
----------------|------------------|-------------------|-----------------------
- true          | >= 0.9.0         | Not Available     | Not Available  
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| true          | >= 0.9.0        | Not Available    | Not Available        |
 
 #### Examples
 ```sh
@@ -499,9 +533,9 @@ ignore-fixup-commits=false
 
 Whether or not to ignore [fixup=amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt) commits.
 
-Default value  |  gitlint version | commandline flag  | environment variable  
----------------|------------------|-------------------|-----------------------
- true          | >= 0.18.0        | Not Available     | Not Available  
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| true          | >= 0.18.0       | Not Available    | Not Available        |
 
 #### Examples
 ```sh
@@ -518,9 +552,9 @@ ignore-fixup-amend-commits=false
 
 Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
 
-Default value  |  gitlint version | commandline flag  | environment variable 
----------------|------------------|-------------------|-----------------------
- true          | >= 0.9.0         | Not Available     | Not Available  
+| Default value | gitlint version | commandline flag | environment variable |
+| ------------- | --------------- | ---------------- | -------------------- |
+| true          | >= 0.9.0        | Not Available    | Not Available        |
 
 #### Examples
 ```sh

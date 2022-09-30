@@ -34,6 +34,11 @@
 # Disabled by default.
 # fail-without-commits=true
 
+# Whether to use Python `search` instead of `match` semantics in rules that use
+# regexes. Context: https://github.com/jorisroovers/gitlint/issues/254
+# Disabled by default, but will be enabled by default in the future.
+# regex-style-search=true
+
 # Enable debug mode (prints more output). Disabled by default.
 # debug=true
 
