@@ -84,6 +84,9 @@ class LintConfig:  # pylint: disable=too-many-instance-attributes
         self._fail_without_commits = options.BoolOption(
             "fail-without-commits", False, "Hard fail when the target commit range is empty"
         )
+        self._regex_style_search = options.BoolOption(
+            "regex-style-search", False, "Use `search` instead of `match` semantics for regex rules"
+        )
 
     @property
     def target(self):
@@ -197,6 +200,15 @@ class LintConfig:  # pylint: disable=too-many-instance-attributes
         return self._fail_without_commits.set(value)
 
     @property
+    def regex_style_search(self):
+        return self._regex_style_search.value
+
+    @regex_style_search.setter
+    @handle_option_error
+    def regex_style_search(self, value):
+        return self._regex_style_search.set(value)
+
+    @property
     def extra_path(self):
         return self._extra_path.value if self._extra_path else None
 
@@ -301,6 +313,7 @@ class LintConfig:  # pylint: disable=too-many-instance-attributes
             and self.ignore_stdin == other.ignore_stdin
             and self.staged == other.staged
             and self.fail_without_commits == other.fail_without_commits
+            and self.regex_style_search == other.regex_style_search
             and self.debug == other.debug
             and self.ignore == other.ignore
             and self._config_path == other._config_path
@@ -322,6 +335,7 @@ class LintConfig:  # pylint: disable=too-many-instance-attributes
             f"ignore-stdin: {self.ignore_stdin}\n"
             f"staged: {self.staged}\n"
             f"fail-without-commits: {self.fail_without_commits}\n"
+            f"regex-style-search: {self.regex_style_search}\n"
             f"verbosity: {self.verbosity}\n"
             f"debug: {self.debug}\n"
             f"target: {self.target}\n"
