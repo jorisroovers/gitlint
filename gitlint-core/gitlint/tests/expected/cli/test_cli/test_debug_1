@@ -61,7 +61,7 @@ target: {target}
   B8: body-match-regex
      regex=None
   M1: author-valid-email
-     regex=[^@ ]+@[^@ ]+\.[^@ ]+
+     regex=^[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Using the local repo.
 DEBUG: gitlint.git ('rev-list', 'foo...bar')

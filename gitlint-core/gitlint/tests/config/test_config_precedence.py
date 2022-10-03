@@ -11,6 +11,7 @@ from gitlint.config import LintConfigBuilder
 
 class LintConfigPrecedenceTests(BaseTestCase):
     def setUp(self):
+        super().setUp()
         self.cli = CliRunner()
 
     @patch("gitlint.cli.get_stdin_data", return_value="WIP:fö\n\nThis is å test message\n")

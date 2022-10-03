@@ -2,6 +2,7 @@
 import logging
 from gitlint import rules as gitlint_rules
 from gitlint import display
+from gitlint.deprecation import Deprecation
 
 LOG = logging.getLogger(__name__)
 logging.basicConfig()
@@ -84,6 +85,9 @@ class GitLinter:
         """Lint the last commit in a given git context by applying all ignore, title, body and commit rules."""
         LOG.debug("Linting commit %s", commit.sha or "[SHA UNKNOWN]")
         LOG.debug("Commit Object\n" + str(commit))
+
+        # Ensure the Deprecation class has a reference to the config currently being used
+        Deprecation.config = self.config
 
         # Apply config rules
         for rule in self.configuration_rules:
