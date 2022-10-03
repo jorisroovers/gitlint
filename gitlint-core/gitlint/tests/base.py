@@ -10,6 +10,8 @@ import unittest
 
 from unittest.mock import patch
 
+from gitlint.config import LintConfig
+from gitlint.deprecation import Deprecation, LOG as DEPRECATION_LOG
 from gitlint.git import GitContext, GitChangedFileStats
 from gitlint.utils import LOG_FORMAT, DEFAULT_ENCODING
 
@@ -29,11 +31,22 @@ class BaseTestCase(unittest.TestCase):
         self.logcapture.setFormatter(logging.Formatter(LOG_FORMAT))
         logging.getLogger("gitlint").setLevel(logging.DEBUG)
         logging.getLogger("gitlint").handlers = [self.logcapture]
+        DEPRECATION_LOG.handlers = [self.logcapture]
 
         # Make sure we don't propagate anything to child loggers, we need to do this explicitly here
         # because if you run a specific test file like test_lint.py, we won't be calling the setupLogging() method
         # in gitlint.cli that normally takes care of this
+        # Example test where this matters (for DEPRECATION_LOG):
+        # gitlint-core/gitlint/tests/rules/test_configuration_rules.py::ConfigurationRuleTests::test_ignore_by_title
         logging.getLogger("gitlint").propagate = False
+        DEPRECATION_LOG.propagate = False
+
+        # Make sure Deprecation has a clean config set at the start of each test.
+        # Tests that want to specifically test deprecation should override this.
+        Deprecation.config = LintConfig()
+        # Normally Deprecation only logs messages once per process.
+        # For tests we want to log every time, so we reset the warning_msgs set per test.
+        Deprecation.warning_msgs = set()
 
     @staticmethod
     @contextlib.contextmanager

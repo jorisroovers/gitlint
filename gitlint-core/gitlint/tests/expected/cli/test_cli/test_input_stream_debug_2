@@ -61,7 +61,7 @@ target: {target}
   B8: body-match-regex
      regex=None
   M1: author-valid-email
-     regex=[^@ ]+@[^@ ]+\.[^@ ]+
+     regex=^[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli Stdin data: 'WIP: tïtle 
 '

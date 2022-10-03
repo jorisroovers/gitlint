@@ -62,7 +62,7 @@ target: {target}
   B8: body-match-regex
      regex=None
   M1: author-valid-email
-     regex=[^@ ]+@[^@ ]+\.[^@ ]+
+     regex=^[^@ ]+@[^@ ]+\.[^@ ]+
   CC1: contrib-body-requires-signed-off-by
   CT1: contrib-title-conventional-commits
      types=fix,feat,chore,docs,style,refactor,perf,test,revert,ci,build

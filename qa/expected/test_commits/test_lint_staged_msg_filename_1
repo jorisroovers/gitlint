@@ -62,7 +62,7 @@ target: {target}
   B8: body-match-regex
      regex=None
   M1: author-valid-email
-     regex=[^@ ]+@[^@ ]+\.[^@ ]+
+     regex=^[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli Fetching additional meta-data from staged commit
 DEBUG: gitlint.cli Using --msg-filename.

@@ -11,6 +11,7 @@ import click
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
+from gitlint.deprecation import LOG as DEPRECATED_LOG, DEPRECATED_LOG_FORMAT
 from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.shell import shell
@@ -44,13 +45,22 @@ class GitLintUsageError(GitlintError):
 
 def setup_logging():
     """Setup gitlint logging"""
+
+    # Root log, mostly used for debug
     root_log = logging.getLogger("gitlint")
     root_log.propagate = False  # Don't propagate to child loggers, the gitlint root logger handles everything
+    root_log.setLevel(logging.ERROR)
     handler = logging.StreamHandler()
     formatter = logging.Formatter(LOG_FORMAT)
     handler.setFormatter(formatter)
     root_log.addHandler(handler)
-    root_log.setLevel(logging.ERROR)
+
+    # Deprecated log, to log deprecation warnings
+    DEPRECATED_LOG.propagate = False  # Don't propagate to child logger
+    DEPRECATED_LOG.setLevel(logging.WARNING)
+    deprecated_log_handler = logging.StreamHandler()
+    deprecated_log_handler.setFormatter(logging.Formatter(DEPRECATED_LOG_FORMAT))
+    DEPRECATED_LOG.addHandler(deprecated_log_handler)
 
 
 def log_system_info():
@@ -284,6 +294,7 @@ def cli(  # pylint: disable=too-many-arguments
     try:
         if debug:
             logging.getLogger("gitlint").setLevel(logging.DEBUG)
+            DEPRECATED_LOG.setLevel(logging.DEBUG)
         LOG.debug("To report issues, please visit https://github.com/jorisroovers/gitlint/issues")
 
         log_system_info()

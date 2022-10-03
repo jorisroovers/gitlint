@@ -61,7 +61,7 @@ target: {target}
   B8: body-match-regex
      regex=None
   M1: author-valid-email
-     regex=[^@ ]+@[^@ ]+\.[^@ ]+
+     regex=^[^@ ]+@[^@ ]+\.[^@ ]+
   T5:extra-wörds: title-must-not-contain-word:extra-wörds
      words=hür,tëst
   T5:even-more-wörds: title-must-not-contain-word:even-more-wörds
