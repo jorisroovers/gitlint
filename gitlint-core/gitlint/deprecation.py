@@ -8,12 +8,18 @@ DEPRECATED_LOG_FORMAT = "%(levelname)s: %(message)s"
 class Deprecation:
     """Singleton class that handles deprecation warnings and behavior."""
 
+    # LintConfig class that is used to determine deprecation behavior
     config = None
 
+    # Set of warning messages that have already been logged, to prevent duplicate warnings
     warning_msgs = set()
 
     @classmethod
     def get_regex_method(cls, rule, regex_option):
+        """Returns the regex method to be used for a given rule based on general.regex-style-search option.
+        Logs a warning if the deprecated re.match method is returned."""
+
+        # if general.regex-style-search is set, just return re.search
         if cls.config.regex_style_search:
             return regex_option.value.search
 

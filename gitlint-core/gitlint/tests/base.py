@@ -15,6 +15,13 @@ from gitlint.deprecation import Deprecation, LOG as DEPRECATION_LOG
 from gitlint.git import GitContext, GitChangedFileStats
 from gitlint.utils import LOG_FORMAT, DEFAULT_ENCODING
 
+EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING = (
+    "WARNING: gitlint.deprecated.regex_style_search {0} - {1}: gitlint will be switching from using "
+    "Python regex 'match' (match beginning) to 'search' (match anywhere) semantics. "
+    "Please review your {1}.regex option accordingly. "
+    "To remove this warning, set general.regex-style-search=True. More details: TODO"
+)
+
 
 class BaseTestCase(unittest.TestCase):
     """Base class of which all gitlint unit test classes are derived. Provides a number of convenience methods."""
