@@ -1,5 +1,5 @@
-WARNING: I1 - ignore-by-title: gitlint will be switching from using Python regex 'match' (match beginning) to 'search' (match anywhere) semantics. Please review your ignore-by-title.regex option accordingly. To remove this warning, set general.regex-style-search=True. More details: TODO
-WARNING: I2 - ignore-by-body: gitlint will be switching from using Python regex 'match' (match beginning) to 'search' (match anywhere) semantics. Please review your ignore-by-body.regex option accordingly. To remove this warning, set general.regex-style-search=True. More details: TODO
+WARNING: I1 - ignore-by-title: gitlint will be switching from using Python regex 'match' (match beginning) to 'search' (match anywhere) semantics. Please review your ignore-by-title.regex option accordingly. To remove this warning, set general.regex-style-search=True. More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-search
+WARNING: I2 - ignore-by-body: gitlint will be switching from using Python regex 'match' (match beginning) to 'search' (match anywhere) semantics. Please review your ignore-by-body.regex option accordingly. To remove this warning, set general.regex-style-search=True. More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-search
 Commit {commit_sha0}:
 1: T3 Title has trailing punctuation (.): "Sïmple title4."
 
