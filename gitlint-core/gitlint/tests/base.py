@@ -19,7 +19,8 @@ EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING = (
     "WARNING: gitlint.deprecated.regex_style_search {0} - {1}: gitlint will be switching from using "
     "Python regex 'match' (match beginning) to 'search' (match anywhere) semantics. "
     "Please review your {1}.regex option accordingly. "
-    "To remove this warning, set general.regex-style-search=True. More details: TODO"
+    "To remove this warning, set general.regex-style-search=True. More details: "
+    "https://jorisroovers.github.io/gitlint/configuration/#regex-style-search"
 )
 
 

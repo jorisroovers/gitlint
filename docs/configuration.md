@@ -425,20 +425,57 @@ fail-without-commits=true
 ---
 ### regex-style-search
 
-Whether to use Python `search` instead of `match` semantics in rules that use
-regexes. 
-
-
-!!! important
-    **This is disabled by default, but will be enabled by default in the future.**
-    Gitlint will print a warning when you're using a rule that uses a regex and this
-    option is not enabled.
-    For more context, see [issue #254](https://github.com/jorisroovers/gitlint/issues/254).
-
+Whether to use Python `re.search()` instead of `re.match()` semantics in all built-in rules that use regular expressions. 
 
 | Default value | gitlint version | commandline flag | environment variable |
 | ------------- | --------------- | ---------------- | -------------------- |
 | false         | >= 0.18.0       | Not Available    | Not Available        |
+
+!!! important
+    At this time, `regex-style-search` is **disabled** by default, but it will be **enabled** by default in the future.
+    
+
+
+Gitlint will log a warning when you're using a rule that uses a custom regex and this option is not enabled:
+
+```plain
+WARNING: I1 - ignore-by-title: gitlint will be switching from using Python regex 'match' (match beginning) to
+'search' (match anywhere) semantics. Please review your ignore-by-title.regex option accordingly.
+To remove this warning, set general.regex-style-search=True. 
+More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-search
+```
+
+*If you don't have any custom regex specified, gitlint will not log a warning and no action is needed.*
+
+**To remove the warning:** 
+
+1. Review your regex in the rules gitlint warned for and ensure it's still accurate when using [`re.search()` semantics](https://docs.python.org/3/library/re.html#search-vs-match).
+2. Enable `regex-style-search` in your `.gitlint` file (or using [any other way to configure gitlint](http://127.0.0.1:8000/gitlint/configuration/)):
+
+```ini
+[general]
+regex-style-search=true
+```
+
+#### More context
+Python offers [two different primitive operations based on regular expressions](https://docs.python.org/3/library/re.html#search-vs-match): 
+`re.match()` checks for a match only at the beginning of the string, while `re.search()` checks for a match anywhere
+in the string.
+
+
+
+Most rules in gitlint already use `re.search()` instead of `re.match()`, but there's a few notable exceptions that
+use `re.match()`, which can lead to unexpected matching behavior.
+
+- M1 - author-valid-email
+- I1 - ignore-by-title
+- I2 - ignore-by-body
+- I3 - ignore-body-lines
+- I4 - ignore-by-author-name
+
+The `regex-style-search` option is meant to fix this inconsistency. Setting it to `true` will force the above rules to
+use `re.search()` instead of `re.match()`. For detailed context, see [issue #254](https://github.com/jorisroovers/gitlint/issues/254).
+
 
 #### Examples
 ```sh
