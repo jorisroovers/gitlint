@@ -5,7 +5,7 @@ Contrib rules are community-**contrib**uted rules that are disabled by default, 
 
 Contrib rules are meant to augment default gitlint behavior by providing users with rules for common use-cases without
 forcing these rules on all gitlint users. This also means that users don't have to
-re-implement these commonly used rules themselves as [user-defined](user_defined_rules) rules.
+re-implement these commonly used rules themselves as [user-defined](user_defined_rules.md) rules.
 
 To enable certain contrib rules, you can use the `--contrib` flag.
 ```sh
@@ -71,4 +71,4 @@ ID    | Name                             | gitlint version    | Description
 CC2   | contrib-disallow-cleanup-commits | >= 0.18.0          | Commit title must not contain `fixup!`, `squash!` or `amend!`. This means `git commit --fixup` and `git commit --squash` commits are not allowed.
 
 ## Contributing Contrib rules
-We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the [Contributing](contributing) page on how to get started.
+We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the [Contributing](contributing.md) page on how to get started.

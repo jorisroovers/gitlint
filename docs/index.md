@@ -26,7 +26,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
- - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules).
+ - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules.md).
  - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,

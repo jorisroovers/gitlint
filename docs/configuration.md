@@ -207,7 +207,7 @@ gitlint-ignore: T1, body-hard-tab
 gitlint configuration is applied in the following order of precedence:
 
 1. Commit specific config (e.g.: `gitlint-ignore: all` in the commit message)
-2. Configuration Rules (e.g.: [ignore-by-title](/rules/#i1-ignore-by-title))
+2. Configuration Rules (e.g.: [ignore-by-title](rules.md#i1-ignore-by-title))
 3. Commandline convenience flags (e.g.:  `-vv`, `--silent`, `--ignore`)
 4. Environment variables (e.g.: `GITLINT_VERBOSITY=3`)
 5. Commandline configuration flags (e.g.: `-c title-max-length=123`)
@@ -356,7 +356,7 @@ extra-path=/home/joe/rules/
 
 ### contrib
 
-Comma-separated list of [Contrib rules](contrib_rules) to enable (by name or id).
+Comma-separated list of [Contrib rules](contrib_rules.md) to enable (by name or id).
 
 | Default value | gitlint version | commandline flag | environment variable |
 | ------------- | --------------- | ---------------- | -------------------- |
