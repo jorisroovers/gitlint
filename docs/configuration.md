@@ -11,7 +11,7 @@ gitlint generate-config
 You can also use a different config file like so:
 
 ```sh
-gitlint --config myconfigfile.ini 
+gitlint --config myconfigfile.ini
 ```
 
 The block below shows a sample `.gitlint` file. Details about rule config options can be found on the
@@ -49,7 +49,7 @@ ignore-squash-commits=true
 # Ignore any data sent to gitlint via stdin
 ignore-stdin=true
 
-# Fetch additional meta-data from the local repository when manually passing a 
+# Fetch additional meta-data from the local repository when manually passing a
 # commit message to gitlint via stdin or --commit-msg. Disabled by default.
 staged=true
 
@@ -193,7 +193,7 @@ gitlint-ignore: all
 
 `gitlint-ignore: all` can occur on any line, as long as it is at the start of the line.
 
-You can also specify specific rules to be ignored as follows: 
+You can also specify specific rules to be ignored as follows:
 ```
 WIP: This is my commit message
 
@@ -369,7 +369,7 @@ gitlint --contrib=contrib-title-conventional-commits,CC1
 # different way of doing the same
 gitlint -c general.contrib=contrib-title-conventional-commits,CC1
 # using env variable
-GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint   
+GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint
 ```
 ```ini
 #.gitlint
@@ -412,7 +412,7 @@ to tell gitlint to fail on **valid but empty** commit ranges.
 ```sh
 # CLI
 # The following will cause gitlint to hard fail (i.e. exit code > 0)
-# since HEAD..HEAD is a valid but empty commit range. 
+# since HEAD..HEAD is a valid but empty commit range.
 gitlint --fail-without-commits --commits HEAD..HEAD
 GITLINT_FAIL_WITHOUT_COMMITS=1 gitlint       # using env variable
 ```
