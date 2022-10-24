@@ -34,14 +34,7 @@ and it's likely that your PR will be merged and released a lot sooner. Thanks!
 
 ## Development
 
-There is a Vagrantfile (Ubuntu) in this repository that can be used for development.
-It comes pre-installed with all Python versions that gitlint supports.
-```sh
-vagrant up
-vagrant ssh
-```
-
-Or you can choose to use your local environment:
+To install gitlint for local development:
 
 ```sh
 python -m venv .venv
@@ -66,16 +59,6 @@ To run tests:
 ./run_tests.sh --all                 # Run unit, integration, format and gitlint checks
 ```
 
-The `Vagrantfile` comes with `virtualenv`s for python 3.6, 3.7, 3.8, 3.9 and pypy3.6.
-You can easily run tests against specific python environments by using the following commands *inside* of the Vagrant VM:
-```sh
-./run_tests.sh --envs 36               # Run the unit tests against Python 3.6
-./run_tests.sh --envs 36,37,pypy36     # Run the unit tests against Python 3.6, Python 3.7 and Pypy3.6
-./run_tests.sh --envs 36,37 --format   # Run format checks against Python 3.6 and Python 3.7 (also works for --git, --integration, --format, --stats and --lint.
-./run_tests.sh --envs all --all        # Run all tests against all environments
-./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
-```
-
 !!! important
     Gitlint commits and pull requests are gated on all of our tests and checks.
 
@@ -92,13 +75,13 @@ python setup.py --long-description | rst2html.py > output.html
 ## Documentation
 We use [mkdocs](https://www.mkdocs.org/) for generating our documentation from markdown.
 
-To use it, do the following outside of the vagrant box (on your host machine):
+To use it:
 ```sh
 pip install -r doc-requirements.txt # install doc requirements
 mkdocs serve
 ```
 
-Then access the documentation website on your host machine on [http://localhost:8000]().
+Then access the documentation website on [http://localhost:8000]().
 
 ## Tools
 We keep a small set of scripts in the `tools/` directory:
