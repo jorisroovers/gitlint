@@ -26,7 +26,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
- - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules).
+ - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules.md).
  - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
@@ -38,7 +38,7 @@ useful throughout the years.
 # Pip is recommended to install the latest version
 pip install gitlint
 
-# Alternative: by default, gitlint is installed with pinned dependencies. 
+# Alternative: by default, gitlint is installed with pinned dependencies.
 # To install gitlint with looser dependency requirements, only install gitlint-core.
 pip install gitlint-core
 
@@ -280,7 +280,7 @@ The `--commits` flag takes a **single** refspec argument or commit range. Basica
 by [git rev-list](https://git-scm.com/docs/git-rev-list) as a single argument will work.
 
 Alternatively, you can pass `--commits` a comma-separated list of commit hashes (both short and full-length SHAs work,
-as well as special references such as `HEAD` and branch names). 
+as well as special references such as `HEAD` and branch names).
 Gitlint will treat these as pointers to single commits and lint these in the order you passed.
 
 For cases where the `--commits` option doesn't provide the flexibility you need, you can always use a simple shell
@@ -389,7 +389,7 @@ additional unique identifier (i.e. the rule *name*) during configuration.
     For example, by defining 2 `body-max-line-length` rules with different `line-length` options, you obviously create
     a conflicting situation. Gitlint does not do any resolution of such conflicts, it's up to you to make sure
     any configuration is non-conflicting. So caution advised!
-    
+
 Defining a named rule is easy, for example using your `.gitlint` file:
 
 ```ini
@@ -415,7 +415,7 @@ When executing gitlint, you will see the violations from the default `title-must
 the violations caused by the additional Named Rules.
 
 ```sh
-$ gitlint 
+$ gitlint
 1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: foo wonderwoman hur bar"
 1: T5:This-Can_Be*Whatever$YouWant Title contains the word 'wonderwoman' (case-insensitive): "WIP: foo wonderwoman hur bar"
 1: T5:extra-words Title contains the word 'foo' (case-insensitive): "WIP: foo wonderwoman hur bar"
