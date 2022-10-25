@@ -34,7 +34,7 @@ def use_sh_library():
     gitlint_use_sh_lib_env = os.environ.get("GITLINT_USE_SH_LIB", None)
     if gitlint_use_sh_lib_env:
         return gitlint_use_sh_lib_env == "1"
-    return not PLATFORM_IS_WINDOWS
+    return False
 
 
 USE_SH_LIB = use_sh_library()
