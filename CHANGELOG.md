@@ -1,5 +1,9 @@
 # Changelog #
 
+## v0.18.0 (2021-11-?)  - Unreleased ##
+- Python 3.11 support
+- Last release to support Python 3.6 (EOL since 2021-12-23)
+
 ## v0.17.0 (2021-11-28) ##
 Contributors:
 Special thanks to all contributors for this release, in particular [andersk](https://github.com/andersk) and [sigmavirus24](https://github.com/sigmavirus24).
