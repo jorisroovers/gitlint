@@ -54,9 +54,11 @@ jobs:
       - name: Integration Tests
         run: ./run_tests.sh -i
 
-      - name: Integration Tests (GITLINT_USE_SH_LIB=0)
+      # Gitlint no longer uses `sh` by default, but for now we're still supporting the manual enablement of it.
+      # By setting GITLINT_USE_SH_LIB=1, we test whether this still works.
+      - name: Integration Tests (GITLINT_USE_SH_LIB=1)
         env:
-          GITLINT_USE_SH_LIB: 0
+          GITLINT_USE_SH_LIB: 1
         run: ./run_tests.sh -i
 
       - name: Code formatting (black)
