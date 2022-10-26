@@ -232,6 +232,7 @@ Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determin
 gitlint --silent
 GITLINT_SILENT=1 gitlint  # using env variable
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### verbosity
 
@@ -258,6 +259,7 @@ GITLINT_VERBOSITY=2 gitlint    # using env variable
 [general]
 verbosity=2
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### ignore
 
@@ -280,6 +282,7 @@ GITLINT_IGNORE=T1,body-min-length gitlint     # using env variable
 [general]
 ignore=T1,body-min-length
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### debug
 
@@ -297,6 +300,7 @@ GITLINT_DEBUG=1 gitlint # using env variable
 # --debug is special, the following does NOT work
 # gitlint -c general.debug=true
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### target
 
@@ -318,6 +322,8 @@ GITLINT_TARGET=/home/joe/myrepo/ gitlint     # using env variable
 [general]
 target=/home/joe/myrepo/
 ```
+------------------------------------------------------------------------------------------------------------------------
+
 ### config
 
 Path where gitlint looks for a config file.
@@ -332,6 +338,7 @@ gitlint --config=/home/joe/gitlint.ini
 gitlint -C /home/joe/gitlint.ini      # different way of doing the same
 GITLINT_CONFIG=/home/joe/gitlint.ini  # using env variable
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### extra-path
 
@@ -353,7 +360,7 @@ GITLINT_EXTRA_PATH=/home/joe/rules/ gitlint     # using env variable
 [general]
 extra-path=/home/joe/rules/
 ```
-
+------------------------------------------------------------------------------------------------------------------------
 ### contrib
 
 Comma-separated list of [Contrib rules](contrib_rules.md) to enable (by name or id).
@@ -376,6 +383,7 @@ GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint
 [general]
 contrib=contrib-title-conventional-commits,CC1
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### staged
 
@@ -397,6 +405,7 @@ GITLINT_STAGED=1 gitlint       # using env variable
 [general]
 staged=true
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### fail-without-commits
 
@@ -487,7 +496,7 @@ gitlint -c general.regex-style-search=true
 [general]
 regex-style-search=true
 ```
----
+------------------------------------------------------------------------------------------------------------------------
 ### ignore-stdin
 
 Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
@@ -508,6 +517,7 @@ GITLINT_IGNORE_STDIN=1 gitlint       # using env variable
 [general]
 ignore-stdin=true
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### ignore-merge-commits
 
@@ -527,6 +537,7 @@ gitlint -c general.ignore-merge-commits=false
 [general]
 ignore-merge-commits=false
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### ignore-revert-commits
 
@@ -546,6 +557,7 @@ gitlint -c general.ignore-revert-commits=false
 [general]
 ignore-revert-commits=false
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### ignore-fixup-commits
 
@@ -565,6 +577,7 @@ gitlint -c general.ignore-fixup-commits=false
 [general]
 ignore-fixup-commits=false
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### ignore-fixup-amend-commits
 
@@ -584,6 +597,7 @@ gitlint -c general.ignore-fixup-amend-commits=false
 [general]
 ignore-fixup-amend-commits=false
 ```
+------------------------------------------------------------------------------------------------------------------------
 
 ### ignore-squash-commits
 

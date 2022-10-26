@@ -85,6 +85,19 @@ $ cat examples/commit-message-2 | gitlint
 !!! note
     The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
 
+### Shell completion
+
+```sh
+# Bash: add to ~/.bashrc
+eval "$(_GITLINT_COMPLETE=bash_source gitlint)"
+
+# Zsh: add to ~/.zshrc
+eval "$(_GITLINT_COMPLETE=zsh_source gitlint)"
+
+# Fish: add to ~/.config/fish/completions/foo-bar.fish
+eval (env _GITLINT_COMPLETE=fish_source gitlint)
+```
+
 ## Configuration
 
 For in-depth documentation of general and rule-specific configuration options, have a look at the [Configuration](configuration.md) and [Rules](rules.md) pages.
