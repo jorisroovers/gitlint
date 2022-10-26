@@ -6,7 +6,7 @@ The [source-code and issue tracker](https://github.com/jorisroovers/gitlint) are
 Often it takes a while for us (well, actually just [me](https://github.com/jorisroovers)) to get back to you
 (sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
 your interest!
-We maintain a [loose roadmap on our wiki](https://github.com/jorisroovers/gitlint/wiki/Roadmap), but
+We maintain a [loose project plan on github projects](https://github.com/users/jorisroovers/projects/1/), but
 that's open to a lot of change and input.
 
 ## Guidelines
@@ -47,12 +47,13 @@ python setup.py develop
 To run tests:
 ```sh
 ./run_tests.sh                       # run unit tests and print test coverage
-./run_tests.sh gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+./run_tests.sh gitlint-core/gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+pytest -k test_body_missing          # Alternative way to run a specific test by invoking pytest directly with a keyword expression
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
 ./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
 ./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
 ./run_tests.sh --build               # Run build tests (=build python package)
-./run_tests.sh --format              # format checks
+./run_tests.sh --format              # format checks (black)
 ./run_tests.sh --stats               # print some code stats
 ./run_tests.sh --git                 # inception: run gitlint against itself
 ./run_tests.sh --lint                # run pylint checks
@@ -62,14 +63,15 @@ To run tests:
 !!! important
     Gitlint commits and pull requests are gated on all of our tests and checks.
 
-## Packaging
 
-To see the package description in HTML format
+## Formatting
+
+We use [black](https://black.readthedocs.io/en/stable/) for code formatting.
+To use it, just run black against the code you modified:
+
 ```sh
-pip install docutils
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-python setup.py --long-description | rst2html.py > output.html
+black . # format all python code
+black gitlint-core/gitlint/lint.py # format a specific file
 ```
 
 ## Documentation
@@ -82,6 +84,33 @@ mkdocs serve
 ```
 
 Then access the documentation website on [http://localhost:8000]().
+
+## Packaging
+
+Gitlint consists of 2 python packages: [gitlint](https://pypi.org/project/gitlint/)
+and [gitlint-core](https://pypi.org/project/gitlint-core/).
+
+The `gitlint` package is just a wrapper package around `gitlint-core[trusted-deps]` which strictly pins gitlint
+dependencies to known working versions.
+
+There are scenarios where users (or OS package managers) may want looser dependency requirements.
+In these cases, users can just install `gitlint-core` directly (`pip install gitlint-core`).
+
+[Issue 162](https://github.com/jorisroovers/gitlint/issues/162) has all the background of how we got to the decision
+to split gitlint in 2 packages.
+
+![Gitlint package structure](images/gitlint-packages.png)
+
+### Packaging description
+
+To see the package description in HTML format
+```sh
+pip install docutils
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+python setup.py --long-description | rst2html.py > output.html
+```
+
 
 ## Tools
 We keep a small set of scripts in the `tools/` directory:
