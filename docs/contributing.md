@@ -34,12 +34,14 @@ and it's likely that your PR will be merged and released a lot sooner. Thanks!
 
 ## Development
 
+We provide a devcontainer on github to make it easier to get started with gitlint development.
+
+
 To install gitlint for local development:
 
 ```sh
 python -m venv .venv
 . .venv/bin/activate
-pip install --upgrade pip
 pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
 python setup.py develop
 ```
