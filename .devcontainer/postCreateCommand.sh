@@ -16,7 +16,7 @@ asdf global python 3.11.0
 # asdf install python pypy3.9-7.3.9
 
 # Setup virtualenv, install all dependencies
-python -m venv ~/.venv
-source ~/.venv/bin/activate
+cd workspaces/gitlint
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
-python setup.py develop
