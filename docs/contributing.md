@@ -19,11 +19,15 @@ When contributing code, please consider all the parts that are typically require
 - [Integration tests](https://github.com/jorisroovers/gitlint/tree/main/qa) (also automatically
   [enforced by CI](https://github.com/jorisroovers/gitlint/actions)). Again, please consider writing new ones
   for your functionality, not only updating existing ones to make the build pass.
-- [Documentation](https://github.com/jorisroovers/gitlint/tree/main/docs)
+- [Documentation](https://github.com/jorisroovers/gitlint/tree/main/docs).
 
 Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
-can make it as part of a release. If you can already include them as part of your PR, it's a huge timesaver for us
-and it's likely that your PR will be merged and released a lot sooner. Thanks!
+can make it as part of a release. **Gitlint commits and pull requests are gated on all of our tests and checks as well as
+code-review**. If you can already include them as part of your PR, it's a huge timesaver for us
+and it's likely that your PR will be merged and released a lot sooner. 
+
+It's also a good idea to open a issue before submitting a PR for non-trivial changes, so we can discuss what you have
+in mind before you spend the effort. Thanks!
 
 !!! Important
     **On the topic of releases**: Gitlint releases typically go out when there's either enough new features and fixes
@@ -32,10 +36,7 @@ and it's likely that your PR will be merged and released a lot sooner. Thanks!
     or months before merged code actually gets released - we know that can be frustrating but please understand it's
     a well-considered trade-off based on available time.
 
-## Development
-
-We provide a devcontainer on github to make it easier to get started with gitlint development.
-
+## Local setup
 
 To install gitlint for local development:
 
@@ -46,7 +47,37 @@ pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
 python setup.py develop
 ```
 
-To run tests:
+## Github Devcontainer
+
+We provide a devcontainer on github to make it easier to get started with gitlint development using VSCode.
+
+To start one, click the plus button under the *Code* dropdown on
+[the gitlint repo on github](https://github.com/jorisroovers/gitlint). 
+
+**It can take ~15min for all post installation steps to finish.**
+
+![Gitlint Dev Container Instructions](images/dev-container.png)
+
+
+After setup has finished, you should be able to just activate the virtualenv in the home dir and run the tests:
+```sh
+. ~/.venv/bin/activate
+./run_tests.sh
+```
+
+By default we have python 3.11 installed in the dev container, but you can also use [asdf](https://asdf-vm.com/)
+(preinstalled) to install additional python versions:
+
+```sh
+# Install python 3.9.15
+asdf install python 3.9.15
+# List all available python versions
+asdf list all python
+# List installed python versions
+asdf list python
+```
+
+## Running tests
 ```sh
 ./run_tests.sh                       # run unit tests and print test coverage
 ./run_tests.sh gitlint-core/gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
@@ -61,11 +92,6 @@ pytest -k test_body_missing          # Alternative way to run a specific test by
 ./run_tests.sh --lint                # run pylint checks
 ./run_tests.sh --all                 # Run unit, integration, format and gitlint checks
 ```
-
-!!! important
-    Gitlint commits and pull requests are gated on all of our tests and checks.
-
-
 ## Formatting
 
 We use [black](https://black.readthedocs.io/en/stable/) for code formatting.
