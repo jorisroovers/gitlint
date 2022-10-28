@@ -266,21 +266,26 @@ git log -1 --pretty=%B 62c0519 | gitlint
 Note that gitlint requires that you specify `--pretty=%B` (=only print the log message, not the metadata),
 future versions of gitlint might fix this and not require the `--pretty` argument.
 
-## Linting specific commits
+## Linting specific commits or branches
 
-Gitlint allows users to lint a specific commit:
+Gitlint can lint specific commits using `--commit`:
 ```sh
 gitlint --commit 019cf40580a471a3958d3c346aa8bfd265fe5e16
-gitlint --commit 019cf40 # short SHAs work too
-gitlint --commit HEAD~2  # as do special references
+gitlint --commit 019cf40  # short SHAs work too
+gitlint --commit HEAD~2   # as do special references
+gitlint --commit mybranch # lint latest commit on a branch 
 ```
 
-You can also lint multiple commits at once like so:
+You can also lint multiple commits using `--commits` (plural):
 
 ```sh
 # Lint a specific commit range:
 gitlint --commits "019cf40...d6bc75a"
-# You can also use git's special references:
+# Lint all commits on a branch
+gitlint --commits mybranch
+# Lint all commits that are different between a branch and your main branch
+gitlint --commits "main..mybranch"
+# Use git's special references
 gitlint --commits "origin..HEAD"
 
 # You can also pass multiple, comma separated commit hashes:
@@ -294,7 +299,7 @@ by [git rev-list](https://git-scm.com/docs/git-rev-list) as a single argument wi
 
 Alternatively, you can pass `--commits` a comma-separated list of commit hashes (both short and full-length SHAs work,
 as well as special references such as `HEAD` and branch names).
-Gitlint will treat these as pointers to single commits and lint these in the order you passed.
+Gitlint will treat these as pointers to **single** commits and lint these in the order you passed.
 
 For cases where the `--commits` option doesn't provide the flexibility you need, you can always use a simple shell
 script to lint an arbitrary set of commits, like shown in the example below.
@@ -311,7 +316,7 @@ done
 
 !!! note
     One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
-    This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
+    This means you'll incur the gitlint startup time once per commit, making it rather slow if you want to
     lint a large set of commits. Always use `--commits` if you can to avoid this performance penalty.
 
 
