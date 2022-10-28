@@ -1,6 +1,7 @@
 #!/bin/sh
 
 brew install asdf
+source "$(brew --prefix asdf)/libexec/asdf.sh"
 
 # Install latest python
 asdf plugin add python

@@ -69,6 +69,10 @@ By default we have python 3.11 installed in the dev container, but you can also 
 (preinstalled) to install additional python versions:
 
 ```sh
+# Ensure ASDF overrides system python in PATH
+# You can also append this line to your ~/.bash_profile in the devcontainer to have this happen automatically on login
+source "$(brew --prefix asdf)/libexec/asdf.sh"
+
 # Install python 3.9.15
 asdf install python 3.9.15
 # List all available python versions
