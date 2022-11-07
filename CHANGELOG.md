@@ -3,22 +3,30 @@
 
 ## v0.18.0 (2022-11-?)  - Unreleased ##
 Contributors:
-Special thanks to all contributors for this release, in particular [matthiasbeyer](https://github.com/matthiasbeyer), [scop](https://github.com/scop) and [sigmavirus24](https://github.com/sigmavirus24).
+Special thanks to all contributors for this release - details inline!
 
 - Python 3.11 support
-- Last release to support Python 3.6 (EOL since 2021-12-23)
+- Last release to support Python 3.6 ([EOL since 2021-12-23](https://endoflife.date/python))
+- **Behavior Change**: In a future release, gitlint will be switching to use `re.search` instead of `re.match` semantics for all rules. Your rule regexes might need updating as a result, gitlint will print a warning if so. Details are in the docs.  ([#254](https://github.com/jorisroovers/gitlint/issues/254))
+- The `GitCommit` object now also contains diff stat information ([#314](https://github.com/jorisroovers/gitlint/issues/314))
+- gitlint no longer uses the [sh](https://amoffat.github.io/sh/) library by default in an attempt to reduce external dependencies. In case of issues, the use of `sh` can be re-enabled by setting the env var `GITLINT_USE_SH_LIB=1`. This fallback will be removed entirely in a future gitlint release. ([#351](https://github.com/jorisroovers/gitlint/issues/351))
 - `--commits` now also accepts a comma-separated list of commit hashes, making it possible to lint a list of non-contiguous commits without invoking gitlint multiple times ([#283](https://github.com/jorisroovers/gitlint/issues/283))
+- Support for `GITLINT_CONFIG` env variable ([#188](https://github.com/jorisroovers/gitlint/issues/188)) - Thanks [Notgnoshi](https://github.com/Notgnoshi)!
 - Gitlint now recognizes `fixup=amend` commits (details in related [git documentation](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)), setting `commit.is_fixup_amend_commit=True` for use in user-defined rules.
+- Contrib Rules:
+  - New contrib-disallow-cleanup-commits rule ([#312](https://github.com/jorisroovers/gitlint/issues/312)) - thanks [matthiasbeyer](https://github.com/matthiasbeyer)
 - Bugfixes:
   - Use correct encoding when using `--msg-filename` parameter ([#310](https://github.com/jorisroovers/gitlint/issues/283))
-  - Various documentation fixes ([#263](https://github.com/jorisroovers/gitlint/issues/263))
-- Under-the-hood: dependencies updated, moved to [black](https://github.com/psf/black) for formatting, fixed nasty CI issue ([#298](https://github.com/jorisroovers/gitlint/issues/298))
+  - Various documentation fixes ([#263](https://github.com/jorisroovers/gitlint/issues/263)) ([#266](https://github.com/jorisroovers/gitlint/issues/266)) ([#266](https://github.com/jorisroovers/gitlint/issues/266)) ([#294](https://github.com/jorisroovers/gitlint/issues/294)) ([#295](https://github.com/jorisroovers/gitlint/issues/295)) ([#347](https://github.com/jorisroovers/gitlint/issues/347)) - Thanks [scop](https://github.com/scop), [OrBin](https://github.com/OrBin), [jtaylor100](https://github.com/jtaylor100), [stauchert](https://github.com/stauchert), 
+- Under-the-hood:
+  - Dependencies updated
+  - Moved to [black](https://github.com/psf/black) for formatting
+  - Fixed nasty CI issue ([#298](https://github.com/jorisroovers/gitlint/issues/298))
+  - Unit tests fix (([#256](https://github.com/jorisroovers/gitlint/issues/256)) - thanks [carlsmedstad](https://github.com/carlsmedstad)), 
+  - Vagrant box removed in favor of github dev containers ([#348](https://github.com/jorisroovers/gitlint/issues/348))
 
 
-Support for
-- GITLINT_CONFIG
-https://github.com/jorisroovers/gitlint/pull/188
-Thanks Notgnoshi!
+
 
 
 ## v0.17.0 (2021-11-28) ##
