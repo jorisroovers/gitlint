@@ -1,8 +1,33 @@
 # Changelog #
 
-## v0.18.0 (2021-11-?)  - Unreleased ##
+
+## v0.18.0 (2022-11-?)  - Unreleased ##
+Contributors:
+Special thanks to all contributors for this release - details inline!
+
 - Python 3.11 support
-- Last release to support Python 3.6 (EOL since 2021-12-23)
+- Last release to support Python 3.6 ([EOL since 2021-12-23](https://endoflife.date/python))
+- **Behavior Change**: In a future release, gitlint will be switching to use `re.search` instead of `re.match` semantics for all rules. Your rule regexes might need updating as a result, gitlint will print a warning if so. [More details are in the docs](https://jorisroovers.com/gitlint/configuration/#regex-style-search). ([#254](https://github.com/jorisroovers/gitlint/issues/254))
+- gitlint no longer uses the [sh](https://amoffat.github.io/sh/) library by default in an attempt to reduce external dependencies. In case of issues, the use of `sh` can be re-enabled by setting the env var `GITLINT_USE_SH_LIB=1`. This fallback will be removed entirely in a future gitlint release. ([#351](https://github.com/jorisroovers/gitlint/issues/351))
+- `--commits` now also accepts a comma-separated list of commit hashes, making it possible to lint a list of non-contiguous commits without invoking gitlint multiple times ([#283](https://github.com/jorisroovers/gitlint/issues/283))
+- Improved handling of branches that have no commits ([#188](https://github.com/jorisroovers/gitlint/issues/189)) - thanks [domsekotill](https://github.com/domsekotill)
+- Support for `GITLINT_CONFIG` env variable ([#189](https://github.com/jorisroovers/gitlint/issues/188)) - thanks [Notgnoshi](https://github.com/Notgnoshi)
+- User Defined rules:
+  - Gitlint now recognizes `fixup=amend` commits (see related [git documentation](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)), available as `commit.is_fixup_amend_commit=True`
+  - Gitlint now parses diff **stat** information, available in `commit.changed_files_stats` ([#314](https://github.com/jorisroovers/gitlint/issues/314))
+- Contrib Rules:
+  - New [contrib-disallow-cleanup-commits](https://jorisroovers.com/gitlint/contrib_rules/#cc2-contrib-disallow-cleanup-commits) rule ([#312](https://github.com/jorisroovers/gitlint/issues/312)) - thanks [matthiasbeyer](https://github.com/matthiasbeyer)
+- Bugfixes:
+  - Use correct encoding when using `--msg-filename` parameter ([#310](https://github.com/jorisroovers/gitlint/issues/310))
+  - Various documentation fixes ([#263](https://github.com/jorisroovers/gitlint/issues/263)) ([#266](https://github.com/jorisroovers/gitlint/issues/266)) ([#294](https://github.com/jorisroovers/gitlint/issues/294)) ([#295](https://github.com/jorisroovers/gitlint/issues/295)) ([#347](https://github.com/jorisroovers/gitlint/issues/347)) - thanks [scop](https://github.com/scop), [OrBin](https://github.com/OrBin), [jtaylor100](https://github.com/jtaylor100), [stauchert](https://github.com/stauchert) 
+- Under-the-hood:
+  - Dependencies updated
+  - Moved to [black](https://github.com/psf/black) for formatting
+  - Fixed nasty CI issue ([#298](https://github.com/jorisroovers/gitlint/issues/298))
+  - Unit tests fix ([#256](https://github.com/jorisroovers/gitlint/issues/256)) - thanks [carlsmedstad](https://github.com/carlsmedstad)
+  - Vagrant box removed in favor of github dev containers ([#348](https://github.com/jorisroovers/gitlint/issues/348))
+  - Removed a few lingering references to the `master` branch in favor of `main`
+  - Moved [roadmap and project planning](https://github.com/users/jorisroovers/projects/1) to github projects
 
 ## v0.17.0 (2021-11-28) ##
 Contributors:
@@ -17,7 +42,7 @@ Special thanks to all contributors for this release, in particular [sigmavirus24
 
 - Python 3.10 support
 - **New Rule**: [ignore-by-author-name](http://jorisroovers.github.io/gitlint/rules/#i4-ignore-by-author-name) allows users to skip linting commit messages made by specific authors
-- `--commit <SHA>` flag to more easily lint a single commit message ([#141](https://github.com/jorisroovers/gitlint/issues/141))
+- `--commit <ref>` flag to more easily lint a single commit message ([#141](https://github.com/jorisroovers/gitlint/issues/141))
 - `--fail-without-commits` flag will force gitlint to fail ([exit code 253](https://jorisroovers.com/gitlint/#exit-codes)) when the target commit range is empty (typically when using `--commits`)  ([#193](https://github.com/jorisroovers/gitlint/issues/193))
 - Bugfixes:
   - [contrib-title-conventional-commits (CT1)](https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits)  now properly enforces the commit type ([#185](https://github.com/jorisroovers/gitlint/issues/185))
@@ -172,8 +197,8 @@ and [AlexMooney](https://github.com/AlexMooney) for their contributions.
   [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/#m1-author-valid-email).
 - **Breaking change**: The `--commits` commandline flag now strictly follows the refspec format as interpreted
   by the [`git rev-list <refspec>`](https://git-scm.com/docs/git-rev-list) command. This means
-  that linting a single commit using `gitlint --commits <SHA>` won't work anymore. Instead, for single commits,
-  users now need to specificy `gitlint --commits <SHA>^...<SHA>`. On the upside, this change also means
+  that linting a single commit using `gitlint --commits <ref>` won't work anymore. Instead, for single commits,
+  users now need to specificy `gitlint --commits <ref>^...<ref>`. On the upside, this change also means
   that gitlint will now understand all refspec formatters, including `gitlint --commits HEAD` to lint all commits
   in the repository. This fixes [#23](https://github.com/jorisroovers/gitlint/issues/23).
 - **Breaking change**: Gitlint now always falls back on trying to read a git message from a local git repository, only
