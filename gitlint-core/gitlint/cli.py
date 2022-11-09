@@ -272,8 +272,8 @@ class ContextObj:
 @click.option('--ignore-stdin', envvar='GITLINT_IGNORE_STDIN', is_flag=True,
               help="Ignore any stdin data. Useful for running in CI server.")
 @click.option('--staged', envvar='GITLINT_STAGED', is_flag=True,
-              help="Read staged commit meta-info from the local repository. " +
-                   "Useful if checking other properties of a commit besides just the message.")
+              help="Attempt smart guesses about meta info (like author name, email, branch, changed files, etc) " +
+                   "for staged commits.")
 @click.option('--fail-without-commits', envvar='GITLINT_FAIL_WITHOUT_COMMITS', is_flag=True,
               help="Hard fail when the target commit range is empty.")
 @click.option('-v', '--verbose', envvar='GITLINT_VERBOSITY', count=True, default=0,

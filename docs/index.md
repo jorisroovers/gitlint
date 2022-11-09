@@ -163,9 +163,9 @@ Options:
   --msg-filename FILENAME  Path to a file containing a commit-msg.
   --ignore-stdin           Ignore any stdin data. Useful for running in CI
                            server.
-  --staged                 Read staged commit meta-info from the local
-                           repository. Useful if checking other properties of
-                           a commit besides just the message.
+  --staged                 Attempt smart guesses about meta info (like
+                           author name, email, branch, changed files, etc)
+                           for staged commits.
   --fail-without-commits   Hard fail when the target commit range is empty.
   -v, --verbose            Verbosity, more v's for more verbose output
                            (e.g.: -v, -vv, -vvv). [default: -vvv]

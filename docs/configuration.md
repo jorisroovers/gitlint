@@ -387,8 +387,16 @@ contrib=contrib-title-conventional-commits,CC1
 
 ### staged
 
-Fetch additional meta-data from the local repository when manually passing a commit message to gitlint via stdin or `--commit-msg`.
-Useful if checking other properties of a commit besides just the message.
+Attempt smart guesses about meta info (like author name, email, branch, changed files, etc) when manually passing a
+commit message to gitlint via stdin or `--commit-msg`.
+
+Since in such cases no actual git commit exists (yet) for the message being linted, gitlint
+needs to apply some heuristics (like checking `git config` and any staged changes) to make a smart guess about what the
+likely author name, email, commit date, changed files and branch of the ensuing commit would be.
+
+When not using the `--staged` flag while linting a commit message via stdin or `--commit-msg`, gitlint will only have
+access to the commit message itself for linting and won't be able to enforce rules like
+[M1:author-valid-email](rules.md#m1-author-valid-email).
 
 | Default value | gitlint version | commandline flag | environment variable |
 | ------------- | --------------- | ---------------- | -------------------- |
