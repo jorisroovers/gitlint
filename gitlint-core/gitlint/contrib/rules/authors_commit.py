@@ -21,7 +21,7 @@ class Authors(CommitRule):
     @classmethod
     def _read_authors_from_file(cls, git_ctx) -> Tuple[str, str]:
         for file_name in cls.authors_file_names:
-            path = Path(git_ctx.repository_path / file_name)
+            path = Path(git_ctx.repository_path) / file_name
             if path.exists():
                 authors_file = path
                 break
