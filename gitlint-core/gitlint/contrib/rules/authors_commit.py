@@ -6,16 +6,14 @@ from typing import Tuple
 from gitlint.rules import CommitRule, RuleViolation
 
 
-class Authors(CommitRule):
+class AllowedAuthors(CommitRule):
     """Enforce that only authors listed in the AUTHORS file are allowed to commit."""
 
     authors_file_names = ("AUTHORS", "AUTHORS.txt", "AUTHORS.md")
     parse_authors = re.compile(r"^(?P<name>.*) <(?P<email>.*)>$", re.MULTILINE)
 
-    # A rule MUST have a human friendly name
-    name = "contrib-authors-commit"
+    name = "contrib-allowed-authors"
 
-    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
     id = "CC3"
 
     @classmethod
@@ -34,7 +32,7 @@ class Authors(CommitRule):
         return set(authors), authors_file.name
 
     def validate(self, commit):
-        registered_authors, authors_file_name = Authors._read_authors_from_file(commit.message.context)
+        registered_authors, authors_file_name = AllowedAuthors._read_authors_from_file(commit.message.context)
 
         author = (commit.author_name, commit.author_email.lower())
 

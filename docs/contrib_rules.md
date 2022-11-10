@@ -44,7 +44,7 @@ ID    | Name                                | gitlint version   | Description
 CT1   | contrib-title-conventional-commits  | >= 0.12.0         | Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit message style on the title.
 CC1   | contrib-body-requires-signed-off-by | >= 0.12.0         | Commit body must contain a `Signed-off-by` line.
 CC2   | contrib-disallow-cleanup-commits    | >= 0.18.0         | Commit title must not contain `fixup!`, `squash!`, `amend!`.
-CC3   | contrib-authors-commit              | >= 0.18.0         | Enforce that only authors listed in the `AUTHORS` file are allowed to commit.
+CC3   | contrib-allowed-authors              | >= 0.18.0         | Enforce that only authors listed in the `AUTHORS` file are allowed to commit.
 
 ## CT1: contrib-title-conventional-commits ##
 
@@ -72,11 +72,11 @@ ID    | Name                             | gitlint version    | Description
 ------|----------------------------------|--------------------|-------------------------------------------
 CC2   | contrib-disallow-cleanup-commits | >= 0.18.0          | Commit title must not contain `fixup!`, `squash!` or `amend!`. This means `git commit --fixup` and `git commit --squash` commits are not allowed.
 
-## CC3: contrib-authors-commit ##
+## CC3: contrib-allowed-authors ##
 
 ID    | Name                             | gitlint version    | Description
 ------|----------------------------------|--------------------|-------------------------------------------
-CC3   | contrib-authors-commit           | >= 0.18.0          | The commit author must be listed in an `AUTHORS` file to be allowed to commit. Possible file names are also `AUTHORS.txt` and `AUTHORS.md`.
+CC3   | contrib-allowed-authors           | >= 0.18.0          | The commit author must be listed in an `AUTHORS` file to be allowed to commit. Possible file names are also `AUTHORS.txt` and `AUTHORS.md`.
 
 ## Contributing Contrib rules
 

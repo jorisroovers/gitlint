@@ -4,7 +4,7 @@ from gitlint.tests.base import BaseTestCase
 from gitlint.rules import RuleViolation
 from gitlint.config import LintConfig
 
-from gitlint.contrib.rules.authors_commit import Authors
+from gitlint.contrib.rules.authors_commit import AllowedAuthors
 
 
 class ContribAuthorsCommitTests(BaseTestCase):
@@ -12,7 +12,7 @@ class ContribAuthorsCommitTests(BaseTestCase):
         author = namedtuple("Author", "name, email")
         self.author_1 = author("John Doe", "john.doe@mail.com")
         self.author_2 = author("Bob Smith", "bob.smith@mail.com")
-        self.rule = Authors()
+        self.rule = AllowedAuthors()
         self.gitcontext = self.get_gitcontext()
 
     def get_gitcontext(self):
@@ -26,10 +26,10 @@ class ContribAuthorsCommitTests(BaseTestCase):
         return commit
 
     def test_enable(self):
-        for rule_ref in ["CC3", "contrib-authors-commit"]:
+        for rule_ref in ["CC3", "contrib-allowed-authors"]:
             config = LintConfig()
             config.contrib = [rule_ref]
-            self.assertIn(Authors(), config.rules)
+            self.assertIn(AllowedAuthors(), config.rules)
 
     def test_authors_succeeds(self):
         for author in [self.author_1, self.author_2]:
@@ -91,10 +91,10 @@ class ContribAuthorsCommitTests(BaseTestCase):
         return_value="John Doe <john.doe@mail.com>",
     )
     def test_read_authors_file(self, _mock_read_text):
-        authors, authors_file_name = Authors._read_authors_from_file(self.gitcontext)
-        assert authors_file_name == "AUTHORS"
-        assert len(authors) == 1
-        assert authors == {self.author_1}
+        authors, authors_file_name = AllowedAuthors._read_authors_from_file(self.gitcontext)
+        self.assertEqual(authors_file_name, "AUTHORS")
+        self.assertEqual(len(authors), 1)
+        self.assertEqual(authors, {self.author_1})
 
     @patch(
         "gitlint.contrib.rules.authors_commit.Path.exists",
@@ -102,5 +102,5 @@ class ContribAuthorsCommitTests(BaseTestCase):
     )
     def test_read_authors_file_missing_file(self, _mock_iterdir):
         with self.assertRaises(FileNotFoundError) as err:
-            Authors._read_authors_from_file(self.gitcontext)
+            AllowedAuthors._read_authors_from_file(self.gitcontext)
             self.assertEqual(err.exception.args[0], "AUTHORS file not found")
