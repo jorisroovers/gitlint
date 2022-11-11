@@ -237,7 +237,7 @@ In case you want to change gitlint's behavior, you should either use a `.gitlint
 your `.pre-commit-config.yaml` file like so:
 ```yaml
 -   repo: https://github.com/jorisroovers/gitlint
-    rev:  # Fill in a tag / sha here
+    rev:  # Fill in a tag / sha here (e.g. v0.18.0)
     hooks:
     -   id: gitlint
         args: [--contrib=CT1, --msg-filename]
@@ -247,6 +247,36 @@ your `.pre-commit-config.yaml` file like so:
 
     You need to add `--msg-filename` at the end of your custom `args` list as the gitlint-hook will fail otherwise.
 
+
+### gitlint and pre-commit in CI
+gitlint also supports a `gitlint-ci` pre-commit hook that can be used in CI environments.
+
+Configure it like so:
+```yaml
+-   repo: https://github.com/jorisroovers/gitlint
+    rev:  # insert ref, e.g. v0.18.0
+    hooks:
+    -   id: gitlint    # this is the regular commit-msg hook
+    -   id: gitlint-ci # hook for CI environments
+```
+
+And invoke it in your CI environment like this:
+
+```sh
+pre-commit run --hook-stage manual gitlint-ci
+```
+
+By default this will only lint the latest commit.
+If you want to lint more commits you can modify the `gitlint-ci` hook like so:
+
+```yaml
+-   repo: https://github.com/jorisroovers/gitlint
+    rev:  v0.17.0
+    hooks:
+    -   id: gitlint
+    -   id: gitlint-ci
+        args: [--debug, --commits, mybranch] # enable debug mode, lint all commits in mybranch
+```
 
 ## Using gitlint in a CI environment
 By default, when just running `gitlint` without additional parameters, gitlint lints the last commit in the current
