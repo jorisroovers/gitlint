@@ -26,7 +26,7 @@ can make it as part of a release. **Gitlint commits and pull requests are gated 
 code-review**. If you can already include them as part of your PR, it's a huge timesaver for us
 and it's likely that your PR will be merged and released a lot sooner. 
 
-It's also a good idea to open a issue before submitting a PR for non-trivial changes, so we can discuss what you have
+It's also a good idea to open an issue before submitting a PR for non-trivial changes, so we can discuss what you have
 in mind before you spend the effort. Thanks!
 
 !!! Important
