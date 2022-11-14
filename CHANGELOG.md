@@ -12,14 +12,16 @@ Special thanks to all contributors for this release - details inline!
 - `--commits` now also accepts a comma-separated list of commit hashes, making it possible to lint a list of non-contiguous commits without invoking gitlint multiple times ([#283](https://github.com/jorisroovers/gitlint/issues/283))
 - Improved handling of branches that have no commits ([#188](https://github.com/jorisroovers/gitlint/issues/189)) - thanks [domsekotill](https://github.com/domsekotill)
 - Support for `GITLINT_CONFIG` env variable ([#189](https://github.com/jorisroovers/gitlint/issues/188)) - thanks [Notgnoshi](https://github.com/Notgnoshi)
+- Added [a new `gitlint-ci` pre-commit hook](https://jorisroovers.com/gitlint/#gitlint-and-pre-commit-in-ci), making it easier to run gitlint through pre-commit in CI ([#191](https://github.com/jorisroovers/gitlint/issues/191)) - thanks [guillaumelambert](https://github.com/guillaumelambert)
+- Contrib Rules:
+  - New [contrib-disallow-cleanup-commits](https://jorisroovers.com/gitlint/contrib_rules/#cc2-contrib-disallow-cleanup-commits) rule ([#312](https://github.com/jorisroovers/gitlint/issues/312)) - thanks [matthiasbeyer](https://github.com/matthiasbeyer)
+  - New [contrib-allowed-authors](https://jorisroovers.com/gitlint/contrib_rules/#cc3-contrib-allowed-authors) rule ([#358](https://github.com/jorisroovers/gitlint/issues/358)) - thanks [stauchert](https://github.com/stauchert)
 - User Defined rules:
   - Gitlint now recognizes `fixup=amend` commits (see related [git documentation](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)), available as `commit.is_fixup_amend_commit=True`
   - Gitlint now parses diff **stat** information, available in `commit.changed_files_stats` ([#314](https://github.com/jorisroovers/gitlint/issues/314))
-- Contrib Rules:
-  - New [contrib-disallow-cleanup-commits](https://jorisroovers.com/gitlint/contrib_rules/#cc2-contrib-disallow-cleanup-commits) rule ([#312](https://github.com/jorisroovers/gitlint/issues/312)) - thanks [matthiasbeyer](https://github.com/matthiasbeyer)
 - Bugfixes:
   - Use correct encoding when using `--msg-filename` parameter ([#310](https://github.com/jorisroovers/gitlint/issues/310))
-  - Various documentation fixes ([#263](https://github.com/jorisroovers/gitlint/issues/263)) ([#266](https://github.com/jorisroovers/gitlint/issues/266)) ([#294](https://github.com/jorisroovers/gitlint/issues/294)) ([#295](https://github.com/jorisroovers/gitlint/issues/295)) ([#347](https://github.com/jorisroovers/gitlint/issues/347)) - thanks [scop](https://github.com/scop), [OrBin](https://github.com/OrBin), [jtaylor100](https://github.com/jtaylor100), [stauchert](https://github.com/stauchert) 
+  - Various documentation fixes ([#244](https://github.com/jorisroovers/gitlint/issues/244)) ([#263](https://github.com/jorisroovers/gitlint/issues/263)) ([#266](https://github.com/jorisroovers/gitlint/issues/266)) ([#294](https://github.com/jorisroovers/gitlint/issues/294)) ([#295](https://github.com/jorisroovers/gitlint/issues/295)) ([#347](https://github.com/jorisroovers/gitlint/issues/347)) ([#364](https://github.com/jorisroovers/gitlint/issues/364)) - thanks [scop](https://github.com/scop), [OrBin](https://github.com/OrBin), [jtaylor100](https://github.com/jtaylor100), [stauchert](https://github.com/stauchert) 
 - Under-the-hood:
   - Dependencies updated
   - Moved to [black](https://github.com/psf/black) for formatting
@@ -28,6 +30,7 @@ Special thanks to all contributors for this release - details inline!
   - Vagrant box removed in favor of github dev containers ([#348](https://github.com/jorisroovers/gitlint/issues/348))
   - Removed a few lingering references to the `master` branch in favor of `main`
   - Moved [roadmap and project planning](https://github.com/users/jorisroovers/projects/1) to github projects
+  - Thanks to [sigmavirus24](https://github.com/sigmavirus24) for continued overall help and support
 
 ## v0.17.0 (2021-11-28) ##
 Contributors:
