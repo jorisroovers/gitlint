@@ -56,7 +56,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#linting-specific-commits">Linting specific commits</a>
+    <li class="toctree-l2"><a class="reference internal" href="#linting-specific-commits-or-branches">Linting specific commits or branches</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#merge-fixup-squash-and-revert-commits">Merge, fixup, squash and revert commits</a>
     </li>
@@ -106,15 +106,14 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Home</li>
+    <li><a href="." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Home</li>
     <li class="wy-breadcrumbs-aside">
-        <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/index.md"
-          class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/index.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
 </div>
-
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
@@ -145,7 +144,7 @@ have a look at <a href="https://github.com/m1foley/fit-commit">fit-commit</a> (R
 <a href="http://chris.beams.io/posts/git-commit/">standards</a>, others are based on checks that we've found
 useful throughout the years.</li>
 <li><strong>Easily configurable:</strong> Gitlint has sane defaults, but <a href="configuration/">you can also easily customize it to your own liking</a>.</li>
-<li><strong>Community contributed rules</strong>: Conventions that are common but not universal <a href="contrib_rules">can be selectively enabled</a>.</li>
+<li><strong>Community contributed rules</strong>: Conventions that are common but not universal <a href="contrib_rules/">can be selectively enabled</a>.</li>
 <li><strong>User-defined rules:</strong> Want to do more then what gitlint offers out of the box? Write your own <a href="user_defined_rules/">user defined rules</a>.</li>
 <li><strong>Full unicode support:</strong> Lint your Russian, Chinese or Emoji commit messages with ease!</li>
 <li><strong>Production-ready:</strong> Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
@@ -156,7 +155,7 @@ useful throughout the years.</li>
 <pre><code class="language-sh"># Pip is recommended to install the latest version
 pip install gitlint
 
-# Alternative: by default, gitlint is installed with pinned dependencies. 
+# Alternative: by default, gitlint is installed with pinned dependencies.
 # To install gitlint with looser dependency requirements, only install gitlint-core.
 pip install gitlint-core
 
@@ -200,6 +199,16 @@ gitlint install-hook
 <p class="admonition-title">Note</p>
 <p>The returned exit code equals the number of errors found. <a href=".#exit-codes">Some exit codes are special</a>.</p>
 </div>
+<h3 id="shell-completion">Shell completion</h3>
+<pre><code class="language-sh"># Bash: add to ~/.bashrc
+eval &quot;$(_GITLINT_COMPLETE=bash_source gitlint)&quot;
+
+# Zsh: add to ~/.zshrc
+eval &quot;$(_GITLINT_COMPLETE=zsh_source gitlint)&quot;
+
+# Fish: add to ~/.config/fish/completions/foo-bar.fish
+eval (env _GITLINT_COMPLETE=fish_source gitlint)
+</code></pre>
 <h2 id="configuration">Configuration</h2>
 <p>For in-depth documentation of general and rule-specific configuration options, have a look at the <a href="configuration/">Configuration</a> and <a href="rules/">Rules</a> pages.</p>
 <p>Short example <code>.gitlint</code> file (<a href="configuration/">full reference</a>):</p>
@@ -208,7 +217,7 @@ gitlint install-hook
 # their id or by their full name
 ignore=body-is-missing,T3
 
-# Ignore any data send to gitlint via stdin
+# Ignore any data sent to gitlint via stdin
 ignore-stdin=true
 
 # Configure title-max-length rule, set title length to 80 (72 = default)
@@ -245,7 +254,8 @@ Options:
                            (e.g.: -c T1.line-length=80). Flag can be
                            used multiple times to set multiple config values.
   --commit TEXT            Hash (SHA) of specific commit to lint.
-  --commits TEXT           The range of commits to lint. [default: HEAD]
+  --commits TEXT           The range of commits (refspec or comma-separated
+                           hashes) to lint. [default: HEAD]
   -e, --extra-path PATH    Path to a directory or python module with extra
                            user-defined rules
   --ignore TEXT            Ignore rules (comma-separated by id or name).
@@ -254,8 +264,9 @@ Options:
   --msg-filename FILENAME  Path to a file containing a commit-msg.
   --ignore-stdin           Ignore any stdin data. Useful for running in CI
                            server.
-  --staged                 Read staged commit meta-info from the local
-                           repository.
+  --staged                 Attempt smart guesses about meta info (like
+                           author name, email, branch, changed files, etc)
+                           for staged commits.
   --fail-without-commits   Hard fail when the target commit range is empty.
   -v, --verbose            Verbosity, more v's for more verbose output
                            (e.g.: -v, -vv, -vvv). [default: -vvv]
@@ -313,7 +324,7 @@ framework.  Simply add the configuration to your <code>.pre-commit-config.yaml</
 (see <a href="configuration/">Configuration</a>) or modify the gitlint invocation in
 your <code>.pre-commit-config.yaml</code> file like so:</p>
 <pre><code class="language-yaml">-   repo: https://github.com/jorisroovers/gitlint
-    rev:  # Fill in a tag / sha here
+    rev:  # Fill in a tag / sha here (e.g. v0.18.0)
     hooks:
     -   id: gitlint
         args: [--contrib=CT1, --msg-filename]
@@ -322,6 +333,27 @@ your <code>.pre-commit-config.yaml</code> file like so:</p>
 <p class="admonition-title">Important</p>
 <p>You need to add <code>--msg-filename</code> at the end of your custom <code>args</code> list as the gitlint-hook will fail otherwise.</p>
 </div>
+<h3 id="gitlint-and-pre-commit-in-ci">gitlint and pre-commit in CI</h3>
+<p>gitlint also supports a <code>gitlint-ci</code> pre-commit hook that can be used in CI environments.</p>
+<p>Configure it like so:</p>
+<pre><code class="language-yaml">-   repo: https://github.com/jorisroovers/gitlint
+    rev:  # insert ref, e.g. v0.18.0
+    hooks:
+    -   id: gitlint    # this is the regular commit-msg hook
+    -   id: gitlint-ci # hook for CI environments
+</code></pre>
+<p>And invoke it in your CI environment like this:</p>
+<pre><code class="language-sh">pre-commit run --hook-stage manual gitlint-ci
+</code></pre>
+<p>By default this will only lint the latest commit.
+If you want to lint more commits you can modify the <code>gitlint-ci</code> hook like so:</p>
+<pre><code class="language-yaml">-   repo: https://github.com/jorisroovers/gitlint
+    rev:  v0.17.0
+    hooks:
+    -   id: gitlint
+    -   id: gitlint-ci
+        args: [--debug, --commits, mybranch] # enable debug mode, lint all commits in mybranch
+</code></pre>
 <h2 id="using-gitlint-in-a-ci-environment">Using gitlint in a CI environment</h2>
 <p>By default, when just running <code>gitlint</code> without additional parameters, gitlint lints the last commit in the current
 working directory.</p>
@@ -337,24 +369,38 @@ git log -1 --pretty=%B 62c0519 | gitlint
 </code></pre>
 <p>Note that gitlint requires that you specify <code>--pretty=%B</code> (=only print the log message, not the metadata),
 future versions of gitlint might fix this and not require the <code>--pretty</code> argument.</p>
-<h2 id="linting-specific-commits">Linting specific commits</h2>
-<p>Gitlint allows users to lint a specific commit:</p>
+<h2 id="linting-specific-commits-or-branches">Linting specific commits or branches</h2>
+<p>Gitlint can lint specific commits using <code>--commit</code>:</p>
 <pre><code class="language-sh">gitlint --commit 019cf40580a471a3958d3c346aa8bfd265fe5e16
-gitlint --commit 019cf40 # short SHAs work too
+gitlint --commit 019cf40  # short SHAs work too
+gitlint --commit HEAD~2   # as do special references
+gitlint --commit mybranch # lint latest commit on a branch 
 </code></pre>
-<p>You can also lint multiple commits at once like so:</p>
+<p>You can also lint multiple commits using <code>--commits</code> (plural):</p>
 <pre><code class="language-sh"># Lint a specific commit range:
 gitlint --commits &quot;019cf40...d6bc75a&quot;
-# You can also use git's special references:
+# Lint all commits on a branch
+gitlint --commits mybranch
+# Lint all commits that are different between a branch and your main branch
+gitlint --commits &quot;main..mybranch&quot;
+# Use git's special references
 gitlint --commits &quot;origin..HEAD&quot;
+
+# You can also pass multiple, comma separated commit hashes:
+gitlint --commits 019cf40,c50eb150,d6bc75a
+# These can include special references as well
+gitlint --commits HEAD~1,mybranch-name,origin/main,d6bc75a
 </code></pre>
 <p>The <code>--commits</code> flag takes a <strong>single</strong> refspec argument or commit range. Basically, any range that is understood
 by <a href="https://git-scm.com/docs/git-rev-list">git rev-list</a> as a single argument will work.</p>
+<p>Alternatively, you can pass <code>--commits</code> a comma-separated list of commit hashes (both short and full-length SHAs work,
+as well as special references such as <code>HEAD</code> and branch names).
+Gitlint will treat these as pointers to <strong>single</strong> commits and lint these in the order you passed.</p>
 <p>For cases where the <code>--commits</code> option doesn't provide the flexibility you need, you can always use a simple shell
 script to lint an arbitrary set of commits, like shown in the example below.</p>
 <pre><code class="language-sh">#!/bin/sh
 
-for commit in $(git rev-list master); do
+for commit in $(git rev-list my-branch); do
     echo &quot;Commit $commit&quot;
     gitlint --commit $commit
     echo &quot;--------&quot;
@@ -363,12 +409,12 @@ done
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
-This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
+This means you'll incur the gitlint startup time once per commit, making it rather slow if you want to
 lint a large set of commits. Always use <code>--commits</code> if you can to avoid this performance penalty.</p>
 </div>
 <h2 id="merge-fixup-squash-and-revert-commits">Merge, fixup, squash and revert commits</h2>
-<p><em>Introduced in gitlint v0.7.0 (merge), v0.9.0 (fixup, squash) and v0.13.0 (revert)</em></p>
-<p><strong>Gitlint ignores merge, revert, fixup and squash commits by default.</strong></p>
+<p><em>Introduced in gitlint v0.7.0 (merge), v0.9.0 (fixup, squash), v0.13.0 (revert) and v0.18.0 (fixup=amend)</em></p>
+<p><strong>Gitlint ignores merge, revert, fixup, and squash commits by default.</strong></p>
 <p>For merge and revert commits, the rationale for ignoring them is
 that most users keep git's default messages for these commits (i.e <em>Merge/Revert "[original commit message]"</em>).
 Often times these commit messages are also auto-generated through tools like github.
@@ -376,13 +422,13 @@ These default/auto-generated commit messages tend to cause gitlint violations.
 For example, a common case is that <em>"Merge:"</em> being auto-prepended triggers a
 <a href="rules/#t1-title-max-length">title-max-length</a> violation. Most users don't want this, so we disable linting
 on Merge and Revert commits by default.</p>
-<p>For <a href="https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt">squash</a> and <a href="https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt">fixup</a> commits, the rationale is that these are temporary
+<p>For <a href="https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt">squash</a> and <a href="https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt">fixup</a> (including <a href="https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt">fixup=amend</a>) commits, the rationale is that these are temporary
 commits that will be squashed into a different commit, and hence the commit messages for these commits are very
-short-lived and not intended to make it into the final commit history. In addition, by prepending <em>"fixup!"</em> or
-<em>"squash!"</em> to your commit message, certain gitlint rules might be violated
+short-lived and not intended to make it into the final commit history. In addition, by prepending <em>"fixup!"</em>,
+<em>"amend!"</em> or <em>"squash!"</em> to your commit message, certain gitlint rules might be violated
 (e.g. <a href="rules/#t1-title-max-length">title-max-length</a>) which is often undesirable.</p>
 <p>In case you <em>do</em> want to lint these commit messages, you can disable this behavior by setting the
-general <code>ignore-merge-commits</code>, <code>ignore-revert-commits</code>,  <code>ignore-fixup-commits</code> or
+general <code>ignore-merge-commits</code>, <code>ignore-revert-commits</code>,  <code>ignore-fixup-commits</code>, <code>ignore-fixup-amend-commits</code> or
 <code>ignore-squash-commits</code> option to <code>false</code>
 <a href="configuration/">using one of the various ways to configure gitlint</a>.</p>
 <h2 id="ignoring-commits">Ignoring commits</h2>
@@ -457,7 +503,7 @@ words=wonderwoman,batman,power ranger
 </code></pre>
 <p>When executing gitlint, you will see the violations from the default <code>title-must-not-contain-word (T5)</code> rule, as well as
 the violations caused by the additional Named Rules.</p>
-<pre><code class="language-sh">$ gitlint 
+<pre><code class="language-sh">$ gitlint
 1: T5 Title contains the word 'WIP' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
 1: T5:This-Can_Be*Whatever$YouWant Title contains the word 'wonderwoman' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
 1: T5:extra-words Title contains the word 'foo' (case-insensitive): &quot;WIP: foo wonderwoman hur bar&quot;
@@ -557,6 +603,6 @@ to 252.</p>
 </html>
 
 <!--
-MkDocs version : 1.3.0
-Build Date UTC : 2022-04-15 09:28:59.727992+00:00
+MkDocs version : 1.4.1
+Build Date UTC : 2022-11-16 11:26:27.066363+00:00
 -->

@@ -62,6 +62,10 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#cc1-contrib-body-requires-signed-off-by">CC1: contrib-body-requires-signed-off-by</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cc2-contrib-disallow-cleanup-commits">CC2: contrib-disallow-cleanup-commits</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cc3-contrib-allowed-authors">CC3: contrib-allowed-authors</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#contributing-contrib-rules">Contributing Contrib rules</a>
     </li>
     </ul>
@@ -92,15 +96,14 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Contrib Rules</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Contrib Rules</li>
     <li class="wy-breadcrumbs-aside">
-        <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/contrib_rules.md"
-          class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/contrib_rules.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
 </div>
-
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
@@ -109,7 +112,7 @@
 <p>Contrib rules are community-<strong>contrib</strong>uted rules that are disabled by default, but can be enabled through configuration.</p>
 <p>Contrib rules are meant to augment default gitlint behavior by providing users with rules for common use-cases without
 forcing these rules on all gitlint users. This also means that users don't have to
-re-implement these commonly used rules themselves as <a href="user_defined_rules">user-defined</a> rules.</p>
+re-implement these commonly used rules themselves as <a href="../user_defined_rules/">user-defined</a> rules.</p>
 <p>To enable certain contrib rules, you can use the <code>--contrib</code> flag.</p>
 <pre><code class="language-sh">$ cat examples/commit-message-1 | gitlint --contrib contrib-title-conventional-commits,CC1
 1: CC1 Body does not contain a 'Signed-off-by' line
@@ -155,6 +158,18 @@ types = bugfix,user-story,epic
 <td>contrib-body-requires-signed-off-by</td>
 <td>&gt;= 0.12.0</td>
 <td>Commit body must contain a <code>Signed-off-by</code> line.</td>
+</tr>
+<tr>
+<td>CC2</td>
+<td>contrib-disallow-cleanup-commits</td>
+<td>&gt;= 0.18.0</td>
+<td>Commit title must not contain <code>fixup!</code>, <code>squash!</code>, <code>amend!</code>.</td>
+</tr>
+<tr>
+<td>CC3</td>
+<td>contrib-allowed-authors</td>
+<td>&gt;= 0.18.0</td>
+<td>Enforce that only authors listed in the <code>AUTHORS</code> file are allowed to commit.</td>
 </tr>
 </tbody>
 </table>
@@ -215,8 +230,46 @@ types = bugfix,user-story,epic
 </tr>
 </tbody>
 </table>
+<h2 id="cc2-contrib-disallow-cleanup-commits">CC2: contrib-disallow-cleanup-commits</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CC2</td>
+<td>contrib-disallow-cleanup-commits</td>
+<td>&gt;= 0.18.0</td>
+<td>Commit title must not contain <code>fixup!</code>, <code>squash!</code> or <code>amend!</code>. This means <code>git commit --fixup</code> and <code>git commit --squash</code> commits are not allowed.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cc3-contrib-allowed-authors">CC3: contrib-allowed-authors</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>gitlint version</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CC3</td>
+<td>contrib-allowed-authors</td>
+<td>&gt;= 0.18.0</td>
+<td>The commit author must be listed in an <code>AUTHORS</code> file to be allowed to commit. Possible file names are also <code>AUTHORS.txt</code> and <code>AUTHORS.md</code>.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="contributing-contrib-rules">Contributing Contrib rules</h2>
-<p>We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the <a href="contributing">Contributing</a> page on how to get started.</p>
+<p>We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the <a href="../contributing/">Contributing</a> page on how to get started.</p>
               
             </div>
           </div><footer>

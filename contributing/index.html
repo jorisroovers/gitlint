@@ -66,11 +66,17 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#development">Development</a>
+    <li class="toctree-l2"><a class="reference internal" href="#local-setup">Local setup</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#packaging">Packaging</a>
+    <li class="toctree-l2"><a class="reference internal" href="#github-devcontainer">Github Devcontainer</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-tests">Running tests</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#formatting">Formatting</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#packaging">Packaging</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#tools">Tools</a>
     </li>
@@ -96,15 +102,14 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Contributing</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Contributing</li>
     <li class="wy-breadcrumbs-aside">
-        <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/contributing.md"
-          class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/contributing.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
 </div>
-
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
@@ -114,7 +119,7 @@ The <a href="https://github.com/jorisroovers/gitlint">source-code and issue trac
 <p>Often it takes a while for us (well, actually just <a href="https://github.com/jorisroovers">me</a>) to get back to you
 (sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
 your interest!
-We maintain a <a href="https://github.com/jorisroovers/gitlint/wiki/Roadmap">loose roadmap on our wiki</a>, but
+We maintain a <a href="https://github.com/users/jorisroovers/projects/1/">loose project plan on github projects</a>, but
 that's open to a lot of change and input.</p>
 <h2 id="guidelines">Guidelines</h2>
 <p>When contributing code, please consider all the parts that are typically required:</p>
@@ -125,11 +130,14 @@ that's open to a lot of change and input.</p>
 <li><a href="https://github.com/jorisroovers/gitlint/tree/main/qa">Integration tests</a> (also automatically
   <a href="https://github.com/jorisroovers/gitlint/actions">enforced by CI</a>). Again, please consider writing new ones
   for your functionality, not only updating existing ones to make the build pass.</li>
-<li><a href="https://github.com/jorisroovers/gitlint/tree/main/docs">Documentation</a></li>
+<li><a href="https://github.com/jorisroovers/gitlint/tree/main/docs">Documentation</a>.</li>
 </ul>
 <p>Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
-can make it as part of a release. If you can already include them as part of your PR, it's a huge timesaver for us
-and it's likely that your PR will be merged and released a lot sooner. Thanks!</p>
+can make it as part of a release. <strong>Gitlint commits and pull requests are gated on all of our tests and checks as well as
+code-review</strong>. If you can already include them as part of your PR, it's a huge timesaver for us
+and it's likely that your PR will be merged and released a lot sooner. </p>
+<p>It's also a good idea to open an issue before submitting a PR for non-trivial changes, so we can discuss what you have
+in mind before you spend the effort. Thanks!</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><strong>On the topic of releases</strong>: Gitlint releases typically go out when there's either enough new features and fixes
@@ -138,58 +146,80 @@ of overhead of doing a release isn't huge, it's also not zero. In practice this 
 or months before merged code actually gets released - we know that can be frustrating but please understand it's
 a well-considered trade-off based on available time.</p>
 </div>
-<h2 id="development">Development</h2>
-<p>There is a Vagrantfile (Ubuntu) in this repository that can be used for development.
-It comes pre-installed with all Python versions that gitlint supports.</p>
-<pre><code class="language-sh">vagrant up
-vagrant ssh
-</code></pre>
-<p>Or you can choose to use your local environment:</p>
+<h2 id="local-setup">Local setup</h2>
+<p>To install gitlint for local development:</p>
 <pre><code class="language-sh">python -m venv .venv
 . .venv/bin/activate
-pip install --upgrade pip
 pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
 python setup.py develop
 </code></pre>
-<p>To run tests:</p>
+<h2 id="github-devcontainer">Github Devcontainer</h2>
+<p>We provide a devcontainer on github to make it easier to get started with gitlint development using VSCode.</p>
+<p>To start one, click the plus button under the <em>Code</em> dropdown on
+<a href="https://github.com/jorisroovers/gitlint">the gitlint repo on github</a>. </p>
+<p><strong>It can take ~15min for all post installation steps to finish.</strong></p>
+<p><img alt="Gitlint Dev Container Instructions" src="../images/dev-container.png" /></p>
+<p>After setup has finished, you should be able to just activate the virtualenv in the home dir and run the tests:</p>
+<pre><code class="language-sh">. ~/.venv/bin/activate
+./run_tests.sh
+</code></pre>
+<p>By default we have python 3.11 installed in the dev container, but you can also use <a href="https://asdf-vm.com/">asdf</a>
+(preinstalled) to install additional python versions:</p>
+<pre><code class="language-sh"># Ensure ASDF overrides system python in PATH
+# You can also append this line to your ~/.bash_profile in the devcontainer to have this happen automatically on login
+source &quot;$(brew --prefix asdf)/libexec/asdf.sh&quot;
+
+# Install python 3.9.15
+asdf install python 3.9.15
+# List all available python versions
+asdf list all python
+# List installed python versions
+asdf list python
+</code></pre>
+<h2 id="running-tests">Running tests</h2>
 <pre><code class="language-sh">./run_tests.sh                       # run unit tests and print test coverage
-./run_tests.sh gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+./run_tests.sh gitlint-core/gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+pytest -k test_body_missing          # Alternative way to run a specific test by invoking pytest directly with a keyword expression
 ./run_tests.sh --no-coverage         # run unit tests without test coverage
 ./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
 ./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
 ./run_tests.sh --build               # Run build tests (=build python package)
-./run_tests.sh --pep8                # pep8 checks
+./run_tests.sh --format              # format checks (black)
 ./run_tests.sh --stats               # print some code stats
 ./run_tests.sh --git                 # inception: run gitlint against itself
 ./run_tests.sh --lint                # run pylint checks
-./run_tests.sh --all                 # Run unit, integration, pep8 and gitlint checks
+./run_tests.sh --all                 # Run unit, integration, format and gitlint checks
 </code></pre>
-<p>The <code>Vagrantfile</code> comes with <code>virtualenv</code>s for python 3.6, 3.7, 3.8, 3.9 and pypy3.6.
-You can easily run tests against specific python environments by using the following commands <em>inside</em> of the Vagrant VM:</p>
-<pre><code class="language-sh">./run_tests.sh --envs 36               # Run the unit tests against Python 3.6
-./run_tests.sh --envs 36,37,pypy36     # Run the unit tests against Python 3.6, Python 3.7 and Pypy3.6
-./run_tests.sh --envs 36,37 --pep8     # Run pep8 checks against Python 3.6 and Python 3.7 (also works for --git, --integration, --pep8, --stats and --lint.
-./run_tests.sh --envs all --all        # Run all tests against all environments
-./run_tests.sh --all-env --all         # Idem: Run all tests against all environments
+<h2 id="formatting">Formatting</h2>
+<p>We use <a href="https://black.readthedocs.io/en/stable/">black</a> for code formatting.
+To use it, just run black against the code you modified:</p>
+<pre><code class="language-sh">black . # format all python code
+black gitlint-core/gitlint/lint.py # format a specific file
 </code></pre>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Gitlint commits and pull requests are gated on all of our tests and checks.</p>
-</div>
+<h2 id="documentation">Documentation</h2>
+<p>We use <a href="https://www.mkdocs.org/">mkdocs</a> for generating our documentation from markdown.</p>
+<p>To use it:</p>
+<pre><code class="language-sh">pip install -r doc-requirements.txt # install doc requirements
+mkdocs serve
+</code></pre>
+<p>Then access the documentation website on <a href="">http://localhost:8000</a>.</p>
 <h2 id="packaging">Packaging</h2>
+<p>Gitlint consists of 2 python packages: <a href="https://pypi.org/project/gitlint/">gitlint</a>
+and <a href="https://pypi.org/project/gitlint-core/">gitlint-core</a>.</p>
+<p>The <code>gitlint</code> package is just a wrapper package around <code>gitlint-core[trusted-deps]</code> which strictly pins gitlint
+dependencies to known working versions.</p>
+<p>There are scenarios where users (or OS package managers) may want looser dependency requirements.
+In these cases, users can just install <code>gitlint-core</code> directly (<code>pip install gitlint-core</code>).</p>
+<p><a href="https://github.com/jorisroovers/gitlint/issues/162">Issue 162</a> has all the background of how we got to the decision
+to split gitlint in 2 packages.</p>
+<p><img alt="Gitlint package structure" src="../images/gitlint-packages.png" /></p>
+<h3 id="packaging-description">Packaging description</h3>
 <p>To see the package description in HTML format</p>
 <pre><code class="language-sh">pip install docutils
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 python setup.py --long-description | rst2html.py &gt; output.html
 </code></pre>
-<h2 id="documentation">Documentation</h2>
-<p>We use <a href="https://www.mkdocs.org/">mkdocs</a> for generating our documentation from markdown.</p>
-<p>To use it, do the following outside of the vagrant box (on your host machine):</p>
-<pre><code class="language-sh">pip install -r doc-requirements.txt # install doc requirements
-mkdocs serve
-</code></pre>
-<p>Then access the documentation website on your host machine on <a href="">http://localhost:8000</a>.</p>
 <h2 id="tools">Tools</h2>
 <p>We keep a small set of scripts in the <code>tools/</code> directory:</p>
 <pre><code class="language-sh">tools/create-test-repo.sh            # Create a test git repo in your /tmp directory
@@ -197,12 +227,12 @@ tools/windows/create-test-repo.bat   # Windows: create git test repo
 tools/windows/run_tests.bat          # Windows run unit tests
 </code></pre>
 <h2 id="contrib-rules">Contrib rules</h2>
-<p>Since gitlint 0.12.0, we support <a href="../contrib_rules">Contrib rules</a>: community contributed rules that are part of gitlint
+<p>Since gitlint 0.12.0, we support <a href="../contrib_rules/">Contrib rules</a>: community contributed rules that are part of gitlint
 itself. Thanks for considering to add a new one to gitlint!</p>
 <p>Before starting, please read all the other documentation on this page about contributing first.
 Then, we suggest taking the following approach to add a Contrib rule:</p>
 <ol>
-<li><strong>Write your rule as a <a href="../user_defined_rules">user-defined rule</a></strong>. In terms of code, Contrib rules are identical to
+<li><strong>Write your rule as a <a href="../user_defined_rules/">user-defined rule</a></strong>. In terms of code, Contrib rules are identical to
    user-defined rules, they just happen to have their code sit within the gitlint codebase itself.</li>
 <li><strong>Add your user-defined rule to gitlint</strong>. You should put your file(s) in the <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/contrib/rules">gitlint/contrib/rules</a> directory.</li>
 <li><strong>Write unit tests</strong>. The gitlint codebase contains <a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/tests/contrib/rules">Contrib rule test files you can copy and modify</a>.</li>

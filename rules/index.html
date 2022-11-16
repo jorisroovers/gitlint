@@ -126,15 +126,14 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Rules</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Rules</li>
     <li class="wy-breadcrumbs-aside">
-        <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/rules.md"
-          class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/rules.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
 </div>
-
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
@@ -157,7 +156,7 @@ what you're looking for.</p>
 <td>T1</td>
 <td>title-max-length</td>
 <td>&gt;= 0.1.0</td>
-<td>Title length must be &lt; 72 chars.</td>
+<td>Title length must be &lt;= 72 chars.</td>
 </tr>
 <tr>
 <td>T2</td>
@@ -199,13 +198,13 @@ what you're looking for.</p>
 <td>T8</td>
 <td>title-min-length</td>
 <td>&gt;= 0.14.0</td>
-<td>Title length must be &gt; 5 chars.</td>
+<td>Title length must be &gt;= 5 chars.</td>
 </tr>
 <tr>
 <td>B1</td>
 <td>body-max-line-length</td>
 <td>&gt;= 0.1.0</td>
-<td>Lines in the body must be &lt; 80 chars</td>
+<td>Lines in the body must be &lt;= 80 chars</td>
 </tr>
 <tr>
 <td>B2</td>
@@ -296,7 +295,7 @@ what you're looking for.</p>
 <td>T1</td>
 <td>title-max-length</td>
 <td>&gt;= 0.1</td>
-<td>Title length must be &lt; 72 chars.</td>
+<td>Title length must be &lt;= 72 chars.</td>
 </tr>
 </tbody>
 </table>
@@ -329,6 +328,7 @@ line-length=72
 [title-max-length]
 line-length=120
 </code></pre>
+<hr />
 <h2 id="t2-title-trailing-whitespace">T2: title-trailing-whitespace</h2>
 <table>
 <thead>
@@ -348,6 +348,7 @@ line-length=120
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="t3-title-trailing-punctuation">T3: title-trailing-punctuation</h2>
 <table>
 <thead>
@@ -367,6 +368,7 @@ line-length=120
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="t4-title-hard-tab">T4: title-hard-tab</h2>
 <table>
 <thead>
@@ -386,6 +388,7 @@ line-length=120
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="t5-title-must-not-contain-word">T5: title-must-not-contain-word</h2>
 <table>
 <thead>
@@ -430,6 +433,7 @@ line-length=120
 [title-must-not-contain-word]
 words=crap,darn,damn
 </code></pre>
+<hr />
 <h2 id="t6-title-leading-whitespace">T6: title-leading-whitespace</h2>
 <table>
 <thead>
@@ -449,6 +453,7 @@ words=crap,darn,damn
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="t7-title-match-regex">T7: title-match-regex</h2>
 <table>
 <thead>
@@ -493,6 +498,7 @@ words=crap,darn,damn
 [title-match-regex]
 regex=^US[1-9][0-9]*
 </code></pre>
+<hr />
 <h2 id="t8-title-min-length">T8: title-min-length</h2>
 <table>
 <thead>
@@ -508,7 +514,7 @@ regex=^US[1-9][0-9]*
 <td>T8</td>
 <td>title-min-length</td>
 <td>&gt;= 0.14.0</td>
-<td>Title length must be &gt; 5 chars.</td>
+<td>Title length must be &gt;= 5 chars.</td>
 </tr>
 </tbody>
 </table>
@@ -537,6 +543,7 @@ regex=^US[1-9][0-9]*
 [title-min-length]
 min-length=3
 </code></pre>
+<hr />
 <h2 id="b1-body-max-line-length">B1: body-max-line-length</h2>
 <table>
 <thead>
@@ -552,7 +559,7 @@ min-length=3
 <td>B1</td>
 <td>body-max-line-length</td>
 <td>&gt;= 0.1</td>
-<td>Lines in the body must be &lt; 80 chars</td>
+<td>Lines in the body must be &lt;= 80 chars</td>
 </tr>
 </tbody>
 </table>
@@ -585,6 +592,7 @@ line-length=120
 [body-max-line-length]
 line-length=72
 </code></pre>
+<hr />
 <h2 id="b2-body-trailing-whitespace">B2: body-trailing-whitespace</h2>
 <table>
 <thead>
@@ -604,6 +612,7 @@ line-length=72
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="b3-body-hard-tab">B3: body-hard-tab</h2>
 <table>
 <thead>
@@ -623,6 +632,7 @@ line-length=72
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="b4-body-first-line-empty">B4: body-first-line-empty</h2>
 <table>
 <thead>
@@ -642,6 +652,7 @@ line-length=72
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="b5-body-min-length">B5: body-min-length</h2>
 <table>
 <thead>
@@ -690,6 +701,7 @@ min-length=5
 [body-min-length]
 min-length=100
 </code></pre>
+<hr />
 <h2 id="b6-body-is-missing">B6: body-is-missing</h2>
 <table>
 <thead>
@@ -728,6 +740,7 @@ min-length=100
 </tr>
 </tbody>
 </table>
+<hr />
 <h2 id="b7-body-changed-file-mention">B7: body-changed-file-mention</h2>
 <table>
 <thead>
@@ -773,6 +786,7 @@ min-length=100
 [body-changed-file-mention]
 files=generated.xml,secrets.txt,private-key.pem
 </code></pre>
+<hr />
 <h2 id="b8-body-match-regex">B8: body-match-regex</h2>
 <table>
 <thead>
@@ -821,6 +835,7 @@ regex=Reviewed-By:(.*)$
 [body-match-regex]
 regex=(*.)Foo(.*)
 </code></pre>
+<hr />
 <h2 id="m1-author-valid-email">M1: author-valid-email</h2>
 <table>
 <thead>
@@ -870,6 +885,7 @@ Gitlint by default takes a pragmatic approach and requires users to enter email 
 [author-valid-email]
 regex=[^@]+@foo.com
 </code></pre>
+<hr />
 <h2 id="i1-ignore-by-title">I1: ignore-by-title</h2>
 <table>
 <thead>
@@ -924,6 +940,7 @@ ignore=title-max-length,body-min-length
 # ignore all rules by setting ignore to 'all'
 # ignore=all
 </code></pre>
+<hr />
 <h2 id="i2-ignore-by-body">I2: ignore-by-body</h2>
 <table>
 <thead>
@@ -981,6 +998,7 @@ ignore=all
 regex=(.*)release(.*)
 ignore=T1,body-min-length,B6
 </code></pre>
+<hr />
 <h2 id="i3-ignore-body-lines">I3: ignore-body-lines</h2>
 <table>
 <thead>
@@ -1033,6 +1051,7 @@ regex=(^Co-Authored-By)|(^Signed-off-by)
 [ignore-body-lines]
 regex=(.*)foobar(.*)
 </code></pre>
+<hr />
 <h2 id="i4-ignore-by-author-name">I4: ignore-by-author-name</h2>
 <table>
 <thead>

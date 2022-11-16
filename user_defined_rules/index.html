@@ -96,15 +96,14 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>User Defined Rules</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>User Defined Rules</li>
     <li class="wy-breadcrumbs-aside">
-        <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/user_defined_rules.md"
-          class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/jorisroovers/gitlint/edit/main/docs/user_defined_rules.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
 </div>
-
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
@@ -272,98 +271,128 @@ The table below outlines the various attributes of that commit object that can b
 </thead>
 <tbody>
 <tr>
+<td>commit</td>
+<td><code>GitCommit</code></td>
+<td>Python object representing the commit</td>
+</tr>
+<tr>
 <td>commit.message</td>
-<td>object</td>
+<td><code>GitCommitMessage</code></td>
 <td>Python object representing the commit message</td>
 </tr>
 <tr>
 <td>commit.message.original</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Original commit message as returned by git</td>
 </tr>
 <tr>
 <td>commit.message.full</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Full commit message, with comments (lines starting with #) removed.</td>
 </tr>
 <tr>
 <td>commit.message.title</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Title/subject of the commit message: the first line</td>
 </tr>
 <tr>
 <td>commit.message.body</td>
-<td>string[]</td>
+<td><code>str[]</code></td>
 <td>List of lines in the body of the commit message (i.e. starting from the second line)</td>
 </tr>
 <tr>
 <td>commit.author_name</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Name of the author, result of <code>git log --pretty=%aN</code></td>
 </tr>
 <tr>
 <td>commit.author_email</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Email of the author, result of <code>git log --pretty=%aE</code></td>
 </tr>
 <tr>
 <td>commit.date</td>
-<td>datetime</td>
+<td><code>datetime.datetime</code></td>
 <td>Python <code>datetime</code> object representing the time of commit</td>
 </tr>
 <tr>
 <td>commit.is_merge_commit</td>
-<td>boolean</td>
+<td><code>bool</code></td>
 <td>Boolean indicating whether the commit is a merge commit or not.</td>
 </tr>
 <tr>
 <td>commit.is_revert_commit</td>
-<td>boolean</td>
+<td><code>bool</code></td>
 <td>Boolean indicating whether the commit is a revert commit or not.</td>
 </tr>
 <tr>
 <td>commit.is_fixup_commit</td>
-<td>boolean</td>
+<td><code>bool</code></td>
 <td>Boolean indicating whether the commit is a fixup commit or not.</td>
 </tr>
 <tr>
+<td>commit.is_fixup_amend_commit</td>
+<td><code>bool</code></td>
+<td>Boolean indicating whether the commit is a (fixup) amend commit or not.</td>
+</tr>
+<tr>
 <td>commit.is_squash_commit</td>
-<td>boolean</td>
+<td><code>bool</code></td>
 <td>Boolean indicating whether the commit is a squash commit or not.</td>
 </tr>
 <tr>
 <td>commit.parents</td>
-<td>string[]</td>
+<td><code>str[]</code></td>
 <td>List of parent commit <code>sha</code>s (only for merge commits).</td>
 </tr>
 <tr>
 <td>commit.changed_files</td>
-<td>string[]</td>
+<td><code>str[]</code></td>
 <td>List of files changed in the commit (relative paths).</td>
 </tr>
 <tr>
+<td>commit.changed_files_stats</td>
+<td><code>dict[str, GitChangedFilesStats]</code></td>
+<td>Dictionary mapping the changed files to a <code>GitChangedFilesStats</code> objects</td>
+</tr>
+<tr>
+<td>commit.changed_files_stats["path"].filepath</td>
+<td><code>pathlib.Path</code></td>
+<td>Relative path (compared to repo root) of the file that was changed.</td>
+</tr>
+<tr>
+<td>commit.changed_files_stats["path"].additions</td>
+<td><code>int</code></td>
+<td>Number of additions in the file.</td>
+</tr>
+<tr>
+<td>commit.changed_files_stats["path"].deletions</td>
+<td><code>int</code></td>
+<td>Number of deletions in the file.</td>
+</tr>
+<tr>
 <td>commit.branches</td>
-<td>string[]</td>
+<td><code>str[]</code></td>
 <td>List of branch names the commit is part of</td>
 </tr>
 <tr>
 <td>commit.context</td>
-<td>object</td>
+<td><code>GitContext</code></td>
 <td>Object pointing to the bigger git context that the commit is part of</td>
 </tr>
 <tr>
 <td>commit.context.current_branch</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Name of the currently active branch (of local repo)</td>
 </tr>
 <tr>
 <td>commit.context.repository_path</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Absolute path pointing to the git repository being linted</td>
 </tr>
 <tr>
 <td>commit.context.commits</td>
-<td>object[]</td>
+<td><code>GitCommit[]</code></td>
 <td>List of commits gitlint is acting on, NOT all commits in the repo.</td>
 </tr>
 </tbody>
@@ -391,22 +420,22 @@ However, in case of a single violation, validate should return a <strong>list</s
 <tbody>
 <tr>
 <td>rule_id</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Rule's unique string id</td>
 </tr>
 <tr>
 <td>message</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>Short description of the violation</td>
 </tr>
 <tr>
 <td>content</td>
-<td>string</td>
+<td><code>str</code></td>
 <td>(optional) the violating part of commit or line</td>
 </tr>
 <tr>
 <td>line_nr</td>
-<td>int</td>
+<td><code>int</code></td>
 <td>(optional) line number in the commit message where the violation occurs. <strong>Automatically set to the correct line number for <code>LineRule</code>s if not set explicitly.</strong></td>
 </tr>
 </tbody>
