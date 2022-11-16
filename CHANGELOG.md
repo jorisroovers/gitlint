@@ -1,7 +1,7 @@
 # Changelog #
 
 
-## v0.18.0 (2022-11-?)  - Unreleased ##
+## v0.18.0 (2022-11-16) ##
 Contributors:
 Special thanks to all contributors for this release - details inline!
 
