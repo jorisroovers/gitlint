@@ -15,4 +15,5 @@ ARG GITLINT_VERSION
 RUN apk add git
 RUN pip install gitlint==$GITLINT_VERSION
 
+RUN git config --global --add safe.directory /repo
 ENTRYPOINT ["gitlint", "--target", "/repo"]
