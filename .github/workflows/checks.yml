@@ -22,12 +22,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
-      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
-      # code by temporarily renaming the .git directory.
-      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
-      - name: Temporarily remove git version control from code
-        run: mv .git ._git
-
       - name: Setup python
         uses: actions/setup-python@v4.2.0
         with:
@@ -60,14 +54,16 @@ jobs:
           sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
 
       - name: Integration Tests
-        run: ./run_tests.sh -i
+        run: ${GITHUB_WORKSPACE}/run_tests.sh -i ${GITHUB_WORKSPACE}/qa
+        working-directory: /tmp
 
       # Gitlint no longer uses `sh` by default, but for now we're still supporting the manual enablement of it.
       # By setting GITLINT_USE_SH_LIB=1, we test whether this still works.
       - name: Integration Tests (GITLINT_USE_SH_LIB=1)
         env:
           GITLINT_USE_SH_LIB: 1
-        run: ./run_tests.sh -i
+        run: ${GITHUB_WORKSPACE}/run_tests.sh -i ${GITHUB_WORKSPACE}/qa
+        working-directory: /tmp
 
       - name: Code formatting (black)
         run: ./run_tests.sh -f
@@ -85,10 +81,6 @@ jobs:
       #   uses: coverallsapp/github-action@master
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      # Re-add git version control so we can run gitlint on itself.
-      - name: Re-add git version control to code
-        run: mv ._git .git
 
       # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
       # PRs get squashed and get a proper commit message during merge.
