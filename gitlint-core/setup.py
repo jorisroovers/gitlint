@@ -68,7 +68,7 @@ setup(
         "trusted-deps": [
             "Click==8.0.3",
             "arrow==1.2.1",
-            'sh==1.14.2 ; sys_platform != "win32"',
+            'sh==1.14.3 ; sys_platform != "win32"',
         ],
     },
     keywords="gitlint git lint",
