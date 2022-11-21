@@ -1,6 +1,14 @@
 name: Tests and Checks
 
-on: [push, pull_request]
+# Only run CI on pushes to main and pull requests
+# We don't run CI on other branches, but those should be merged into main via a PR anyways which will trigger CI before the merge.
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
   checks:
