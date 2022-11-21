@@ -40,7 +40,8 @@ jobs:
           pip install -r test-requirements.txt
 
       - name: Unit Tests
-        run: ./run_tests.sh
+        run: ${GITHUB_WORKSPACE}/run_tests.sh ${GITHUB_WORKSPACE}/gitlint-core
+        working-directory: /tmp  # run tests in /tmp to avoid gitlint picking up the .gitlint config
 
       # Coveralls integration doesn't properly work at this point, also see below
       # - name: Coveralls
