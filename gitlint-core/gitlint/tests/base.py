@@ -30,9 +30,22 @@ class BaseTestCase(unittest.TestCase):
     # In case of assert failures, print the full error message
     maxDiff = None
 
+    # Working directory in which tests in this class are executed
+    working_dir = None
+
     SAMPLES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
     EXPECTED_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
     GITLINT_USE_SH_LIB = os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]")
+
+    @classmethod
+    def setUpClass(cls):
+        # Run tests a temporary directory to shield them from any local git config
+        cls.working_dir = tempfile.mkdtemp()
+        os.chdir(cls.working_dir)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.working_dir)
 
     def setUp(self):
         self.logcapture = LogCapture()

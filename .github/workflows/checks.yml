@@ -34,8 +34,7 @@ jobs:
           pip install -r test-requirements.txt
 
       - name: Unit Tests
-        run: ${GITHUB_WORKSPACE}/run_tests.sh ${GITHUB_WORKSPACE}/gitlint-core
-        working-directory: /tmp  # run tests in /tmp to avoid gitlint picking up the .gitlint config
+        run: ./run_tests.sh
 
       # Coveralls integration doesn't properly work at this point, also see below
       # - name: Coveralls
@@ -54,16 +53,14 @@ jobs:
           sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
 
       - name: Integration Tests
-        run: ${GITHUB_WORKSPACE}/run_tests.sh -i ${GITHUB_WORKSPACE}/qa
-        working-directory: /tmp
+        run: ./run_tests.sh -i
 
       # Gitlint no longer uses `sh` by default, but for now we're still supporting the manual enablement of it.
       # By setting GITLINT_USE_SH_LIB=1, we test whether this still works.
       - name: Integration Tests (GITLINT_USE_SH_LIB=1)
         env:
           GITLINT_USE_SH_LIB: 1
-        run: ${GITHUB_WORKSPACE}/run_tests.sh -i ${GITHUB_WORKSPACE}/qa
-        working-directory: /tmp
+        run: ./run_tests.sh -i
 
       - name: Code formatting (black)
         run: ./run_tests.sh -f
