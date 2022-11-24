@@ -158,7 +158,7 @@ class RuleOptionTests(BaseTestCase):
         option = PathOption("tëst-directory", ".", "Tëst Description", type="dir")
         self.assertEqual(option.name, "tëst-directory")
         self.assertEqual(option.description, "Tëst Description")
-        self.assertEqual(option.value, os.getcwd())
+        self.assertEqual(option.value, os.path.realpath("."))
         self.assertEqual(option.type, "dir")
 
         # re-set value
