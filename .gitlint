@@ -3,6 +3,7 @@
 regex-style-search=True
 
 # Dependabot tends to generate lines that exceed the default 80 char limit.
-# Ignore those commits.
-[ignore-by-body]
-regex=^Co-authored-by: dependabot
+[ignore-by-author-name]
+regex=dependabot
+ignore=all
+
