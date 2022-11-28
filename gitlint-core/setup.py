@@ -65,7 +65,7 @@ setup(
     ],
     extras_require={
         "trusted-deps": [
-            "Click==8.0.3",
+            "Click==8.1.3",
             "arrow==1.2.3",
             'sh==1.14.3 ; sys_platform != "win32"',
         ],
