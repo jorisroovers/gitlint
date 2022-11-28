@@ -9,10 +9,11 @@
 # NOTE: --ulimit is required to work around a limitation in Docker
 # Details: https://github.com/jorisroovers/gitlint/issues/129
 
-FROM python:3.10-alpine
+FROM python:3.11.0-alpine
 ARG GITLINT_VERSION
 
 RUN apk add git
 RUN pip install gitlint==$GITLINT_VERSION
 
+RUN git config --global --add safe.directory /repo
 ENTRYPOINT ["gitlint", "--target", "/repo"]

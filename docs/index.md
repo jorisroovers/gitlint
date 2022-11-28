@@ -15,7 +15,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 
 
 !!! important
-    **Gitlint no longer supports Python 2.7 and Python 3.5 as they [have reached End-Of-Life](https://endoflife.date/python). The last gitlint version to support Python 2.7 and Python 3.5 is `0.14.0` (released on October 24th, 2020).**
+    **Gitlint requires Python 3.7 (or above). For Python 2.7 and Python 3.5 use `gitlint==0.14.0` (released 2020-10-24), for Python 3.6 `gitlint==0.18.0` (released 2022-11-16).**
 
 ## Features
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook). Also [works with pre-commit](#using-gitlint-through-pre-commit).
@@ -26,7 +26,7 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
- - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules).
+ - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules.md).
  - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
@@ -38,7 +38,7 @@ useful throughout the years.
 # Pip is recommended to install the latest version
 pip install gitlint
 
-# Alternative: by default, gitlint is installed with pinned dependencies. 
+# Alternative: by default, gitlint is installed with pinned dependencies.
 # To install gitlint with looser dependency requirements, only install gitlint-core.
 pip install gitlint-core
 
@@ -84,6 +84,19 @@ $ cat examples/commit-message-2 | gitlint
 ```
 !!! note
     The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
+
+### Shell completion
+
+```sh
+# Bash: add to ~/.bashrc
+eval "$(_GITLINT_COMPLETE=bash_source gitlint)"
+
+# Zsh: add to ~/.zshrc
+eval "$(_GITLINT_COMPLETE=zsh_source gitlint)"
+
+# Fish: add to ~/.config/fish/completions/foo-bar.fish
+eval (env _GITLINT_COMPLETE=fish_source gitlint)
+```
 
 ## Configuration
 
@@ -150,8 +163,9 @@ Options:
   --msg-filename FILENAME  Path to a file containing a commit-msg.
   --ignore-stdin           Ignore any stdin data. Useful for running in CI
                            server.
-  --staged                 Read staged commit meta-info from the local
-                           repository.
+  --staged                 Attempt smart guesses about meta info (like
+                           author name, email, branch, changed files, etc)
+                           for staged commits.
   --fail-without-commits   Hard fail when the target commit range is empty.
   -v, --verbose            Verbosity, more v's for more verbose output
                            (e.g.: -v, -vv, -vvv). [default: -vvv]
@@ -223,7 +237,7 @@ In case you want to change gitlint's behavior, you should either use a `.gitlint
 your `.pre-commit-config.yaml` file like so:
 ```yaml
 -   repo: https://github.com/jorisroovers/gitlint
-    rev:  # Fill in a tag / sha here
+    rev:  # Fill in a tag / sha here (e.g. v0.18.0)
     hooks:
     -   id: gitlint
         args: [--contrib=CT1, --msg-filename]
@@ -233,6 +247,36 @@ your `.pre-commit-config.yaml` file like so:
 
     You need to add `--msg-filename` at the end of your custom `args` list as the gitlint-hook will fail otherwise.
 
+
+### gitlint and pre-commit in CI
+gitlint also supports a `gitlint-ci` pre-commit hook that can be used in CI environments.
+
+Configure it like so:
+```yaml
+-   repo: https://github.com/jorisroovers/gitlint
+    rev:  # insert ref, e.g. v0.18.0
+    hooks:
+    -   id: gitlint    # this is the regular commit-msg hook
+    -   id: gitlint-ci # hook for CI environments
+```
+
+And invoke it in your CI environment like this:
+
+```sh
+pre-commit run --hook-stage manual gitlint-ci
+```
+
+By default this will only lint the latest commit.
+If you want to lint more commits you can modify the `gitlint-ci` hook like so:
+
+```yaml
+-   repo: https://github.com/jorisroovers/gitlint
+    rev:  v0.17.0
+    hooks:
+    -   id: gitlint
+    -   id: gitlint-ci
+        args: [--debug, --commits, mybranch] # enable debug mode, lint all commits in mybranch
+```
 
 ## Using gitlint in a CI environment
 By default, when just running `gitlint` without additional parameters, gitlint lints the last commit in the current
@@ -253,31 +297,40 @@ git log -1 --pretty=%B 62c0519 | gitlint
 Note that gitlint requires that you specify `--pretty=%B` (=only print the log message, not the metadata),
 future versions of gitlint might fix this and not require the `--pretty` argument.
 
-## Linting specific commits
+## Linting specific commits or branches
 
-Gitlint allows users to lint a specific commit:
+Gitlint can lint specific commits using `--commit`:
 ```sh
 gitlint --commit 019cf40580a471a3958d3c346aa8bfd265fe5e16
-gitlint --commit 019cf40 # short SHAs work too
+gitlint --commit 019cf40  # short SHAs work too
+gitlint --commit HEAD~2   # as do special references
+gitlint --commit mybranch # lint latest commit on a branch 
 ```
 
-You can also lint multiple commits at once like so:
+You can also lint multiple commits using `--commits` (plural):
 
 ```sh
 # Lint a specific commit range:
 gitlint --commits "019cf40...d6bc75a"
-# You can also use git's special references:
+# Lint all commits on a branch
+gitlint --commits mybranch
+# Lint all commits that are different between a branch and your main branch
+gitlint --commits "main..mybranch"
+# Use git's special references
 gitlint --commits "origin..HEAD"
 
 # You can also pass multiple, comma separated commit hashes:
 gitlint --commits 019cf40,c50eb150,d6bc75a
+# These can include special references as well
+gitlint --commits HEAD~1,mybranch-name,origin/main,d6bc75a
 ```
 
 The `--commits` flag takes a **single** refspec argument or commit range. Basically, any range that is understood
 by [git rev-list](https://git-scm.com/docs/git-rev-list) as a single argument will work.
 
-Alternatively, you can pass `--commits` a comma-separated list of commit hashes (both short and full-length SHAs work).
-Gitlint will lint these in the order you passed.
+Alternatively, you can pass `--commits` a comma-separated list of commit hashes (both short and full-length SHAs work,
+as well as special references such as `HEAD` and branch names).
+Gitlint will treat these as pointers to **single** commits and lint these in the order you passed.
 
 For cases where the `--commits` option doesn't provide the flexibility you need, you can always use a simple shell
 script to lint an arbitrary set of commits, like shown in the example below.
@@ -294,7 +347,7 @@ done
 
 !!! note
     One downside to this approach is that you invoke gitlint once per commit vs. once per set of commits.
-    This means you'll incur the gitlint startup time once per commit, making this approach rather slow if you want to
+    This means you'll incur the gitlint startup time once per commit, making it rather slow if you want to
     lint a large set of commits. Always use `--commits` if you can to avoid this performance penalty.
 
 
@@ -385,7 +438,7 @@ additional unique identifier (i.e. the rule *name*) during configuration.
     For example, by defining 2 `body-max-line-length` rules with different `line-length` options, you obviously create
     a conflicting situation. Gitlint does not do any resolution of such conflicts, it's up to you to make sure
     any configuration is non-conflicting. So caution advised!
-    
+
 Defining a named rule is easy, for example using your `.gitlint` file:
 
 ```ini
@@ -411,7 +464,7 @@ When executing gitlint, you will see the violations from the default `title-must
 the violations caused by the additional Named Rules.
 
 ```sh
-$ gitlint 
+$ gitlint
 1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: foo wonderwoman hur bar"
 1: T5:This-Can_Be*Whatever$YouWant Title contains the word 'wonderwoman' (case-insensitive): "WIP: foo wonderwoman hur bar"
 1: T5:extra-words Title contains the word 'foo' (case-insensitive): "WIP: foo wonderwoman hur bar"

@@ -22,13 +22,9 @@ class UtilsTests(BaseTestCase):
             self.assertEqual(utils.use_sh_library(), False, invalid_val)
             patched_env.get.assert_called_once_with("GITLINT_USE_SH_LIB", None)
 
-        # Assert that when GITLINT_USE_SH_LIB is not set, we fallback to checking whether we're on Windows
-        utils.PLATFORM_IS_WINDOWS = True
+        # Assert that when GITLINT_USE_SH_LIB is not set, we fallback to False (not using)
         patched_env.get.return_value = None
         self.assertEqual(utils.use_sh_library(), False)
-
-        utils.PLATFORM_IS_WINDOWS = False
-        self.assertEqual(utils.use_sh_library(), True)
 
     @patch("gitlint.utils.locale")
     def test_default_encoding_non_windows(self, mocked_locale):

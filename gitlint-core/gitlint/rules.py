@@ -5,6 +5,7 @@ import re
 
 from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RegexOption
 from gitlint.exception import GitlintError
+from gitlint.deprecation import Deprecation
 
 
 class Rule:
@@ -15,6 +16,7 @@ class Rule:
     name = None
     target = None
     _log = None
+    _log_deprecated_regex_style_search = None
 
     def __init__(self, opts=None):
         if not opts:
@@ -355,14 +357,25 @@ class BodyRegexMatches(CommitRule):
 class AuthorValidEmail(CommitRule):
     name = "author-valid-email"
     id = "M1"
-    options_spec = [RegexOption("regex", r"[^@ ]+@[^@ ]+\.[^@ ]+", "Regex that author email address should match")]
+    DEFAULT_AUTHOR_VALID_EMAIL_REGEX = r"^[^@ ]+@[^@ ]+\.[^@ ]+"
+    options_spec = [
+        RegexOption("regex", DEFAULT_AUTHOR_VALID_EMAIL_REGEX, "Regex that author email address should match")
+    ]
 
     def validate(self, commit):
         # If no regex is specified, immediately return
         if not self.options["regex"].value:
             return
 
-        if commit.author_email and not self.options["regex"].value.match(commit.author_email):
+        # We're replacing regex match with search semantics, see https://github.com/jorisroovers/gitlint/issues/254
+        # In case the user is using the default regex, we can silently change to using search
+        # If not, it depends on config (handled by Deprecation class)
+        if self.DEFAULT_AUTHOR_VALID_EMAIL_REGEX == self.options["regex"].value.pattern:
+            regex_method = self.options["regex"].value.search
+        else:
+            regex_method = Deprecation.get_regex_method(self, self.options["regex"])
+
+        if commit.author_email and not regex_method(commit.author_email):
             return [RuleViolation(self.id, "Author email for commit is invalid", commit.author_email)]
 
 
@@ -379,7 +392,10 @@ class IgnoreByTitle(ConfigurationRule):
         if not self.options["regex"].value:
             return
 
-        if self.options["regex"].value.match(commit.message.title):
+        # We're replacing regex match with search semantics, see https://github.com/jorisroovers/gitlint/issues/254
+        regex_method = Deprecation.get_regex_method(self, self.options["regex"])
+
+        if regex_method(commit.message.title):
             config.ignore = self.options["ignore"].value
 
             message = (
@@ -403,8 +419,11 @@ class IgnoreByBody(ConfigurationRule):
         if not self.options["regex"].value:
             return
 
+        # We're replacing regex match with search semantics, see https://github.com/jorisroovers/gitlint/issues/254
+        regex_method = Deprecation.get_regex_method(self, self.options["regex"])
+
         for line in commit.message.body:
-            if self.options["regex"].value.match(line):
+            if regex_method(line):
                 config.ignore = self.options["ignore"].value
 
                 message = (
@@ -427,9 +446,12 @@ class IgnoreBodyLines(ConfigurationRule):
         if not self.options["regex"].value:
             return
 
+        # We're replacing regex match with search semantics, see https://github.com/jorisroovers/gitlint/issues/254
+        regex_method = Deprecation.get_regex_method(self, self.options["regex"])
+
         new_body = []
         for line in commit.message.body:
-            if self.options["regex"].value.match(line):
+            if regex_method(line):
                 debug_msg = "Ignoring line '%s' because it matches '%s'"
                 self.log.debug(debug_msg, line, self.options["regex"].value.pattern)
             else:
@@ -452,7 +474,9 @@ class IgnoreByAuthorName(ConfigurationRule):
         if not self.options["regex"].value:
             return
 
-        if self.options["regex"].value.match(commit.author_name):
+        regex_method = Deprecation.get_regex_method(self, self.options["regex"])
+
+        if regex_method(commit.author_name):
             config.ignore = self.options["ignore"].value
 
             message = (

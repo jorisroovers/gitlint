@@ -147,7 +147,7 @@ run_build_test(){
     # Copy gitlint to a new temp dir
     echo -n "Copying gitlint to $temp_dir..."
     mkdir "$temp_dir"
-    rsync -az --exclude ".vagrant" --exclude ".git" --exclude ".venv*" . "$temp_dir"
+    rsync -az --exclude ".git" --exclude ".venv*" . "$temp_dir"
     echo -e "${GREEN}DONE${NO_COLOR}"
 
     # Update the version to include a timestamp
@@ -382,7 +382,7 @@ switch_env(){
             export PATH=$(echo $PATH | tr ":" "\n" | grep -v "$VIRTUAL_ENV" | tr "\n" ":");
         fi
         set -e # Let's error out if you try executing against a non-existing env
-        source "/vagrant/.venv${1}/bin/activate"
+        source ".venv${1}/bin/activate"
         set +e
     fi
     title "### PYTHON ($(python --version 2>&1), $(which python)) ###"

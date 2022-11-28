@@ -6,3 +6,7 @@ a.toctree-l3 {
 .wy-nav-content {
     max-width: 1000px;
 }
+
+.document hr {
+    border-top: 1px solid #666;
+}

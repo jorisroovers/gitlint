@@ -11,6 +11,7 @@ import click
 import gitlint
 from gitlint.lint import GitLinter
 from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
+from gitlint.deprecation import LOG as DEPRECATED_LOG, DEPRECATED_LOG_FORMAT
 from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
 from gitlint.shell import shell
@@ -44,13 +45,22 @@ class GitLintUsageError(GitlintError):
 
 def setup_logging():
     """Setup gitlint logging"""
+
+    # Root log, mostly used for debug
     root_log = logging.getLogger("gitlint")
     root_log.propagate = False  # Don't propagate to child loggers, the gitlint root logger handles everything
+    root_log.setLevel(logging.ERROR)
     handler = logging.StreamHandler()
     formatter = logging.Formatter(LOG_FORMAT)
     handler.setFormatter(formatter)
     root_log.addHandler(handler)
-    root_log.setLevel(logging.ERROR)
+
+    # Deprecated log, to log deprecation warnings
+    DEPRECATED_LOG.propagate = False  # Don't propagate to child logger
+    DEPRECATED_LOG.setLevel(logging.WARNING)
+    deprecated_log_handler = logging.StreamHandler()
+    deprecated_log_handler.setFormatter(logging.Formatter(DEPRECATED_LOG_FORMAT))
+    DEPRECATED_LOG.addHandler(deprecated_log_handler)
 
 
 def log_system_info():
@@ -262,7 +272,8 @@ class ContextObj:
 @click.option('--ignore-stdin', envvar='GITLINT_IGNORE_STDIN', is_flag=True,
               help="Ignore any stdin data. Useful for running in CI server.")
 @click.option('--staged', envvar='GITLINT_STAGED', is_flag=True,
-              help="Read staged commit meta-info from the local repository.")
+              help="Attempt smart guesses about meta info (like author name, email, branch, changed files, etc) " +
+                   "for staged commits.")
 @click.option('--fail-without-commits', envvar='GITLINT_FAIL_WITHOUT_COMMITS', is_flag=True,
               help="Hard fail when the target commit range is empty.")
 @click.option('-v', '--verbose', envvar='GITLINT_VERBOSITY', count=True, default=0,
@@ -284,6 +295,7 @@ def cli(  # pylint: disable=too-many-arguments
     try:
         if debug:
             logging.getLogger("gitlint").setLevel(logging.DEBUG)
+            DEPRECATED_LOG.setLevel(logging.DEBUG)
         LOG.debug("To report issues, please visit https://github.com/jorisroovers/gitlint/issues")
 
         log_system_info()

@@ -20,6 +20,7 @@ ignore-revert-commits: True
 ignore-stdin: False
 staged: False
 fail-without-commits: False
+regex-style-search: False
 verbosity: 3
 debug: True
 target: {target}
@@ -61,7 +62,7 @@ target: {target}
   B8: body-match-regex
      regex=None
   M1: author-valid-email
-     regex=[^@ ]+@[^@ ]+\.[^@ ]+
+     regex=^[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli No --msg-filename flag, no or empty data passed to stdin. Using the local repo.
 DEBUG: gitlint.git ('log', '-1', '--pretty=%H')

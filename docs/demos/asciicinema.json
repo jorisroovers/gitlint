@@ -2404,7 +2404,7 @@
     ],
     [
       0.052844,
-      "1: T3 Title has trailing punctuation (!): \"WIP: This is an patchset that I need to continue working on!\"\r\n1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is an patchset that I need to continue working on!\"\r\n3: B6 Body message is missing\r\n"
+      "1: T3 Title has trailing punctuation (!): \"WIP: This is a patchset that I need to continue working on!\"\r\n1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is a patchset that I need to continue working on!\"\r\n3: B6 Body message is missing\r\n"
     ],
     [
       0.006075,
@@ -2432,7 +2432,7 @@
     ],
     [
       0.004763,
-      "[main 4b1f92d] WIP: This is an patchset that I need to continue working on!\r\n"
+      "[main 4b1f92d] WIP: This is a patchset that I need to continue working on!\r\n"
     ],
     [
       0.001504,
@@ -3108,11 +3108,11 @@
     ],
     [
       0.050694,
-      "1: T1 Title exceeds max length (60\u003e50): \"WIP: This is an patchset that I need to continue working on!\"\r\n"
+      "1: T1 Title exceeds max length (60\u003e50): \"WIP: This is a patchset that I need to continue working on!\"\r\n"
     ],
     [
       0.000006,
-      "1: T3 Title has trailing punctuation (!): \"WIP: This is an patchset that I need to continue working on!\"\r\n1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is an patchset that I need to continue working on!\"\r\n3: B6 Body message is missing\r\n"
+      "1: T3 Title has trailing punctuation (!): \"WIP: This is a patchset that I need to continue working on!\"\r\n1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is a patchset that I need to continue working on!\"\r\n3: B6 Body message is missing\r\n"
     ],
     [
       0.005418,
@@ -3508,7 +3508,7 @@
     ],
     [
       0.050989,
-      "1: T1 Title exceeds max length (60\u003e50): \"WIP: This is an patchset that I need to continue working on!\"\r\n1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is an patchset that I need to continue working on!\"\r\n"
+      "1: T1 Title exceeds max length (60\u003e50): \"WIP: This is a patchset that I need to continue working on!\"\r\n1: T5 Title contains the word 'WIP' (case-insensitive): \"WIP: This is a patchset that I need to continue working on!\"\r\n"
     ],
     [
       0.000025,

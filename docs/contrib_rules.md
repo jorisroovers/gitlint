@@ -1,11 +1,12 @@
 # Using Contrib Rules
+
 _Introduced in gitlint v0.12.0_
 
 Contrib rules are community-**contrib**uted rules that are disabled by default, but can be enabled through configuration.
 
 Contrib rules are meant to augment default gitlint behavior by providing users with rules for common use-cases without
 forcing these rules on all gitlint users. This also means that users don't have to
-re-implement these commonly used rules themselves as [user-defined](user_defined_rules) rules.
+re-implement these commonly used rules themselves as [user-defined](user_defined_rules.md) rules.
 
 To enable certain contrib rules, you can use the `--contrib` flag.
 ```sh
@@ -43,6 +44,7 @@ ID    | Name                                | gitlint version   | Description
 CT1   | contrib-title-conventional-commits  | >= 0.12.0         | Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit message style on the title.
 CC1   | contrib-body-requires-signed-off-by | >= 0.12.0         | Commit body must contain a `Signed-off-by` line.
 CC2   | contrib-disallow-cleanup-commits    | >= 0.18.0         | Commit title must not contain `fixup!`, `squash!`, `amend!`.
+CC3   | contrib-allowed-authors              | >= 0.18.0         | Enforce that only authors listed in the `AUTHORS` file are allowed to commit.
 
 ## CT1: contrib-title-conventional-commits ##
 
@@ -70,5 +72,12 @@ ID    | Name                             | gitlint version    | Description
 ------|----------------------------------|--------------------|-------------------------------------------
 CC2   | contrib-disallow-cleanup-commits | >= 0.18.0          | Commit title must not contain `fixup!`, `squash!` or `amend!`. This means `git commit --fixup` and `git commit --squash` commits are not allowed.
 
+## CC3: contrib-allowed-authors ##
+
+ID    | Name                             | gitlint version    | Description
+------|----------------------------------|--------------------|-------------------------------------------
+CC3   | contrib-allowed-authors           | >= 0.18.0          | The commit author must be listed in an `AUTHORS` file to be allowed to commit. Possible file names are also `AUTHORS.txt` and `AUTHORS.md`.
+
 ## Contributing Contrib rules
-We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the [Contributing](contributing) page on how to get started.
+
+We'd love for you to contribute new Contrib rules to gitlint or improve existing ones! Please visit the [Contributing](contributing.md) page on how to get started.

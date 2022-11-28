@@ -23,7 +23,7 @@ Source code on `github.com/jorisroovers/gitlint`_.
 """
 
 
-version = "0.18.0dev"
+version = "0.19.0dev"
 
 setup(
     name="gitlint",
@@ -34,7 +34,6 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -48,7 +47,7 @@ setup(
         "Topic :: Software Development :: Testing",
         "License :: OSI Approved :: MIT License",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=[
         "gitlint-core[trusted-deps]==" + version,
     ],

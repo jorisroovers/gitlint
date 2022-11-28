@@ -10,8 +10,18 @@ import unittest
 
 from unittest.mock import patch
 
+from gitlint.config import LintConfig
+from gitlint.deprecation import Deprecation, LOG as DEPRECATION_LOG
 from gitlint.git import GitContext, GitChangedFileStats
 from gitlint.utils import LOG_FORMAT, DEFAULT_ENCODING
+
+EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING = (
+    "WARNING: gitlint.deprecated.regex_style_search {0} - {1}: gitlint will be switching from using "
+    "Python regex 'match' (match beginning) to 'search' (match anywhere) semantics. "
+    "Please review your {1}.regex option accordingly. "
+    "To remove this warning, set general.regex-style-search=True. More details: "
+    "https://jorisroovers.github.io/gitlint/configuration/#regex-style-search"
+)
 
 
 class BaseTestCase(unittest.TestCase):
@@ -20,20 +30,49 @@ class BaseTestCase(unittest.TestCase):
     # In case of assert failures, print the full error message
     maxDiff = None
 
+    # Working directory in which tests in this class are executed
+    working_dir = None
+    # Originally working dir when the test was started
+    original_working_dir = None
+
     SAMPLES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "samples")
     EXPECTED_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
     GITLINT_USE_SH_LIB = os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]")
+
+    @classmethod
+    def setUpClass(cls):
+        # Run tests a temporary directory to shield them from any local git config
+        cls.original_working_dir = os.getcwd()
+        cls.working_dir = tempfile.mkdtemp()
+        os.chdir(cls.working_dir)
+
+    @classmethod
+    def tearDownClass(cls):
+        # Go back to original working dir and remove our temp working dir
+        os.chdir(cls.original_working_dir)
+        shutil.rmtree(cls.working_dir)
 
     def setUp(self):
         self.logcapture = LogCapture()
         self.logcapture.setFormatter(logging.Formatter(LOG_FORMAT))
         logging.getLogger("gitlint").setLevel(logging.DEBUG)
         logging.getLogger("gitlint").handlers = [self.logcapture]
+        DEPRECATION_LOG.handlers = [self.logcapture]
 
         # Make sure we don't propagate anything to child loggers, we need to do this explicitly here
         # because if you run a specific test file like test_lint.py, we won't be calling the setupLogging() method
         # in gitlint.cli that normally takes care of this
+        # Example test where this matters (for DEPRECATION_LOG):
+        # gitlint-core/gitlint/tests/rules/test_configuration_rules.py::ConfigurationRuleTests::test_ignore_by_title
         logging.getLogger("gitlint").propagate = False
+        DEPRECATION_LOG.propagate = False
+
+        # Make sure Deprecation has a clean config set at the start of each test.
+        # Tests that want to specifically test deprecation should override this.
+        Deprecation.config = LintConfig()
+        # Normally Deprecation only logs messages once per process.
+        # For tests we want to log every time, so we reset the warning_msgs set per test.
+        Deprecation.warning_msgs = set()
 
     @staticmethod
     @contextlib.contextmanager

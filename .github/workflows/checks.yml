@@ -1,25 +1,26 @@
 name: Tests and Checks
 
-on: [push, pull_request]
+# Only run CI on pushes to main and pull requests
+# We don't run CI on other branches, but those should be merged into main via a PR anyways which will trigger CI before the merge.
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
   checks:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version:
-          ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11.0-rc.2", pypy-3.9]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.9]
         os: ["macos-latest", "ubuntu-latest"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.1.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-
-      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
-      # code by temporarily renaming the .git directory.
-      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
-      - name: Temporarily remove git version control from code
-        run: mv .git ._git
 
       - name: Setup python
         uses: actions/setup-python@v4.2.0
@@ -54,9 +55,11 @@ jobs:
       - name: Integration Tests
         run: ./run_tests.sh -i
 
-      - name: Integration Tests (GITLINT_USE_SH_LIB=0)
+      # Gitlint no longer uses `sh` by default, but for now we're still supporting the manual enablement of it.
+      # By setting GITLINT_USE_SH_LIB=1, we test whether this still works.
+      - name: Integration Tests (GITLINT_USE_SH_LIB=1)
         env:
-          GITLINT_USE_SH_LIB: 0
+          GITLINT_USE_SH_LIB: 1
         run: ./run_tests.sh -i
 
       - name: Code formatting (black)
@@ -76,10 +79,6 @@ jobs:
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Re-add git version control so we can run gitlint on itself.
-      - name: Re-add git version control to code
-        run: mv ._git .git
-
       # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
       # PRs get squashed and get a proper commit message during merge.
       - name: Gitlint check
@@ -92,7 +91,7 @@ jobs:
       matrix:
         python-version: ["3.10"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.1.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
@@ -152,3 +151,18 @@ jobs:
       - name: Gitlint check
         run: gitlint --debug
         if: ${{ github.event_name	!= 'pull_request' }}
+
+  check:  # This job does nothing and is only used for the branch protection
+    if: always()  # Ref: https://github.com/marketplace/actions/alls-green#why
+
+    needs:
+      - checks
+      - windows-checks
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

@@ -44,7 +44,6 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -58,7 +57,7 @@ setup(
         "Topic :: Software Development :: Testing",
         "License :: OSI Approved :: MIT License",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=[
         "Click>=8",
         "arrow>=1",
@@ -66,9 +65,9 @@ setup(
     ],
     extras_require={
         "trusted-deps": [
-            "Click==8.0.3",
-            "arrow==1.2.1",
-            'sh==1.14.2 ; sys_platform != "win32"',
+            "Click==8.1.3",
+            "arrow==1.2.3",
+            'sh==1.14.3 ; sys_platform != "win32"',
         ],
     },
     keywords="gitlint git lint",
@@ -87,15 +86,6 @@ setup(
         ],
     },
 )
-
-# Print a red deprecation warning for python < 3.6 users
-if sys.version_info[:2] < (3, 6):
-    msg = (
-        "\033[31mDEPRECATION: You're using a python version that has reached end-of-life. "
-        + "Gitlint does not support Python < 3.6"
-        + "Please upgrade your Python to 3.6 or above.\033[0m"
-    )
-    print(msg)
 
 # Print a warning message for Windows users
 PLATFORM_IS_WINDOWS = "windows" in platform.system().lower()

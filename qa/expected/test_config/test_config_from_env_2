@@ -20,6 +20,7 @@ ignore-revert-commits: True
 ignore-stdin: False
 staged: True
 fail-without-commits: False
+regex-style-search: False
 verbosity: 0
 debug: True
 target: {target}
@@ -61,7 +62,7 @@ target: {target}
   B8: body-match-regex
      regex=None
   M1: author-valid-email
-     regex=[^@ ]+@[^@ ]+\.[^@ ]+
+     regex=^[^@ ]+@[^@ ]+\.[^@ ]+
 
 DEBUG: gitlint.cli Fetching additional meta-data from staged commit
 DEBUG: gitlint.cli Using --msg-filename.
