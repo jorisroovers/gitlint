@@ -298,6 +298,11 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.output, "")
 
             expected_kwargs = self.get_system_info_dict()
+            changed_files_stats = (
+                f"  {os.path.join('commit-1', 'file-1')}: 1 additions, 5 deletions\n"
+                f"  {os.path.join('commit-1', 'file-2')}: 8 additions, 9 deletions"
+            )
+            expected_kwargs.update({"changed_files_stats": changed_files_stats})
             expected_logs = self.get_expected("cli/test_cli/test_lint_staged_stdin_2", expected_kwargs)
             self.assert_logged(expected_logs)
 
@@ -458,6 +463,25 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 6)
 
             expected_kwargs = self.get_system_info_dict()
+            changed_files_stats1 = (
+                f"  {os.path.join('commit-1', 'file-1')}: 5 additions, 8 deletions\n"
+                f"  {os.path.join('commit-1', 'file-2')}: 2 additions, 9 deletions"
+            )
+            changed_files_stats2 = (
+                f"  {os.path.join('commit-2', 'file-1')}: 5 additions, 8 deletions\n"
+                f"  {os.path.join('commit-2', 'file-2')}: 7 additions, 9 deletions"
+            )
+            changed_files_stats3 = (
+                f"  {os.path.join('commit-3', 'file-1')}: 1 additions, 4 deletions\n"
+                f"  {os.path.join('commit-3', 'file-2')}: 3 additions, 4 deletions"
+            )
+            expected_kwargs.update(
+                {
+                    "changed_files_stats1": changed_files_stats1,
+                    "changed_files_stats2": changed_files_stats2,
+                    "changed_files_stats3": changed_files_stats3,
+                }
+            )
             expected_kwargs.update({"config_path": config_path})
             expected_logs = self.get_expected("cli/test_cli/test_debug_1", expected_kwargs)
             self.assert_logged(expected_logs)
@@ -548,7 +572,7 @@ class CLITests(BaseTestCase):
         # Non existing file
         config_path = self.get_sample_path("föo")
         result = self.cli.invoke(cli.cli, ["--config", config_path])
-        expected_string = f"Error: Invalid value for '-C' / '--config': File '{config_path}' does not exist."
+        expected_string = f"Error: Invalid value for '-C' / '--config': File {config_path!r} does not exist."
         self.assertEqual(result.output.split("\n")[3], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
@@ -569,7 +593,7 @@ class CLITests(BaseTestCase):
         # Non existing file
         config_path = self.get_sample_path("föo")
         result = self.cli.invoke(cli.cli, env={"GITLINT_CONFIG": config_path})
-        expected_string = f"Error: Invalid value for '-C' / '--config': File '{config_path}' does not exist."
+        expected_string = f"Error: Invalid value for '-C' / '--config': File {config_path!r} does not exist."
         self.assertEqual(result.output.split("\n")[3], expected_string)
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
 
@@ -602,7 +626,7 @@ class CLITests(BaseTestCase):
         target_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
         result = self.cli.invoke(cli.cli, ["--target", target_path])
         self.assertEqual(result.exit_code, self.USAGE_ERROR_CODE)
-        expected_msg = f"Error: Invalid value for '--target': Directory '{target_path}' is a file."
+        expected_msg = f"Error: Invalid value for '--target': Directory {target_path!r} is a file."
         self.assertEqual(result.output.split("\n")[3], expected_msg)
 
     @patch("gitlint.config.LintConfigGenerator.generate_config")

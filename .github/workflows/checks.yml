@@ -126,7 +126,7 @@ jobs:
 
       - name: Tests (test_cli.py only - continue-on-error:true)
         run: tools\windows\run_tests.bat "gitlint-core\gitlint\tests\cli\test_cli.py"
-        continue-on-error: true # Known to fail at this point
+        continue-on-error: false # Known to fail at this point
 
       - name: Tests (all - continue-on-error:true)
         run: tools\windows\run_tests.bat
