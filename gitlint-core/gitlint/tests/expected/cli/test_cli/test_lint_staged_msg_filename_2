@@ -87,7 +87,6 @@ Parents: []
 Branches: ['my-branch']
 Changed Files: ['commit-1/file-1', 'commit-1/file-2']
 Changed Files Stats:
-  commit-1/file-1: 3 additions, 4 deletions
-  commit-1/file-2: 4 additions, 7 deletions
+{changed_files_stats}
 -----------------------
 DEBUG: gitlint.cli Exit Code = 2
