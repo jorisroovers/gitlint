@@ -333,6 +333,11 @@ class CLITests(BaseTestCase):
                 self.assertEqual(result.output, "")
 
                 expected_kwargs = self.get_system_info_dict()
+                changed_files_stats = (
+                    f"  {os.path.join('commit-1', 'file-1')}: 3 additions, 4 deletions\n"
+                    f"  {os.path.join('commit-1', 'file-2')}: 4 additions, 7 deletions"
+                )
+                expected_kwargs.update({"changed_files_stats": changed_files_stats})
                 expected_logs = self.get_expected("cli/test_cli/test_lint_staged_msg_filename_2", expected_kwargs)
                 self.assert_logged(expected_logs)
 

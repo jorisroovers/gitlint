@@ -207,7 +207,8 @@ class CLIHookTests(BaseTestCase):
         error_msg = b"fatal: not a git repository (or any of the parent directories): .git"
         sh.git.side_effect = ErrorReturnCode("full command", b"stdout", error_msg)
         result = self.cli.invoke(cli.cli, ["run-hook"])
-        expected = self.get_expected("cli/test_cli_hooks/test_run_hook_negative_1", {"git_repo": os.getcwd()})
+        expected_kwargs = {"git_repo": os.path.realpath(os.getcwd())}
+        expected = self.get_expected("cli/test_cli_hooks/test_run_hook_negative_1", expected_kwargs)
         self.assertEqual(result.output, expected)
         self.assertEqual(result.exit_code, self.GIT_CONTEXT_ERROR_CODE)
 
