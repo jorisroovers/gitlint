@@ -1,6 +1,7 @@
 #!/bin/sh -x
 
 brew install asdf
+brew install hatch
 source "$(brew --prefix asdf)/libexec/asdf.sh"
 
 # Install latest python
