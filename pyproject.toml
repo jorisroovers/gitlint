@@ -54,20 +54,55 @@ path = "gitlint-core/gitlint/__init__.py"
 # Environments ########################################################################################
 [tool.hatch.envs.default]
 skip-install = true
+dependencies = [
+    "gitlint-core[trusted-deps] @ {root:uri}/gitlint-core",
+]
 
+[tool.hatch.envs.test]
+skip-install = true
+dependencies = [
+    "gitlint-core[trusted-deps] @ {root:uri}/gitlint-core",
+    "black==22.10.0",
+    "coverage==6.4.4",
+    "python-coveralls==2.9.3",
+    "radon==5.1.0",
+    "pytest==7.2.0",
+    "pylint==2.15.3",
+    "pdbr==0.7.5; sys_platform != \"win32\""
+]
 
-[tool.hatch.envs.default.scripts]
+[tool.hatch.envs.test.scripts]
 unit-tests = "pytest gitlint-core {args}"
-integration-tests = "pytest qa {args}"
+u = "unit-tests"
 format = "black --check --diff ."
+lint = "pylint gitlint-core/gitlint qa"
+
 all = [
     "unit-tests",
-    "integration-tests",
     "format",
 ]
 # gitlint = "gitlint" # Circular expansion detected for field `tool.hatch.envs.default.scripts`: gitlint -> gitlint
 
-# skip-install = true
+[tool.hatch.envs.qa]
+skip-install = true
+dependencies = [
+    "sh==1.14.3",
+    "pytest==7.2.0",
+    "arrow==1.2.3",
+]
+[tool.hatch.envs.qa.scripts]
+integration-tests = "pytest qa {args}"
+i = "integration-tests"
+
+
+[tool.hatch.envs.docs]
+skip-install = true
+dependencies = [
+    "mkdocs==1.4.2"
+]
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --clean --strict"
+serve = "mkdocs serve"
 
 [tool.black]
 target_version = ['py36', 'py37', 'py38','py39','py310']

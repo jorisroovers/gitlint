@@ -28,27 +28,53 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Hatch
-        run: |
-          python -m pip install --upgrade hatch
-
-      - name: Install requirements
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r test-requirements.txt
-
-      - name: Run tests using Hatch
-        run: |
-          hatch run all
+        run: python -m pip install --upgrade hatch
 
       - name: Unit Tests
-        run: ./run_tests.sh
+        run: hatch run test:unit-tests
+
+      - name: Code formatting (black)
+        run: hatch run test:format
+      
+      - name: Code linting (pylint)
+        run: hatch run test:lint
+      
+      - name: Docs build (mkdocs)
+        run: hatch run docs:build
+
+      - name: Integration tests
+        run: |
+          hatch run qa:pip install ./gitlint-core[trusted-deps]
+          hatch run qa:integration-tests
+        continue-on-error: true
+
+      - name: gitlint --version
+        run: hatch run gitlint --version
+
+      - name: Hatch run gitlint
+        run: hatch run gitlint --debug
+        continue-on-error: true
 
       # Coveralls integration doesn't properly work at this point, also see below
       # - name: Coveralls
       #   env:
       #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       #   run: coveralls
+
+      # Patch the commit-msg hook to make it work in GH CI
+      # Specifically, within the commit-msg hook, wrap the invocation of gitlint with `script`
+
+      - name: Patch commit-msg hook
+        run: |
+          # Escape " to \"
+          sed -i -E '/^gitlint/ s/"/\\"/g' gitlint-core/gitlint/files/commit-msg
+          # Replace `gitlint <args>` with `script -e -q -c "gitlint <args>"`
+          sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
+
+      - name: Integration tests (hatch - second time)
+        run: |
+          hatch run qa:integration-tests
+        continue-on-error: true
 
       - name: Integration Tests
         run: ./run_tests.sh -i
@@ -60,14 +86,10 @@ jobs:
           GITLINT_USE_SH_LIB: 1
         run: ./run_tests.sh -i
 
-      - name: Code formatting (black)
-        run: ./run_tests.sh -f
-
-      - name: PyLint
-        run: ./run_tests.sh -l
-
       - name: Build tests
         run: ./run_tests.sh --build
+
+
 
       # Coveralls GH Action currently doesn't support current non-LCOV reporting format
       # For now,  still using Travis for unit test coverage reporting
@@ -109,20 +131,26 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Install Hatch
-        run: |
-          python -m pip install --upgrade hatch
+        run: python -m pip install --upgrade hatch
 
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
-          pip install -r test-requirements.txt
+      - name: Unit Tests
+        run: hatch run test:unit-tests
 
-      - name: Run unit-tests using Hatch
-        run: |
-          hatch run unit-tests
+      - name: Code formatting (black)
+        run: hatch run test:format
+      
+      - name: Code linting (pylint)
+        run: hatch run test:lint
+      
+      - name: Docs build (mkdocs)
+        run: hatch run docs:build
+
+      - name: Hatch run gitlint
+        run: hatch run gitlint --debug
+        continue-on-error: true
 
       - name: gitlint --version
-        run: gitlint --version
+        run: hatch run gitlint --version
 
       - name: Unit Tests
         run: pytest gitlint-core
