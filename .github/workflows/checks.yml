@@ -86,10 +86,8 @@ jobs:
           GITLINT_USE_SH_LIB: 1
         run: ./run_tests.sh -i
 
-      - name: Build tests
-        run: ./run_tests.sh --build
-
-
+      # - name: Build tests
+      #   run: ./run_tests.sh --build
 
       # Coveralls GH Action currently doesn't support current non-LCOV reporting format
       # For now,  still using Travis for unit test coverage reporting
@@ -114,12 +112,6 @@ jobs:
       - uses: actions/checkout@v3.1.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-
-      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
-      # code by temporarily renaming the .git directory.
-      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
-      - name: Temporarily remove git version control from code
-        run: Rename-Item .git ._git
 
       - name: Setup python
         uses: actions/setup-python@v4.3.1
@@ -152,22 +144,9 @@ jobs:
       - name: gitlint --version
         run: hatch run gitlint --version
 
-      - name: Unit Tests
-        run: pytest gitlint-core
-
       - name: Integration tests (continue-on-error:true)
         run: pytest -rw -s qa
         continue-on-error: true # Known to fail at this point
-
-      - name: Code formatting (black)
-        run: black .
-
-      - name: PyLint
-        run: pylint gitlint-core\gitlint qa --rcfile=".pylintrc" -r n
-
-      # Re-add git version control so we can run gitlint on itself.
-      - name: Re-add git version control to code
-        run: Rename-Item ._git .git
 
       # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
       # PRs get squashed and get a proper commit message during merge.
