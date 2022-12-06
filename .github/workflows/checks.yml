@@ -71,23 +71,17 @@ jobs:
           # Replace `gitlint <args>` with `script -e -q -c "gitlint <args>"`
           sed -i -E 's/^gitlint(.*)/script -e -q -c  "\0"/' gitlint-core/gitlint/files/commit-msg
 
-      - name: Integration tests (hatch - second time)
+      - name: Integration tests
         run: |
           hatch run qa:integration-tests
         continue-on-error: true
 
-      - name: Integration Tests
-        run: ./run_tests.sh -i
-
-      # Gitlint no longer uses `sh` by default, but for now we're still supporting the manual enablement of it.
-      # By setting GITLINT_USE_SH_LIB=1, we test whether this still works.
-      - name: Integration Tests (GITLINT_USE_SH_LIB=1)
+      - name: Integration tests (GITLINT_USE_SH_LIB=1)
+        run: |
+          hatch run qa:integration-tests
         env:
           GITLINT_USE_SH_LIB: 1
-        run: ./run_tests.sh -i
-
-      # - name: Build tests
-      #   run: ./run_tests.sh --build
+        continue-on-error: true
 
       # Coveralls GH Action currently doesn't support current non-LCOV reporting format
       # For now,  still using Travis for unit test coverage reporting
@@ -143,10 +137,6 @@ jobs:
 
       - name: gitlint --version
         run: hatch run gitlint --version
-
-      - name: Integration tests (continue-on-error:true)
-        run: pytest -rw -s qa
-        continue-on-error: true # Known to fail at this point
 
       # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
       # PRs get squashed and get a proper commit message during merge.
