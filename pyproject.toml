@@ -6,9 +6,6 @@ build-backend = "hatchling.build"
 name = "gitlint"
 dynamic = ["version"]
 description = "Git commit message linter written in python, checks your commit messages for style."
-
-# While this works, the hatch docs mention 
-# "If this is defined as a file, then it will always be included in source distributions for consistent builds.
 readme = "gitlint-core/package_long_description.md"
 license = "MIT"
 requires-python = ">=3.7"
@@ -38,7 +35,7 @@ classifiers = [
     "Topic :: Software Development :: Testing",
 ]
 dependencies = [
-    "gitlint-core[trusted-deps]==0.19.0dev",
+    "gitlint-core[trusted-deps]==0.19.0dev2",
 ]
 
 [project.urls]
@@ -88,7 +85,6 @@ all = [
 [tool.hatch.envs.qa]
 skip-install = true
 dependencies = [
-    # "gitlint-core[trusted-deps] @ {root:uri}/gitlint-core",
     "sh==1.14.3",
     "pytest==7.2.0",
     "arrow==1.2.3",
@@ -98,10 +94,8 @@ dependencies = [
 # The integration tests can be ran against any gitlint binary, e.g. one installed from pypi (for post-release testing)
 # This is why by default we don't install the local dev version of gitlint in the qa environment
 install-local="pip install ./gitlint-core[trusted-deps]"
-# TODO: install qa dependencies
 integration-tests = "pytest qa {args}"
 i = "integration-tests"
-
 
 [tool.hatch.envs.docs]
 skip-install = true
@@ -113,7 +107,6 @@ build = "mkdocs build --clean --strict"
 serve = "mkdocs serve"
 
 [tool.hatch.build]
-# include = []
 exclude = [
     "*",
 ]

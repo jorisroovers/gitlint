@@ -1,3 +1,5 @@
+Git commit message linter written in python, checks your commit messages for style.
+
 Great for use as a commit-msg git hook or as part of your gating script in a CI pipeline (e.g. jenkins, github actions).
 Many of the gitlint validations are based on [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
 [community](https://addamhardy.com/2013-06-05-good-commit-messages-and-enforcing-them-with-git-hooks)
