@@ -54,11 +54,17 @@ path = "gitlint-core/gitlint/__init__.py"
 # Workaround for editable install:
 # https://github.com/pypa/hatch/pull/589
 [tool.hatch.envs.dev]
+description = """
+Dev environment (running gitlint itself from source)
+"""
 pre-install-commands = [
     "pip install -e ./gitlint-core",
 ]
 
 [tool.hatch.envs.test]
+description = """
+Test environment (unit tests, formatting, lint)
+"""
 skip-install = true
 dependencies = [
     "gitlint-core[trusted-deps] @ {root:uri}/gitlint-core",
@@ -72,18 +78,27 @@ dependencies = [
 ]
 
 [tool.hatch.envs.test.scripts]
-unit-tests = "pytest gitlint-core {args}"
+unit-tests = [
+    "coverage run -m pytest -rw -s {args:gitlint-core}",
+    "coverage report -m"
+]
 u = "unit-tests"
+unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
 format = "black --check --diff ."
 lint = "pylint gitlint-core/gitlint qa"
 
 all = [
     "unit-tests",
     "format",
+    "lint"
 ]
 
 [tool.hatch.envs.qa]
-skip-install = true
+description = """
+Integration test environment.
+Run a set of integration tests against any gitlint binary (not just the one from local source).
+"""
+detached = true
 dependencies = [
     "sh==1.14.3",
     "pytest==7.2.0",
@@ -98,7 +113,10 @@ integration-tests = "pytest qa {args}"
 i = "integration-tests"
 
 [tool.hatch.envs.docs]
-skip-install = true
+description = """
+Documentation environment. Run docs build and serve commands.
+"""
+detached = true
 dependencies = [
     "mkdocs==1.4.2"
 ]

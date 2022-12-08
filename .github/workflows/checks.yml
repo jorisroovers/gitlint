@@ -38,9 +38,6 @@ jobs:
       
       - name: Code linting (pylint)
         run: hatch run test:lint
-      
-      - name: Docs build (mkdocs)
-        run: hatch run docs:build
 
       - name: Integration tests
         run: |
@@ -52,6 +49,20 @@ jobs:
           hatch run qa:integration-tests
         env:
           GITLINT_USE_SH_LIB: 1
+
+      - name: Build test (gitlint)
+        run: |
+          hatch build
+          hatch clean
+
+      - name: Build test (gitlint-core)
+        run: |
+          hatch build
+          hatch clean
+        working-directory: ./gitlint-core
+      
+      - name: Docs build (mkdocs)
+        run: hatch run docs:build
 
       - name: gitlint --version
         run: hatch run dev:gitlint --version
@@ -113,6 +124,17 @@ jobs:
       
       - name: Code linting (pylint)
         run: hatch run test:lint
+
+      - name: Build test (gitlint)
+        run: |
+          hatch build
+          hatch clean
+        
+      - name: Build test (gitlint-core)
+        run: |
+          hatch build
+          hatch clean
+        working-directory: ./gitlint-core
       
       - name: Docs build (mkdocs)
         run: hatch run docs:build
