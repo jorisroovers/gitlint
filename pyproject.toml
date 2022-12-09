@@ -53,7 +53,7 @@ path = "gitlint-core/gitlint/__init__.py"
 # NOTE: By default all environments inherit from the 'default' environment
 
 # Workaround for editable install:
-# https://github.com/pypa/hatch/pull/589
+# https://github.com/pypa/hatch/issues/588
 [tool.hatch.envs.dev]
 description = """
 Dev environment (running gitlint itself from source)
