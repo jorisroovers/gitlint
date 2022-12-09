@@ -42,9 +42,6 @@ jobs:
       #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       #   run: coveralls
 
-      # Patch the commit-msg hook to make it work in GH CI
-      # Specifically, within the commit-msg hook, wrap the invocation of gitlint with `script`
-
       - name: Integration Tests
         run: ./run_tests.sh -i
 
