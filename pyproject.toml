@@ -6,7 +6,8 @@ build-backend = "hatchling.build"
 name = "gitlint"
 dynamic = ["version"]
 description = "Git commit message linter written in python, checks your commit messages for style."
-readme = "gitlint-core/package_long_description.md"
+readme = "README.md"
+
 license = "MIT"
 requires-python = ">=3.7"
 authors = [
@@ -35,7 +36,7 @@ classifiers = [
     "Topic :: Software Development :: Testing",
 ]
 dependencies = [
-    "gitlint-core[trusted-deps]==0.19.0dev2",
+    "gitlint-core[trusted-deps]==0.19.0dev3",
 ]
 
 [project.urls]
