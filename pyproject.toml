@@ -28,10 +28,10 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Quality Assurance",
     "Topic :: Software Development :: Testing",
 ]
@@ -48,10 +48,15 @@ Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
 [tool.hatch.version]
 path = "gitlint-core/gitlint/__init__.py"
 
+[tool.hatch.build]
+exclude = [
+    "*",
+]
 
-# Environments ########################################################################################
+# Environments #########################################################################################################
 # NOTE: By default all environments inherit from the 'default' environment
 
+# DEV
 # Workaround for editable install:
 # https://github.com/pypa/hatch/issues/588
 [tool.hatch.envs.dev]
@@ -62,6 +67,7 @@ pre-install-commands = [
     "pip install -e ./gitlint-core",
 ]
 
+# TEST
 [tool.hatch.envs.test]
 description = """
 Test environment (unit tests, formatting, lint)
@@ -94,6 +100,7 @@ all = [
     "lint"
 ]
 
+# QA
 [tool.hatch.envs.qa]
 description = """
 Integration test environment.
@@ -109,10 +116,13 @@ dependencies = [
 [tool.hatch.envs.qa.scripts]
 # The integration tests can be ran against any gitlint binary, e.g. one installed from pypi (for post-release testing)
 # This is why by default we don't install the local dev version of gitlint in the qa environment
+# To run integration tests against the dev version of gitlint, use install-local first
 install-local="pip install ./gitlint-core[trusted-deps]"
 integration-tests = "pytest qa {args}"
 i = "integration-tests"
 
+
+# DOCS
 [tool.hatch.envs.docs]
 description = """
 Documentation environment. Run docs build and serve commands.
@@ -125,10 +135,7 @@ dependencies = [
 build = "mkdocs build --clean --strict"
 serve = "mkdocs serve"
 
-[tool.hatch.build]
-exclude = [
-    "*",
-]
+# Tool config ##########################################################################################################
 
 [tool.black]
 target_version = ['py36', 'py37', 'py38','py39','py310']
