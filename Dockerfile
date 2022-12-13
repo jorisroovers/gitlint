@@ -1,5 +1,3 @@
-# User-facing Dockerfile. For development, see Dockerfile.dev and ./run_tests.sh -h
-
 # To lint your current working directory:
 # docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint
 
