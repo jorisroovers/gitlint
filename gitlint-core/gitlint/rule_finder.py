@@ -67,11 +67,7 @@ def find_rule_classes(extra_path):
                 for _, clazz in inspect.getmembers(sys.modules[module])
                 if inspect.isclass(clazz)  # check isclass to ensure clazz.__module__ exists
                 and clazz.__module__ == module  # ignore imported classes
-                and (
-                    issubclass(clazz, rules.LineRule)
-                    or issubclass(clazz, rules.CommitRule)
-                    or issubclass(clazz, rules.ConfigurationRule)
-                )
+                and (issubclass(clazz, (rules.LineRule, rules.CommitRule, rules.ConfigurationRule)))
             ]
         )
 
@@ -97,11 +93,7 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):  # pylint: disable
     """
 
     # Rules must extend from LineRule, CommitRule or ConfigurationRule
-    if not (
-        issubclass(clazz, rules.LineRule)
-        or issubclass(clazz, rules.CommitRule)
-        or issubclass(clazz, rules.ConfigurationRule)
-    ):
+    if not issubclass(clazz, (rules.LineRule, rules.CommitRule, rules.ConfigurationRule)):
         msg = (
             f"{rule_type} rule class '{clazz.__name__}' "
             f"must extend from {rules.CommitRule.__module__}.{rules.LineRule.__name__}, "
@@ -142,7 +134,7 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):  # pylint: disable
 
     # Line/Commit rules must have a `validate` method
     # We use isroutine() as it's both python 2 and 3 compatible. Details: http://stackoverflow.com/a/17019998/381010
-    if issubclass(clazz, rules.LineRule) or issubclass(clazz, rules.CommitRule):
+    if issubclass(clazz, (rules.LineRule, rules.CommitRule)):
         if not hasattr(clazz, "validate") or not inspect.isroutine(clazz.validate):
             raise rules.UserRuleError(f"{rule_type} rule class '{clazz.__name__}' must have a 'validate' method")
     # Configuration rules must have an `apply` method
