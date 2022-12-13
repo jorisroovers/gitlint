@@ -14,7 +14,7 @@ import arrow
 
 
 from qa.shell import git, gitlint, RunningCommand
-from qa.utils import DEFAULT_ENCODING
+from qa.utils import DEFAULT_ENCODING, PLATFORM_IS_WINDOWS
 
 
 class BaseTestCase(TestCase):
@@ -40,7 +40,8 @@ class BaseTestCase(TestCase):
         for tmpfile in self.tmpfiles:
             os.remove(tmpfile)
         for repo in self.tmp_git_repos:
-            shutil.rmtree(repo)
+            # On windows we need to ignore errors because git might still be holding on to some files
+            shutil.rmtree(repo, ignore_errors=PLATFORM_IS_WINDOWS)
 
     def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
