@@ -9,6 +9,7 @@ import tempfile
 import unittest
 
 from unittest.mock import patch
+from pathlib import Path
 
 from gitlint.config import LintConfig
 from gitlint.deprecation import Deprecation, LOG as DEPRECATION_LOG
@@ -95,9 +96,7 @@ class BaseTestCase(unittest.TestCase):
     def get_sample(filename=""):
         """Read and return the contents of a file in gitlint/tests/samples"""
         sample_path = BaseTestCase.get_sample_path(filename)
-        with open(sample_path, encoding=DEFAULT_ENCODING) as content:
-            sample = content.read()
-        return sample
+        return Path(sample_path).read_text(encoding=DEFAULT_ENCODING)
 
     @staticmethod
     def patch_input(side_effect):
@@ -111,8 +110,7 @@ class BaseTestCase(unittest.TestCase):
         """Utility method to read an expected file from gitlint/tests/expected and return it as a string.
         Optionally replace template variables specified by variable_dict."""
         expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)
-        with open(expected_path, encoding=DEFAULT_ENCODING) as content:
-            expected = content.read()
+        expected = Path(expected_path).read_text(encoding=DEFAULT_ENCODING)
 
         if variable_dict:
             expected = expected.format(**variable_dict)
