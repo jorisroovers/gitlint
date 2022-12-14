@@ -1,3 +1,142 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gitlint"
+dynamic = ["version"]
+description = "Git commit message linter written in python, checks your commit messages for style."
+readme = "README.md"
+
+license = "MIT"
+requires-python = ">=3.7"
+authors = [
+    { name = "Joris Roovers" },
+]
+keywords = [
+    "git",
+    "gitlint",
+    "lint",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = [
+    "gitlint-core[trusted-deps]==0.19.0dev3",
+]
+
+[project.urls]
+Homepage = "https://jorisroovers.github.io/gitlint"
+Documentation = "https://jorisroovers.github.io/gitlint"
+Source = "https://github.com/jorisroovers/gitlint"
+Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "gitlint-core/gitlint/__init__.py"
+
+[tool.hatch.build]
+exclude = [
+    "*",
+]
+
+# Environments #########################################################################################################
+# NOTE: By default all environments inherit from the 'default' environment
+
+# DEV
+# Workaround for editable install:
+# https://github.com/pypa/hatch/issues/588
+[tool.hatch.envs.dev]
+description = """
+Dev environment (running gitlint itself from source)
+"""
+pre-install-commands = [
+    "pip install -e ./gitlint-core",
+]
+
+# TEST
+[tool.hatch.envs.test]
+description = """
+Test environment (unit tests, formatting, lint)
+"""
+skip-install = true
+dependencies = [
+    "gitlint-core[trusted-deps] @ {root:uri}/gitlint-core",
+    "black==22.10.0",
+    "coverage==6.4.4",
+    "python-coveralls==2.9.3",
+    "radon==5.1.0",
+    "pytest==7.2.0",
+    "pylint==2.15.3",
+    "pdbr==0.7.5; sys_platform != \"win32\""
+]
+
+[tool.hatch.envs.test.scripts]
+unit-tests = [
+    "coverage run -m pytest -rw -s {args:gitlint-core}",
+    "coverage report -m"
+]
+u = "unit-tests"
+unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
+format = "black --check --diff ."
+lint = "pylint gitlint-core/gitlint qa"
+
+all = [
+    "unit-tests",
+    "format",
+    "lint"
+]
+
+# QA
+[tool.hatch.envs.qa]
+description = """
+Integration test environment.
+Run a set of integration tests against any gitlint binary (not just the one from local source).
+"""
+detached = true
+dependencies = [
+    "sh==1.14.3",
+    "pytest==7.2.0",
+    "arrow==1.2.3",
+]
+
+[tool.hatch.envs.qa.scripts]
+# The integration tests can be ran against any gitlint binary, e.g. one installed from pypi (for post-release testing)
+# This is why by default we don't install the local dev version of gitlint in the qa environment
+# To run integration tests against the dev version of gitlint, use install-local first
+install-local="pip install ./gitlint-core[trusted-deps]"
+integration-tests = "pytest qa {args}"
+i = "integration-tests"
+
+
+# DOCS
+[tool.hatch.envs.docs]
+description = """
+Documentation environment. Run docs build and serve commands.
+"""
+detached = true
+dependencies = [
+    "mkdocs==1.4.2"
+]
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --clean --strict"
+serve = "mkdocs serve"
+
+# Tool config ##########################################################################################################
+
 [tool.black]
 target_version = ['py36', 'py37', 'py38','py39','py310']
 line-length = 120

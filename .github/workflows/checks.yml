@@ -27,14 +27,49 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install requirements
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r test-requirements.txt
+      - name: Install Hatch
+        run: python -m pip install hatch==1.6.3
 
       - name: Unit Tests
-        run: ./run_tests.sh
+        run: hatch run test:unit-tests
+
+      - name: Code formatting (black)
+        run: hatch run test:format
+      
+      - name: Code linting (pylint)
+        run: hatch run test:lint
+
+      - name: Integration tests
+        run: |
+          hatch run qa:install-local
+          hatch run qa:integration-tests
+
+      - name: Integration tests (GITLINT_USE_SH_LIB=1)
+        run: |
+          hatch run qa:integration-tests
+        env:
+          GITLINT_USE_SH_LIB: 1
+
+      - name: Build test (gitlint)
+        run: |
+          hatch build
+          hatch clean
+
+      - name: Build test (gitlint-core)
+        run: |
+          hatch build
+          hatch clean
+        working-directory: ./gitlint-core
+      
+      - name: Docs build (mkdocs)
+        run: hatch run docs:build
+
+      - name: gitlint --version
+        run: hatch run dev:gitlint --version
+
+      - name: Hatch run gitlint
+        run: hatch run dev:gitlint --debug
+        continue-on-error: true
 
       # Coveralls integration doesn't properly work at this point, also see below
       # - name: Coveralls
@@ -42,24 +77,8 @@ jobs:
       #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       #   run: coveralls
 
-      - name: Integration Tests
-        run: ./run_tests.sh -i
-
-      # Gitlint no longer uses `sh` by default, but for now we're still supporting the manual enablement of it.
-      # By setting GITLINT_USE_SH_LIB=1, we test whether this still works.
-      - name: Integration Tests (GITLINT_USE_SH_LIB=1)
-        env:
-          GITLINT_USE_SH_LIB: 1
-        run: ./run_tests.sh -i
-
-      - name: Code formatting (black)
-        run: ./run_tests.sh -f
-
-      - name: PyLint
-        run: ./run_tests.sh -l
-
-      - name: Build tests
-        run: ./run_tests.sh --build
+      # Patch the commit-msg hook to make it work in GH CI
+      # Specifically, within the commit-msg hook, wrap the invocation of gitlint with `script`
 
       # Coveralls GH Action currently doesn't support current non-LCOV reporting format
       # For now,  still using Travis for unit test coverage reporting
@@ -72,7 +91,7 @@ jobs:
       # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
       # PRs get squashed and get a proper commit message during merge.
       - name: Gitlint check
-        run: ./run_tests.sh -g --debug
+        run: hatch run dev:gitlint --debug
         if: ${{ github.event_name	!= 'pull_request' }}
 
   windows-checks:
@@ -85,12 +104,6 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
-      # Because gitlint is a tool that uses git itself under the hood, we remove git tracking from the checked out
-      # code by temporarily renaming the .git directory.
-      # This is to ensure that the tests don't have a dependency on the version control of gitlint itself.
-      - name: Temporarily remove git version control from code
-        run: Rename-Item .git ._git
-
       - name: Setup python
         uses: actions/setup-python@v4.3.1
         with:
@@ -100,35 +113,43 @@ jobs:
         if: matrix.python-version == '3.10'
         run: python -m pip install --upgrade pip
 
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
-          pip install -r test-requirements.txt
-
-      - name: gitlint --version
-        run: gitlint --version
+      - name: Install Hatch
+        run: python -m pip install hatch==1.6.3
 
       - name: Unit Tests
-        run: pytest gitlint-core
-
-      - name: Integration tests (continue-on-error:true)
-        run: pytest -rw -s qa
-        continue-on-error: true # Known to fail at this point
+        run: hatch run test:unit-tests
 
       - name: Code formatting (black)
-        run: black .
+        run: hatch run test:format
+      
+      - name: Code linting (pylint)
+        run: hatch run test:lint
 
-      - name: PyLint
-        run: pylint gitlint-core\gitlint qa --rcfile=".pylintrc" -r n
+      - name: Build test (gitlint)
+        run: |
+          hatch build
+          hatch clean
+        
+      - name: Build test (gitlint-core)
+        run: |
+          hatch build
+          hatch clean
+        working-directory: ./gitlint-core
+      
+      - name: Docs build (mkdocs)
+        run: hatch run docs:build
 
-      # Re-add git version control so we can run gitlint on itself.
-      - name: Re-add git version control to code
-        run: Rename-Item ._git .git
+      - name: Hatch run gitlint
+        run: hatch run gitlint --debug
+        continue-on-error: true
+
+      - name: gitlint --version
+        run: hatch run dev:gitlint --version
 
       # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
       # PRs get squashed and get a proper commit message during merge.
       - name: Gitlint check
-        run: gitlint --debug
+        run: hatch run dev:gitlint --debug
         if: ${{ github.event_name	!= 'pull_request' }}
 
   check:  # This job does nothing and is only used for the branch protection

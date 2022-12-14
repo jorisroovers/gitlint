@@ -1,4 +1,0 @@
-setuptools
-wheel==0.38.4
--e .
--e ./gitlint-core[trusted-deps]

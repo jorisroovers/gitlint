@@ -36,18 +36,17 @@ in mind before you spend the effort. Thanks!
     or months before merged code actually gets released - we know that can be frustrating but please understand it's
     a well-considered trade-off based on available time.
 
-## Local setup
+## Environment setup
+### Local setup
 
-To install gitlint for local development:
+Gitlint uses [hatch](https://hatch.pypa.io/latest/) for project management.
+You do not need to setup a `virtualenv`, hatch will take care of that for you.
 
 ```sh
-python -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
-python setup.py develop
+pip install hatch
 ```
 
-## Github Devcontainer
+### Github Devcontainer
 
 We provide a devcontainer on github to make it easier to get started with gitlint development using VSCode.
 
@@ -58,12 +57,6 @@ To start one, click the plus button under the *Code* dropdown on
 
 ![Gitlint Dev Container Instructions](images/dev-container.png)
 
-
-After setup has finished, you should be able to just activate the virtualenv in the home dir and run the tests:
-```sh
-. ~/.venv/bin/activate
-./run_tests.sh
-```
 
 By default we have python 3.11 installed in the dev container, but you can also use [asdf](https://asdf-vm.com/)
 (preinstalled) to install additional python versions:
@@ -83,18 +76,26 @@ asdf list python
 
 ## Running tests
 ```sh
-./run_tests.sh                       # run unit tests and print test coverage
-./run_tests.sh gitlint-core/gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
-pytest -k test_body_missing          # Alternative way to run a specific test by invoking pytest directly with a keyword expression
-./run_tests.sh --no-coverage         # run unit tests without test coverage
-./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
-./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
-./run_tests.sh --build               # Run build tests (=build python package)
-./run_tests.sh --format              # format checks (black)
-./run_tests.sh --stats               # print some code stats
-./run_tests.sh --git                 # inception: run gitlint against itself
-./run_tests.sh --lint                # run pylint checks
-./run_tests.sh --all                 # Run unit, integration, format and gitlint checks
+# Gitlint
+hatch run dev:gitlint            # run the local source copy of gitlint
+hatch run dev:gitlint --version  # This is just the gitlint binary, any flag will work
+hatch run dev:gitlint --debug       
+
+# Unit tests
+hatch run test:unit-tests        # run unit tests
+hatch run test:unit-tests gitlint-core/gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+hatch run test:unit-tests -k test_body_missing_merge_commit # Run a specific tests using a pytest keyword expression
+hatch run test:unit-tests-no-cov # run unit tests without test coverage
+
+# Integration tests
+hatch run qa:install-local       # One-time install: install the local gitlint source copy for integration testing
+hatch run qa:integration-tests   # Run integration tests
+
+# Formatting check
+hatch run test:format            # Run formatting checks
+
+#  Linting (pylint)
+hatch run test:lint              # Run pylint
 ```
 ## Formatting
 
@@ -102,8 +103,8 @@ We use [black](https://black.readthedocs.io/en/stable/) for code formatting.
 To use it, just run black against the code you modified:
 
 ```sh
-black . # format all python code
-black gitlint-core/gitlint/lint.py # format a specific file
+hatch run test:black .                            # format all python code
+hatch run test:black gitlint-core/gitlint/lint.py # format a specific file
 ```
 
 ## Documentation
@@ -111,8 +112,7 @@ We use [mkdocs](https://www.mkdocs.org/) for generating our documentation from m
 
 To use it:
 ```sh
-pip install -r doc-requirements.txt # install doc requirements
-mkdocs serve
+hatch run docs:serve
 ```
 
 Then access the documentation website on [http://localhost:8000]().
@@ -133,16 +133,17 @@ to split gitlint in 2 packages.
 
 ![Gitlint package structure](images/gitlint-packages.png)
 
-### Packaging description
-
-To see the package description in HTML format
+To build the packages locally:
 ```sh
-pip install docutils
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-python setup.py --long-description | rst2html.py > output.html
-```
+# gitlint
+hatch build
+hatch clean # cleanup
 
+# gitlint-core
+cd gitlint-core
+hatch build
+hatch clean # cleanup
+```
 
 ## Tools
 We keep a small set of scripts in the `tools/` directory:
