@@ -120,7 +120,7 @@
                 <h1 id="introduction">Introduction</h1>
 <p>Gitlint is a git commit message linter written in python: it checks your commit messages for style.</p>
 <p>Great for use as a <a href="#using-gitlint-as-a-commit-msg-hook">commit-msg git hook</a> or as part of your gating script in a
-<a href=".#using-gitlint-in-a-ci-environment">CI pipeline (e.g. Jenkins)</a>.</p>
+<a href="./#using-gitlint-in-a-ci-environment">CI pipeline (e.g. Jenkins)</a>.</p>
 <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
 
 <div class="admonition note">
@@ -132,7 +132,7 @@ have a look at <a href="https://github.com/m1foley/fit-commit">fit-commit</a> (R
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p><strong>Gitlint no longer supports Python 2.7 and Python 3.5 as they <a href="https://endoflife.date/python">have reached End-Of-Life</a>. The last gitlint version to support Python 2.7 and Python 3.5 is <code>0.14.0</code> (released on October 24th, 2020).</strong></p>
+<p><strong>Gitlint requires Python 3.7 (or above). For Python 2.7 and Python 3.5 use <code>gitlint==0.14.0</code> (released 2020-10-24), for Python 3.6 <code>gitlint==0.18.0</code> (released 2022-11-16).</strong></p>
 </div>
 <h2 id="features">Features</h2>
 <ul>
@@ -197,7 +197,7 @@ gitlint install-hook
 </code></pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The returned exit code equals the number of errors found. <a href=".#exit-codes">Some exit codes are special</a>.</p>
+<p>The returned exit code equals the number of errors found. <a href="./#exit-codes">Some exit codes are special</a>.</p>
 </div>
 <h3 id="shell-completion">Shell completion</h3>
 <pre><code class="language-sh"># Bash: add to ~/.bashrc
@@ -603,6 +603,6 @@ to 252.</p>
 </html>
 
 <!--
-MkDocs version : 1.4.1
-Build Date UTC : 2022-11-16 11:26:27.066363+00:00
+MkDocs version : 1.4.2
+Build Date UTC : 2022-12-14 12:10:51.872638+00:00
 -->

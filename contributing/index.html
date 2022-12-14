@@ -66,9 +66,7 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#local-setup">Local setup</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#github-devcontainer">Github Devcontainer</a>
+    <li class="toctree-l2"><a class="reference internal" href="#environment-setup">Environment setup</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#running-tests">Running tests</a>
     </li>
@@ -146,23 +144,18 @@ of overhead of doing a release isn't huge, it's also not zero. In practice this 
 or months before merged code actually gets released - we know that can be frustrating but please understand it's
 a well-considered trade-off based on available time.</p>
 </div>
-<h2 id="local-setup">Local setup</h2>
-<p>To install gitlint for local development:</p>
-<pre><code class="language-sh">python -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt -r test-requirements.txt -r doc-requirements.txt
-python setup.py develop
+<h2 id="environment-setup">Environment setup</h2>
+<h3 id="local-setup">Local setup</h3>
+<p>Gitlint uses <a href="https://hatch.pypa.io/latest/">hatch</a> for project management.
+You do not need to setup a <code>virtualenv</code>, hatch will take care of that for you.</p>
+<pre><code class="language-sh">pip install hatch
 </code></pre>
-<h2 id="github-devcontainer">Github Devcontainer</h2>
+<h3 id="github-devcontainer">Github Devcontainer</h3>
 <p>We provide a devcontainer on github to make it easier to get started with gitlint development using VSCode.</p>
 <p>To start one, click the plus button under the <em>Code</em> dropdown on
 <a href="https://github.com/jorisroovers/gitlint">the gitlint repo on github</a>. </p>
 <p><strong>It can take ~15min for all post installation steps to finish.</strong></p>
 <p><img alt="Gitlint Dev Container Instructions" src="../images/dev-container.png" /></p>
-<p>After setup has finished, you should be able to just activate the virtualenv in the home dir and run the tests:</p>
-<pre><code class="language-sh">. ~/.venv/bin/activate
-./run_tests.sh
-</code></pre>
 <p>By default we have python 3.11 installed in the dev container, but you can also use <a href="https://asdf-vm.com/">asdf</a>
 (preinstalled) to install additional python versions:</p>
 <pre><code class="language-sh"># Ensure ASDF overrides system python in PATH
@@ -177,30 +170,37 @@ asdf list all python
 asdf list python
 </code></pre>
 <h2 id="running-tests">Running tests</h2>
-<pre><code class="language-sh">./run_tests.sh                       # run unit tests and print test coverage
-./run_tests.sh gitlint-core/gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
-pytest -k test_body_missing          # Alternative way to run a specific test by invoking pytest directly with a keyword expression
-./run_tests.sh --no-coverage         # run unit tests without test coverage
-./run_tests.sh --collect-only --no-coverage  # Only collect, don't run unit tests
-./run_tests.sh --integration         # Run integration tests (requires that you have gitlint installed)
-./run_tests.sh --build               # Run build tests (=build python package)
-./run_tests.sh --format              # format checks (black)
-./run_tests.sh --stats               # print some code stats
-./run_tests.sh --git                 # inception: run gitlint against itself
-./run_tests.sh --lint                # run pylint checks
-./run_tests.sh --all                 # Run unit, integration, format and gitlint checks
+<pre><code class="language-sh"># Gitlint
+hatch run dev:gitlint            # run the local source copy of gitlint
+hatch run dev:gitlint --version  # This is just the gitlint binary, any flag will work
+hatch run dev:gitlint --debug       
+
+# Unit tests
+hatch run test:unit-tests        # run unit tests
+hatch run test:unit-tests gitlint-core/gitlint/tests/rules/test_body_rules.py::BodyRuleTests::test_body_missing # run a single test
+hatch run test:unit-tests -k test_body_missing_merge_commit # Run a specific tests using a pytest keyword expression
+hatch run test:unit-tests-no-cov # run unit tests without test coverage
+
+# Integration tests
+hatch run qa:install-local       # One-time install: install the local gitlint source copy for integration testing
+hatch run qa:integration-tests   # Run integration tests
+
+# Formatting check
+hatch run test:format            # Run formatting checks
+
+#  Linting (pylint)
+hatch run test:lint              # Run pylint
 </code></pre>
 <h2 id="formatting">Formatting</h2>
 <p>We use <a href="https://black.readthedocs.io/en/stable/">black</a> for code formatting.
 To use it, just run black against the code you modified:</p>
-<pre><code class="language-sh">black . # format all python code
-black gitlint-core/gitlint/lint.py # format a specific file
+<pre><code class="language-sh">hatch run test:black .                            # format all python code
+hatch run test:black gitlint-core/gitlint/lint.py # format a specific file
 </code></pre>
 <h2 id="documentation">Documentation</h2>
 <p>We use <a href="https://www.mkdocs.org/">mkdocs</a> for generating our documentation from markdown.</p>
 <p>To use it:</p>
-<pre><code class="language-sh">pip install -r doc-requirements.txt # install doc requirements
-mkdocs serve
+<pre><code class="language-sh">hatch run docs:serve
 </code></pre>
 <p>Then access the documentation website on <a href="">http://localhost:8000</a>.</p>
 <h2 id="packaging">Packaging</h2>
@@ -213,12 +213,15 @@ In these cases, users can just install <code>gitlint-core</code> directly (<code
 <p><a href="https://github.com/jorisroovers/gitlint/issues/162">Issue 162</a> has all the background of how we got to the decision
 to split gitlint in 2 packages.</p>
 <p><img alt="Gitlint package structure" src="../images/gitlint-packages.png" /></p>
-<h3 id="packaging-description">Packaging description</h3>
-<p>To see the package description in HTML format</p>
-<pre><code class="language-sh">pip install docutils
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-python setup.py --long-description | rst2html.py &gt; output.html
+<p>To build the packages locally:</p>
+<pre><code class="language-sh"># gitlint
+hatch build
+hatch clean # cleanup
+
+# gitlint-core
+cd gitlint-core
+hatch build
+hatch clean # cleanup
 </code></pre>
 <h2 id="tools">Tools</h2>
 <p>We keep a small set of scripts in the <code>tools/</code> directory:</p>
