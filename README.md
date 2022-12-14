@@ -1,10 +1,23 @@
-# gitlint-core
+# gitlint: [jorisroovers.github.io/gitlint](http://jorisroovers.github.io/gitlint/) #
 
-Gitlint consists of 2 python packages: [gitlint](https://pypi.org/project/gitlint/)
-and [gitlint-core](https://pypi.org/project/gitlint-core/).
+[![Tests](https://github.com/jorisroovers/gitlint/workflows/Tests%20and%20Checks/badge.svg)](https://github.com/jorisroovers/gitlint/actions?query=workflow%3A%22Tests+and+Checks%22)
+[![PyPi Package](https://img.shields.io/pypi/v/gitlint.png)](https://pypi.python.org/pypi/gitlint)
+![Supported Python Versions](https://img.shields.io/pypi/pyversions/gitlint.svg)
 
-The `gitlint` package is just a wrapper package around `gitlint-core[trusted-deps]` which strictly pins gitlint
-dependencies to known working versions.
+Git commit message linter written in python (for Linux and Mac, experimental on Windows), checks your commit messages for style.
 
-There are scenarios where users (or OS package managers) may want looser dependency requirements.
-In these cases, users can just install `gitlint-core` directly (`pip install gitlint-core`).
+**See [jorisroovers.github.io/gitlint](http://jorisroovers.github.io/gitlint/) for full documentation.**
+
+<a href="http://jorisroovers.github.io/gitlint/" target="_blank">
+<img src="docs/images/readme-gitlint.png" />
+</a>
+
+## Contributing ##
+All contributions are welcome and very much appreciated!
+
+**I'm [looking for contributors](https://github.com/jorisroovers/gitlint/issues/134) that are interested in taking a more active co-maintainer role as it's becoming increasingly difficult for me to find time to maintain gitlint. Please leave a comment in [#134](https://github.com/jorisroovers/gitlint/issues/134) if you're interested!**
+
+See [jorisroovers.github.io/gitlint/contributing](http://jorisroovers.github.io/gitlint/contributing) for details on
+how to get started - it's easy!
+
+We maintain a [loose project plan on Github Projects](https://github.com/users/jorisroovers/projects/1/views/1).
