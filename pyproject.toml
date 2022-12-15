@@ -114,6 +114,9 @@ dependencies = [
     "pdbr==0.7.5; sys_platform != \"win32\"",
 ]
 
+[tool.hatch.envs.qa.env-vars]
+GITLINT_QA_USE_SH_LIB = "0"
+
 [tool.hatch.envs.qa.scripts]
 # The integration tests can be ran against any gitlint binary, e.g. one installed from pypi (for post-release testing)
 # This is why by default we don't install the local dev version of gitlint in the qa environment

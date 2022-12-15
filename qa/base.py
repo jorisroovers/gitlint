@@ -182,7 +182,7 @@ class BaseTestCase(TestCase):
         specified by variable_dict."""
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        with open(expected_path, encoding=DEFAULT_ENCODING) as file:
+        with open(expected_path, encoding="UTF-8") as file:
             expected = file.read()
 
             if variable_dict:
