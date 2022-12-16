@@ -4,7 +4,6 @@ import re
 
 from qa.shell import gitlint
 from qa.base import BaseTestCase
-from qa.utils import DEFAULT_ENCODING
 
 
 class ConfigTests(BaseTestCase):
@@ -128,7 +127,7 @@ class ConfigTests(BaseTestCase):
         # Extract date from actual output to insert it into the expected output
         # We have to do this since there's no way for us to deterministically know that date otherwise
         p = re.compile("Date: (.*)\n", re.UNICODE | re.MULTILINE)
-        result = p.search(output.stdout.decode(DEFAULT_ENCODING))
+        result = p.search(str(output))
         date = result.group(1).strip()
         expected_kwargs.update({"date": date})
 

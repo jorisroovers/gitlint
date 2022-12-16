@@ -45,7 +45,7 @@ class BaseTestCase(TestCase):
 
     def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
-        output = output.stdout  # .decode(DEFAULT_ENCODING)
+        output = output.stdout.decode(DEFAULT_ENCODING)
         output = output.replace("\r", "")
         self.assertMultiLineEqual(output, expected)
 

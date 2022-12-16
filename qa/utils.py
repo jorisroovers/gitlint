@@ -44,20 +44,27 @@ def getpreferredencoding():
     # We fallback to UTF-8
     if PLATFORM_IS_WINDOWS:
         return "ISO-8859-1"
-        default_encoding = "UTF-8"
-        for env_var in ["LC_ALL", "LC_CTYPE", "LANG"]:
-            encoding = os.environ.get(env_var, False)
-            if encoding:
-                # Support dotted (C.UTF-8) and non-dotted (C or UTF-8) charsets:
-                # If encoding contains a dot: split and use second part, otherwise use everything
-                dot_index = encoding.find(".")
-                if dot_index != -1:
-                    default_encoding = encoding[dot_index + 1 :]
-                else:
-                    default_encoding = encoding
-                break
+        # default_encoding = "UTF-8"
+        # for env_var in ["LC_ALL", "LC_CTYPE", "LANG"]:
+        #     encoding = os.environ.get(env_var, False)
+        #     if encoding:
+        #         # Support dotted (C.UTF-8) and non-dotted (C or UTF-8) charsets:
+        #         # If encoding contains a dot: split and use second part, otherwise use everything
+        #         dot_index = encoding.find(".")
+        #         if dot_index != -1:
+        #             default_encoding = encoding[dot_index + 1 :]
+        #         else:
+        #             default_encoding = encoding
+        #         break
 
     return default_encoding
 
 
 DEFAULT_ENCODING = getpreferredencoding()
+
+
+########################################################################################################################
+# FILE_ENCODING
+
+# Encoding for reading/writing files within the tests, this is always UTF-8
+FILE_ENCODING = "UTF-8"
