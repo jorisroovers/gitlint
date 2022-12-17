@@ -94,11 +94,14 @@ else:
         return result
 
     def _exec(*args, **kwargs):
-        popen_kwargs = {"stdout": subprocess.PIPE, "stderr": subprocess.PIPE, "shell": kwargs.get("_tty_out", False)}
-        if "_cwd" in kwargs:
-            popen_kwargs["cwd"] = kwargs["_cwd"]
-        if "_env" in kwargs:
-            popen_kwargs["env"] = kwargs["_env"]
+        popen_kwargs = {
+            "stdout": subprocess.PIPE,
+            "stderr": subprocess.PIPE,
+            "stdin": subprocess.PIPE,
+            "shell": kwargs.get("_tty_out", False),
+            "cwd": kwargs.get("_cwd", None),
+            "env": kwargs.get("_env", None),
+        }
 
         stdin_input = None
         if len(args) > 1 and isinstance(args[1], ShResult):
