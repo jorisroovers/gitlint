@@ -134,7 +134,7 @@ jobs:
       - name: Integration tests
         run: |
           hatch run qa:install-local
-          hatch run qa:integration-tests "not (HookTests or test_lint_staged_stdin or test_stdin_file or test_stdin_pipe_empty)" qa
+          hatch run qa:integration-tests -k "not (HookTests or test_lint_staged_stdin or test_stdin_file or test_stdin_pipe_empty)" qa
 
       - name: Build test (gitlint)
         run: |
