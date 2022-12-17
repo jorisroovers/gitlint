@@ -118,7 +118,7 @@ dependencies = [
 # The integration tests can be ran against any gitlint binary, e.g. one installed from pypi (for post-release testing)
 # This is why by default we don't install the local dev version of gitlint in the qa environment
 # To run integration tests against the dev version of gitlint, use install-local first
-install-local="pip install ./gitlint-core[trusted-deps]"
+install-local="pip install -e ./gitlint-core[trusted-deps]"
 integration-tests = "pytest -rw -s {args:qa}"
 i = "integration-tests"
 

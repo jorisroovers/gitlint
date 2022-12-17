@@ -1,5 +1,5 @@
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
-
+import os
 import re
 
 from qa.shell import gitlint
@@ -68,7 +68,7 @@ class ConfigTests(BaseTestCase):
                 "This line of the body is here because we need it"
             )
             filename = self.create_simple_commit(commit_msg, git_repo=target_repo)
-            config_path = self.get_sample_path("config/gitlintconfig")
+            config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
             output = gitlint("--config", config_path, "--debug", _cwd=target_repo, _tty_in=True, _ok_code=[5])
 
             expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)

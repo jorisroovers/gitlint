@@ -14,7 +14,7 @@ import arrow
 
 
 from qa.shell import git, gitlint, RunningCommand
-from qa.utils import DEFAULT_ENCODING, PLATFORM_IS_WINDOWS
+from qa.utils import DEFAULT_ENCODING, FILE_ENCODING, PLATFORM_IS_WINDOWS
 
 
 class BaseTestCase(TestCase):
@@ -85,13 +85,13 @@ class BaseTestCase(TestCase):
             if isinstance(content, bytes):
                 open_kwargs = {"mode": "wb"}
             else:
-                open_kwargs = {"mode": "w", "encoding": DEFAULT_ENCODING}
+                open_kwargs = {"mode": "w", "encoding": FILE_ENCODING}
 
             with open(full_path, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
                 f.write(content)
         else:
             # pylint: disable=consider-using-with
-            open(full_path, "a", encoding=DEFAULT_ENCODING).close()
+            open(full_path, "a", encoding=FILE_ENCODING).close()
 
         return test_filename
 
@@ -151,7 +151,7 @@ class BaseTestCase(TestCase):
         if isinstance(content, bytes):
             open_kwargs = {"mode": "wb"}
         else:
-            open_kwargs = {"mode": "w", "encoding": DEFAULT_ENCODING}
+            open_kwargs = {"mode": "w", "encoding": FILE_ENCODING}
 
         with open(tmpfile, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
             f.write(content)
