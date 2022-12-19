@@ -1,10 +1,9 @@
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
-
+import os
 import re
 
 from qa.shell import gitlint
 from qa.base import BaseTestCase
-from qa.utils import DEFAULT_ENCODING
 
 
 class ConfigTests(BaseTestCase):
@@ -69,7 +68,7 @@ class ConfigTests(BaseTestCase):
                 "This line of the body is here because we need it"
             )
             filename = self.create_simple_commit(commit_msg, git_repo=target_repo)
-            config_path = self.get_sample_path("config/gitlintconfig")
+            config_path = self.get_sample_path(os.path.join("config", "gitlintconfig"))
             output = gitlint("--config", config_path, "--debug", _cwd=target_repo, _tty_in=True, _ok_code=[5])
 
             expected_kwargs = self.get_debug_vars_last_commit(git_repo=target_repo)
@@ -128,7 +127,7 @@ class ConfigTests(BaseTestCase):
         # Extract date from actual output to insert it into the expected output
         # We have to do this since there's no way for us to deterministically know that date otherwise
         p = re.compile("Date: (.*)\n", re.UNICODE | re.MULTILINE)
-        result = p.search(output.stdout.decode(DEFAULT_ENCODING))
+        result = p.search(str(output))
         date = result.group(1).strip()
         expected_kwargs.update({"date": date})
 

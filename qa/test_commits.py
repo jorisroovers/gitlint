@@ -129,7 +129,7 @@ class CommitsTests(BaseTestCase):
         self.assertEqual(output.exit_code, 254)
 
     def test_lint_staged_stdin(self):
-        """Tests linting a staged commit. Gitint should lint the passed commit message andfetch additional meta-data
+        """Tests linting a staged commit. Gitint should lint the passed commit message and fetch additional meta-data
         from the underlying repository. The easiest way to test this is by inspecting `--debug` output.
         This is the equivalent of doing:
         echo "WIP: Pïpe test." | gitlint --staged --debug

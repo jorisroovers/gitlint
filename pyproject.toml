@@ -108,17 +108,18 @@ Run a set of integration tests against any gitlint binary (not just the one from
 """
 detached = true
 dependencies = [
-    "sh==1.14.3",
     "pytest==7.2.0",
     "arrow==1.2.3",
+    "sh==1.14.3; sys_platform != \"win32\"",
+    "pdbr==0.7.5; sys_platform != \"win32\"",
 ]
 
 [tool.hatch.envs.qa.scripts]
 # The integration tests can be ran against any gitlint binary, e.g. one installed from pypi (for post-release testing)
 # This is why by default we don't install the local dev version of gitlint in the qa environment
 # To run integration tests against the dev version of gitlint, use install-local first
-install-local="pip install ./gitlint-core[trusted-deps]"
-integration-tests = "pytest qa {args}"
+install-local="pip install -e ./gitlint-core[trusted-deps]"
+integration-tests = "pytest -rw -s {args:qa}"
 i = "integration-tests"
 
 

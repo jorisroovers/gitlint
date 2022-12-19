@@ -252,7 +252,7 @@ class IntegrationTests(BaseTestCase):
         binary_filename = self.create_simple_commit("Sïmple commit", file_contents=bytes([0x48, 0x00, 0x49, 0x00]))
         output = gitlint(
             "--debug",
-            _ok_code=1,
+            _ok_code=[1],
             _cwd=self.tmp_git_repo,
         )
 

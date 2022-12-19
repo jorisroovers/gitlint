@@ -14,7 +14,7 @@ import arrow
 
 
 from qa.shell import git, gitlint, RunningCommand
-from qa.utils import DEFAULT_ENCODING
+from qa.utils import DEFAULT_ENCODING, FILE_ENCODING, PLATFORM_IS_WINDOWS
 
 
 class BaseTestCase(TestCase):
@@ -40,7 +40,8 @@ class BaseTestCase(TestCase):
         for tmpfile in self.tmpfiles:
             os.remove(tmpfile)
         for repo in self.tmp_git_repos:
-            shutil.rmtree(repo)
+            # On windows we need to ignore errors because git might still be holding on to some files
+            shutil.rmtree(repo, ignore_errors=PLATFORM_IS_WINDOWS)
 
     def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
         self.assertIsInstance(output, RunningCommand)
@@ -84,13 +85,13 @@ class BaseTestCase(TestCase):
             if isinstance(content, bytes):
                 open_kwargs = {"mode": "wb"}
             else:
-                open_kwargs = {"mode": "w", "encoding": DEFAULT_ENCODING}
+                open_kwargs = {"mode": "w", "encoding": FILE_ENCODING}
 
             with open(full_path, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
                 f.write(content)
         else:
             # pylint: disable=consider-using-with
-            open(full_path, "a", encoding=DEFAULT_ENCODING).close()
+            open(full_path, "a", encoding=FILE_ENCODING).close()
 
         return test_filename
 
@@ -150,7 +151,7 @@ class BaseTestCase(TestCase):
         if isinstance(content, bytes):
             open_kwargs = {"mode": "wb"}
         else:
-            open_kwargs = {"mode": "w", "encoding": DEFAULT_ENCODING}
+            open_kwargs = {"mode": "w", "encoding": FILE_ENCODING}
 
         with open(tmpfile, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
             f.write(content)
@@ -181,7 +182,8 @@ class BaseTestCase(TestCase):
         specified by variable_dict."""
         expected_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "expected")
         expected_path = os.path.join(expected_dir, filename)
-        with open(expected_path, encoding=DEFAULT_ENCODING) as file:
+        #  Expected files are UTF-8 encoded (not dependent on the system's default encoding)
+        with open(expected_path, encoding=FILE_ENCODING) as file:
             expected = file.read()
 
             if variable_dict:
