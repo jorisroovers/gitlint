@@ -52,7 +52,7 @@ jobs:
 
       - name: Integration tests (GITLINT_QA_USE_SH_LIB=0)
         run: |
-          hatch run qa:integration-tests --ignore qa/test_hooks.py qa
+          hatch run qa:integration-tests -k "not(test_commit_hook_continue or test_commit_hook_abort or test_commit_hook_edit)" qa
         env:
           GITLINT_QA_USE_SH_LIB: 0
 
@@ -134,7 +134,7 @@ jobs:
       - name: Integration tests
         run: |
           hatch run qa:install-local
-          hatch run qa:integration-tests -k "not (HookTests or test_lint_staged_stdin or test_stdin_file or test_stdin_pipe_empty)" qa
+          hatch run qa:integration-tests -k "not (test_commit_hook_continue or test_commit_hook_abort or test_commit_hook_edit or test_lint_staged_stdin or test_stdin_file or test_stdin_pipe_empty)" qa
 
       - name: Build test (gitlint)
         run: |
