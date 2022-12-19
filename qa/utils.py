@@ -35,28 +35,8 @@ USE_SH_LIB = use_sh_library()
 
 
 def getpreferredencoding():
-    """Modified version of local.getpreferredencoding() that takes into account LC_ALL, LC_CTYPE, LANG env vars
-    on windows and falls back to UTF-8."""
-    default_encoding = locale.getpreferredencoding() or "UTF-8"
-
-    # On Windows, we mimic git/linux by trying to read the LC_ALL, LC_CTYPE, LANG env vars manually
-    # (on Linux/MacOS the `getpreferredencoding()` call will take care of this).
-    # We fallback to ISO-8859-1
-    if PLATFORM_IS_WINDOWS:
-        default_encoding = "ISO-8859-1"
-        for env_var in ["LC_ALL", "LC_CTYPE", "LANG"]:
-            encoding = os.environ.get(env_var, False)
-            if encoding:
-                # Support dotted (C.UTF-8) and non-dotted (C or UTF-8) charsets:
-                # If encoding contains a dot: split and use second part, otherwise use everything
-                dot_index = encoding.find(".")
-                if dot_index != -1:
-                    default_encoding = encoding[dot_index + 1 :]
-                else:
-                    default_encoding = encoding
-                break
-
-    return default_encoding
+    """Use local.getpreferredencoding() or fallback to UTF-8."""
+    return locale.getpreferredencoding() or "UTF-8"
 
 
 DEFAULT_ENCODING = getpreferredencoding()
