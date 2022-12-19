@@ -102,7 +102,7 @@ else:
             raise CommandNotFound from exc
 
         exit_code = p.returncode
-        stdout = result[0]  # .decode(DEFAULT_ENCODING)
+        stdout = result[0]
         stderr = result[1]  # 'sh' does not decode the stderr bytes to unicode
         full_cmd = "" if args is None else " ".join(args)
 
