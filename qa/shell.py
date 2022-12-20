@@ -1,6 +1,7 @@
 # This code is mostly duplicated from the `gitlint.shell` module. We consciously duplicate this code as to not depend
 # on gitlint internals for our integration testing framework.
 
+import queue
 import subprocess
 from qa.utils import USE_SH_LIB, DEFAULT_ENCODING
 
@@ -83,18 +84,38 @@ else:
             "env": kwargs.get("_env", None),
         }
 
-        stdin_input = None
+        stdin = None
         if len(args) > 1 and isinstance(args[1], ShResult):
-            stdin_input = args[1].stdout
+            stdin = args[1].stdout
             # pop args[1] from the array and use it as stdin
             args = list(args)
             args.pop(1)
-            popen_kwargs["stdin"] = subprocess.PIPE
+        elif kwargs.get("_out", None):
+            popen_kwargs["bufsize"] = 1
+            # stdin, stdout_err = os.pipe()
+            # popen_kwargs["stdout"] = stdout_err
+            # popen_kwargs["stderr"] = stdout_err
+            # popen_kwargs["stdin"] = subprocess.PIPE
 
         try:
             with subprocess.Popen(args, **popen_kwargs) as p:
-                if stdin_input:
-                    result = p.communicate(stdin_input)
+                if kwargs.get("_out", None):
+                    q = queue.Queue()
+                    iofunc = kwargs["_out"]
+                    while True:
+                        if not q.empty():
+                            inputstr = q.get().encode(DEFAULT_ENCODING)
+                            p.stdin.write(inputstr)
+                            p.stdin.flush()
+
+                        else:
+                            line = p.stderr.readline()
+                            if line:
+                                iofunc(line.decode(DEFAULT_ENCODING), q)
+                            else:
+                                break
+                elif stdin:
+                    result = p.communicate(stdin)
                 else:
                     result = p.communicate()
 

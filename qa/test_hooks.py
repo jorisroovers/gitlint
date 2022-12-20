@@ -52,6 +52,7 @@ class HookTests(BaseTestCase):
 
     def _interact(self, line, stdin):
         self.githook_output.append(line)
+        print(line)
         # Answer 'yes' to question to keep violating commit-msg
         if "Your commit message contains violations" in line:
             response = self.responses[self.response_index]
