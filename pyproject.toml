@@ -139,7 +139,7 @@ serve = "mkdocs serve"
 # Tool config ##########################################################################################################
 
 [tool.black]
-target_version = ['py36', 'py37', 'py38','py39','py310']
+target_version = ['py37', 'py38','py39','py310']
 line-length = 120
 # extend-exclude: keep excluding files from .gitignore in addition to the ones specified
 extend-exclude =  "gitlint-core/gitlint/tests/samples/user_rules/import_exception/invalid_python.py"
