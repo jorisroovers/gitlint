@@ -30,18 +30,16 @@ class HookTests(BaseTestCase):
 
         # install git commit-msg hook and assert output
         output_installed = gitlint("install-hook", _cwd=self.tmp_git_repo)
-        expected_installed = (
-            f"Successfully installed gitlint commit-msg hook in {self.tmp_git_repo}/.git/hooks/commit-msg\n"
-        )
+        commit_msg_hook_path = os.path.join(self.tmp_git_repo, ".git", "hooks", "commit-msg")
+        expected_installed = f"Successfully installed gitlint commit-msg hook in {commit_msg_hook_path}\n"
 
         self.assertEqualStdout(output_installed, expected_installed)
 
     def tearDown(self):
         # uninstall git commit-msg hook and assert output
         output_uninstalled = gitlint("uninstall-hook", _cwd=self.tmp_git_repo)
-        expected_uninstalled = (
-            f"Successfully uninstalled gitlint commit-msg hook from {self.tmp_git_repo}/.git/hooks/commit-msg\n"
-        )
+        commit_msg_hook_path = os.path.join(self.tmp_git_repo, ".git", "hooks", "commit-msg")
+        expected_uninstalled = f"Successfully uninstalled gitlint commit-msg hook from {commit_msg_hook_path}\n"
 
         self.assertEqualStdout(output_uninstalled, expected_uninstalled)
         super().tearDown()
@@ -171,10 +169,10 @@ class HookTests(BaseTestCase):
 
         output_installed = gitlint("install-hook", _cwd=worktree_dir)
         expected_hook_path = os.path.join(tmp_git_repo, ".git", "hooks", "commit-msg")
-        expected_msg = f"Successfully installed gitlint commit-msg hook in {expected_hook_path}\r\n"
-        self.assertEqual(output_installed, expected_msg)
+        expected_msg = f"Successfully installed gitlint commit-msg hook in {expected_hook_path}\n"
+        self.assertEqualStdout(output_installed, expected_msg)
 
         output_uninstalled = gitlint("uninstall-hook", _cwd=worktree_dir)
         expected_hook_path = os.path.join(tmp_git_repo, ".git", "hooks", "commit-msg")
-        expected_msg = f"Successfully uninstalled gitlint commit-msg hook from {expected_hook_path}\r\n"
-        self.assertEqual(output_uninstalled, expected_msg)
+        expected_msg = f"Successfully uninstalled gitlint commit-msg hook from {expected_hook_path}\n"
+        self.assertEqualStdout(output_uninstalled, expected_msg)
