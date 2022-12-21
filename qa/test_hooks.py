@@ -55,8 +55,10 @@ class HookTests(BaseTestCase):
         print(line)
         # Answer 'yes' to question to keep violating commit-msg
         if "Your commit message contains violations" in line:
+            print("VIOLATIONS FOUND!")
             response = self.responses[self.response_index]
-            stdin.put(f"{response}\n")
+            stdin.put_nowait(f"{response}\r\n")
+            print("AFTER PUT")
             self.response_index = (self.response_index + 1) % len(self.responses)
 
     def test_commit_hook_no_violations(self):
@@ -92,6 +94,10 @@ class HookTests(BaseTestCase):
             " 1 file changed, 0 insertions(+), 0 deletions(-)\n",
             f" create mode 100644 {test_filename}\n",
         ]
+        print("EXPECTED OUTPUT")
+        print(expected_output)
+        print("ACTUAL OUTPUT")
+        print(self.githook_output)
 
         for output, expected in zip(self.githook_output, expected_output):
             self.assertMultiLineEqual(output.replace("\r", ""), expected.replace("\r", ""))
