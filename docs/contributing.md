@@ -96,6 +96,9 @@ hatch run test:format            # Run formatting checks
 
 #  Linting (pylint)
 hatch run test:lint              # Run pylint
+
+# Project stats
+hatch run test:stats
 ```
 ## Formatting
 
