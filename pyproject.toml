@@ -67,6 +67,14 @@ pre-install-commands = [
     "pip install -e ./gitlint-core",
 ]
 
+[tool.hatch.envs.dev.scripts]
+fullclean = [
+    "rm .coverage .coverage.lcov",
+    "rm -rf site dist .pytest_cache",
+    "rm -rf gitlint-core/dist gitlint-core/build gitlint-core/.pytest_cache",
+    "rm -rf qa/__pycache__ qa/.pytest_cache",
+]
+
 # TEST
 [tool.hatch.envs.test]
 description = """
@@ -97,6 +105,9 @@ all = [
     "unit-tests",
     "format",
     "lint"
+]
+stats = [
+    "./tools/stats.sh"
 ]
 
 # QA
