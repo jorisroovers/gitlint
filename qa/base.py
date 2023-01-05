@@ -7,13 +7,12 @@ import shutil
 import sys
 import tempfile
 from datetime import datetime
-from uuid import uuid4
 from unittest import TestCase
+from uuid import uuid4
 
 import arrow
 
-
-from qa.shell import git, gitlint, RunningCommand
+from qa.shell import RunningCommand, git, gitlint
 from qa.utils import DEFAULT_ENCODING, FILE_ENCODING, PLATFORM_IS_WINDOWS
 
 

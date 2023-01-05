@@ -1,5 +1,5 @@
-from gitlint.tests.base import BaseTestCase
 from gitlint.cache import PropertyCache, cache
+from gitlint.tests.base import BaseTestCase
 
 
 class CacheTests(BaseTestCase):

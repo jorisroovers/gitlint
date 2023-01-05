@@ -1,11 +1,15 @@
 import os
+from unittest.mock import call, patch
 
-from unittest.mock import patch, call
-
-from gitlint.shell import ErrorReturnCode, CommandNotFound
-
+from gitlint.git import (
+    GitContext,
+    GitContextError,
+    GitNotInstalledError,
+    git_commentchar,
+    git_hooks_dir,
+)
+from gitlint.shell import CommandNotFound, ErrorReturnCode
 from gitlint.tests.base import BaseTestCase
-from gitlint.git import GitContext, GitContextError, GitNotInstalledError, git_commentchar, git_hooks_dir
 
 
 class GitTests(BaseTestCase):

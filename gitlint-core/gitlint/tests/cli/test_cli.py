@@ -1,20 +1,14 @@
 import os
-import sys
 import platform
-
-import arrow
-
+import sys
 from io import StringIO
-
-from click.testing import CliRunner
-
 from unittest.mock import patch
 
+import arrow
+from click.testing import CliRunner
+from gitlint import __version__, cli
 from gitlint.shell import CommandNotFound
-
 from gitlint.tests.base import BaseTestCase
-from gitlint import cli
-from gitlint import __version__
 from gitlint.utils import DEFAULT_ENCODING
 
 

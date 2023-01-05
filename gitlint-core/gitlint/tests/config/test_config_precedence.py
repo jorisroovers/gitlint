@@ -1,12 +1,10 @@
 from io import StringIO
-
-from click.testing import CliRunner
-
 from unittest.mock import patch
 
-from gitlint.tests.base import BaseTestCase
+from click.testing import CliRunner
 from gitlint import cli
 from gitlint.config import LintConfigBuilder
+from gitlint.tests.base import BaseTestCase
 
 
 class LintConfigPrecedenceTests(BaseTestCase):

@@ -1,6 +1,6 @@
-from abc import abstractmethod
 import os
 import re
+from abc import abstractmethod
 
 from gitlint.exception import GitlintError
 

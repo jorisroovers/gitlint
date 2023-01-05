@@ -1,9 +1,9 @@
 import os
 
-from gitlint.tests.base import BaseTestCase
-from gitlint.contrib import rules as contrib_rules
-from gitlint.tests.contrib import rules as contrib_tests
 from gitlint import rule_finder, rules
+from gitlint.contrib import rules as contrib_rules
+from gitlint.tests.base import BaseTestCase
+from gitlint.tests.contrib import rules as contrib_tests
 
 
 class ContribRuleTests(BaseTestCase):

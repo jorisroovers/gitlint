@@ -1,9 +1,16 @@
 import os
 import re
 
+from gitlint.options import (
+    BoolOption,
+    IntOption,
+    ListOption,
+    PathOption,
+    RegexOption,
+    RuleOptionError,
+    StrOption,
+)
 from gitlint.tests.base import BaseTestCase
-
-from gitlint.options import IntOption, BoolOption, StrOption, ListOption, PathOption, RegexOption, RuleOptionError
 
 
 class RuleOptionTests(BaseTestCase):

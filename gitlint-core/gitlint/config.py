@@ -1,17 +1,19 @@
-from configparser import ConfigParser, Error as ConfigParserError
-
 import copy
-import re
 import os
+import re
 import shutil
-
 from collections import OrderedDict
-from gitlint.utils import DEFAULT_ENCODING
-from gitlint import rules  # For some weird reason pylint complains about this, pylint: disable=unused-import
-from gitlint import options
-from gitlint import rule_finder
+from configparser import ConfigParser
+from configparser import Error as ConfigParserError
+
+from gitlint import (
+    options,
+    rule_finder,
+    rules,  # For some weird reason pylint complains about this, pylint: disable=unused-import
+)
 from gitlint.contrib import rules as contrib_rules
 from gitlint.exception import GitlintError
+from gitlint.utils import DEFAULT_ENCODING
 
 
 def handle_option_error(func):

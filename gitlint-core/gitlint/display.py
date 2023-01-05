@@ -1,4 +1,4 @@
-from sys import stdout, stderr
+from sys import stderr, stdout
 
 
 class Display:

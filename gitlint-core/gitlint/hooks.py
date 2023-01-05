@@ -1,10 +1,10 @@
-import shutil
 import os
+import shutil
 import stat
 
-from gitlint.utils import DEFAULT_ENCODING
-from gitlint.git import git_hooks_dir
 from gitlint.exception import GitlintError
+from gitlint.git import git_hooks_dir
+from gitlint.utils import DEFAULT_ENCODING
 
 COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files", "commit-msg")
 COMMIT_MSG_HOOK_DST_PATH = "commit-msg"

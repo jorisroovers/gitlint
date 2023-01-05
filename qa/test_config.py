@@ -2,8 +2,8 @@
 import os
 import re
 
-from qa.shell import gitlint
 from qa.base import BaseTestCase
+from qa.shell import gitlint
 
 
 class ConfigTests(BaseTestCase):

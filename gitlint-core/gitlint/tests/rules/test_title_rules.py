@@ -1,15 +1,15 @@
-from gitlint.tests.base import BaseTestCase
 from gitlint.rules import (
-    TitleMaxLength,
-    TitleTrailingWhitespace,
-    TitleHardTab,
-    TitleMustNotContainWord,
-    TitleTrailingPunctuation,
-    TitleLeadingWhitespace,
-    TitleRegexMatches,
     RuleViolation,
+    TitleHardTab,
+    TitleLeadingWhitespace,
+    TitleMaxLength,
     TitleMinLength,
+    TitleMustNotContainWord,
+    TitleRegexMatches,
+    TitleTrailingPunctuation,
+    TitleTrailingWhitespace,
 )
+from gitlint.tests.base import BaseTestCase
 
 
 class TitleRuleTests(BaseTestCase):

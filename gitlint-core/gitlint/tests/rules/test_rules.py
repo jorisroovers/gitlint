@@ -1,5 +1,5 @@
-from gitlint.tests.base import BaseTestCase
 from gitlint.rules import Rule, RuleViolation
+from gitlint.tests.base import BaseTestCase
 
 
 class RuleTests(BaseTestCase):

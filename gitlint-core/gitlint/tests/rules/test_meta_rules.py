@@ -1,5 +1,8 @@
-from gitlint.tests.base import BaseTestCase, EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING
 from gitlint.rules import AuthorValidEmail, RuleViolation
+from gitlint.tests.base import (
+    EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING,
+    BaseTestCase,
+)
 
 
 class MetaRuleTests(BaseTestCase):

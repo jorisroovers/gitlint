@@ -1,16 +1,15 @@
 import os
+from unittest.mock import ANY, mock_open, patch
 
-from unittest.mock import patch, ANY, mock_open
-
-from gitlint.tests.base import BaseTestCase
 from gitlint.config import LintConfig
 from gitlint.hooks import (
+    COMMIT_MSG_HOOK_DST_PATH,
+    COMMIT_MSG_HOOK_SRC_PATH,
+    GITLINT_HOOK_IDENTIFIER,
     GitHookInstaller,
     GitHookInstallerError,
-    COMMIT_MSG_HOOK_SRC_PATH,
-    COMMIT_MSG_HOOK_DST_PATH,
-    GITLINT_HOOK_IDENTIFIER,
 )
+from gitlint.tests.base import BaseTestCase
 
 
 class HookTests(BaseTestCase):

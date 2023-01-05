@@ -1,5 +1,5 @@
-from gitlint.tests.base import BaseTestCase
 from gitlint import rules
+from gitlint.tests.base import BaseTestCase
 
 
 class BodyRuleTests(BaseTestCase):

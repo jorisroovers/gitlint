@@ -1,9 +1,8 @@
 from io import StringIO
-
 from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
 
-from gitlint.display import Display
 from gitlint.config import LintConfig
+from gitlint.display import Display
 from gitlint.tests.base import BaseTestCase
 
 

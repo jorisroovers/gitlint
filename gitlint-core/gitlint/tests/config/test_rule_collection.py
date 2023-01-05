@@ -1,4 +1,5 @@
 from collections import OrderedDict
+
 from gitlint import rules
 from gitlint.config import RuleCollection
 from gitlint.tests.base import BaseTestCase

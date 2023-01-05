@@ -5,7 +5,8 @@ capabilities wrt dealing with more edge-case environments on *nix systems that a
 """
 
 import subprocess
-from gitlint.utils import USE_SH_LIB, DEFAULT_ENCODING
+
+from gitlint.utils import DEFAULT_ENCODING, USE_SH_LIB
 
 
 def shell(cmd):
@@ -15,10 +16,12 @@ def shell(cmd):
 
 
 if USE_SH_LIB:
-    from sh import git  # pylint: disable=unused-import,import-error
-
     # import exceptions separately, this makes it a little easier to mock them out in the unit tests
-    from sh import CommandNotFound, ErrorReturnCode  # pylint: disable=import-error
+    from sh import (  # pylint: disable=import-error
+        CommandNotFound,
+        ErrorReturnCode,
+        git,  # pylint: disable=unused-import,import-error
+    )
 else:
 
     class CommandNotFound(Exception):

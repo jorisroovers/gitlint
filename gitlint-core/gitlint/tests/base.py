@@ -5,16 +5,15 @@ import os
 import re
 import shutil
 import tempfile
-
 import unittest
-
-from unittest.mock import patch
 from pathlib import Path
+from unittest.mock import patch
 
 from gitlint.config import LintConfig
-from gitlint.deprecation import Deprecation, LOG as DEPRECATION_LOG
-from gitlint.git import GitContext, GitChangedFileStats
-from gitlint.utils import LOG_FORMAT, DEFAULT_ENCODING
+from gitlint.deprecation import LOG as DEPRECATION_LOG
+from gitlint.deprecation import Deprecation
+from gitlint.git import GitChangedFileStats, GitContext
+from gitlint.utils import DEFAULT_ENCODING, LOG_FORMAT
 
 EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING = (
     "WARNING: gitlint.deprecated.regex_style_search {0} - {1}: gitlint will be switching from using "

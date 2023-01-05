@@ -1,8 +1,9 @@
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 import subprocess
-from qa.shell import echo, gitlint
+
 from qa.base import BaseTestCase
-from qa.utils import FILE_ENCODING, DEFAULT_ENCODING
+from qa.shell import echo, gitlint
+from qa.utils import DEFAULT_ENCODING, FILE_ENCODING
 
 
 class StdInTests(BaseTestCase):

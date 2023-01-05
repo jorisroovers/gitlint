@@ -1,6 +1,9 @@
-from gitlint.tests.base import BaseTestCase, EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING
 from gitlint import rules
 from gitlint.config import LintConfig
+from gitlint.tests.base import (
+    EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING,
+    BaseTestCase,
+)
 
 
 class ConfigurationRuleTests(BaseTestCase):

@@ -1,8 +1,7 @@
-from gitlint.tests.base import BaseTestCase
-from gitlint.rules import RuleViolation
-from gitlint.contrib.rules.signedoff_by import SignedOffBy
-
 from gitlint.config import LintConfig
+from gitlint.contrib.rules.signedoff_by import SignedOffBy
+from gitlint.rules import RuleViolation
+from gitlint.tests.base import BaseTestCase
 
 
 class ContribSignedOffByTests(BaseTestCase):

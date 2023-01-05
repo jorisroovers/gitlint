@@ -6,17 +6,19 @@ import os
 import platform
 import stat
 import sys
+
 import click
 
 import gitlint
-from gitlint.lint import GitLinter
-from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
-from gitlint.deprecation import LOG as DEPRECATED_LOG, DEPRECATED_LOG_FORMAT
-from gitlint.git import GitContext, GitContextError, git_version
 from gitlint import hooks
+from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
+from gitlint.deprecation import DEPRECATED_LOG_FORMAT
+from gitlint.deprecation import LOG as DEPRECATED_LOG
+from gitlint.exception import GitlintError
+from gitlint.git import GitContext, GitContextError, git_version
+from gitlint.lint import GitLinter
 from gitlint.shell import shell
 from gitlint.utils import LOG_FORMAT
-from gitlint.exception import GitlintError
 
 # Error codes
 GITLINT_SUCCESS = 0

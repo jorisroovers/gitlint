@@ -1,5 +1,5 @@
-from gitlint.rules import CommitRule, RuleViolation, ConfigurationRule
-from gitlint.options import IntOption, StrOption, ListOption
+from gitlint.options import IntOption, ListOption, StrOption
+from gitlint.rules import CommitRule, ConfigurationRule, RuleViolation
 
 
 class GitContextRule(CommitRule):

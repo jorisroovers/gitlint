@@ -1,7 +1,7 @@
-from gitlint.tests.base import BaseTestCase
-from gitlint.rules import RuleViolation
-from gitlint.contrib.rules.conventional_commit import ConventionalCommit
 from gitlint.config import LintConfig
+from gitlint.contrib.rules.conventional_commit import ConventionalCommit
+from gitlint.rules import RuleViolation
+from gitlint.tests.base import BaseTestCase
 
 
 class ContribConventionalCommitTests(BaseTestCase):

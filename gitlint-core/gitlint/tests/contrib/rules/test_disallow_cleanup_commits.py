@@ -1,8 +1,7 @@
-from gitlint.tests.base import BaseTestCase
-from gitlint.rules import RuleViolation
-from gitlint.contrib.rules.disallow_cleanup_commits import DisallowCleanupCommits
-
 from gitlint.config import LintConfig
+from gitlint.contrib.rules.disallow_cleanup_commits import DisallowCleanupCommits
+from gitlint.rules import RuleViolation
+from gitlint.tests.base import BaseTestCase
 
 
 class ContribDisallowCleanupCommitsTest(BaseTestCase):
