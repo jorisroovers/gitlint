@@ -64,9 +64,9 @@ class ConfigurableCommitRule(CommitRule):
 
     def validate(self, _):
         violations = [
-            RuleViolation(self.id, f"int-öption: {self.options[u'int-öption'].value}", line_nr=1),
-            RuleViolation(self.id, f"str-öption: {self.options[u'str-öption'].value}", line_nr=1),
-            RuleViolation(self.id, f"list-öption: {self.options[u'list-öption'].value}", line_nr=1),
+            RuleViolation(self.id, f"int-öption: {self.options['int-öption'].value}", line_nr=1),
+            RuleViolation(self.id, f"str-öption: {self.options['str-öption'].value}", line_nr=1),
+            RuleViolation(self.id, f"list-öption: {self.options['list-öption'].value}", line_nr=1),
         ]
 
         return violations

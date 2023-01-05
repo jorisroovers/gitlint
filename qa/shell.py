@@ -49,7 +49,7 @@ else:
 
         def __getattr__(self, p):  # pylint: disable=invalid-name
             # https://github.com/amoffat/sh/blob/e0ed8e244e9d973ef4e0749b2b3c2695e7b5255b/sh.py#L952=
-            _unicode_methods = set(dir(str()))
+            _unicode_methods = set(dir(str())) # noqa
             if p in _unicode_methods:
                 return getattr(str(self), p)
 
