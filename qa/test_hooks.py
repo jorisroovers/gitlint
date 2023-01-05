@@ -1,7 +1,8 @@
 # pylint: disable=too-many-function-args,unexpected-keyword-arg
 import os
-from qa.shell import git, gitlint
+
 from qa.base import BaseTestCase
+from qa.shell import git, gitlint
 
 
 class HookTests(BaseTestCase):

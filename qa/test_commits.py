@@ -3,8 +3,8 @@ import re
 
 import arrow
 
-from qa.shell import echo, git, gitlint
 from qa.base import BaseTestCase
+from qa.shell import echo, git, gitlint
 
 
 class CommitsTests(BaseTestCase):

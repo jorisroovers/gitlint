@@ -2,15 +2,24 @@
 # on gitlint internals for our integration testing framework.
 
 import subprocess
-from qa.utils import USE_SH_LIB, DEFAULT_ENCODING
+
+from qa.utils import DEFAULT_ENCODING, USE_SH_LIB
 
 if USE_SH_LIB:
-    from sh import git, echo, gitlint  # pylint: disable=unused-import,no-name-in-module,import-error
+    from sh import (  # pylint: disable=unused-import,no-name-in-module,import-error
+        echo,
+        git,
+        gitlint,
+    )
 
     gitlint = gitlint.bake(_unify_ttys=True, _tty_in=True)  # pylint: disable=invalid-name
 
     # import exceptions separately, this makes it a little easier to mock them out in the unit tests
-    from sh import CommandNotFound, ErrorReturnCode, RunningCommand  # pylint: disable=import-error
+    from sh import (  # pylint: disable=import-error
+        CommandNotFound,
+        ErrorReturnCode,
+        RunningCommand,
+    )
 else:
 
     class CommandNotFound(Exception):

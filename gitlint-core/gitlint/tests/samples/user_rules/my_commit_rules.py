@@ -1,5 +1,5 @@
-from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption
+from gitlint.rules import CommitRule, RuleViolation
 
 
 class MyUserCommitRule(CommitRule):

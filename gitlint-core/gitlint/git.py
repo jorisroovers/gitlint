@@ -5,12 +5,11 @@ from pathlib import Path
 import arrow
 
 from gitlint import shell as sh
+from gitlint.cache import PropertyCache, cache
+from gitlint.exception import GitlintError
 
 # import exceptions separately, this makes it a little easier to mock them out in the unit tests
 from gitlint.shell import CommandNotFound, ErrorReturnCode
-
-from gitlint.cache import PropertyCache, cache
-from gitlint.exception import GitlintError
 
 # For now, the git date format we use is fixed, but technically this format is determined by `git config log.date`
 # We should fix this at some point :-)

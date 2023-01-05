@@ -1,6 +1,5 @@
 import logging
 
-
 LOG = logging.getLogger("gitlint.deprecated")
 DEPRECATED_LOG_FORMAT = "%(levelname)s: %(message)s"
 

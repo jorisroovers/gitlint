@@ -1,7 +1,10 @@
 from gitlint.config import LintConfig
 from gitlint.deprecation import Deprecation
 from gitlint.rules import IgnoreByTitle
-from gitlint.tests.base import EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING, BaseTestCase
+from gitlint.tests.base import (
+    EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING,
+    BaseTestCase,
+)
 
 
 class DeprecationTests(BaseTestCase):

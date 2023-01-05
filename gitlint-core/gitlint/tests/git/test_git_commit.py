@@ -1,24 +1,21 @@
 import copy
 import datetime
 from pathlib import Path
-
-import dateutil
+from unittest.mock import call, patch
 
 import arrow
-
-from unittest.mock import patch, call
-
-from gitlint.tests.base import BaseTestCase
+import dateutil
 from gitlint.git import (
-    GitContext,
+    GitChangedFileStats,
     GitCommit,
+    GitCommitMessage,
+    GitContext,
     GitContextError,
     LocalGitCommit,
     StagedLocalGitCommit,
-    GitCommitMessage,
-    GitChangedFileStats,
 )
 from gitlint.shell import ErrorReturnCode
+from gitlint.tests.base import BaseTestCase
 
 
 class GitCommitTests(BaseTestCase):

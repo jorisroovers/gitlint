@@ -3,9 +3,9 @@ import copy
 import logging
 import re
 
-from gitlint.options import IntOption, BoolOption, StrOption, ListOption, RegexOption
-from gitlint.exception import GitlintError
 from gitlint.deprecation import Deprecation
+from gitlint.exception import GitlintError
+from gitlint.options import BoolOption, IntOption, ListOption, RegexOption, StrOption
 
 
 class Rule:

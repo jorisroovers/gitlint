@@ -1,10 +1,10 @@
 from collections import namedtuple
 from unittest.mock import patch
-from gitlint.tests.base import BaseTestCase
-from gitlint.rules import RuleViolation
-from gitlint.config import LintConfig
 
+from gitlint.config import LintConfig
 from gitlint.contrib.rules.authors_commit import AllowedAuthors
+from gitlint.rules import RuleViolation
+from gitlint.tests.base import BaseTestCase
 
 
 class ContribAuthorsCommitTests(BaseTestCase):

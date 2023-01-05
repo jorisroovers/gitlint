@@ -1,9 +1,8 @@
 # pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
 import codecs
-import platform
-import os
-
 import locale
+import os
+import platform
 
 # Note: While we can easily inline the logic related to the constants set in this module, we deliberately create
 # small functions that encapsulate that logic as this enables easy unit testing. In particular, by creating functions

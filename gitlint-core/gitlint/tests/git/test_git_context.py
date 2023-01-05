@@ -1,7 +1,7 @@
-from unittest.mock import patch, call
+from unittest.mock import call, patch
 
-from gitlint.tests.base import BaseTestCase
 from gitlint.git import GitContext
+from gitlint.tests.base import BaseTestCase
 
 
 class GitContextTests(BaseTestCase):

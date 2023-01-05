@@ -1,16 +1,11 @@
-from io import StringIO
 import os
-
-from click.testing import CliRunner
-
+from io import StringIO
 from unittest.mock import patch
 
-from gitlint.tests.base import BaseTestCase
-from gitlint import cli
-from gitlint import hooks
-from gitlint import config
+from click.testing import CliRunner
+from gitlint import cli, config, hooks
 from gitlint.shell import ErrorReturnCode
-
+from gitlint.tests.base import BaseTestCase
 from gitlint.utils import DEFAULT_ENCODING
 
 

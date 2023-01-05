@@ -1,11 +1,10 @@
 from io import StringIO
-
 from unittest.mock import patch  # pylint: disable=no-name-in-module, import-error
 
-from gitlint.tests.base import BaseTestCase
+from gitlint.config import LintConfig, LintConfigBuilder
 from gitlint.lint import GitLinter
 from gitlint.rules import RuleViolation, TitleMustNotContainWord
-from gitlint.config import LintConfig, LintConfigBuilder
+from gitlint.tests.base import BaseTestCase
 
 
 class LintTests(BaseTestCase):

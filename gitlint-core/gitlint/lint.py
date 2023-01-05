@@ -1,7 +1,8 @@
 # pylint: disable=logging-not-lazy
 import logging
-from gitlint import rules as gitlint_rules
+
 from gitlint import display
+from gitlint import rules as gitlint_rules
 from gitlint.deprecation import Deprecation
 
 LOG = logging.getLogger(__name__)

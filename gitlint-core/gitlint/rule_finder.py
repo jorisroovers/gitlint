@@ -1,10 +1,10 @@
 import fnmatch
+import importlib
 import inspect
 import os
 import sys
-import importlib
 
-from gitlint import rules, options
+from gitlint import options, rules
 
 
 def find_rule_classes(extra_path):

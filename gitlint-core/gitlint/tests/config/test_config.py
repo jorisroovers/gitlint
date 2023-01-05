@@ -1,8 +1,12 @@
 from unittest.mock import patch
 
-from gitlint import rules
-from gitlint.config import LintConfig, LintConfigError, LintConfigGenerator, GITLINT_CONFIG_TEMPLATE_SRC_PATH
-from gitlint import options
+from gitlint import options, rules
+from gitlint.config import (
+    GITLINT_CONFIG_TEMPLATE_SRC_PATH,
+    LintConfig,
+    LintConfigError,
+    LintConfigGenerator,
+)
 from gitlint.tests.base import BaseTestCase
 
 

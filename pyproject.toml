@@ -178,6 +178,7 @@ select = [
     "PLR",  # pylint
     "PLW",  # pylint
     "RUF",  # ruff specific
+    "I",    # isort
 ]
 
 [tool.coverage.run]

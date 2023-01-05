@@ -1,10 +1,8 @@
 import copy
 
-from gitlint.tests.base import BaseTestCase
-
-from gitlint.config import LintConfig, LintConfigBuilder, LintConfigError
-
 from gitlint import rules
+from gitlint.config import LintConfig, LintConfigBuilder, LintConfigError
+from gitlint.tests.base import BaseTestCase
 
 
 class LintConfigBuilderTests(BaseTestCase):

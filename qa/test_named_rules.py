@@ -1,5 +1,5 @@
-from qa.shell import gitlint
 from qa.base import BaseTestCase
+from qa.shell import gitlint
 
 
 class NamedRuleTests(BaseTestCase):
