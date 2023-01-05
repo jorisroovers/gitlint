@@ -88,6 +88,7 @@ dependencies = [
     "pytest-cov==4.0.0",
     "python-coveralls==2.9.3",
     "pylint==2.15.3",
+    "ruff==0.0.211",
     "radon==5.1.0",
     "pdbr==0.7.5; sys_platform != \"win32\""
 ]
@@ -99,12 +100,17 @@ unit-tests = [
 u = "unit-tests"
 unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
 format = "black --check --diff ."
-lint = "pylint gitlint-core/gitlint qa"
+plint = "pylint gitlint-core/gitlint qa"
+lint = "ruff gitlint-core/gitlint qa"
+autofix = [
+    "ruff --fix gitlint-core/gitlint qa",
+    "black .",
+]
 
 all = [
     "unit-tests",
     "format",
-    "lint"
+    "lint",
 ]
 stats = [
     "./tools/stats.sh"
@@ -153,6 +159,26 @@ target_version = ['py37', 'py38','py39','py310']
 line-length = 120
 # extend-exclude: keep excluding files from .gitignore in addition to the ones specified
 extend-exclude =  "gitlint-core/gitlint/tests/samples/user_rules/import_exception/invalid_python.py"
+
+[tool.ruff]
+target-version = "py37"
+extend-exclude =  ["gitlint-core/gitlint/tests/samples/user_rules/import_exception/invalid_python.py"]
+
+ignore = [
+    "E501", # Never enforce `E501` (line length violations) - taken care of by black
+]
+
+select = [
+    "E",    # Pycodestyle
+    "F",    # PyFlakes
+    "T20",  # no print statements
+    "UP",   # pyupgrade
+    "PLC",  # pylint 
+    "PLE",  # pylint
+    "PLR",  # pylint
+    "PLW",  # pylint
+    "RUF",  # ruff specific
+]
 
 [tool.coverage.run]
 branch = true # measure branch coverage in addition to statement coverage

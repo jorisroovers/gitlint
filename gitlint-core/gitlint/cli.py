@@ -172,11 +172,9 @@ def build_git_context(lint_config, msg_filename, commit_hash, refspec):
     from_commit_msg = GitContext.from_commit_msg
     if lint_config.staged:
         LOG.debug("Fetching additional meta-data from staged commit")
-        from_commit_msg = (
-            lambda message: GitContext.from_staged_commit(  # pylint: disable=unnecessary-lambda-assignment
-                message, lint_config.target
-            )
-        )
+
+        def from_commit_msg(message):
+            return GitContext.from_staged_commit(message, lint_config.target)
 
     # Order of precedence:
     # 1. Any data specified via --msg-filename

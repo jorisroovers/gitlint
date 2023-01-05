@@ -10,7 +10,6 @@ from unittest.mock import patch, call
 
 from gitlint.tests.base import BaseTestCase
 from gitlint.git import (
-    GitChangedFileStats,
     GitContext,
     GitCommit,
     GitContextError,
