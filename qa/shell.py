@@ -1,6 +1,8 @@
 # This code is mostly duplicated from the `gitlint.shell` module. We consciously duplicate this code as to not depend
 # on gitlint internals for our integration testing framework.
 
+import asyncio
+import queue
 import subprocess
 
 from qa.utils import DEFAULT_ENCODING, USE_SH_LIB
@@ -84,27 +86,77 @@ else:
 
     def _exec(*args, **kwargs):
         popen_kwargs = {
-            "stdout": subprocess.PIPE,
-            "stderr": subprocess.PIPE,
-            "stdin": subprocess.PIPE,
+            "stdout": asyncio.subprocess.PIPE,
+            "stderr": asyncio.subprocess.PIPE,
+            "stdin": asyncio.subprocess.PIPE,
             "shell": kwargs.get("_tty_out", False),
             "cwd": kwargs.get("_cwd", None),
             "env": kwargs.get("_env", None),
         }
 
-        stdin_input = None
+        stdin = None
         if len(args) > 1 and isinstance(args[1], ShResult):
-            stdin_input = args[1].stdout
+            stdin = args[1].stdout
             # pop args[1] from the array and use it as stdin
             args = list(args)
             args.pop(1)
-            popen_kwargs["stdin"] = subprocess.PIPE
 
         try:
-            with subprocess.Popen(args, **popen_kwargs) as p:
-                if stdin_input:
-                    result = p.communicate(stdin_input)
-                else:
+
+            async def read_stream(p, stream, iofunc, q, timeout=0.3):
+                line = bytearray()
+                try:
+                    while True:
+                        char = await asyncio.wait_for(stream.read(1), timeout)
+                        line += bytearray(char)
+                        if char == b"\n":
+                            decoded = line.decode(DEFAULT_ENCODING)
+                            iofunc(decoded, q)
+                            line = bytearray()
+                except asyncio.TimeoutError:
+                    decoded = line.decode(DEFAULT_ENCODING)
+                    iofunc(decoded, q)
+
+            async def write_stdin(p, q):
+                # inputstr = await q.get()
+                inputstr = await asyncio.wait_for(q.get(), 0.25)
+                p.stdin.write(inputstr.encode(DEFAULT_ENCODING))
+                await p.stdin.drain()
+
+            if kwargs.get("_out", None):
+                # redirect stderr to stdout (this will ensure we capture the last git output lines which are printed to stdout, not stderr)
+                popen_kwargs["stderr"] = asyncio.subprocess.STDOUT
+
+                async def start_process():
+                    p = await asyncio.create_subprocess_exec(*args, **popen_kwargs)
+
+                    q = asyncio.Queue()
+
+                    await asyncio.gather(
+                        # read_stream(p, p.stderr, kwargs["_out"], q),
+                        read_stream(p, p.stdout, kwargs["_out"], q),
+                    )
+                    print("after gather1")
+                    await asyncio.gather(write_stdin(p, q))
+                    print("after gather2")
+
+                    # Manually answer the prompt here, for some reason I can't get this to work via stdin
+                    await asyncio.sleep(2)
+
+                    await asyncio.gather(
+                        read_stream(p, p.stdout, kwargs["_out"], q),
+                    )
+                    print("after gather 3")
+                    await p.wait()
+                    print("process finished")
+
+                asyncio.run(start_process())
+                return
+            elif stdin:
+                with subprocess.Popen(args, **popen_kwargs) as p:
+                    result = p.communicate(stdin)
+            else:
+                with subprocess.Popen(args, **popen_kwargs) as p:
                     result = p.communicate()
 
         except FileNotFoundError as exc:
