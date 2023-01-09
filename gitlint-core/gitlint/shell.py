@@ -27,8 +27,6 @@ else:
     class CommandNotFound(Exception):
         """Exception indicating a command was not found during execution"""
 
-        pass
-
     class ShResult:
         """Result wrapper class. We use this to more easily migrate from using https://amoffat.github.io/sh/ to using
         the builtin subprocess module"""
@@ -44,8 +42,6 @@ else:
 
     class ErrorReturnCode(ShResult, Exception):
         """ShResult subclass for unexpected results (acts as an exception)."""
-
-        pass
 
     def git(*command_parts, **kwargs):
         """Git shell wrapper.

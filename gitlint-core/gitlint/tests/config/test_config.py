@@ -170,7 +170,7 @@ class LintConfigTests(BaseTestCase):
         # UserRuleError, RuleOptionError should be re-raised as LintConfigErrors
         side_effects = [rules.UserRuleError("üser-rule"), options.RuleOptionError("rüle-option")]
         for side_effect in side_effects:
-            with patch("gitlint.config.rule_finder.find_rule_classes", side_effect=side_effect):
+            with patch("gitlint.config.rule_finder.find_rule_classes", side_effect=side_effect):  # noqa: SIM117
                 with self.assertRaisesMessage(LintConfigError, str(side_effect)):
                     config.contrib = "contrib-title-conventional-commits"
 

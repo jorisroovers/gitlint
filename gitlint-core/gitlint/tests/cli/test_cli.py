@@ -218,8 +218,7 @@ class CLITests(BaseTestCase):
             self.assertEqual(result.exit_code, 2)
 
     @patch("gitlint.cli.get_stdin_data", return_value=False)
-    @patch("gitlint.git.sh")
-    def test_lint_commit_negative(self, sh, _):
+    def test_lint_commit_negative(self, _):
         """Negative test for --commit option"""
 
         # Try using --commit and --commits at the same time (not allowed)

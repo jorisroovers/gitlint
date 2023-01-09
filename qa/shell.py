@@ -25,10 +25,8 @@ else:
     class CommandNotFound(Exception):
         """Exception indicating a command was not found during execution"""
 
-        pass
-
     class RunningCommand:
-        pass
+        ...
 
     class ShResult(RunningCommand):
         """Result wrapper class. We use this to more easily migrate from using https://amoffat.github.io/sh/ to using
@@ -67,8 +65,6 @@ else:
     class ErrorReturnCode(ShResult, Exception):
         """ShResult subclass for unexpected results (acts as an exception)."""
 
-        pass
-
     def git(*command_parts, **kwargs):
         return run_command("git", *command_parts, **kwargs)
 
@@ -102,10 +98,7 @@ else:
 
         try:
             with subprocess.Popen(args, **popen_kwargs) as p:
-                if stdin_input:
-                    result = p.communicate(stdin_input)
-                else:
-                    result = p.communicate()
+                result = p.communicate(stdin_input)
 
         except FileNotFoundError as exc:
             raise CommandNotFound from exc

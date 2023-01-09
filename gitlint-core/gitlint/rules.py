@@ -50,19 +50,13 @@ class Rule:
 class ConfigurationRule(Rule):
     """Class representing rules that can dynamically change the configuration of gitlint during runtime."""
 
-    pass
-
 
 class CommitRule(Rule):
     """Class representing rules that act on an entire commit at once"""
 
-    pass
-
 
 class LineRule(Rule):
     """Class representing rules that act on a line by line basis"""
-
-    pass
 
 
 class LineRuleTarget:
@@ -70,19 +64,13 @@ class LineRuleTarget:
     (e.g. commit message title, commit message body).
     Each LineRule MUST have a target specified."""
 
-    pass
-
 
 class CommitMessageTitle(LineRuleTarget):
     """Target class used for rules that apply to a commit message title"""
 
-    pass
-
 
 class CommitMessageBody(LineRuleTarget):
     """Target class used for rules that apply to a commit message body"""
-
-    pass
 
 
 class RuleViolation:
@@ -106,8 +94,6 @@ class RuleViolation:
 
 class UserRuleError(GitlintError):
     """Error used to indicate that an error occurred while trying to load a user rule"""
-
-    pass
 
 
 class MaxLineLength(LineRule):
@@ -319,7 +305,7 @@ class BodyChangedFileMention(CommitRule):
         for needs_mentioned_file in self.options["files"].value:
             # if a file that we need to look out for is actually changed, then check whether it occurs
             # in the commit msg body
-            if needs_mentioned_file in commit.changed_files:
+            if needs_mentioned_file in commit.changed_files:  # noqa: SIM102
                 if needs_mentioned_file not in " ".join(commit.message.body):
                     violation_message = f"Body does not mention changed file '{needs_mentioned_file}'"
                     violations.append(RuleViolation(self.id, violation_message, None, len(commit.message.body) + 1))

@@ -43,7 +43,7 @@ class StdInTests(BaseTestCase):
         """
         tmp_commit_msg_file = self.create_tmpfile("WIP: STDIN ïs a file test.")
 
-        with open(tmp_commit_msg_file, encoding=FILE_ENCODING) as file_handle:
+        with open(tmp_commit_msg_file, encoding=FILE_ENCODING) as file_handle:  # noqa: SIM117
             # We need to use subprocess.Popen() here instead of sh because when passing a file_handle to sh, it will
             # deal with reading the file itself instead of passing it on to gitlint as a STDIN. Since we're trying to
             # test for the condition where stat.S_ISREG == True that won't work for us here.
