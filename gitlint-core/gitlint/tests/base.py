@@ -173,11 +173,11 @@ class BaseTestCase(unittest.TestCase):
             exception_msg = str(exc)
             if exception_msg != expected_msg:
                 error = f"Right exception, wrong message:\n      got: {exception_msg}\n expected: {expected_msg}"
-                raise self.fail(error)
+                raise self.fail(error) from exc
             # else: everything is fine, just return
             return
         except Exception as exc:
-            raise self.fail(f"Expected '{expected_exception.__name__}' got '{exc.__class__.__name__}'")
+            raise self.fail(f"Expected '{expected_exception.__name__}' got '{exc.__class__.__name__}'") from exc
 
         # No exception raised while we expected one
         raise self.fail(f"Expected to raise {expected_exception.__name__}, didn't get an exception at all")

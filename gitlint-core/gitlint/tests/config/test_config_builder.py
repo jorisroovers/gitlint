@@ -254,8 +254,7 @@ class LintConfigBuilderTests(BaseTestCase):
                 my_rule.options["regex"].set("wrong")
 
     def test_named_rules_negative(self):
-        # T7 = title-match-regex
-        # Invalid rule name
+        # Invalid rule name (T7 = title-match-regex)
         for invalid_name in ["", " ", "    ", "\t", "\n", "å b", "å:b", "åb:", ":åb"]:
             config_builder = LintConfigBuilder()
             config_builder.set_option(f"T7:{invalid_name}", "regex", "tëst")

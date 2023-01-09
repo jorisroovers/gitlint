@@ -37,7 +37,6 @@ class RuleOption:
     @abstractmethod
     def set(self, value):
         """Validates and sets the option's value"""
-        pass  # pragma: no cover
 
     def __str__(self):
         return f"({self.name}: {self.value} ({self.description}))"

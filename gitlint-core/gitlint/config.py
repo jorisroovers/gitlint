@@ -296,7 +296,7 @@ class LintConfig:  # pylint: disable=too-many-instance-attributes
         if not hasattr(self, attr_name) or attr_name[0] == "_":
             raise LintConfigError(f"'{option_name}' is not a valid gitlint option")
 
-        # else:
+        # else
         setattr(self, attr_name, option_value)
 
     def __eq__(self, other):
@@ -386,7 +386,7 @@ class RuleCollection:
         """Deletes all rules from the collection that match a given attribute name and value"""
         # Create a new list based on _rules.values() because in python 3, values() is a ValuesView as opposed to a list
         # This means you can't modify the ValueView while iterating over it.
-        for rule in [r for r in self._rules.values()]:  # pylint: disable=unnecessary-comprehension
+        for rule in list(self._rules.values()):
             if hasattr(rule, attr_name) and (getattr(rule, attr_name) == attr_val):
                 del self._rules[rule.id]
 

@@ -21,8 +21,6 @@ LOG = logging.getLogger(__name__)
 class GitContextError(GitlintError):
     """Exception indicating there is an issue with the git context"""
 
-    pass
-
 
 class GitNotInstalledError(GitContextError):
     def __init__(self):

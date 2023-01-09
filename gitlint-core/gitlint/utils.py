@@ -59,10 +59,7 @@ def getpreferredencoding():
                 # Support dotted (C.UTF-8) and non-dotted (C or UTF-8) charsets:
                 # If encoding contains a dot: split and use second part, otherwise use everything
                 dot_index = encoding.find(".")
-                if dot_index != -1:
-                    default_encoding = encoding[dot_index + 1 :]
-                else:
-                    default_encoding = encoding
+                default_encoding = encoding[dot_index + 1 :] if dot_index != -1 else encoding
                 break
 
         # We've determined what encoding the user *wants*, let's now check if it's actually a valid encoding on the

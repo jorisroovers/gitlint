@@ -128,68 +128,65 @@ class CLIHookTests(BaseTestCase):
                 # When set_editors[i] == None, ensure we don't fallback to EDITOR set in shell invocating the tests
                 os.environ.pop("EDITOR", None)
 
-            with self.patch_input(["e", "e", "n"]):
-                with self.tempdir() as tmpdir:
-                    msg_filename = os.path.realpath(os.path.join(tmpdir, "hür"))
-                    with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
-                        f.write(commit_messages[i] + "\n")
+            with self.patch_input(["e", "e", "n"]), self.tempdir() as tmpdir:
+                msg_filename = os.path.realpath(os.path.join(tmpdir, "hür"))
+                with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+                    f.write(commit_messages[i] + "\n")
 
-                    with patch("gitlint.display.stderr", new=StringIO()) as stderr:
-                        result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
-                        self.assertEqual(
-                            result.output,
-                            self.get_expected(
-                                "cli/test_cli_hooks/test_hook_edit_1_stdout", {"commit_msg": commit_messages[i]}
-                            ),
-                        )
-                        expected = self.get_expected(
-                            "cli/test_cli_hooks/test_hook_edit_1_stderr", {"commit_msg": commit_messages[i]}
-                        )
-                        self.assertEqual(stderr.getvalue(), expected)
+                with patch("gitlint.display.stderr", new=StringIO()) as stderr:
+                    result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
+                    self.assertEqual(
+                        result.output,
+                        self.get_expected(
+                            "cli/test_cli_hooks/test_hook_edit_1_stdout", {"commit_msg": commit_messages[i]}
+                        ),
+                    )
+                    expected = self.get_expected(
+                        "cli/test_cli_hooks/test_hook_edit_1_stderr", {"commit_msg": commit_messages[i]}
+                    )
+                    self.assertEqual(stderr.getvalue(), expected)
 
-                        # exit code = number of violations
-                        self.assertEqual(result.exit_code, 2)
+                    # exit code = number of violations
+                    self.assertEqual(result.exit_code, 2)
 
-                        shell.assert_called_with(expected_editors[i] + " " + msg_filename)
-                        self.assert_log_contains("DEBUG: gitlint.cli run-hook: editing commit message")
-                        self.assert_log_contains(f"DEBUG: gitlint.cli run-hook: {expected_editors[i]} {msg_filename}")
+                    shell.assert_called_with(expected_editors[i] + " " + msg_filename)
+                    self.assert_log_contains("DEBUG: gitlint.cli run-hook: editing commit message")
+                    self.assert_log_contains(f"DEBUG: gitlint.cli run-hook: {expected_editors[i]} {msg_filename}")
 
     def test_run_hook_no(self):
         """Test for run-hook subcommand, answering 'n(o)' after commit-hook"""
 
-        with self.patch_input(["n"]):
-            with self.tempdir() as tmpdir:
-                msg_filename = os.path.join(tmpdir, "hür")
-                with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
-                    f.write("WIP: höok no\n")
+        with self.patch_input(["n"]), self.tempdir() as tmpdir:
+            msg_filename = os.path.join(tmpdir, "hür")
+            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+                f.write("WIP: höok no\n")
 
-                with patch("gitlint.display.stderr", new=StringIO()) as stderr:
-                    result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
-                    self.assertEqual(result.output, self.get_expected("cli/test_cli_hooks/test_hook_no_1_stdout"))
-                    self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli_hooks/test_hook_no_1_stderr"))
+            with patch("gitlint.display.stderr", new=StringIO()) as stderr:
+                result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
+                self.assertEqual(result.output, self.get_expected("cli/test_cli_hooks/test_hook_no_1_stdout"))
+                self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli_hooks/test_hook_no_1_stderr"))
 
-                    # We decided not to keep the commit message: hook returns number of violations (>0)
-                    # This will cause git to abort the commit
-                    self.assertEqual(result.exit_code, 2)
-                    self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message declined")
+                # We decided not to keep the commit message: hook returns number of violations (>0)
+                # This will cause git to abort the commit
+                self.assertEqual(result.exit_code, 2)
+                self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message declined")
 
     def test_run_hook_yes(self):
         """Test for run-hook subcommand, answering 'y(es)' after commit-hook"""
-        with self.patch_input(["y"]):
-            with self.tempdir() as tmpdir:
-                msg_filename = os.path.join(tmpdir, "hür")
-                with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
-                    f.write("WIP: höok yes\n")
+        with self.patch_input(["y"]), self.tempdir() as tmpdir:
+            msg_filename = os.path.join(tmpdir, "hür")
+            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+                f.write("WIP: höok yes\n")
 
-                with patch("gitlint.display.stderr", new=StringIO()) as stderr:
-                    result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
-                    self.assertEqual(result.output, self.get_expected("cli/test_cli_hooks/test_hook_yes_1_stdout"))
-                    self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli_hooks/test_hook_yes_1_stderr"))
+            with patch("gitlint.display.stderr", new=StringIO()) as stderr:
+                result = self.cli.invoke(cli.cli, ["--msg-filename", msg_filename, "run-hook"])
+                self.assertEqual(result.output, self.get_expected("cli/test_cli_hooks/test_hook_yes_1_stdout"))
+                self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli_hooks/test_hook_yes_1_stderr"))
 
-                    # Exit code is 0 because we decide to keep the commit message
-                    # This will cause git to keep the commit
-                    self.assertEqual(result.exit_code, 0)
-                    self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message accepted")
+                # Exit code is 0 because we decide to keep the commit message
+                # This will cause git to keep the commit
+                self.assertEqual(result.exit_code, 0)
+                self.assert_log_contains("DEBUG: gitlint.cli run-hook: commit message accepted")
 
     @patch("gitlint.cli.get_stdin_data", return_value=False)
     @patch("gitlint.git.sh")
@@ -271,11 +268,10 @@ class CLIHookTests(BaseTestCase):
             "commit-1-branch-1\ncommit-1-branch-2\n",
         ]
 
-        with self.patch_input(["e"]):
-            with patch("gitlint.display.stderr", new=StringIO()) as stderr:
-                result = self.cli.invoke(cli.cli, ["run-hook"])
-                expected = self.get_expected("cli/test_cli_hooks/test_hook_local_commit_1_stderr")
-                self.assertEqual(stderr.getvalue(), expected)
-                self.assertEqual(result.output, self.get_expected("cli/test_cli_hooks/test_hook_local_commit_1_stdout"))
-                # If we can't edit the message, run-hook follows regular gitlint behavior and exit code = # violations
-                self.assertEqual(result.exit_code, 2)
+        with self.patch_input(["e"]), patch("gitlint.display.stderr", new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["run-hook"])
+            expected = self.get_expected("cli/test_cli_hooks/test_hook_local_commit_1_stderr")
+            self.assertEqual(stderr.getvalue(), expected)
+            self.assertEqual(result.output, self.get_expected("cli/test_cli_hooks/test_hook_local_commit_1_stdout"))
+            # If we can't edit the message, run-hook follows regular gitlint behavior and exit code = # violations
+            self.assertEqual(result.exit_code, 2)

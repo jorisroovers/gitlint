@@ -379,7 +379,7 @@ class GitCommitTests(BaseTestCase):
     @patch("gitlint.git.sh")
     def test_get_latest_commit_fixup_squash_commit(self, sh):
         commit_prefixes = {"fixup": "is_fixup_commit", "squash": "is_squash_commit", "amend": "is_fixup_amend_commit"}
-        for commit_type in commit_prefixes.keys():
+        for commit_type in commit_prefixes:
             sample_sha = "d8ac47e9f2923c7f22d8668e3a1ed04eb4cdbca9"
 
             sh.git.side_effect = [
@@ -612,7 +612,7 @@ class GitCommitTests(BaseTestCase):
         # mapping between cleanup commit prefixes and the commit object attribute
         commit_prefixes = {"fixup": "is_fixup_commit", "squash": "is_squash_commit", "amend": "is_fixup_amend_commit"}
 
-        for commit_type in commit_prefixes.keys():
+        for commit_type in commit_prefixes:
             commit_msg = f"{commit_type}! Test message"
             gitcontext = GitContext.from_commit_msg(commit_msg)
             commit = gitcontext.commits[-1]
@@ -638,7 +638,7 @@ class GitCommitTests(BaseTestCase):
     @patch("gitlint.git.sh")
     @patch("arrow.now")
     def test_staged_commit(self, now, sh):
-        # StagedLocalGitCommit()
+        """Test for StagedLocalGitCommit()"""
 
         sh.git.side_effect = [
             "#",  # git config --get core.commentchar
@@ -740,7 +740,7 @@ class GitCommitTests(BaseTestCase):
         git.return_value = "foöbar"
 
         # Test simple equality case
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         context1 = GitContext()
         commit_message1 = GitCommitMessage(context1, "tëst\n\nfoo", "tëst\n\nfoo", "tēst", ["", "föo"])
         commit1 = GitCommit(

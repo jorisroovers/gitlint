@@ -30,7 +30,8 @@ useful throughout the years.
  - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
-   python code standards (pep8, pylint), good documentation, widely used, proven track record.
+   python code standards ([black](https://github.com/psf/black), [ruff](https://github.com/charliermarsh/ruff)),
+   good documentation, widely used, proven track record.
 
 ## Getting Started
 ### Installation

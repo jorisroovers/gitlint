@@ -88,7 +88,7 @@ dependencies = [
     "pytest-cov==4.0.0",
     "python-coveralls==2.9.3",
     "pylint==2.15.3",
-    "ruff==0.0.211",
+    "ruff==0.0.215",
     "radon==5.1.0",
     "pdbr==0.7.5; sys_platform != \"win32\""
 ]
@@ -101,10 +101,11 @@ u = "unit-tests"
 unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
 format = "black --check --diff ."
 plint = "pylint gitlint-core/gitlint qa"
-lint = "ruff gitlint-core/gitlint qa"
+lint = "ruff {args:gitlint-core/gitlint qa}"
+autoformat = "black ."
 autofix = [
     "ruff --fix gitlint-core/gitlint qa",
-    "black .",
+    "autoformat",
 ]
 
 all = [
@@ -165,20 +166,33 @@ target-version = "py37"
 extend-exclude =  ["gitlint-core/gitlint/tests/samples/user_rules/import_exception/invalid_python.py"]
 
 ignore = [
-    "E501", # Never enforce `E501` (line length violations) - taken care of by black
+    "E501",  # Never enforce `E501` (line length violations) - taken care of by black
+    "SIM108" # Use ternary operator instead of if-else-block
 ]
 
 select = [
-    "E",    # Pycodestyle
     "F",    # PyFlakes
-    "T20",  # no print statements
-    "UP",   # pyupgrade
+    "E",    # Pycodestyle
+    "W",    # Pycodestyle
+    "I",    # isort (import order)
+    "YTT",  # flake8-2020 (misuse of sys.version)
+    "S",    # flake8-bandit (security)
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions (correct use of comprehensions)
+    "T10",  # flake8-debugger (no debug statements)
+    "T20",  # flake8-print (no print statements)
+    "SIM",  # flake8-simplify (use simple code)
+    "TID",  # flake8-tidy-imports (correct import syntax)
+    "ARG",  # flake8-unused-arguments (no unused function arguments)
+    "DTZ",  # flake8-datetimez (correct datetime usage)
+    "ERA",  # eradicate (no commented out code)
+    "UP",   # pyupgrade (modern python syntax)
     "PLC",  # pylint 
     "PLE",  # pylint
     "PLR",  # pylint
     "PLW",  # pylint
+    "PIE",  # flake8-pie
     "RUF",  # ruff specific
-    "I",    # isort
 ]
 
 [tool.coverage.run]

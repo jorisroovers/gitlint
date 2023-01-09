@@ -6,7 +6,7 @@ import platform
 import shutil
 import sys
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest import TestCase
 from uuid import uuid4
 
@@ -50,8 +50,8 @@ class BaseTestCase(TestCase):
 
     @staticmethod
     def generate_temp_path():
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-        return os.path.realpath(f"/tmp/gitlint-test-{timestamp}")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
+        return os.path.realpath(f"/tmp/gitlint-test-{timestamp}")  # noqa
 
     def create_tmp_git_repo(self):
         """Creates a temporary git repository and returns its directory path"""

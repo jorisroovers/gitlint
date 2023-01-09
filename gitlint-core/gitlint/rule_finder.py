@@ -55,7 +55,7 @@ def find_rule_classes(extra_path):
             importlib.import_module(module)
 
         except Exception as e:
-            raise rules.UserRuleError(f"Error while importing extra-path module '{module}': {e}")
+            raise rules.UserRuleError(f"Error while importing extra-path module '{module}': {e}") from e
 
         # Find all rule classes in the module. We do this my inspecting all members of the module and checking
         # 1) is it a class, if not, skip
@@ -138,13 +138,13 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):  # pylint: disable
         if not hasattr(clazz, "validate") or not inspect.isroutine(clazz.validate):
             raise rules.UserRuleError(f"{rule_type} rule class '{clazz.__name__}' must have a 'validate' method")
     # Configuration rules must have an `apply` method
-    elif issubclass(clazz, rules.ConfigurationRule):
+    elif issubclass(clazz, rules.ConfigurationRule):  # noqa: SIM102
         if not hasattr(clazz, "apply") or not inspect.isroutine(clazz.apply):
             msg = f"{rule_type} Configuration rule class '{clazz.__name__}' must have an 'apply' method"
             raise rules.UserRuleError(msg)
 
     # LineRules must have a valid target: rules.CommitMessageTitle or rules.CommitMessageBody
-    if issubclass(clazz, rules.LineRule):
+    if issubclass(clazz, rules.LineRule):  # noqa: SIM102
         if clazz.target not in [rules.CommitMessageTitle, rules.CommitMessageBody]:
             msg = (
                 f"The target attribute of the {rule_type.lower()} LineRule class '{clazz.__name__}' "
