@@ -9,7 +9,7 @@ from configparser import Error as ConfigParserError
 from gitlint import (
     options,
     rule_finder,
-    rules,  # For some weird reason pylint complains about this, pylint: disable=unused-import
+    rules,
 )
 from gitlint.contrib import rules as contrib_rules
 from gitlint.exception import GitlintError
@@ -33,7 +33,7 @@ class LintConfigError(GitlintError):
     pass
 
 
-class LintConfig:  # pylint: disable=too-many-instance-attributes
+class LintConfig:
     """Class representing gitlint configuration.
     Contains active config as well as number of methods to easily get/set the config.
     """

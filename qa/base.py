@@ -1,6 +1,3 @@
-# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return,
-# pylint: disable=too-many-function-args,unexpected-keyword-arg
-
 import os
 import platform
 import shutil
@@ -42,7 +39,7 @@ class BaseTestCase(TestCase):
             # On windows we need to ignore errors because git might still be holding on to some files
             shutil.rmtree(repo, ignore_errors=PLATFORM_IS_WINDOWS)
 
-    def assertEqualStdout(self, output, expected):  # pylint: disable=invalid-name
+    def assertEqualStdout(self, output, expected):
         self.assertIsInstance(output, RunningCommand)
         output = output.stdout.decode(DEFAULT_ENCODING)
         output = output.replace("\r", "")
@@ -86,10 +83,9 @@ class BaseTestCase(TestCase):
             else:
                 open_kwargs = {"mode": "w", "encoding": FILE_ENCODING}
 
-            with open(full_path, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
+            with open(full_path, **open_kwargs) as f:
                 f.write(content)
         else:
-            # pylint: disable=consider-using-with
             open(full_path, "a", encoding=FILE_ENCODING).close()
 
         return test_filename
@@ -152,7 +148,7 @@ class BaseTestCase(TestCase):
         else:
             open_kwargs = {"mode": "w", "encoding": FILE_ENCODING}
 
-        with open(tmpfile, **open_kwargs) as f:  # pylint: disable=unspecified-encoding
+        with open(tmpfile, **open_kwargs) as f:
             f.write(content)
 
         return tmpfilepath

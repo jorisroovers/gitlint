@@ -87,7 +87,6 @@ dependencies = [
     "pytest==7.2.0",
     "pytest-cov==4.0.0",
     "python-coveralls==2.9.3",
-    "pylint==2.15.3",
     "ruff==0.0.215",
     "radon==5.1.0",
     "pdbr==0.7.5; sys_platform != \"win32\""

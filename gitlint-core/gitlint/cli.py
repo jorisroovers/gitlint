@@ -1,4 +1,3 @@
-# pylint: disable=bad-option-value,wrong-import-position
 # We need to disable the import position checks because of the windows check that we need to do below
 import copy
 import logging
@@ -72,7 +71,7 @@ def log_system_info():
     LOG.debug("DEFAULT_ENCODING: %s", gitlint.utils.DEFAULT_ENCODING)
 
 
-def build_config(  # pylint: disable=too-many-arguments
+def build_config(
     target,
     config_path,
     c,
@@ -255,7 +254,7 @@ class ContextObj:
               help=f"Config file location [default: {DEFAULT_CONFIG_FILE}]")
 @click.option("-c", multiple=True,
               help="Config flags in format <rule>.<option>=<value> (e.g.: -c T1.line-length=80). " +
-                   "Flag can be used multiple times to set multiple config values.")  # pylint: disable=bad-continuation
+                   "Flag can be used multiple times to set multiple config values.")
 @click.option("--commit", envvar="GITLINT_COMMIT", default=None, help="Hash (SHA) of specific commit to lint.")
 @click.option("--commits", envvar="GITLINT_COMMITS", default=None,
               help="The range of commits (refspec or comma-separated hashes) to lint. [default: HEAD]")
@@ -281,7 +280,7 @@ class ContextObj:
 @click.option("-d", "--debug", envvar="GITLINT_DEBUG", help="Enable debugging output.", is_flag=True)
 @click.version_option(version=gitlint.__version__)
 @click.pass_context
-def cli(  # pylint: disable=too-many-arguments
+def cli(
         ctx, target, config, c, commit, commits, extra_path, ignore, contrib,
         msg_filename, ignore_stdin, staged, fail_without_commits, verbose,
         silent, debug,
@@ -497,5 +496,4 @@ def generate_config(ctx):
 # Let's Party!
 setup_logging()
 if __name__ == "__main__":
-    # pylint: disable=no-value-for-parameter
     cli()  # pragma: no cover

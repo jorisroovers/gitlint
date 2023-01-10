@@ -1,4 +1,3 @@
-# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
 import locale
 import os
 import platform

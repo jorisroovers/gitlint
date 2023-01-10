@@ -1,4 +1,3 @@
-# pylint: disable=inconsistent-return-statements
 import copy
 import logging
 import re

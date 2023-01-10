@@ -17,10 +17,10 @@ def shell(cmd):
 
 if USE_SH_LIB:
     # import exceptions separately, this makes it a little easier to mock them out in the unit tests
-    from sh import (  # pylint: disable=import-error
+    from sh import (
         CommandNotFound,
         ErrorReturnCode,
-        git,  # pylint: disable=unused-import,import-error
+        git,
     )
 else:
 

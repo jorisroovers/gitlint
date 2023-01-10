@@ -1,4 +1,3 @@
-# pylint: disable=too-many-function-args,unexpected-keyword-arg
 import subprocess
 
 from qa.base import BaseTestCase

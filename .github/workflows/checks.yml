@@ -36,7 +36,7 @@ jobs:
       - name: Code formatting (black)
         run: hatch run test:format
       
-      - name: Code linting (pylint)
+      - name: Code linting (ruff)
         run: hatch run test:lint
 
       - name: Integration tests
@@ -128,7 +128,7 @@ jobs:
       - name: Code formatting (black)
         run: hatch run test:format
       
-      - name: Code linting (pylint)
+      - name: Code linting (ruff)
         run: hatch run test:lint
 
       - name: Integration tests

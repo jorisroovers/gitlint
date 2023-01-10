@@ -202,7 +202,7 @@ class UserRuleTests(BaseTestCase):
                 assert_valid_rule_class(MyRuleClass)
 
             # option_spec is a list, but not of gitlint options
-            MyRuleClass.options_spec = ["föo", 123]  # pylint: disable=bad-option-value,redefined-variable-type
+            MyRuleClass.options_spec = ["föo", 123]
             with self.assertRaisesMessage(UserRuleError, expected_msg):
                 assert_valid_rule_class(MyRuleClass)
 
@@ -262,5 +262,5 @@ class UserRuleTests(BaseTestCase):
             assert_valid_rule_class(MyRuleClass)
 
         # valid target, no exception should be raised
-        MyRuleClass.target = rules.CommitMessageTitle  # pylint: disable=bad-option-value,redefined-variable-type
+        MyRuleClass.target = rules.CommitMessageTitle
         self.assertIsNone(assert_valid_rule_class(MyRuleClass))

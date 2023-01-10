@@ -17,20 +17,20 @@ class Display:
             if self.config.verbosity >= verbosity:
                 stream.write(message + "\n")
 
-    def v(self, message, exact=False):  # pylint: disable=invalid-name
+    def v(self, message, exact=False):
         self._output(message, 1, exact, stdout)
 
-    def vv(self, message, exact=False):  # pylint: disable=invalid-name
+    def vv(self, message, exact=False):
         self._output(message, 2, exact, stdout)
 
-    def vvv(self, message, exact=False):  # pylint: disable=invalid-name
+    def vvv(self, message, exact=False):
         self._output(message, 3, exact, stdout)
 
-    def e(self, message, exact=False):  # pylint: disable=invalid-name
+    def e(self, message, exact=False):
         self._output(message, 1, exact, stderr)
 
-    def ee(self, message, exact=False):  # pylint: disable=invalid-name
+    def ee(self, message, exact=False):
         self._output(message, 2, exact, stderr)
 
-    def eee(self, message, exact=False):  # pylint: disable=invalid-name
+    def eee(self, message, exact=False):
         self._output(message, 3, exact, stderr)
