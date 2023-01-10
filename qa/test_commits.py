@@ -1,4 +1,3 @@
-# pylint: disable=too-many-function-args,unexpected-keyword-arg
 import re
 
 import arrow

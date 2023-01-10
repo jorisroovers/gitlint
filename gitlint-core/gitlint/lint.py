@@ -1,4 +1,3 @@
-# pylint: disable=logging-not-lazy
 import logging
 
 from gitlint import display

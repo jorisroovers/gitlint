@@ -43,7 +43,7 @@ def _git(*command_parts, **kwargs):
     git_kwargs.update(kwargs)
     try:
         LOG.debug(command_parts)
-        result = sh.git(*command_parts, **git_kwargs)  # pylint: disable=unexpected-keyword-arg
+        result = sh.git(*command_parts, **git_kwargs)
         # If we reach this point and the result has an exit_code that is larger than 0, this means that we didn't
         # get an exception (which is the default sh behavior for non-zero exit codes) and so the user is expecting
         # a non-zero exit code -> just return the entire result
@@ -77,7 +77,7 @@ def git_commentchar(repository_path=None):
     """Shortcut for retrieving comment char from git config"""
     commentchar = _git("config", "--get", "core.commentchar", _cwd=repository_path, _ok_code=[0, 1])
     # git will return an exit code of 1 if it can't find a config value, in this case we fall-back to # as commentchar
-    if hasattr(commentchar, "exit_code") and commentchar.exit_code == 1:  # pylint: disable=no-member
+    if hasattr(commentchar, "exit_code") and commentchar.exit_code == 1:
         commentchar = "#"
     return commentchar.replace("\n", "")
 
@@ -190,7 +190,7 @@ class GitCommit:
         message,
         sha=None,
         date=None,
-        author_name=None,  # pylint: disable=too-many-arguments
+        author_name=None,
         author_email=None,
         parents=None,
         changed_files_stats=None,
@@ -286,7 +286,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
     startup time and reduces gitlint's memory footprint.
     """
 
-    def __init__(self, context, sha):  # pylint: disable=super-init-not-called
+    def __init__(self, context, sha):
         PropertyCache.__init__(self)
         self.context = context
         self.sha = sha
@@ -379,7 +379,7 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
     information.
     """
 
-    def __init__(self, context, commit_message):  # pylint: disable=super-init-not-called
+    def __init__(self, context, commit_message):
         PropertyCache.__init__(self)
         self.context = context
         self.message = commit_message

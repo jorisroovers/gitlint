@@ -6,16 +6,16 @@ import subprocess
 from qa.utils import DEFAULT_ENCODING, USE_SH_LIB
 
 if USE_SH_LIB:
-    from sh import (  # pylint: disable=unused-import,no-name-in-module,import-error
+    from sh import (
         echo,
         git,
         gitlint,
     )
 
-    gitlint = gitlint.bake(_unify_ttys=True, _tty_in=True)  # pylint: disable=invalid-name
+    gitlint = gitlint.bake(_unify_ttys=True, _tty_in=True)
 
     # import exceptions separately, this makes it a little easier to mock them out in the unit tests
-    from sh import (  # pylint: disable=import-error
+    from sh import (
         CommandNotFound,
         ErrorReturnCode,
         RunningCommand,
@@ -54,7 +54,7 @@ else:
         def stderr(self):
             return self._stderr
 
-        def __getattr__(self, p):  # pylint: disable=invalid-name
+        def __getattr__(self, p):
             # https://github.com/amoffat/sh/blob/e0ed8e244e9d973ef4e0749b2b3c2695e7b5255b/sh.py#L952=
             _unicode_methods = set(dir(str()))  # noqa
             if p in _unicode_methods:

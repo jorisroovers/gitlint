@@ -165,7 +165,7 @@ class BaseTestCase(unittest.TestCase):
         self.logcapture.clear()
 
     @contextlib.contextmanager
-    def assertRaisesMessage(self, expected_exception, expected_msg):  # pylint: disable=invalid-name
+    def assertRaisesMessage(self, expected_exception, expected_msg):
         """Asserts an exception has occurred with a given error message"""
         try:
             yield

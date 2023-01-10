@@ -100,13 +100,13 @@ class BodyRuleTests(BaseTestCase):
         expected_violation = rules.RuleViolation("B5", "Body message is too short (21<120)", "å" * 21, 3)
 
         rule = rules.BodyMinLength({"min-length": 120})
-        commit = self.gitcommit("Title\n\n{}\n".format("å" * 21))  # pylint: disable=consider-using-f-string
+        commit = self.gitcommit("Title\n\n{}\n".format("å" * 21))
         violations = rule.validate(commit)
         self.assertListEqual(violations, [expected_violation])
 
         # Make sure we don't get the error if the body-length is exactly the min-length
         rule = rules.BodyMinLength({"min-length": 8})
-        commit = self.gitcommit("Tïtle\n\n{}\n".format("å" * 8))  # pylint: disable=consider-using-f-string
+        commit = self.gitcommit("Tïtle\n\n{}\n".format("å" * 8))
         violations = rule.validate(commit)
         self.assertIsNone(violations)
 

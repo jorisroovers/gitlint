@@ -1,4 +1,3 @@
-# pylint: disable=
 from qa.base import BaseTestCase
 from qa.shell import gitlint
 

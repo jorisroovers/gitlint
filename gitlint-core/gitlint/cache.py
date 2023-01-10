@@ -13,7 +13,7 @@ class PropertyCache:
         return self._cache[cache_key]
 
 
-def cache(original_func=None, cachekey=None):  # pylint: disable=unused-argument
+def cache(original_func=None, cachekey=None):
     """Cache decorator. Caches function return values.
     Requires the parent class to extend and initialize PropertyCache.
     Usage:

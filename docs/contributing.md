@@ -94,8 +94,8 @@ hatch run qa:integration-tests   # Run integration tests
 # Formatting check
 hatch run test:format            # Run formatting checks
 
-#  Linting (pylint)
-hatch run test:lint              # Run pylint
+#  Linting (ruff)
+hatch run test:lint              # Run Ruff
 
 # Project stats
 hatch run test:stats

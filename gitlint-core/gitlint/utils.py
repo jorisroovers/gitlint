@@ -1,4 +1,3 @@
-# pylint: disable=bad-option-value,unidiomatic-typecheck,undefined-variable,no-else-return
 import codecs
 import locale
 import os
@@ -67,7 +66,7 @@ def getpreferredencoding():
         # This scenario is fairly common on Windows where git sets LC_CTYPE=C when invoking the commit-msg hook, which
         # is not a valid encoding in Python on Windows.
         try:
-            codecs.lookup(default_encoding)  # pylint: disable=no-member
+            codecs.lookup(default_encoding)
         except LookupError:
             default_encoding = fallback_encoding
 
