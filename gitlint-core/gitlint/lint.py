@@ -25,7 +25,8 @@ class GitLinter:
         return [
             rule
             for rule in self.config.rules
-            if isinstance(rule, gitlint_rules.ConfigurationRule) and not self.should_ignore_rule(rule)
+            if isinstance(rule, gitlint_rules.ConfigurationRule)
+            and not self.should_ignore_rule(rule)
         ]
 
     @property
@@ -53,7 +54,8 @@ class GitLinter:
         return [
             rule
             for rule in self.config.rules
-            if isinstance(rule, gitlint_rules.CommitRule) and not self.should_ignore_rule(rule)
+            if isinstance(rule, gitlint_rules.CommitRule)
+            and not self.should_ignore_rule(rule)
         ]
 
     @staticmethod
@@ -96,19 +98,29 @@ class GitLinter:
         # Skip linting if this is a special commit type that is configured to be ignored
         ignore_commit_types = ["merge", "squash", "fixup", "fixup_amend", "revert"]
         for commit_type in ignore_commit_types:
-            if getattr(commit, f"is_{commit_type}_commit") and getattr(self.config, f"ignore_{commit_type}_commits"):
+            if getattr(commit, f"is_{commit_type}_commit") and getattr(
+                self.config, f"ignore_{commit_type}_commits"
+            ):
                 return []
 
         violations = []
         # determine violations by applying all rules
-        violations.extend(self._apply_line_rules([commit.message.title], commit, self.title_line_rules, 1))
-        violations.extend(self._apply_line_rules(commit.message.body, commit, self.body_line_rules, 2))
+        violations.extend(
+            self._apply_line_rules(
+                [commit.message.title], commit, self.title_line_rules, 1
+            )
+        )
+        violations.extend(
+            self._apply_line_rules(commit.message.body, commit, self.body_line_rules, 2)
+        )
         violations.extend(self._apply_commit_rules(self.commit_rules, commit))
 
         # Sort violations by line number and rule_id. If there's no line nr specified (=common certain commit rules),
         # we replace None with -1 so that it always get's placed first. Note that we need this to do this to support
         # python 3, as None is not allowed in a list that is being sorted.
-        violations.sort(key=lambda v: (-1 if v.line_nr is None else v.line_nr, v.rule_id))
+        violations.sort(
+            key=lambda v: (-1 if v.line_nr is None else v.line_nr, v.rule_id)
+        )
         return violations
 
     def print_violations(self, violations):
@@ -118,6 +130,8 @@ class GitLinter:
             self.display.e(f"{line_nr}: {v.rule_id}", exact=True)
             self.display.ee(f"{line_nr}: {v.rule_id} {v.message}", exact=True)
             if v.content:
-                self.display.eee(f'{line_nr}: {v.rule_id} {v.message}: "{v.content}"', exact=True)
+                self.display.eee(
+                    f'{line_nr}: {v.rule_id} {v.message}: "{v.content}"', exact=True
+                )
             else:
                 self.display.eee(f"{line_nr}: {v.rule_id} {v.message}", exact=True)

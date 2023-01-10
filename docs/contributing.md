@@ -91,7 +91,7 @@ hatch run test:unit-tests-no-cov # run unit tests without test coverage
 hatch run qa:install-local       # One-time install: install the local gitlint source copy for integration testing
 hatch run qa:integration-tests   # Run integration tests
 
-# Formatting check
+# Formatting check (black)
 hatch run test:format            # Run formatting checks
 
 #  Linting (ruff)
@@ -100,14 +100,19 @@ hatch run test:lint              # Run Ruff
 # Project stats
 hatch run test:stats
 ```
-## Formatting
+## Autoformatting and autofixing
 
 We use [black](https://black.readthedocs.io/en/stable/) for code formatting.
-To use it, just run black against the code you modified:
 
 ```sh
-hatch run test:black .                            # format all python code
-hatch run test:black gitlint-core/gitlint/lint.py # format a specific file
+hatch run test:autoformat                              # format all python code
+hatch run test:autoformat gitlint-core/gitlint/lint.py # format a specific file
+```
+
+We use [ruff](https://github.com/charliermarsh/ruff) for linting, it can autofix many of the issue it finds
+(although not always perfect).
+```sh
+hatch run test:autofix                              # Attempt to fix linting issues
 ```
 
 ## Documentation
