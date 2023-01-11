@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
@@ -54,7 +54,9 @@ Homepage = "https://jorisroovers.github.io/gitlint"
 Source = "https://github.com/jorisroovers/gitlint"
 
 [tool.hatch.version]
-path = "gitlint/__init__.py"
+# path = "gitlint/__init__.py"
+source = "vcs"
+
 
 [tool.hatch.build]
 include = [
