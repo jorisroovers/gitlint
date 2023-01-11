@@ -41,14 +41,9 @@ Documentation = "https://jorisroovers.github.io/gitlint"
 Source = "https://github.com/jorisroovers/gitlint"
 Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
 
-# [tool.hatch.version]
-# path = "gitlint-core/gitlint/__init__.py"
-
 
 [tool.hatch.version]
-# path = "gitlint/__init__.py"
 source = "vcs"
-
 
 [tool.hatch.build]
 exclude = ["*"]
