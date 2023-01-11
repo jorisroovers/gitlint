@@ -98,10 +98,9 @@ unit-tests = [
 ]
 u = "unit-tests"
 unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
-format = "black --check --diff ."
-plint = "pylint gitlint-core/gitlint qa"
+format = "black --check --diff {args:.}"
 lint = "ruff {args:gitlint-core/gitlint qa}"
-autoformat = "black ."
+autoformat = "black {args:.}"
 autofix = [
     "ruff --fix gitlint-core/gitlint qa",
     "autoformat",
