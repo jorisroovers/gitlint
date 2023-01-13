@@ -4,17 +4,19 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gitlint"
-dynamic = ["version"]
+dynamic = ["version", "dependencies"]
 description = "Git commit message linter written in python, checks your commit messages for style."
 readme = "README.md"
 
 license = "MIT"
 requires-python = ">=3.7"
-authors = [{ name = "Joris Roovers" }]
+authors = [
+    { name = "Joris Roovers" }, #
+]
 keywords = [
     "git",
     "gitlint",
-    "lint",    #
+    "lint",    # 
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -31,9 +33,8 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Quality Assurance",
-    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Testing",                    #
 ]
-dependencies = ["gitlint-core[trusted-deps]==0.19.0dev3"]
 
 [project.urls]
 Homepage = "https://jorisroovers.github.io/gitlint"
@@ -41,6 +42,8 @@ Documentation = "https://jorisroovers.github.io/gitlint"
 Source = "https://github.com/jorisroovers/gitlint"
 Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
 
+
+[tool.hatch.metadata.hooks.custom]
 
 [tool.hatch.version]
 source = "vcs"
@@ -88,6 +91,10 @@ dependencies = [
 ]
 
 [tool.hatch.envs.test.scripts]
+autofix = [
+    "ruff --fix {args:gitlint-core/gitlint qa}",
+    "autoformat",                                #
+]
 unit-tests = [
     "pytest --cov=gitlint-core -rw -s {args:gitlint-core}", #
 ]
@@ -96,10 +103,6 @@ unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
 format = "black --check --diff {args:.}"
 lint = "ruff {args:gitlint-core/gitlint qa}"
 autoformat = "black {args:.}"
-autofix = [
-    "ruff --fix gitlint-core/gitlint qa",
-    "autoformat",                         #
-]
 
 all = [
     "unit-tests",
@@ -136,10 +139,11 @@ i = "integration-tests"
 description = """
 Documentation environment. Run docs build and serve commands.
 """
-detached = true
 dependencies = [
     "mkdocs==1.4.2", #
 ]
+detached = true
+
 [tool.hatch.envs.docs.scripts]
 build = "mkdocs build --clean --strict"
 serve = "mkdocs serve"

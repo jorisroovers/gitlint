@@ -1,1 +1,3 @@
-__version__ = "0.19.0.dev3"
+from importlib.metadata import version
+
+__version__ = version("gitlint-core")
