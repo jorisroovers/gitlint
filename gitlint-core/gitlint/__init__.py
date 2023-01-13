@@ -5,4 +5,4 @@ if sys.version_info >= (3, 8):
 else:
     import importlib_metadata as metadata
 
-__version__ = version("gitlint-core")
+__version__ = metadata.version("gitlint-core")
