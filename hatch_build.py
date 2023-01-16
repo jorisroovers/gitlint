@@ -1,3 +1,4 @@
+# hatch_build.py is executed by hatch at build-time and can contain custom build logic hooks
 from hatchling.metadata.plugin.interface import MetadataHookInterface
 
 
