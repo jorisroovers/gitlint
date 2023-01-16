@@ -9,13 +9,11 @@ description = "Git commit message linter written in python, checks your commit m
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.7"
-authors = [
-    { name = "Joris Roovers" },
-]
+authors = [{ name = "Joris Roovers" }]
 keywords = [
     "git",
     "gitlint",
-    "lint",
+    "lint",    # 
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -60,8 +58,8 @@ path = "gitlint/__init__.py"
 
 [tool.hatch.build]
 include = [
-    "/gitlint",
+    "/gitlint", #
 ]
 exclude = [
-    "/gitlint/tests",
+    "/gitlint/tests", #
 ]
