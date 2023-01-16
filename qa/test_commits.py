@@ -110,6 +110,11 @@ class CommitsTests(BaseTestCase):
         self.assertEqual(output.exit_code, 2)
         self.assertEqualStdout(output, expected)
 
+        # Lint using --commits <commit sha>,
+        output = gitlint("--commits", f"{commit_sha},", _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
+        self.assertEqual(output.exit_code, 2)
+        self.assertEqualStdout(output, expected)
+
         # Lint a single commit using --commits <refspec> pointing to the single commit
         output = gitlint("--commits", refspec, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[2])
         self.assertEqual(output.exit_code, 2)

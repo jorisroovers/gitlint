@@ -205,7 +205,7 @@ def build_git_context(lint_config, msg_filename, commit_hash, refspec):
     if refspec:
         # 3.1.1 Not real refspec, but comma-separated list of commit hashes
         if "," in refspec:
-            commit_hashes = [hash.strip() for hash in refspec.split(",")]
+            commit_hashes = [hash.strip() for hash in refspec.split(",") if hash]
             return GitContext.from_local_repository(lint_config.target, commit_hashes=commit_hashes)
         # 3.1.2 Real refspec
         return GitContext.from_local_repository(lint_config.target, refspec=refspec)
