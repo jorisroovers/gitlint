@@ -46,7 +46,7 @@ jobs:
       - name: Integration tests (default -> GITLINT_USE_SH_LIB=1)
         run: |
           hatch run qa:integration-tests
-      if: matrix.os != 'windows-latest'
+        if: matrix.os != 'windows-latest'
 
       - name: Integration tests (GITLINT_USE_SH_LIB=1)
         run: |
