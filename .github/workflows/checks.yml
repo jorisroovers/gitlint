@@ -39,7 +39,7 @@ jobs:
       - name: Code linting (ruff)
         run: hatch run test:lint
 
-      - name: Integration tests
+      - name: Install local gitlint for integration tests
         run: |
           hatch run qa:install-local
 
