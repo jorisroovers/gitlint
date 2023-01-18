@@ -2,11 +2,11 @@ name: Release testing
 
 on:
   workflow_dispatch:
-  inputs:
-    gitlint_version:
-      description: 'Gitlint version to test'
-      required: true
-      default: '0.18.0'
+    inputs:
+      gitlint_version:
+        description: 'Gitlint version to test'
+        required: true
+        default: '0.18.0'
 
 jobs:
   checks:
@@ -23,7 +23,7 @@ jobs:
 
       - name: Install gitlint
         run: |
-          python -m pip install gitlint==${{ github.event.inputs.gitlint_version }}
+          python -m pip install gitlint==${{ inputs.gitlint_version }}
 
       - name: gitlint --version
         run: |
