@@ -16,12 +16,12 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.9]
-        os: ["macos-latest", "ubuntu-latest"]
+        os: ["macos-latest", "ubuntu-latest", "windows-latest"]
     steps:
       - uses: actions/checkout@v3.3.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-          fetch-depth: 0
+          fetch-depth: 0 # checkout all history, needed for hatch versioning
 
       - name: Setup python
         uses: actions/setup-python@v4.5.0
@@ -40,22 +40,33 @@ jobs:
       - name: Code linting (ruff)
         run: hatch run test:lint
 
-      - name: Integration tests
+      - name: Install local gitlint for integration tests
         run: |
           hatch run qa:install-local
+
+      - name: Integration tests (default -> GITLINT_USE_SH_LIB=1)
+        run: |
           hatch run qa:integration-tests
+        if: matrix.os != 'windows-latest'
 
       - name: Integration tests (GITLINT_USE_SH_LIB=1)
         run: |
           hatch run qa:integration-tests
         env:
           GITLINT_USE_SH_LIB: 1
+        if: matrix.os != 'windows-latest'
 
       - name: Integration tests (GITLINT_QA_USE_SH_LIB=0)
         run: |
           hatch run qa:integration-tests -k "not(test_commit_hook_continue or test_commit_hook_abort or test_commit_hook_edit)" qa
         env:
           GITLINT_QA_USE_SH_LIB: 0
+        if: matrix.os != 'windows-latest'
+
+      - name: Integration tests (Windows)
+        run: |
+          hatch run qa:integration-tests -k "not (test_commit_hook_continue or test_commit_hook_abort or test_commit_hook_edit or test_lint_staged_stdin or test_stdin_file or test_stdin_pipe_empty)" qa
+        if: matrix.os == 'windows-latest'
 
       - name: Build test (gitlint)
         run: |
@@ -71,12 +82,11 @@ jobs:
       - name: Docs build (mkdocs)
         run: hatch run docs:build
 
-      - name: gitlint --version
-        run: hatch run dev:gitlint --version
-
-      - name: Hatch run gitlint
+      # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
+      # PRs get squashed and get a proper commit message during merge.
+      - name: gitlint --debug
         run: hatch run dev:gitlint --debug
-        continue-on-error: true
+        continue-on-error: ${{ github.event_name	== 'pull_request' }} # Don't enforce gitlint in PRs
 
       # Coveralls integration doesn't properly work at this point, also see below
       # - name: Coveralls
@@ -95,82 +105,11 @@ jobs:
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
-      # PRs get squashed and get a proper commit message during merge.
-      - name: Gitlint check
-        run: hatch run dev:gitlint --debug
-        if: ${{ github.event_name	!= 'pull_request' }}
-
-  windows-checks:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        python-version: ["3.10"]
-    steps:
-      - uses: actions/checkout@v3.3.0
-        with:
-          ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-          fetch-depth: 0
-
-      - name: Setup python
-        uses: actions/setup-python@v4.5.0
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: "Upgrade pip on Python 3"
-        if: matrix.python-version == '3.10'
-        run: python -m pip install --upgrade pip
-
-      - name: Install Hatch
-        run: python -m pip install hatch==1.6.3
-
-      - name: Unit Tests
-        run: hatch run test:unit-tests
-
-      - name: Code formatting (black)
-        run: hatch run test:format
-      
-      - name: Code linting (ruff)
-        run: hatch run test:lint
-
-      - name: Integration tests
-        run: |
-          hatch run qa:install-local
-          hatch run qa:integration-tests -k "not (test_commit_hook_continue or test_commit_hook_abort or test_commit_hook_edit or test_lint_staged_stdin or test_stdin_file or test_stdin_pipe_empty)" qa
-
-      - name: Build test (gitlint)
-        run: |
-          hatch build
-          hatch clean
-
-      - name: Build test (gitlint-core)
-        run: |
-          hatch build
-          hatch clean
-        working-directory: ./gitlint-core
-      
-      - name: Docs build (mkdocs)
-        run: hatch run docs:build
-
-      - name: Hatch run gitlint
-        run: hatch run gitlint --debug
-        continue-on-error: true
-
-      - name: gitlint --version
-        run: hatch run dev:gitlint --version
-
-      # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
-      # PRs get squashed and get a proper commit message during merge.
-      - name: Gitlint check
-        run: hatch run dev:gitlint --debug
-        if: ${{ github.event_name	!= 'pull_request' }}
-
   check:  # This job does nothing and is only used for the branch protection
     if: always()  # Ref: https://github.com/marketplace/actions/alls-green#why
 
     needs:
       - checks
-      - windows-checks
 
     runs-on: ubuntu-latest
 
