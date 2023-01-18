@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
@@ -35,6 +35,7 @@ classifiers = [
 dependencies = [
     "arrow>=1",
     "Click>=8",
+    "importlib-metadata >= 1.0 ; python_version < \"3.8\"",
     "sh>=1.13.0 ; sys_platform != \"win32\"",
 ]
 
@@ -54,12 +55,14 @@ Homepage = "https://jorisroovers.github.io/gitlint"
 Source = "https://github.com/jorisroovers/gitlint"
 
 [tool.hatch.version]
-path = "gitlint/__init__.py"
+source = "vcs"
+raw-options = { root = ".." }
 
 [tool.hatch.build]
 include = [
     "/gitlint", #
 ]
+
 exclude = [
     "/gitlint/tests", #
 ]

@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "gitlint"
-dynamic = ["version"]
+dynamic = ["version", "dependencies"]
 description = "Git commit message linter written in python, checks your commit messages for style."
 readme = "README.md"
 
@@ -33,7 +33,6 @@ classifiers = [
     "Topic :: Software Development :: Quality Assurance",
     "Topic :: Software Development :: Testing",
 ]
-dependencies = ["gitlint-core[trusted-deps]==0.19.0dev3"]
 
 [project.urls]
 Homepage = "https://jorisroovers.github.io/gitlint"
@@ -42,7 +41,7 @@ Source = "https://github.com/jorisroovers/gitlint"
 Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
 
 [tool.hatch.version]
-path = "gitlint-core/gitlint/__init__.py"
+source = "vcs"
 
 [tool.hatch.build]
 exclude = ["*"]
@@ -96,8 +95,8 @@ format = "black --check --diff {args:.}"
 lint = "ruff {args:gitlint-core/gitlint qa}"
 autoformat = "black {args:.}"
 autofix = [
-    "ruff --fix gitlint-core/gitlint qa",
-    "autoformat",                         #
+    "ruff --fix {args:gitlint-core/gitlint qa}",
+    "autoformat",                                #
 ]
 
 all = [
@@ -139,6 +138,7 @@ detached = true
 dependencies = [
     "mkdocs==1.4.2", #
 ]
+
 [tool.hatch.envs.docs.scripts]
 build = "mkdocs build --clean --strict"
 serve = "mkdocs serve"
