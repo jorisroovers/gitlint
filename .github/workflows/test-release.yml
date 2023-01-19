@@ -4,9 +4,20 @@ on:
   workflow_dispatch:
     inputs:
       gitlint_version:
-        description: 'Gitlint version to test'
+        description: "Gitlint version to test"
         required: true
-        default: '0.18.0'
+        default: "0.18.0"
+      pypi_source:
+        description: "PyPI repository to use"
+        required: true
+        type: choice
+        options:
+          - "pypi.org"
+          - "test.pypi.org"
+        default: "pypi.org"
+      test_repo_ref:
+        description: "Git reference to checkout for integration tests"
+        default: "main"
 
 jobs:
   checks:
@@ -24,6 +35,12 @@ jobs:
       - name: Install gitlint
         run: |
           python -m pip install gitlint==${{ inputs.gitlint_version }}
+        if: ${{ inputs.pypi_source }} == "pypi.org"
+
+      - name: Install gitlint (test.pypi.org)
+        run: |
+          pip install --no-cache -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==${{ inputs.gitlint_version }}
+        if: ${{ inputs.pypi_source }} == "test.pypi.org"
 
       - name: gitlint --version
         run: |
@@ -31,7 +48,7 @@ jobs:
 
       - uses: actions/checkout@v3.3.0
         with:
-          ref: 'main'
+          ref: ${{ inputs.test_repo_ref }}
 
       - name: Install Hatch
         run: python -m pip install hatch==1.6.3
