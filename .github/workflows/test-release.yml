@@ -45,6 +45,7 @@ jobs:
       - name: gitlint --version
         run: |
           gitlint --version
+          [ "$(gitlint --version)" == "gitlint, version ${{ inputs.gitlint_version }}" ]
 
       - uses: actions/checkout@v3.3.0
         with:
