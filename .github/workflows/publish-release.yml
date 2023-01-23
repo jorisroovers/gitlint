@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0 # checkout all history, needed for hatch versioning
 
       # Run hatch version once to avoid additional output ("Setting up build environment for missing dependencies")
-      # during the next step (hatch version)
+      # during the next step
       - name: Hatch version
         run: hatch version
 
@@ -40,7 +40,7 @@ jobs:
       # publish, hatch versioning strings will have this format: 0.19.0.dev52+g9f7dc7d
       # With the string after '+' being the 'g<short-sha>' of the commit.
       #
-      # However, PyPI doesn't allow '+' in version numbers (=no PEP440 local versions allowed on PyPI).
+      # However, PyPI doesn't allow '+' in version numbers (no PEP440 local versions allowed on PyPI).
       # To work around this, we override the version string by setting the SETUPTOOLS_SCM_PRETEND_VERSION env var
       # to the version string without the '+' and everything after it.
       # We then only actual publish such releases on the main branch to guarantee the dev numbering scheme remains
