@@ -21,7 +21,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v4.5.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.11"
 
       - name: Install Hatch
         run: python -m pip install hatch==1.6.3
@@ -31,16 +31,25 @@ jobs:
           ref: ${{ inputs.repo_release_ref }}
           fetch-depth: 0 # checkout all history, needed for hatch versioning
 
+      # Create hatch env explicitly to avoid hatch output ("Setting up build environment for missing dependencies")
+      # during the next step (hatch version)
       - name: Hatch env create
         run: hatch env create
 
+      # Hatch versioning is based on git (using hatch-vcs). If there is no explicit tag for the commit we're trying to
+      # publish, hatch versioning strings will have this format: 0.19.0.dev52+g9f7dc7d
+      # With the string after '+' being the 'g<short-sha>' of the commit.
+      #
+      # However, PyPI doesn't allow '+' in version numbers (=no PEP440 local versions allowed on PyPI).
+      # To work around this, we override the version string by setting the SETUPTOOLS_SCM_PRETEND_VERSION env var
+      # to the version string without the '+' and everything after it.
+      # We then only actual publish such releases on the main branch to guarantee the dev numbering scheme remains
+      # unique.
+      # Note that when a tag *is* present (i.e. v0.19.0), hatch versioning will return the tag name (i.e. 0.19.0)
+      # and this step has no effect, ie. SETUPTOOLS_SCM_PRETEND_VERSION will be the same as `hatch version`.
       - name: Set SETUPTOOLS_SCM_PRETEND_VERSION
         run: |
-          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)"
           echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)" >> $GITHUB_ENV
-
-      - name: Test SETUPTOOLS_SCM_PRETEND_VERSION
-        run: echo $SETUPTOOLS_SCM_PRETEND_VERSION
 
       - name: Build (gitlint-core)
         run: hatch build
@@ -48,3 +57,18 @@ jobs:
 
       - name: Build (gitlint)
         run: hatch build
+
+      - name: Publish (gitlint-core)
+        run: hatch publish -r test
+        working-directory: ./gitlint-core
+        env:
+          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
+        if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
+
+      - name: Publish (gitlint)
+        run: hatch publish -r test
+        env:
+          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
+        if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
