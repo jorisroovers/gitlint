@@ -15,7 +15,7 @@ on:
         default: "main"
 
 jobs:
-  checks:
+  publish:
     runs-on: "ubuntu-latest"
     steps:
       - name: Setup python
@@ -29,6 +29,7 @@ jobs:
       - uses: actions/checkout@v3.3.0
         with:
           ref: ${{ inputs.repo_release_ref }}
+          fetch-depth: 0 # checkout all history, needed for hatch versioning
 
       - name: Set SETUPTOOLS_SCM_PRETEND_VERSION
         run: echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)" >> $GITHUB_ENV
