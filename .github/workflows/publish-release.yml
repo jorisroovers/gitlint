@@ -32,7 +32,9 @@ jobs:
           fetch-depth: 0 # checkout all history, needed for hatch versioning
 
       - name: Set SETUPTOOLS_SCM_PRETEND_VERSION
-        run: echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)" >> $GITHUB_ENV
+        run: |
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)"
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)" >> $GITHUB_ENV
 
       - name: Test SETUPTOOLS_SCM_PRETEND_VERSION
         run: echo $SETUPTOOLS_SCM_PRETEND_VERSION
