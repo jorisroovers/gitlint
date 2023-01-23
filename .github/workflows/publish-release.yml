@@ -31,10 +31,10 @@ jobs:
           ref: ${{ inputs.repo_release_ref }}
           fetch-depth: 0 # checkout all history, needed for hatch versioning
 
-      # Create hatch env explicitly to avoid hatch output ("Setting up build environment for missing dependencies")
+      # Run hatch version once to avoid additional output ("Setting up build environment for missing dependencies")
       # during the next step (hatch version)
-      - name: Hatch env create
-        run: hatch env create
+      - name: Hatch version
+        run: hatch version
 
       # Hatch versioning is based on git (using hatch-vcs). If there is no explicit tag for the commit we're trying to
       # publish, hatch versioning strings will have this format: 0.19.0.dev52+g9f7dc7d
@@ -69,6 +69,6 @@ jobs:
       - name: Publish (gitlint)
         run: hatch publish -r test
         env:
-          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
-          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
+          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
         if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
