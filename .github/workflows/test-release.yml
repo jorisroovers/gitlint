@@ -1,5 +1,5 @@
-name: Test release
-run-name: "Test release (${{ inputs.gitlint_version }}, pypi_source=${{ inputs.pypi_source }}, repo_test_ref=${{ inputs.repo_test_ref }})"
+name: Test Release
+run-name: "Test Release (${{ inputs.gitlint_version }}, pypi_source=${{ inputs.pypi_source }}, repo_test_ref=${{ inputs.repo_test_ref }})"
 on:
   workflow_dispatch:
     inputs:
