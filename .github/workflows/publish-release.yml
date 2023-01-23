@@ -1,0 +1,46 @@
+name: Publish Release
+run-name: "Publish Release"
+on:
+  workflow_dispatch:
+    inputs:
+      pypi_target:
+        description: "PyPI repository to publish to"
+        required: true
+        type: choice
+        options:
+          - "test.pypi.org"
+        default: "test.pypi.org"
+      repo_release_ref:
+        description: "Gitlint git reference to publish release for"
+        default: "main"
+
+jobs:
+  checks:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Setup python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Hatch
+        run: python -m pip install hatch==1.6.3
+
+      - uses: actions/checkout@v3.3.0
+        with:
+          ref: ${{ inputs.repo_release_ref }}
+
+      - name: Set SETUPTOOLS_SCM_PRETEND_VERSION
+        run: echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)" >> $GITHUB_ENV
+
+      - name: Test SETUPTOOLS_SCM_PRETEND_VERSION
+        run: echo $SETUPTOOLS_SCM_PRETEND_VERSION
+
+      - name: Build (gitlint-core)
+        run: |
+          hatch build
+        working-directory: ./gitlint-core
+
+      - name: Build (gitlint)
+        run: |
+          hatch build
