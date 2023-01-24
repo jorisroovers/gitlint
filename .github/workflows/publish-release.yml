@@ -58,20 +58,20 @@ jobs:
       - name: Build (gitlint)
         run: hatch build
 
-      # - name: Publish (gitlint-core)
-      #   run: hatch publish -r test
-      #   working-directory: ./gitlint-core
-      #   env:
-      #     HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
-      #     HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
-      #   if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
+      - name: Publish (gitlint-core)
+        run: hatch publish -r test
+        working-directory: ./gitlint-core
+        env:
+          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
+        if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
 
-      # - name: Publish (gitlint)
-      #   run: hatch publish -r test
-      #   env:
-      #     HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_USERNAME }}
-      #     HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
-      #   if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
+      - name: Publish (gitlint)
+        run: hatch publish -r test
+        env:
+          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
+        if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
 
   check_env:
     needs:
