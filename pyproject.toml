@@ -46,6 +46,10 @@ source = "vcs"
 [tool.hatch.build]
 exclude = ["*"]
 
+# Use metadata hooks specified in 'hatch_build.py'
+# (this line is critical when building wheels, when building sdist it seems optional)
+[tool.hatch.metadata.hooks.custom]
+
 # Environments #########################################################################################################
 # NOTE: By default all environments inherit from the 'default' environment
 
