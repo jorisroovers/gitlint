@@ -1,6 +1,23 @@
 name: Test Release
 run-name: "Test Release (${{ inputs.gitlint_version }}, pypi_source=${{ inputs.pypi_source }}, repo_test_ref=${{ inputs.repo_test_ref }})"
 on:
+  workflow_call:
+    inputs:
+      gitlint_version:
+        description: "Gitlint version to test"
+        required: true
+        default: "0.18.0"
+      pypi_source:
+        description: "PyPI repository to use"
+        required: true
+        type: choice
+        options:
+          - "pypi.org"
+          - "test.pypi.org"
+        default: "pypi.org"
+      repo_test_ref:
+        description: "Git reference to checkout for integration tests"
+        default: "main"
   workflow_dispatch:
     inputs:
       gitlint_version:
