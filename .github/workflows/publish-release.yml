@@ -72,3 +72,20 @@ jobs:
           HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_USERNAME }}
           HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
         if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
+
+  check_env:
+    needs:
+      - publish
+    steps:
+      - name: Print SETUPTOOLS_SCM_PRETEND_VERSION
+        run: |
+          echo "$SETUPTOOLS_SCM_PRETEND_VERSION"
+
+  test_release:
+    needs:
+      - publish
+    uses: jorisroovers/gitlint/.github/workflows/test-release.yml@main
+    with:
+      gitlint_version: "0.19.0.dev51"
+      pypi_source: ${{ inputs.pypi_target }}
+      repo_test_ref: ${{ inputs.repo_release_ref }}
