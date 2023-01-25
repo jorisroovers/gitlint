@@ -58,12 +58,12 @@ jobs:
         run: hatch build
         working-directory: ./gitlint-core
         env: 
-          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ outputs.gitlint_version }}
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
       - name: Build (gitlint)
         run: hatch build
         env: 
-          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ outputs.gitlint_version }}
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
       # - name: Publish (gitlint-core)
       #   run: hatch publish -r test
