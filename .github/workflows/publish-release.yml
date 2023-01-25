@@ -16,6 +16,7 @@ on:
 
 jobs:
   publish:
+    timeout-minutes: 15
     runs-on: "ubuntu-latest"
     outputs:
       gitlint_version: ${{ steps.set_version.outputs.gitlint_version }}
@@ -45,7 +46,10 @@ jobs:
       # However, PyPI doesn't allow '+' in version numbers (no PEP440 local versions allowed on PyPI).
       # To work around this, we override the version string by setting the SETUPTOOLS_SCM_PRETEND_VERSION env var
       # to the version string without the '+' and everything after it.
-      # We then only actual publish such releases on the main branch to guarantee the dev numbering scheme remains
+      # We do this by setting the `gitlint_version` step output here and re-using it later to
+      # set SETUPTOOLS_SCM_PRETEND_VERSION.
+      #
+      # We only actually publish such releases on the main branch to guarantee the dev numbering scheme remains
       # unique.
       # Note that when a tag *is* present (i.e. v0.19.0), hatch versioning will return the tag name (i.e. 0.19.0)
       # and this step has no effect, ie. SETUPTOOLS_SCM_PRETEND_VERSION will be the same as `hatch version`.
@@ -65,29 +69,20 @@ jobs:
         env: 
           SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
-      # - name: Publish (gitlint-core)
-      #   run: hatch publish -r test
-      #   working-directory: ./gitlint-core
-      #   env:
-      #     HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
-      #     HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
-      #   if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
+      - name: Publish (gitlint-core)
+        run: hatch publish -r test
+        working-directory: ./gitlint-core
+        env:
+          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
+        if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
 
-      # - name: Publish (gitlint)
-      #   run: hatch publish -r test
-      #   env:
-      #     HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_USERNAME }}
-      #     HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
-      #   if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
-
-  check_env:
-    runs-on: "ubuntu-latest"
-    needs:
-      - publish
-    steps:
-      - name: Print SETUPTOOLS_SCM_PRETEND_VERSION
-        run: |
-          echo ${{ needs.publish.outputs.gitlint_version }}
+      - name: Publish (gitlint)
+        run: hatch publish -r test
+        env:
+          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_USERNAME }}
+          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
+        if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
 
   test_release:
     needs:
