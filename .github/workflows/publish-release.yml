@@ -16,7 +16,10 @@ on:
 
 jobs:
   publish:
+    timeout-minutes: 15
     runs-on: "ubuntu-latest"
+    outputs:
+      gitlint_version: ${{ steps.set_version.outputs.gitlint_version }}
     steps:
       - name: Setup python
         uses: actions/setup-python@v4.5.0
@@ -43,20 +46,28 @@ jobs:
       # However, PyPI doesn't allow '+' in version numbers (no PEP440 local versions allowed on PyPI).
       # To work around this, we override the version string by setting the SETUPTOOLS_SCM_PRETEND_VERSION env var
       # to the version string without the '+' and everything after it.
-      # We then only actual publish such releases on the main branch to guarantee the dev numbering scheme remains
+      # We do this by setting the `gitlint_version` step output here and re-using it later to
+      # set SETUPTOOLS_SCM_PRETEND_VERSION.
+      #
+      # We only actually publish such releases on the main branch to guarantee the dev numbering scheme remains
       # unique.
       # Note that when a tag *is* present (i.e. v0.19.0), hatch versioning will return the tag name (i.e. 0.19.0)
       # and this step has no effect, ie. SETUPTOOLS_SCM_PRETEND_VERSION will be the same as `hatch version`.
       - name: Set SETUPTOOLS_SCM_PRETEND_VERSION
+        id: set_version
         run: |
-          echo "SETUPTOOLS_SCM_PRETEND_VERSION=$(hatch version | cut -d+ -f1)" >> $GITHUB_ENV
+          echo "gitlint_version=$(hatch version | cut -d+ -f1)" >> $GITHUB_OUTPUT
 
       - name: Build (gitlint-core)
         run: hatch build
         working-directory: ./gitlint-core
+        env: 
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
       - name: Build (gitlint)
         run: hatch build
+        env: 
+          SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
       - name: Publish (gitlint-core)
         run: hatch publish -r test
@@ -73,19 +84,11 @@ jobs:
           HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
         if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
 
-  check_env:
-    needs:
-      - publish
-    steps:
-      - name: Print SETUPTOOLS_SCM_PRETEND_VERSION
-        run: |
-          echo "$SETUPTOOLS_SCM_PRETEND_VERSION"
-
   test_release:
     needs:
       - publish
-    uses: jorisroovers/gitlint/.github/workflows/test-release.yml@main
+    uses: ./.github/workflows/test-release.yml
     with:
-      gitlint_version: "0.19.0.dev51"
+      gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
       pypi_source: ${{ inputs.pypi_target }}
       repo_test_ref: ${{ inputs.repo_release_ref }}
