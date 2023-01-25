@@ -74,6 +74,7 @@ jobs:
         if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
 
   check_env:
+    runs-on: "ubuntu-latest"
     needs:
       - publish
     steps:
