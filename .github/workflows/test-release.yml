@@ -7,17 +7,15 @@ on:
         description: "Gitlint version to test"
         required: true
         default: "0.18.0"
+        type: string
       pypi_source:
         description: "PyPI repository to use"
         required: true
-        type: choice
-        options:
-          - "pypi.org"
-          - "test.pypi.org"
-        default: "pypi.org"
+        type: string
       repo_test_ref:
         description: "Git reference to checkout for integration tests"
         default: "main"
+        type: string
   workflow_dispatch:
     inputs:
       gitlint_version:
