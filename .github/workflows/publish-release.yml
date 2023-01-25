@@ -92,7 +92,7 @@ jobs:
   test_release:
     needs:
       - publish
-    uses: jorisroovers/gitlint/.github/workflows/test-release.yml@${{github.ref_name}}
+    uses: jorisroovers/gitlint/.github/workflows/test-release.yml
     with:
       gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
       pypi_source: ${{ inputs.pypi_target }}
