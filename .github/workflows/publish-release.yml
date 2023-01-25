@@ -85,7 +85,7 @@ jobs:
   test_release:
     needs:
       - publish
-    uses: jorisroovers/gitlint/.github/workflows/test-release.yml@main
+    uses: jorisroovers/gitlint/.github/workflows/test-release.yml@gha-publish-improvements
     with:
       gitlint_version: "0.19.0.dev51"
       pypi_source: ${{ inputs.pypi_target }}
