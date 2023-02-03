@@ -13,7 +13,7 @@ from gitlint import (
 )
 from gitlint.contrib import rules as contrib_rules
 from gitlint.exception import GitlintError
-from gitlint.utils import DEFAULT_ENCODING
+from gitlint.utils import FILE_ENCODING
 
 
 def handle_option_error(func):
@@ -468,7 +468,7 @@ class LintConfigBuilder:
         try:
             parser = ConfigParser()
 
-            with open(filename, encoding=DEFAULT_ENCODING) as config_file:
+            with open(filename, encoding=FILE_ENCODING) as config_file:
                 parser.read_file(config_file, filename)
 
             for section_name in parser.sections():

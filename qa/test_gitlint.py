@@ -2,7 +2,7 @@ import os
 
 from qa.base import BaseTestCase
 from qa.shell import echo, git, gitlint
-from qa.utils import DEFAULT_ENCODING
+from qa.utils import FILE_ENCODING
 
 
 class IntegrationTests(BaseTestCase):
@@ -58,7 +58,7 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using fixup commit
-        with open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=DEFAULT_ENCODING) as fh:
+        with open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=FILE_ENCODING) as fh:
             fh.write("Appending söme stuff\n")
 
         git("add", test_filename, _cwd=self.tmp_git_repo)
@@ -87,7 +87,7 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using fixup=amend commit
-        with open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=DEFAULT_ENCODING) as fh:
+        with open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=FILE_ENCODING) as fh:
             fh.write("Appending söme stuff\n")
 
         git("add", test_filename, _cwd=self.tmp_git_repo)
@@ -133,7 +133,7 @@ class IntegrationTests(BaseTestCase):
         self.assertEqualStdout(output, expected)
 
         # Make a small modification to the commit and commit it using squash commit
-        with open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=DEFAULT_ENCODING) as fh:
+        with open(os.path.join(self.tmp_git_repo, test_filename), "a", encoding=FILE_ENCODING) as fh:
             # Wanted to write a unicode string, but that's obnoxious if you want to do it across Python 2 and 3.
             # https://stackoverflow.com/questions/22392377/
             # error-writing-a-file-with-file-write-in-python-unicodeencodeerror

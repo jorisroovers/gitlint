@@ -4,7 +4,7 @@ import stat
 
 from gitlint.exception import GitlintError
 from gitlint.git import git_hooks_dir
-from gitlint.utils import DEFAULT_ENCODING
+from gitlint.utils import FILE_ENCODING
 
 COMMIT_MSG_HOOK_SRC_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "files", "commit-msg")
 COMMIT_MSG_HOOK_DST_PATH = "commit-msg"
@@ -52,7 +52,7 @@ class GitHookInstaller:
         if not os.path.exists(dest_path):
             raise GitHookInstallerError(f"There is no commit-msg hook present in {dest_path}.")
 
-        with open(dest_path, encoding=DEFAULT_ENCODING) as fp:
+        with open(dest_path, encoding=FILE_ENCODING) as fp:
             lines = fp.readlines()
             if len(lines) < 2 or lines[1] != GITLINT_HOOK_IDENTIFIER:
                 msg = (

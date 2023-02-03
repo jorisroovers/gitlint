@@ -74,3 +74,8 @@ def getpreferredencoding():
 
 
 DEFAULT_ENCODING = getpreferredencoding()
+
+########################################################################################################################
+# FILE_ENCODING
+
+FILE_ENCODING = "UTF-8"

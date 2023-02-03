@@ -6,7 +6,7 @@ from click.testing import CliRunner
 from gitlint import cli, config, hooks
 from gitlint.shell import ErrorReturnCode
 from gitlint.tests.base import BaseTestCase
-from gitlint.utils import DEFAULT_ENCODING
+from gitlint.utils import FILE_ENCODING
 
 
 class CLIHookTests(BaseTestCase):
@@ -102,7 +102,7 @@ class CLIHookTests(BaseTestCase):
 
         with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "hür")
-            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+            with open(msg_filename, "w", encoding=FILE_ENCODING) as f:
                 f.write("WIP: tïtle\n")
 
             with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -130,7 +130,7 @@ class CLIHookTests(BaseTestCase):
 
             with self.patch_input(["e", "e", "n"]), self.tempdir() as tmpdir:
                 msg_filename = os.path.realpath(os.path.join(tmpdir, "hür"))
-                with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+                with open(msg_filename, "w", encoding=FILE_ENCODING) as f:
                     f.write(commit_messages[i] + "\n")
 
                 with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -158,7 +158,7 @@ class CLIHookTests(BaseTestCase):
 
         with self.patch_input(["n"]), self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "hür")
-            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+            with open(msg_filename, "w", encoding=FILE_ENCODING) as f:
                 f.write("WIP: höok no\n")
 
             with patch("gitlint.display.stderr", new=StringIO()) as stderr:
@@ -175,7 +175,7 @@ class CLIHookTests(BaseTestCase):
         """Test for run-hook subcommand, answering 'y(es)' after commit-hook"""
         with self.patch_input(["y"]), self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "hür")
-            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+            with open(msg_filename, "w", encoding=FILE_ENCODING) as f:
                 f.write("WIP: höok yes\n")
 
             with patch("gitlint.display.stderr", new=StringIO()) as stderr:
