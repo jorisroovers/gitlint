@@ -9,7 +9,7 @@ from click.testing import CliRunner
 from gitlint import __version__, cli
 from gitlint.shell import CommandNotFound
 from gitlint.tests.base import BaseTestCase
-from gitlint.utils import DEFAULT_ENCODING, FILE_ENCODING
+from gitlint.utils import FILE_ENCODING, TERMINAL_ENCODING
 
 
 class CLITests(BaseTestCase):
@@ -39,7 +39,7 @@ class CLITests(BaseTestCase):
             "gitlint_version": __version__,
             "GITLINT_USE_SH_LIB": BaseTestCase.GITLINT_USE_SH_LIB,
             "target": os.path.realpath(os.getcwd()),
-            "DEFAULT_ENCODING": DEFAULT_ENCODING,
+            "DEFAULT_ENCODING": TERMINAL_ENCODING,
         }
 
     def test_version(self):
@@ -370,7 +370,7 @@ class CLITests(BaseTestCase):
 
         with self.tempdir() as tmpdir:
             msg_filename = os.path.join(tmpdir, "msg")
-            with open(msg_filename, "w", encoding=DEFAULT_ENCODING) as f:
+            with open(msg_filename, "w", encoding=FILE_ENCODING) as f:
                 f.write("Commït title\n")
 
             with patch("gitlint.display.stderr", new=StringIO()) as stderr:

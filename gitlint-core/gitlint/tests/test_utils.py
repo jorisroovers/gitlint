@@ -27,7 +27,7 @@ class UtilsTests(BaseTestCase):
         self.assertEqual(utils.use_sh_library(), False)
 
     @patch("gitlint.utils.locale")
-    def test_default_encoding_non_windows(self, mocked_locale):
+    def test_terminal_encoding_non_windows(self, mocked_locale):
         utils.PLATFORM_IS_WINDOWS = False
         mocked_locale.getpreferredencoding.return_value = "foöbar"
         self.assertEqual(utils.getpreferredencoding(), "foöbar")
@@ -37,7 +37,7 @@ class UtilsTests(BaseTestCase):
         self.assertEqual(utils.getpreferredencoding(), "UTF-8")
 
     @patch("os.environ")
-    def test_default_encoding_windows(self, patched_env):
+    def test_terminal_encoding_windows(self, patched_env):
         utils.PLATFORM_IS_WINDOWS = True
         # Mock out os.environ
         mock_env = {}
