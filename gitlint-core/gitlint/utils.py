@@ -38,27 +38,28 @@ def use_sh_library():
 USE_SH_LIB = use_sh_library()
 
 ########################################################################################################################
-# DEFAULT_ENCODING
+# TERMINAL_ENCODING
+# Encoding used for terminal encoding/decoding.
 
 
 def getpreferredencoding():
     """Modified version of local.getpreferredencoding() that takes into account LC_ALL, LC_CTYPE, LANG env vars
     on windows and falls back to UTF-8."""
     fallback_encoding = "UTF-8"
-    default_encoding = locale.getpreferredencoding() or fallback_encoding
+    preferred_encoding = locale.getpreferredencoding() or fallback_encoding
 
     # On Windows, we mimic git/linux by trying to read the LC_ALL, LC_CTYPE, LANG env vars manually
     # (on Linux/MacOS the `getpreferredencoding()` call will take care of this).
     # We fallback to UTF-8
     if PLATFORM_IS_WINDOWS:
-        default_encoding = fallback_encoding
+        preferred_encoding = fallback_encoding
         for env_var in ["LC_ALL", "LC_CTYPE", "LANG"]:
             encoding = os.environ.get(env_var, False)
             if encoding:
                 # Support dotted (C.UTF-8) and non-dotted (C or UTF-8) charsets:
                 # If encoding contains a dot: split and use second part, otherwise use everything
                 dot_index = encoding.find(".")
-                default_encoding = encoding[dot_index + 1 :] if dot_index != -1 else encoding
+                preferred_encoding = encoding[dot_index + 1 :] if dot_index != -1 else encoding
                 break
 
         # We've determined what encoding the user *wants*, let's now check if it's actually a valid encoding on the
@@ -66,11 +67,21 @@ def getpreferredencoding():
         # This scenario is fairly common on Windows where git sets LC_CTYPE=C when invoking the commit-msg hook, which
         # is not a valid encoding in Python on Windows.
         try:
-            codecs.lookup(default_encoding)
+            codecs.lookup(preferred_encoding)
         except LookupError:
-            default_encoding = fallback_encoding
+            preferred_encoding = fallback_encoding
 
-    return default_encoding
+    return preferred_encoding
 
 
-DEFAULT_ENCODING = getpreferredencoding()
+TERMINAL_ENCODING = getpreferredencoding()
+
+########################################################################################################################
+# FILE_ENCODING
+# Gitlint assumes UTF-8 encoding for all file operations:
+#  - reading/writing its own hook and config files
+#  - reading/writing git commit messages
+# Git does have i18n.commitEncoding and i18n.logOutputEncoding options which we might want to take into account,
+# but that's not supported today.
+
+FILE_ENCODING = "UTF-8"

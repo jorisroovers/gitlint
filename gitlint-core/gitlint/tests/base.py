@@ -13,7 +13,7 @@ from gitlint.config import LintConfig
 from gitlint.deprecation import LOG as DEPRECATION_LOG
 from gitlint.deprecation import Deprecation
 from gitlint.git import GitChangedFileStats, GitContext
-from gitlint.utils import DEFAULT_ENCODING, LOG_FORMAT
+from gitlint.utils import FILE_ENCODING, LOG_FORMAT
 
 EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING = (
     "WARNING: gitlint.deprecated.regex_style_search {0} - {1}: gitlint will be switching from using "
@@ -95,7 +95,7 @@ class BaseTestCase(unittest.TestCase):
     def get_sample(filename=""):
         """Read and return the contents of a file in gitlint/tests/samples"""
         sample_path = BaseTestCase.get_sample_path(filename)
-        return Path(sample_path).read_text(encoding=DEFAULT_ENCODING)
+        return Path(sample_path).read_text(encoding=FILE_ENCODING)
 
     @staticmethod
     def patch_input(side_effect):
@@ -109,7 +109,7 @@ class BaseTestCase(unittest.TestCase):
         """Utility method to read an expected file from gitlint/tests/expected and return it as a string.
         Optionally replace template variables specified by variable_dict."""
         expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)
-        expected = Path(expected_path).read_text(encoding=DEFAULT_ENCODING)
+        expected = Path(expected_path).read_text(encoding=FILE_ENCODING)
 
         if variable_dict:
             expected = expected.format(**variable_dict)
