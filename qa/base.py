@@ -10,7 +10,7 @@ from uuid import uuid4
 import arrow
 
 from qa.shell import RunningCommand, git, gitlint
-from qa.utils import DEFAULT_ENCODING, FILE_ENCODING, PLATFORM_IS_WINDOWS
+from qa.utils import FILE_ENCODING, PLATFORM_IS_WINDOWS, TERMINAL_ENCODING
 
 
 class BaseTestCase(TestCase):
@@ -41,7 +41,7 @@ class BaseTestCase(TestCase):
 
     def assertEqualStdout(self, output, expected):
         self.assertIsInstance(output, RunningCommand)
-        output = output.stdout.decode(DEFAULT_ENCODING)
+        output = output.stdout.decode(TERMINAL_ENCODING)
         output = output.replace("\r", "")
         self.assertMultiLineEqual(output, expected)
 
@@ -196,7 +196,8 @@ class BaseTestCase(TestCase):
             "git_version": expected_git_version,
             "gitlint_version": expected_gitlint_version,
             "GITLINT_USE_SH_LIB": BaseTestCase.GITLINT_USE_SH_LIB,
-            "DEFAULT_ENCODING": DEFAULT_ENCODING,
+            "TERMINAL_ENCODING": TERMINAL_ENCODING,
+            "FILE_ENCODING": FILE_ENCODING,
         }
 
     def get_debug_vars_last_commit(self, git_repo=None):

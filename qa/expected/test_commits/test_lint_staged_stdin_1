@@ -5,7 +5,8 @@ DEBUG: gitlint.git ('--version',)
 DEBUG: gitlint.cli Git version: {git_version}
 DEBUG: gitlint.cli Gitlint version: {gitlint_version}
 DEBUG: gitlint.cli GITLINT_USE_SH_LIB: {GITLINT_USE_SH_LIB}
-DEBUG: gitlint.cli DEFAULT_ENCODING: {DEFAULT_ENCODING}
+DEBUG: gitlint.cli TERMINAL_ENCODING: {TERMINAL_ENCODING}
+DEBUG: gitlint.cli FILE_ENCODING: {FILE_ENCODING}
 DEBUG: gitlint.cli Configuration
 config-path: None
 [GENERAL]
