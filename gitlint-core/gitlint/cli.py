@@ -30,6 +30,9 @@ DEFAULT_CONFIG_FILE = ".gitlint"
 # -n: disable swap files. This fixes a vim error on windows (E303: Unable to open swap file for <path>)
 DEFAULT_COMMIT_MSG_EDITOR = "vim -n"
 
+SETUP_CFG_FILE = "setup.cfg"
+SETUP_CFG_SECTION_PREFIX = "tool:gitlint:"
+
 # Since we use the return code to denote the amount of errors, we need to change the default click usage error code
 click.UsageError.exit_code = USAGE_ERROR_CODE
 
@@ -94,6 +97,8 @@ def build_config(
         config_builder.set_from_config_file(config_path)
     elif os.path.exists(DEFAULT_CONFIG_FILE):
         config_builder.set_from_config_file(DEFAULT_CONFIG_FILE)
+    elif os.path.exists(SETUP_CFG_FILE):
+        config_builder.set_from_config_file(SETUP_CFG_FILE, SETUP_CFG_SECTION_PREFIX)
 
     # Then process any commandline configuration flags
     config_builder.set_config_from_string_list(c)

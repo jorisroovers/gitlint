@@ -460,7 +460,7 @@ class LintConfigBuilder:
                     f"'{config_option}' is an invalid configuration option. Use '<rule>.<option>=<value>'"
                 ) from e
 
-    def set_from_config_file(self, filename):
+    def set_from_config_file(self, filename, section_prefix=None):
         """Loads lint config from an ini-style config file"""
         if not os.path.exists(filename):
             raise LintConfigError(f"Invalid file path: {filename}")
@@ -472,8 +472,14 @@ class LintConfigBuilder:
                 parser.read_file(config_file, filename)
 
             for section_name in parser.sections():
+                if section_prefix:
+                    if not section_name.startswith(section_prefix):
+                        continue
+                    target_section = section_name[len(section_prefix) :]
+                else:
+                    target_section = section_name
                 for option_name, option_value in parser.items(section_name):
-                    self.set_option(section_name, option_name, str(option_value))
+                    self.set_option(target_section, option_name, str(option_value))
 
         except ConfigParserError as e:
             raise LintConfigError(str(e)) from e

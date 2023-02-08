@@ -168,6 +168,17 @@ ignore=T1,body-min-length
 types = bugfix,user-story,epic
 ```
 
+## The setup.cfg file
+
+The syntax and contents of configuration via `setup.cfg` is the same as via `.gitlint`,
+except that gitlint related sections in it are prefixed with `tool:gitlint:`.
+For example:
+
+```ini
+[tool:gitlint:general]
+# ...
+```
+
 ## Commandline config
 
 You can also use one or more `-c` flags like so:
@@ -211,7 +222,7 @@ gitlint configuration is applied in the following order of precedence:
 3. Commandline convenience flags (e.g.:  `-vv`, `--silent`, `--ignore`)
 4. Environment variables (e.g.: `GITLINT_VERBOSITY=3`)
 5. Commandline configuration flags (e.g.: `-c title-max-length=123`)
-6. Configuration file (local `.gitlint` file, or file specified using `-C`/`--config`)
+6. Configuration file (first of: file specified using `-C`/`--config`, local `.gitlint` file, local `setup.cfg` file)
 7. Default gitlint config
 
 ## General Options
