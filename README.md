@@ -9,7 +9,7 @@ Git commit message linter written in python, checks your commit messages for sty
 **See [jorisroovers.github.io/gitlint](http://jorisroovers.github.io/gitlint/) for full documentation.**
 
 <a href="http://jorisroovers.github.io/gitlint/" target="_blank">
-<img src="docs/images/readme-gitlint.png" />
+<img src="https://raw.githubusercontent.com/jorisroovers/gitlint/main/docs/images/readme-gitlint.png" />
 </a>
 
 ## Contributing ##
