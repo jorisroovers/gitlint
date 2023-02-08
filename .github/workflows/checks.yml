@@ -122,7 +122,7 @@ jobs:
   # When on main, auto publish dev build
   auto_publish_dev:
     needs:
-      - checks
+      - check
     if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/publish-release.yml
     with:
