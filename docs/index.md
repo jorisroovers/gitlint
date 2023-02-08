@@ -272,7 +272,7 @@ If you want to lint more commits you can modify the `gitlint-ci` hook like so:
 
 ```yaml
 -   repo: https://github.com/jorisroovers/gitlint
-    rev:  v0.17.0
+    rev:  # insert ref, e.g. v0.18.0
     hooks:
     -   id: gitlint
     -   id: gitlint-ci
