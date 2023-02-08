@@ -2,7 +2,7 @@ import subprocess
 
 from qa.base import BaseTestCase
 from qa.shell import echo, gitlint
-from qa.utils import DEFAULT_ENCODING, FILE_ENCODING
+from qa.utils import FILE_ENCODING, TERMINAL_ENCODING
 
 
 class StdInTests(BaseTestCase):
@@ -50,4 +50,4 @@ class StdInTests(BaseTestCase):
                 "gitlint", stdin=file_handle, cwd=self.tmp_git_repo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
             ) as p:
                 output, _ = p.communicate()
-                self.assertEqual(output.decode(DEFAULT_ENCODING), self.get_expected("test_stdin/test_stdin_file_1"))
+                self.assertEqual(output.decode(TERMINAL_ENCODING), self.get_expected("test_stdin/test_stdin_file_1"))

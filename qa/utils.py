@@ -29,7 +29,8 @@ def use_sh_library():
 USE_SH_LIB = use_sh_library()
 
 ########################################################################################################################
-# DEFAULT_ENCODING
+# TERMINAL_ENCODING
+# Encoding for reading gitlint command output
 
 
 def getpreferredencoding():
@@ -37,7 +38,7 @@ def getpreferredencoding():
     return locale.getpreferredencoding() or "UTF-8"
 
 
-DEFAULT_ENCODING = getpreferredencoding()
+TERMINAL_ENCODING = getpreferredencoding()
 
 
 ########################################################################################################################

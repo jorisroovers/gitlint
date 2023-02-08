@@ -3,7 +3,7 @@
 
 import subprocess
 
-from qa.utils import DEFAULT_ENCODING, USE_SH_LIB
+from qa.utils import TERMINAL_ENCODING, USE_SH_LIB
 
 if USE_SH_LIB:
     from sh import (
@@ -41,7 +41,7 @@ else:
             self.exit_code = exitcode
 
         def __str__(self):
-            return self.stdout.decode(DEFAULT_ENCODING)
+            return self.stdout.decode(TERMINAL_ENCODING)
 
         def __unicode__(self):
             return self.stdout

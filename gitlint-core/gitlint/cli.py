@@ -68,7 +68,8 @@ def log_system_info():
     LOG.debug("Git version: %s", git_version())
     LOG.debug("Gitlint version: %s", gitlint.__version__)
     LOG.debug("GITLINT_USE_SH_LIB: %s", os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]"))
-    LOG.debug("DEFAULT_ENCODING: %s", gitlint.utils.TERMINAL_ENCODING)
+    LOG.debug("TERMINAL_ENCODING: %s", gitlint.utils.TERMINAL_ENCODING)
+    LOG.debug("FILE_ENCODING: %s", gitlint.utils.FILE_ENCODING)
 
 
 def build_config(
