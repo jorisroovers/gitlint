@@ -318,7 +318,7 @@ gitlint --commits mybranch
 # Lint all commits that are different between a branch and your main branch
 gitlint --commits "main..mybranch"
 # Use git's special references
-gitlint --commits "origin..HEAD"
+gitlint --commits "origin/main..HEAD"
 
 # You can also pass multiple, comma separated commit hashes:
 gitlint --commits 019cf40,c50eb150,d6bc75a
