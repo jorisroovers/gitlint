@@ -96,9 +96,38 @@ jobs:
           HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
         if: inputs.pypi_target == 'test.pypi.org' && inputs.repo_release_ref == 'main'
 
-  test_release:
+  # Wait for gitlint package to be available in PyPI for installation
+  wait-for-package:
     needs:
       - publish
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Install gitlint
+        uses: nick-fields/retry@v2.8.3
+        with:
+          timeout_minutes: 1
+          max_attempts: 10
+          command: |
+            python -m pip install gitlint==${{ needs.publish.outputs.gitlint_version }}
+        if: inputs.pypi_source == 'pypi.org'
+
+      - name: Install gitlint (test.pypi.org)
+        uses: nick-fields/retry@v2.8.3
+        with:
+          timeout_minutes: 1
+          max_attempts: 10
+          command: |
+            pip install --no-cache -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==${{ needs.publish.outputs.gitlint_version }}
+        if: inputs.pypi_source == 'pypi.org'
+
+      - name: gitlint --version
+        run: |
+          gitlint --version
+          [ "$(gitlint --version)" == "gitlint, version ${{ needs.publish.outputs.gitlint_version }}" ]
+
+  test-release:
+    needs:
+      - wait-for-package
     uses: ./.github/workflows/test-release.yml
     with:
       gitlint_version: ${{ needs.publish.outputs.gitlint_version }}

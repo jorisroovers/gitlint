@@ -35,7 +35,7 @@ on:
         default: "main"
 
 jobs:
-  checks:
+  test-release:
     timeout-minutes: 10
     runs-on: "ubuntu-latest"
     strategy:
@@ -48,8 +48,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # Intentionally install hatch before gitlint, to buy us a few extra seconds in case the gitlint package was just
-      # published and hasn't appeared on PyPI yet.
       - name: Install Hatch
         run: python -m pip install hatch==1.6.3
 
