@@ -117,13 +117,19 @@ jobs:
           timeout_minutes: 1
           max_attempts: 10
           command: |
-            pip install --no-cache -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==${{ needs.publish.outputs.gitlint_version }}
+            pip install --no-cache-dir -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==${{ needs.publish.outputs.gitlint_version }}
         if: inputs.pypi_target == 'test.pypi.org'
 
       - name: gitlint --version
         run: |
           gitlint --version
           [ "$(gitlint --version)" == "gitlint, version ${{ needs.publish.outputs.gitlint_version }}" ]
+
+      # Unfortunately, it's not because the newly published package installation worked once that replication
+      # has finished amongst all PyPI servers (subsequent installations might still fail). We sleep for 3 min here
+      # to increase the odds that replication has finished.
+      - name: Sleep
+        run: sleep 180
 
   test-release:
     needs:
