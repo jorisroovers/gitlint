@@ -54,7 +54,7 @@ class GitHookInstaller:
 
         with open(dest_path, encoding=FILE_ENCODING) as fp:
             lines = fp.readlines()
-            if len(lines) < 2 or lines[1] != GITLINT_HOOK_IDENTIFIER:
+            if len(lines) < 2 or lines[1] != GITLINT_HOOK_IDENTIFIER:  # noqa: PLR2004 (Magic value used in comparison)
                 msg = (
                     f"The commit-msg hook in {dest_path} was not installed by gitlint (or it was modified).\n"
                     "Uninstallation of 3th party or modified gitlint hooks is not supported."

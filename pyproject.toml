@@ -86,7 +86,7 @@ dependencies = [
     "pytest==7.2.0",
     "pytest-cov==4.0.0",
     "python-coveralls==2.9.3",
-    "ruff==0.0.215",
+    "ruff==0.0.244",
     "radon==5.1.0",
     "pdbr==0.7.5; sys_platform != \"win32\"",
 ]
@@ -164,8 +164,9 @@ extend-exclude = [
 ]
 
 ignore = [
-    "E501",   # Never enforce `E501` (line length violations) - taken care of by black
-    "SIM108", # Use ternary operator instead of if-else-block
+    "E501",    # Never enforce `E501` (line length violations) - taken care of by black
+    "SIM108",  # Use ternary operator instead of if-else-block
+    "PLR0913", # Too many arguments to function call
 ]
 
 select = [

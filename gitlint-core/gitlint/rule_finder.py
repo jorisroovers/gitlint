@@ -78,7 +78,7 @@ def find_rule_classes(extra_path):
     return rule_classes
 
 
-def assert_valid_rule_class(clazz, rule_type="User-defined"):
+def assert_valid_rule_class(clazz, rule_type="User-defined"):  # noqa: PLR0912 (too many branches)
     """
     Asserts that a given rule clazz is valid by checking a number of its properties:
      - Rules must extend from  LineRule, CommitRule or ConfigurationRule

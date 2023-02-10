@@ -107,7 +107,7 @@ class LintConfig:
     @handle_option_error
     def verbosity(self, value):
         self._verbosity.set(value)
-        if self.verbosity < 0 or self.verbosity > 3:
+        if self.verbosity < 0 or self.verbosity > 3:  # noqa: PLR2004 (Magic value used in comparison)
             raise LintConfigError("Option 'verbosity' must be set between 0 and 3")
 
     @property
