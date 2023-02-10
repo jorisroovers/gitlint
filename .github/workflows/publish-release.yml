@@ -126,10 +126,10 @@ jobs:
           [ "$(gitlint --version)" == "gitlint, version ${{ needs.publish.outputs.gitlint_version }}" ]
 
       # Unfortunately, it's not because the newly published package installation worked once that replication
-      # has finished amongst all PyPI servers (subsequent installations might still fail). We sleep for 3 min here
+      # has finished amongst all PyPI servers (subsequent installations might still fail). We sleep for 10 min here
       # to increase the odds that replication has finished.
       - name: Sleep
-        run: sleep 180
+        run: sleep 600
 
   test-release:
     needs:
