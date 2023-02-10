@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gitlint"
-dynamic = ["version", "dependencies"]
+dynamic = ["version", "dependencies", "urls"]
 description = "Git commit message linter written in python, checks your commit messages for style."
 readme = "README.md"
 
@@ -34,17 +34,19 @@ classifiers = [
     "Topic :: Software Development :: Testing",
 ]
 
-[project.urls]
-Homepage = "https://jorisroovers.github.io/gitlint"
-Documentation = "https://jorisroovers.github.io/gitlint"
-Source = "https://github.com/jorisroovers/gitlint"
-Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
-
 [tool.hatch.version]
 source = "vcs"
 
 [tool.hatch.build]
 exclude = ["*"]
+
+[tool.hatch.metadata.hooks.vcs.urls]
+Homepage = "https://jorisroovers.github.io/gitlint"
+Documentation = "https://jorisroovers.github.io/gitlint"
+Source = "https://github.com/jorisroovers/gitlint"
+Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
+source_archive = "https://github.com/jorisroovers/gitlint/archive/{commit_hash}.zip"
+source_commit = "https://github.com/jorisroovers/gitlint/tree/{commit_hash}"
 
 # Use metadata hooks specified in 'hatch_build.py'
 # (this line is critical when building wheels, when building sdist it seems optional)
