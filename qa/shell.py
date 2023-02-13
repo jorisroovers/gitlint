@@ -75,7 +75,7 @@ else:
         return run_command("gitlint", *command_parts, **kwargs)
 
     def run_command(command, *args, **kwargs):
-        args = [command] + list(args)
+        args = [command, *list(args)]
         return _exec(*args, **kwargs)
 
     def _exec(*args, **kwargs):

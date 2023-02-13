@@ -290,7 +290,7 @@ class BodyMissing(CommitRule):
         # ignore merges when option tells us to, which may have no body
         if self.options["ignore-merge-commits"].value and commit.is_merge_commit:
             return
-        if len(commit.message.body) < 2 or not "".join(commit.message.body).strip():
+        if len(commit.message.body) < 2 or not "".join(commit.message.body).strip():  # noqa: PLR2004 (Magic value)
             return [RuleViolation(self.id, "Body message is missing", None, 3)]
 
 
@@ -355,7 +355,7 @@ class AuthorValidEmail(CommitRule):
         # We're replacing regex match with search semantics, see https://github.com/jorisroovers/gitlint/issues/254
         # In case the user is using the default regex, we can silently change to using search
         # If not, it depends on config (handled by Deprecation class)
-        if self.DEFAULT_AUTHOR_VALID_EMAIL_REGEX == self.options["regex"].value.pattern:
+        if self.options["regex"].value.pattern == self.DEFAULT_AUTHOR_VALID_EMAIL_REGEX:
             regex_method = self.options["regex"].value.search
         else:
             regex_method = Deprecation.get_regex_method(self, self.options["regex"])
@@ -443,7 +443,7 @@ class IgnoreBodyLines(ConfigurationRule):
                 new_body.append(line)
 
         commit.message.body = new_body
-        commit.message.full = "\n".join([commit.message.title] + new_body)
+        commit.message.full = "\n".join([commit.message.title, *new_body])
 
 
 class IgnoreByAuthorName(ConfigurationRule):

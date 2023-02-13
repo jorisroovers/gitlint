@@ -86,7 +86,7 @@ class BaseTestCase(TestCase):
             with open(full_path, **open_kwargs) as f:
                 f.write(content)
         else:
-            open(full_path, "a", encoding=FILE_ENCODING).close()
+            open(full_path, "a", encoding=FILE_ENCODING).close()  # noqa: SIM115 (Use context handler for opening files)
 
         return test_filename
 
