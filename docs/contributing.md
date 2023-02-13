@@ -3,13 +3,14 @@
 We'd love for you to contribute to gitlint. Thanks for your interest!
 The [source-code and issue tracker](https://github.com/jorisroovers/gitlint) are hosted on Github.
 
-Often it takes a while for us (well, actually just [me](https://github.com/jorisroovers)) to get back to you
-(sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
-your interest!
-We maintain a [loose project plan on github projects](https://github.com/users/jorisroovers/projects/1/), but
-that's open to a lot of change and input.
+!!! note
+    Often it takes a while for us (well, actually just [me](https://github.com/jorisroovers)) to get back to you
+    (sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
+    your interest!
+    We maintain a [loose project plan on github projects](https://github.com/users/jorisroovers/projects/1/), but
+    that's open to a lot of change and input.
 
-## Guidelines
+## Overall Guidelines
 
 When contributing code, please consider all the parts that are typically required:
 
@@ -26,15 +27,38 @@ can make it as part of a release. **Gitlint commits and pull requests are gated 
 code-review**. If you can already include them as part of your PR, it's a huge timesaver for us
 and it's likely that your PR will be merged and released a lot sooner. 
 
-It's also a good idea to open an issue before submitting a PR for non-trivial changes, so we can discuss what you have
-in mind before you spend the effort. Thanks!
+!!! important
+    It's a good idea to open an issue before submitting a PR for non-trivial changes, so we can discuss what you have
+    in mind before you spend the effort. Thanks!
 
-!!! Important
-    **On the topic of releases**: Gitlint releases typically go out when there's either enough new features and fixes
-    to make it worthwhile or when there's a critical fix for a bug that fundamentally breaks gitlint. While the amount
-    of overhead of doing a release isn't huge, it's also not zero. In practice this means that it might take weeks
-    or months before merged code actually gets released - we know that can be frustrating but please understand it's
-    a well-considered trade-off based on available time.
+## Releases
+Gitlint releases typically go out when there's either enough new features and fixes
+to make it worthwhile or when there's a critical fix for a bug that fundamentally breaks gitlint.
+
+While the amount of overhead of doing a release isn't huge, it's also not zero. In practice this means that it might
+take weeks or months before merged code actually gets released - we know that can be frustrating but please
+understand it's a well-considered trade-off based on available time.
+
+### Dev Builds
+While final releases are usually months apart, we do dev builds on every commit to `main` that get published
+to **test.pypi.org**:
+
+- **gitlint**: [https://test.pypi.org/project/gitlint/#history](https://test.pypi.org/project/gitlint/#history)
+- **gitlint-core**:  [https://test.pypi.org/project/gitlint-core/#history](https://test.pypi.org/project/gitlint-core/#history)
+
+It usually takes about 15 min after merging a PR to `main` for new builds to show up. Note that the installation
+of a recently published version can still fail for a few minutes after a build shows up on (test) PyPI while the package
+is replicated to all download mirrors.
+
+To install a dev build of gitlint:
+```sh
+export VERSION="0.19.0.dev68"
+pip install --no-cache-dir -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==$VERSION
+# Explanation:
+# --no-cache-dir: don't use local cache, this ensures pip checks for the latest version online
+# --extra-index-url: use regular PyPI to download dependencies
+```
+
 
 ## Environment setup
 ### Local setup
