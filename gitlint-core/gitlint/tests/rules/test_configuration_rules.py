@@ -92,6 +92,19 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assertEqual(config, LintConfig())
         self.assert_logged([])  # nothing logged -> nothing ignored
 
+        # No regex specified -> Config shouldn't be changed
+        staged_commit = self.gitcommit("Tïtle\n\nThis is\n a relëase body\n line")
+        rule = rules.IgnoreByAuthorName({"regex": "foo"})
+        config = LintConfig()
+        rule.apply(config, staged_commit)
+        self.assertEqual(config, LintConfig())
+        expected_log_messages = [
+            "WARNING: gitlint.rules ignore-by-author-name - I4: skipping - commit.author_name unknown. "
+            "Suggested fix: Using the --staged flag (or set general.staged=True in .gitlint). "
+            "More details: https://jorisroovers.com/gitlint/configuration/#staged"
+        ]
+        self.assert_logged(expected_log_messages)
+
         # Matching regex -> expect config to ignore all rules
         rule = rules.IgnoreByAuthorName({"regex": "(.*)ëst(.*)"})
         expected_config = LintConfig()
@@ -99,7 +112,7 @@ class ConfigurationRuleTests(BaseTestCase):
         rule.apply(config, commit)
         self.assertEqual(config, expected_config)
 
-        expected_log_messages = [
+        expected_log_messages += [
             EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING.format("I4", "ignore-by-author-name"),
             "DEBUG: gitlint.rules Ignoring commit because of rule 'I4': "
             "Commit Author Name 'Tëst nåme' matches the regex '(.*)ëst(.*)',"

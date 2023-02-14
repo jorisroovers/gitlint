@@ -459,6 +459,17 @@ class IgnoreByAuthorName(ConfigurationRule):
         if not self.options["regex"].value:
             return
 
+        # If commit.author_name is not available, log warning and return
+        if commit.author_name is None:
+            warning_msg = (
+                "%s - %s: skipping - commit.author_name unknown. "
+                "Suggested fix: Using the --staged flag (or set general.staged=True in .gitlint). "
+                "More details: https://jorisroovers.com/gitlint/configuration/#staged"
+            )
+
+            self.log.warning(warning_msg, self.name, self.id)
+            return
+
         regex_method = Deprecation.get_regex_method(self, self.options["regex"])
 
         if regex_method(commit.author_name):

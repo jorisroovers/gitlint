@@ -48,7 +48,7 @@ def setup_logging():
     # Root log, mostly used for debug
     root_log = logging.getLogger("gitlint")
     root_log.propagate = False  # Don't propagate to child loggers, the gitlint root logger handles everything
-    root_log.setLevel(logging.ERROR)
+    root_log.setLevel(logging.WARN)
     handler = logging.StreamHandler()
     formatter = logging.Formatter(LOG_FORMAT)
     handler.setFormatter(formatter)
