@@ -125,7 +125,7 @@
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>Gitlint support for Windows is experimental</strong>, and <a href="https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows">there are some known issues</a>.</p>
+<p><strong>Gitlint works on Windows</strong>, but <a href="https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows">there are some known issues</a>.</p>
 <p>Also, gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
 have a look at <a href="https://github.com/m1foley/fit-commit">fit-commit</a> (Ruby),
 <a href="https://github.com/clns/node-commit-msg">node-commit-msg</a> (Node.js) or <a href="http://marionebl.github.io/commitlint">commitlint</a> (Node.js).</p>
@@ -148,7 +148,8 @@ useful throughout the years.</li>
 <li><strong>User-defined rules:</strong> Want to do more then what gitlint offers out of the box? Write your own <a href="user_defined_rules/">user defined rules</a>.</li>
 <li><strong>Full unicode support:</strong> Lint your Russian, Chinese or Emoji commit messages with ease!</li>
 <li><strong>Production-ready:</strong> Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
-   python code standards (pep8, pylint), good documentation, widely used, proven track record.</li>
+   python code standards (<a href="https://github.com/psf/black">black</a>, <a href="https://github.com/charliermarsh/ruff">ruff</a>),
+   good documentation, widely used, proven track record.</li>
 </ul>
 <h2 id="getting-started">Getting Started</h2>
 <h3 id="installation">Installation</h3>
@@ -348,7 +349,7 @@ your <code>.pre-commit-config.yaml</code> file like so:</p>
 <p>By default this will only lint the latest commit.
 If you want to lint more commits you can modify the <code>gitlint-ci</code> hook like so:</p>
 <pre><code class="language-yaml">-   repo: https://github.com/jorisroovers/gitlint
-    rev:  v0.17.0
+    rev:  # insert ref, e.g. v0.18.0
     hooks:
     -   id: gitlint
     -   id: gitlint-ci
@@ -384,18 +385,21 @@ gitlint --commits mybranch
 # Lint all commits that are different between a branch and your main branch
 gitlint --commits &quot;main..mybranch&quot;
 # Use git's special references
-gitlint --commits &quot;origin..HEAD&quot;
+gitlint --commits &quot;origin/main..HEAD&quot;
 
 # You can also pass multiple, comma separated commit hashes:
 gitlint --commits 019cf40,c50eb150,d6bc75a
 # These can include special references as well
 gitlint --commits HEAD~1,mybranch-name,origin/main,d6bc75a
+# You can also lint a single commit with --commits:
+gitling --commits 019cf40,
 </code></pre>
 <p>The <code>--commits</code> flag takes a <strong>single</strong> refspec argument or commit range. Basically, any range that is understood
 by <a href="https://git-scm.com/docs/git-rev-list">git rev-list</a> as a single argument will work.</p>
 <p>Alternatively, you can pass <code>--commits</code> a comma-separated list of commit hashes (both short and full-length SHAs work,
 as well as special references such as <code>HEAD</code> and branch names).
-Gitlint will treat these as pointers to <strong>single</strong> commits and lint these in the order you passed.</p>
+Gitlint will treat these as pointers to <strong>single</strong> commits and lint these in the order you passed.
+<code>--commits</code> also accepts a single commit SHA with a trailing comma. </p>
 <p>For cases where the <code>--commits</code> option doesn't provide the flexibility you need, you can always use a simple shell
 script to lint an arbitrary set of commits, like shown in the example below.</p>
 <pre><code class="language-sh">#!/bin/sh
@@ -604,5 +608,5 @@ to 252.</p>
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2022-12-14 12:10:51.872638+00:00
+Build Date UTC : 2023-02-14 10:15:21.767335+00:00
 -->

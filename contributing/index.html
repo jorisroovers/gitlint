@@ -64,13 +64,15 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Contributing</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#guidelines">Guidelines</a>
+    <li class="toctree-l2"><a class="reference internal" href="#overall-guidelines">Overall Guidelines</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#releases">Releases</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#environment-setup">Environment setup</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#running-tests">Running tests</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#formatting">Formatting</a>
+    <li class="toctree-l2"><a class="reference internal" href="#autoformatting-and-autofixing">Autoformatting and autofixing</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a>
     </li>
@@ -114,12 +116,15 @@
                 <h1 id="contributing">Contributing</h1>
 <p>We'd love for you to contribute to gitlint. Thanks for your interest!
 The <a href="https://github.com/jorisroovers/gitlint">source-code and issue tracker</a> are hosted on Github.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>Often it takes a while for us (well, actually just <a href="https://github.com/jorisroovers">me</a>) to get back to you
 (sometimes up to a few months, this is a hobby project), but rest assured that we read your message and appreciate
 your interest!
 We maintain a <a href="https://github.com/users/jorisroovers/projects/1/">loose project plan on github projects</a>, but
 that's open to a lot of change and input.</p>
-<h2 id="guidelines">Guidelines</h2>
+</div>
+<h2 id="overall-guidelines">Overall Guidelines</h2>
 <p>When contributing code, please consider all the parts that are typically required:</p>
 <ul>
 <li><a href="https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/tests">Unit tests</a> (automatically
@@ -134,16 +139,34 @@ that's open to a lot of change and input.</p>
 can make it as part of a release. <strong>Gitlint commits and pull requests are gated on all of our tests and checks as well as
 code-review</strong>. If you can already include them as part of your PR, it's a huge timesaver for us
 and it's likely that your PR will be merged and released a lot sooner. </p>
-<p>It's also a good idea to open an issue before submitting a PR for non-trivial changes, so we can discuss what you have
-in mind before you spend the effort. Thanks!</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p><strong>On the topic of releases</strong>: Gitlint releases typically go out when there's either enough new features and fixes
-to make it worthwhile or when there's a critical fix for a bug that fundamentally breaks gitlint. While the amount
-of overhead of doing a release isn't huge, it's also not zero. In practice this means that it might take weeks
-or months before merged code actually gets released - we know that can be frustrating but please understand it's
-a well-considered trade-off based on available time.</p>
+<p>It's a good idea to open an issue before submitting a PR for non-trivial changes, so we can discuss what you have
+in mind before you spend the effort. Thanks!</p>
 </div>
+<h2 id="releases">Releases</h2>
+<p>Gitlint releases typically go out when there's either enough new features and fixes
+to make it worthwhile or when there's a critical fix for a bug that fundamentally breaks gitlint.</p>
+<p>While the amount of overhead of doing a release isn't huge, it's also not zero. In practice this means that it might
+take weeks or months before merged code actually gets released - we know that can be frustrating but please
+understand it's a well-considered trade-off based on available time.</p>
+<h3 id="dev-builds">Dev Builds</h3>
+<p>While final releases are usually months apart, we do dev builds on every commit to <code>main</code> that get published
+to <strong>test.pypi.org</strong>:</p>
+<ul>
+<li><strong>gitlint</strong>: <a href="https://test.pypi.org/project/gitlint/#history">https://test.pypi.org/project/gitlint/#history</a></li>
+<li><strong>gitlint-core</strong>:  <a href="https://test.pypi.org/project/gitlint-core/#history">https://test.pypi.org/project/gitlint-core/#history</a></li>
+</ul>
+<p>It usually takes about 15 min after merging a PR to <code>main</code> for new builds to show up. Note that the installation
+of a recently published version can still fail for a few minutes after a build shows up on (test) PyPI while the package
+is replicated to all download mirrors.</p>
+<p>To install a dev build of gitlint:</p>
+<pre><code class="language-sh">export VERSION=&quot;0.19.0.dev68&quot;
+pip install --no-cache-dir -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==$VERSION
+# Explanation:
+# --no-cache-dir: don't use local cache, this ensures pip checks for the latest version online
+# --extra-index-url: use regular PyPI to download dependencies
+</code></pre>
 <h2 id="environment-setup">Environment setup</h2>
 <h3 id="local-setup">Local setup</h3>
 <p>Gitlint uses <a href="https://hatch.pypa.io/latest/">hatch</a> for project management.
@@ -185,17 +208,23 @@ hatch run test:unit-tests-no-cov # run unit tests without test coverage
 hatch run qa:install-local       # One-time install: install the local gitlint source copy for integration testing
 hatch run qa:integration-tests   # Run integration tests
 
-# Formatting check
+# Formatting check (black)
 hatch run test:format            # Run formatting checks
 
-#  Linting (pylint)
-hatch run test:lint              # Run pylint
+#  Linting (ruff)
+hatch run test:lint              # Run Ruff
+
+# Project stats
+hatch run test:stats
 </code></pre>
-<h2 id="formatting">Formatting</h2>
-<p>We use <a href="https://black.readthedocs.io/en/stable/">black</a> for code formatting.
-To use it, just run black against the code you modified:</p>
-<pre><code class="language-sh">hatch run test:black .                            # format all python code
-hatch run test:black gitlint-core/gitlint/lint.py # format a specific file
+<h2 id="autoformatting-and-autofixing">Autoformatting and autofixing</h2>
+<p>We use <a href="https://black.readthedocs.io/en/stable/">black</a> for code formatting.</p>
+<pre><code class="language-sh">hatch run test:autoformat                              # format all python code
+hatch run test:autoformat gitlint-core/gitlint/lint.py # format a specific file
+</code></pre>
+<p>We use <a href="https://github.com/charliermarsh/ruff">ruff</a> for linting, it can autofix many of the issue it finds
+(although not always perfect).</p>
+<pre><code class="language-sh">hatch run test:autofix                              # Attempt to fix linting issues
 </code></pre>
 <h2 id="documentation">Documentation</h2>
 <p>We use <a href="https://www.mkdocs.org/">mkdocs</a> for generating our documentation from markdown.</p>
