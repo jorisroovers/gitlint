@@ -1,4 +1,3 @@
-# We need to disable the import position checks because of the windows check that we need to do below
 import copy
 import logging
 import os
