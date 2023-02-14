@@ -100,7 +100,7 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assertEqual(config, LintConfig())
         expected_log_messages = [
             "WARNING: gitlint.rules ignore-by-author-name - I4: skipping - commit.author_name unknown. "
-            "Suggested fix: Using the --staged flag (or set general.staged=True in .gitlint). "
+            "Suggested fix: Use the --staged flag (or set general.staged=True in .gitlint). "
             "More details: https://jorisroovers.com/gitlint/configuration/#staged"
         ]
         self.assert_logged(expected_log_messages)
