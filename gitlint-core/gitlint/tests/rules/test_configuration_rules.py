@@ -92,7 +92,7 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assertEqual(config, LintConfig())
         self.assert_logged([])  # nothing logged -> nothing ignored
 
-        # No regex specified -> Config shouldn't be changed
+        # No author available -> rule is skipped and warning logged
         staged_commit = self.gitcommit("Tïtle\n\nThis is\n a relëase body\n line")
         rule = rules.IgnoreByAuthorName({"regex": "foo"})
         config = LintConfig()
