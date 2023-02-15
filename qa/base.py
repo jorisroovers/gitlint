@@ -69,6 +69,9 @@ class BaseTestCase(TestCase):
         # http://stackoverflow.com/questions/5581857/git-and-the-umlaut-problem-on-mac-os-x
         git("config", "core.precomposeunicode", "true", _cwd=tmp_git_repo)
 
+        # Git now does commit message cleanup by default (e.g. removing trailing whitespace), disable that for testing
+        git("config", "commit.cleanup", "verbatim", _cwd=tmp_git_repo)
+
         return tmp_git_repo
 
     @staticmethod
