@@ -18,7 +18,7 @@ class UserDefinedRuleTests(BaseTestCase):
         extra_path = self.get_example_path()
         commit_msg = "Release: Thi$ is å title\nContent on the second line\n$This line is ignored \nThis isn't\t\n"
         self.create_simple_commit(commit_msg)
-        output = gitlint("--extra-path", extra_path, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[4])
+        output = gitlint("--extra-path", extra_path, _cwd=self.tmp_git_repo, _tty_in=True, _ok_code=[5])
         self.assertEqualStdout(output, self.get_expected("test_user_defined/test_user_defined_rules_examples_2"))
 
     def test_user_defined_rules_examples_with_config(self):
