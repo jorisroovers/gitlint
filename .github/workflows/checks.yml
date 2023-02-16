@@ -120,12 +120,12 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
   # When on main, auto publish dev build
-  auto_publish_dev:
+  auto-publish-dev:
     needs:
       - check
     if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit # pass all secrets (required to access secrets in a called workflow)
     with:
-      pypi_target: "test.pypi.org"
+      pypi_target: "pypi.org"
       repo_release_ref: "main"
