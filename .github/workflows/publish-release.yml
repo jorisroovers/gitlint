@@ -1,5 +1,5 @@
 name: Publish Release
-run-name: "Publish Release (pypi_target=${{ inputs.pypi_source }}, repo_release_ref=${{ inputs.repo_release_ref }})"
+run-name: "Publish Release (pypi_target=${{ inputs.pypi_target }}, repo_release_ref=${{ inputs.repo_release_ref }})"
 
 on:
   workflow_call:
