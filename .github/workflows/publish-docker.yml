@@ -28,10 +28,15 @@ jobs:
   publish_docker:
     runs-on: "ubuntu-latest"
     steps:
-      - name: Build and push
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build docker image
         uses: docker/build-push-action@v4
         with:
-          push: ${{ inputs.push_to_dockerhub }}
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
           tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
 
@@ -40,3 +45,10 @@ jobs:
           gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo \ 
                           jorisroovers/gitlint:${{ inputs.gitlint_version }} --version)
           [ "$(gitlint_version)" == "gitlint, version ${{ inputs.gitlint_version }}" ]
+
+      - name: Push docker image
+        uses: docker/build-push-action@v4
+        with:
+          push: ${{ inputs.push_to_dockerhub }}
+          build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
+          tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
