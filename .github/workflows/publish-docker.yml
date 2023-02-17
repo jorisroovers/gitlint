@@ -34,3 +34,14 @@ jobs:
           push: ${{ inputs.push_to_dockerhub }}
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
           tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
+
+      - name: Test docker image
+        run: |
+          docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ inputs.gitlint_version }} --version
+          docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ inputs.gitlint_version }} --debug
+
+
+      #   - name: gitlint --version
+        # run: |
+        #   gitlint --version
+        #   [ "$(gitlint --version)" == "gitlint, version ${{ inputs.gitlint_version }}" ]
