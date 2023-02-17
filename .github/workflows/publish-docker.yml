@@ -1,0 +1,38 @@
+name: Publish Docker
+run-name: "Publish Docker (gitlint_version=${{ inputs.gitlint_version }})"
+
+on:
+  workflow_call:
+    inputs:
+      gitlint_version:
+        description: "Gitlint version to build docker image for"
+        required: true
+        type: string
+      push_to_dockerhub:
+        description: "Whether to push to dockerhub.com"
+        required: false
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      gitlint_version:
+        description: "Gitlint version to build docker image for"
+        type: string
+        default: "main"
+      push_to_dockerhub:
+        description: "Whether to push to dockerhub.com"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  publish_docker:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: ${{ inputs.push_to_dockerhub }}
+          build-args: 
+           - GITLINT_VERSION=${{ inputs.gitlint_version }}
+          tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
