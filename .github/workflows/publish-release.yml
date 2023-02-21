@@ -157,3 +157,12 @@ jobs:
       gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
       pypi_source: ${{ inputs.pypi_target }}
       repo_test_ref: ${{ inputs.repo_release_ref }}
+
+  publish-docker:
+    needs:
+      - publish
+      - test-release
+    uses: ./.github/workflows/publish-docker.yml
+    with:
+      gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
+      push_to_dockerhub: false

@@ -45,9 +45,13 @@ jobs:
           gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ inputs.gitlint_version }} --version)
           [ "$gitlint_version" == "gitlint, version ${{ inputs.gitlint_version }}" ]
 
+
+      # This won't actually rebuild the docker image, but just push the previously built and cached image
       - name: Push docker image
         uses: docker/build-push-action@v4
         with:
           push: ${{ inputs.push_to_dockerhub }}
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
           tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
+        if: inputs.push_to_dockerhub
+ 
