@@ -44,7 +44,7 @@ jobs:
       - name: Determine docker tag
         id: set_tag
         run: |
-          if [[ ${{ inputs.docker_image_tag }} == "Use $gitlint_version" ]]; then
+          if [[ "${{ inputs.docker_image_tag }}" == "Use $gitlint_version" ]]; then
             echo "docker_image_tag=${{ inputs.gitlint_version }}" >> $GITHUB_OUTPUT
           else
             echo "docker_image_tag=${{ inputs.docker_image_tag }}" >> $GITHUB_OUTPUT
