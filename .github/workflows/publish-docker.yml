@@ -43,7 +43,7 @@ jobs:
       - name: Test docker image
         run: |
           gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ inputs.gitlint_version }} --version)
-          [ "$(gitlint_version)" == "gitlint, version ${{ inputs.gitlint_version }}" ]
+          [ "$gitlint_version" == "gitlint, version ${{ inputs.gitlint_version }}" ]
 
       - name: Push docker image
         uses: docker/build-push-action@v4
