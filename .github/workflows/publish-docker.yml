@@ -8,8 +8,12 @@ on:
         description: "Gitlint version to build docker image for"
         required: true
         type: string
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: string
       push_to_dockerhub:
-        description: "Whether to push to dockerhub.com"
+        description: "Push to dockerhub.com"
         required: false
         type: boolean
         default: false
@@ -18,9 +22,17 @@ on:
       gitlint_version:
         description: "Gitlint version to build docker image for"
         type: string
-        default: "main"
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: choice
+        options:
+          - "latest_dev"
+          - "latest"
+          - "Use $gitlint_version"
+        default: "Use $gitlint_version"
       push_to_dockerhub:
-        description: "Whether to push to dockerhub.com"
+        description: "Push to dockerhub.com"
         required: false
         type: boolean
         default: false
@@ -29,10 +41,39 @@ jobs:
   publish_docker:
     runs-on: "ubuntu-latest"
     steps:
-      - name: Build and push
+      - name: Determine docker tag
+        id: set_tag
+        run: |
+          if [[ "${{ inputs.docker_image_tag }}" == "Use $gitlint_version" ]]; then
+            echo "docker_image_tag=${{ inputs.gitlint_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "docker_image_tag=${{ inputs.docker_image_tag }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: jorisroovers
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build docker image
+        uses: docker/build-push-action@v4
+        with:
+          build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
+          tags: jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }}
+
+      - name: Test docker image
+        run: |
+          gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }} --version)
+          [ "$gitlint_version" == "gitlint, version ${{ inputs.gitlint_version }}" ]
+
+
+      # This won't actually rebuild the docker image, but just push the previously built and cached image
+      - name: Push docker image
         uses: docker/build-push-action@v4
         with:
           push: ${{ inputs.push_to_dockerhub }}
-          build-args: 
-           - GITLINT_VERSION=${{ inputs.gitlint_version }}
-          tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
+          build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
+          tags: jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }}
+        if: inputs.push_to_dockerhub
+ 
