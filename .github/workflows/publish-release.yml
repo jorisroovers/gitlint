@@ -163,6 +163,7 @@ jobs:
       - publish
       - test-release
     uses: ./.github/workflows/publish-docker.yml
+    secrets: inherit # pass all secrets (required to access secrets in a called workflow)
     with:
       gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
       docker_image_tag: "latest_dev"
