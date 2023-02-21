@@ -165,4 +165,5 @@ jobs:
     uses: ./.github/workflows/publish-docker.yml
     with:
       gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
-      push_to_dockerhub: false
+      docker_image_tag: "latest_dev"
+      push_to_dockerhub: true

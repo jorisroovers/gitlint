@@ -8,6 +8,10 @@ on:
         description: "Gitlint version to build docker image for"
         required: true
         type: string
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: string
       push_to_dockerhub:
         description: "Push to dockerhub.com"
         required: false
@@ -18,6 +22,15 @@ on:
       gitlint_version:
         description: "Gitlint version to build docker image for"
         type: string
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: choice
+        options:
+          - "latest_dev"
+          - "latest"
+          - "Use $gitlint_version"
+        default: "Use $gitlint_version"
       push_to_dockerhub:
         description: "Push to dockerhub.com"
         required: false
@@ -28,6 +41,15 @@ jobs:
   publish_docker:
     runs-on: "ubuntu-latest"
     steps:
+      - name: Determine docker tag
+        id: set_tag
+        run: |
+          if [[ ${{ inputs.docker_image_tag }} == "Use $gitlint_version" ]]; then
+            echo "docker_image_tag=${{ inputs.gitlint_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "docker_image_tag=${{ inputs.docker_image_tag }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -38,11 +60,11 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
-          tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
+          tags: jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }}
 
       - name: Test docker image
         run: |
-          gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ inputs.gitlint_version }} --version)
+          gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }} --version)
           [ "$gitlint_version" == "gitlint, version ${{ inputs.gitlint_version }}" ]
 
 
@@ -52,6 +74,6 @@ jobs:
         with:
           push: ${{ inputs.push_to_dockerhub }}
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
-          tags: jorisroovers/gitlint:${{ inputs.gitlint_version }}
+          tags: jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }}
         if: inputs.push_to_dockerhub
  
