@@ -246,7 +246,7 @@ class UserRuleTests(BaseTestCase):
             name = "my-rüle-class"
 
             def validate(self):
-                pass # pragma: nocover
+                pass  # pragma: nocover
 
         # no target
         expected_msg = (

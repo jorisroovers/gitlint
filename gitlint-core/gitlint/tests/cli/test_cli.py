@@ -639,7 +639,6 @@ class CLITests(BaseTestCase):
         self.assertEqual(result.output, "Config Error: No such rule 'foo'\n")
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
-
     @patch("gitlint.cli.get_stdin_data", return_value=False)
     def test_target(self, _):
         """Test for the --target option"""

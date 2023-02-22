@@ -137,7 +137,7 @@ def assert_valid_rule_class(clazz, rule_type="User-defined"):  # noqa: PLR0912 (
     if issubclass(clazz, (rules.LineRule, rules.CommitRule)):
         if not hasattr(clazz, "validate") or not inspect.isroutine(clazz.validate):
             raise rules.UserRuleError(f"{rule_type} rule class '{clazz.__name__}' must have a 'validate' method")
-    
+
     # Configuration rules must have an `apply` method
     elif issubclass(clazz, rules.ConfigurationRule):  # noqa: SIM102
         if not hasattr(clazz, "apply") or not inspect.isroutine(clazz.apply):
