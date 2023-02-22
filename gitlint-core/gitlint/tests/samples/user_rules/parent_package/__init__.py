@@ -9,4 +9,4 @@ class InitFileRule(CommitRule):
     options_spec = []
 
     def validate(self, _commit):
-        return []
+        return []  # pragma: nocover

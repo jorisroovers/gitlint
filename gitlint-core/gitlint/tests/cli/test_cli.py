@@ -101,6 +101,40 @@ class CLITests(BaseTestCase):
 
     @patch("gitlint.cli.get_stdin_data", return_value=False)
     @patch("gitlint.git.sh")
+    def test_lint_multiple_commits_csv(self, sh, _):
+        """Test for --commits option"""
+
+        # fmt: off
+        sh.git.side_effect = [
+            "6f29bf81a8322a04071bb794666e48c443a90360\n",  # git rev-list <SHA>
+            "25053ccec5e28e1bb8f7551fdbb5ab213ada2401\n",
+            "4da2656b0dadc76c7ee3fd0243a96cb64007f125\n",
+            # git log --pretty <FORMAT> <SHA>
+            "test åuthor1\x00test-email1@föo.com\x002016-12-03 15:28:15 +0100\x00åbc\n"
+            "commït-title1\n\ncommït-body1",
+            "#",                                           # git config --get core.commentchar
+            "3\t5\tcommit-1/file-1\n1\t4\tcommit-1/file-2\n",          # git diff-tree
+            "commit-1-branch-1\ncommit-1-branch-2\n",      # git branch --contains <sha>
+                                                            # git log --pretty <FORMAT> <SHA>
+            "test åuthor2\x00test-email3@föo.com\x002016-12-04 15:28:15 +0100\x00åbc\n"
+            "commït-title2\n\ncommït-body2",
+            "8\t3\tcommit-2/file-1\n1\t5\tcommit-2/file-2\n",          # git diff-tree
+            "commit-2-branch-1\ncommit-2-branch-2\n",      # git branch --contains <sha>
+                                                            # git log --pretty <FORMAT> <SHA>
+            "test åuthor3\x00test-email3@föo.com\x002016-12-05 15:28:15 +0100\x00åbc\n"
+            "commït-title3\n\ncommït-body3",
+            "7\t2\tcommit-3/file-1\n1\t7\tcommit-3/file-2\n",          # git diff-tree
+            "commit-3-branch-1\ncommit-3-branch-2\n",      # git branch --contains <sha>
+        ]
+        # fmt: on
+
+        with patch("gitlint.display.stderr", new=StringIO()) as stderr:
+            result = self.cli.invoke(cli.cli, ["--commits", "6f29bf81,25053cce,4da2656b"])
+            self.assertEqual(stderr.getvalue(), self.get_expected("cli/test_cli/test_lint_multiple_commits_csv_1"))
+            self.assertEqual(result.exit_code, 3)
+
+    @patch("gitlint.cli.get_stdin_data", return_value=False)
+    @patch("gitlint.git.sh")
     def test_lint_multiple_commits_config(self, sh, _):
         """Test for --commits option where some of the commits have gitlint config in the commit message"""
 
@@ -598,6 +632,11 @@ class CLITests(BaseTestCase):
         # Invalid config file
         config_path = self.get_sample_path(os.path.join("config", "invalid-option-value"))
         result = self.cli.invoke(cli.cli, env={"GITLINT_CONFIG": config_path})
+        self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
+
+    def test_config_error(self):
+        result = self.cli.invoke(cli.cli, ["-c", "foo.bar=hur"])
+        self.assertEqual(result.output, "Config Error: No such rule 'foo'\n")
         self.assertEqual(result.exit_code, self.CONFIG_ERROR_CODE)
 
     @patch("gitlint.cli.get_stdin_data", return_value=False)

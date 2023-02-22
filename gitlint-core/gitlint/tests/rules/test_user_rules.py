@@ -103,21 +103,21 @@ class UserRuleTests(BaseTestCase):
             target = rules.CommitMessageTitle
 
             def validate(self):
-                pass
+                pass  # pragma: nocover
 
         class MyCommitRuleClass(rules.CommitRule):
             id = "UC2"
             name = "my-cömmit-rule"
 
             def validate(self):
-                pass
+                pass  # pragma: nocover
 
         class MyConfigurationRuleClass(rules.ConfigurationRule):
             id = "UC3"
             name = "my-cönfiguration-rule"
 
             def apply(self):
-                pass
+                pass  # pragma: nocover
 
         # Just assert that no error is raised
         self.assertIsNone(assert_valid_rule_class(MyLineRuleClass))
@@ -235,8 +235,8 @@ class UserRuleTests(BaseTestCase):
         with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
-        # validate attribute - not a method
-        MyRuleClass.validate = "föo"
+        # apply attribute - not a method
+        MyRuleClass.apply = "föo"
         with self.assertRaisesMessage(UserRuleError, expected_msg):
             assert_valid_rule_class(MyRuleClass)
 
@@ -246,7 +246,7 @@ class UserRuleTests(BaseTestCase):
             name = "my-rüle-class"
 
             def validate(self):
-                pass
+                pass  # pragma: nocover
 
         # no target
         expected_msg = (

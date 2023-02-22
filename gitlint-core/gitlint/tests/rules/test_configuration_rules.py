@@ -105,6 +105,12 @@ class ConfigurationRuleTests(BaseTestCase):
         ]
         self.assert_logged(expected_log_messages)
 
+        # Non-Matching regex -> expect config to stay the same
+        rule = rules.IgnoreByAuthorName({"regex": "foo"})
+        expected_config = LintConfig()
+        rule.apply(config, commit)
+        self.assertEqual(config, LintConfig())
+
         # Matching regex -> expect config to ignore all rules
         rule = rules.IgnoreByAuthorName({"regex": "(.*)ëst(.*)"})
         expected_config = LintConfig()
