@@ -171,12 +171,6 @@ class GitChangedFileStats:
     def __str__(self) -> str:
         return f"{self.filepath}: {self.additions} additions, {self.deletions} deletions"
 
-    def __repr__(self) -> str:
-        return (
-            f'GitChangedFileStats(filepath="{self.filepath}", additions={self.additions}, deletions={self.deletions})'
-        )
-
-
 class GitCommit:
     """Class representing a git commit.
     A commit consists of: context, message, author name, author email, date, list of parent commit shas,

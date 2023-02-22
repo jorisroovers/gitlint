@@ -14,6 +14,10 @@ from gitlint.tests.base import BaseTestCase
 
 
 class RuleOptionTests(BaseTestCase):
+    def test_option__str__(self):
+        option = StrOption("tëst-option", "åbc", "Test Dëscription")
+        self.assertEqual(str(option), "(tëst-option: åbc (Test Dëscription))")
+
     def test_option_equality(self):
         options = {
             IntOption: 123,

@@ -19,7 +19,7 @@ class MyUserCommitRule(CommitRule):
 
 
 def func_should_be_ignored():
-    pass
+    pass  # pragma: nocover
 
 
 global_variable_should_be_ignored = True

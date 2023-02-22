@@ -57,9 +57,10 @@ class HookTests(BaseTestCase):
         expected_msg = f"{lint_config.target} is not a git repository."
         with self.assertRaisesMessage(GitHookInstallerError, expected_msg):
             GitHookInstaller.install_commit_msg_hook(lint_config)
-            isdir.assert_called_with(git_hooks_dir.return_value)
-            path_exists.assert_not_called()
-            copy.assert_not_called()
+
+        isdir.assert_called_with(git_hooks_dir.return_value)
+        path_exists.assert_not_called()
+        copy.assert_not_called()
 
         # mock that there is already a commit hook present
         isdir.return_value = True
@@ -105,9 +106,10 @@ class HookTests(BaseTestCase):
         expected_msg = f"{lint_config.target} is not a git repository."
         with self.assertRaisesMessage(GitHookInstallerError, expected_msg):
             GitHookInstaller.uninstall_commit_msg_hook(lint_config)
-            isdir.assert_called_with(git_hooks_dir.return_value)
-            path_exists.assert_not_called()
-            remove.assert_not_called()
+        
+        isdir.assert_called_with(git_hooks_dir.return_value)
+        path_exists.assert_not_called()
+        remove.assert_not_called()
 
         # mock that there is no commit hook present
         isdir.return_value = True
@@ -116,9 +118,10 @@ class HookTests(BaseTestCase):
         expected_msg = f"There is no commit-msg hook present in {expected_dst}."
         with self.assertRaisesMessage(GitHookInstallerError, expected_msg):
             GitHookInstaller.uninstall_commit_msg_hook(lint_config)
-            isdir.assert_called_with(git_hooks_dir.return_value)
-            path_exists.assert_called_once_with(expected_dst)
-            remove.assert_not_called()
+        
+        isdir.assert_called_with(git_hooks_dir.return_value)
+        path_exists.assert_called_once_with(expected_dst)
+        remove.assert_not_called()
 
         # mock that there is a different (=not gitlint) commit hook
         isdir.return_value = True

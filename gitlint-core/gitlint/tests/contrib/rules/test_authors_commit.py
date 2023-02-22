@@ -101,6 +101,5 @@ class ContribAuthorsCommitTests(BaseTestCase):
         return_value=False,
     )
     def test_read_authors_file_missing_file(self, _mock_iterdir):
-        with self.assertRaises(FileNotFoundError) as err:
+        with self.assertRaisesMessage(FileNotFoundError, "No AUTHORS file found!"):
             AllowedAuthors._read_authors_from_file(self.gitcontext)
-            self.assertEqual(err.exception.args[0], "AUTHORS file not found")

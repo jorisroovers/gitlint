@@ -199,3 +199,4 @@ branch = true # measure branch coverage in addition to statement coverage
 
 [tool.coverage.report]
 fail_under = 97
+show_missing = true
