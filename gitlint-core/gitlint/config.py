@@ -530,14 +530,15 @@ class LintConfigBuilder:
 
         for section_name, section_dict in self._config_blueprint.items():
             for option_name, option_value in section_dict.items():
+                qualified_section_name = section_name
                 # Skip over the general section, as we've already done that above
-                if section_name != "general":
+                if qualified_section_name != "general":
                     # If the section name contains a colon (:), then this section is defining a Named Rule
                     # Which means we need to instantiate that Named Rule in the config.
                     if self.RULE_QUALIFIER_SYMBOL in section_name:
-                        section_name = self._add_named_rule(config, section_name)
+                        qualified_section_name = self._add_named_rule(config, qualified_section_name)
 
-                    config.set_rule_option(section_name, option_name, option_value)
+                    config.set_rule_option(qualified_section_name, option_name, option_value)
 
         return config
 
