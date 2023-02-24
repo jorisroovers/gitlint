@@ -2,9 +2,9 @@
 # Simple script to generate a rough changelog from git log.
 # This changelog is manually edited before it goes into CHANGELOG.md
 
-import sys
 import re
 import subprocess
+import sys
 from collections import defaultdict
 
 if len(sys.argv) != 2:
