@@ -82,7 +82,7 @@ Test environment (unit tests, formatting, lint)
 skip-install = true
 dependencies = [
     "gitlint-core[trusted-deps] @ {root:uri}/gitlint-core",
-    "black==22.10.0",
+    "black==23.1.0",
     "pytest==7.2.1",
     "pytest-cov==4.0.0",
     "python-coveralls==2.9.3",
