@@ -104,7 +104,7 @@ jobs:
         with:
           path-to-lcov: ".coverage.lcov"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          # git-commit: ${{ github.event.pull_request.head.sha }}
+          git-commit: ${{ github.event.pull_request.head.sha }}
           flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
         env:
