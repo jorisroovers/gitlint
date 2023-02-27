@@ -88,6 +88,28 @@ jobs:
         run: hatch run dev:gitlint --debug
         continue-on-error: ${{ github.event_name	== 'pull_request' }} # Don't enforce gitlint in PRs
 
+      - name: Show files
+        run: ls -al .
+        continue-on-error: true
+
+      - name: Show GITHUB env vars
+        run: |
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          echo "github.head_ref: ${{ github.head_ref }}"
+          echo "github.event.pull_request.head.sha: ${{ github.event.pull_request.head.sha }}"
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          path-to-lcov: ".coverage.lcov"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # git-branch: ${{ github.head_ref }}
+          git-commit: ${{ github.event.pull_request.head.sha }}
+          flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version}}
+          parallel: true
+          base-path: "gitlint-core"
+
       # Coveralls integration doesn't properly work at this point, also see below
       # - name: Coveralls
       #   env:
@@ -105,10 +127,22 @@ jobs:
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
+  finish:
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          path-to-lcov: ".coverage.lcov"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
+  
   check:  # This job does nothing and is only used for the branch protection
     if: always()  # Ref: https://github.com/marketplace/actions/alls-green#why
 
     needs:
+      - finish
       - checks
 
     runs-on: ubuntu-latest
