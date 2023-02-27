@@ -104,31 +104,13 @@ jobs:
         with:
           path-to-lcov: ".coverage.lcov"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          # git-branch: ${{ github.head_ref }}
-          git-commit: ${{ github.event.pull_request.head.sha }}
+          # git-commit: ${{ github.event.pull_request.head.sha }}
           flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
         env:
           NODE_COVERALLS_DEBUG: 1
 
-      # Coveralls integration doesn't properly work at this point, also see below
-      # - name: Coveralls
-      #   env:
-      #     COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-      #   run: coveralls
-
-      # Patch the commit-msg hook to make it work in GH CI
-      # Specifically, within the commit-msg hook, wrap the invocation of gitlint with `script`
-
-      # Coveralls GH Action currently doesn't support current non-LCOV reporting format
-      # For now,  still using Travis for unit test coverage reporting
-      # https://github.com/coverallsapp/github-action/issues/30
-      # - name: Coveralls
-      #   uses: coverallsapp/github-action@master
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-
-  finish:
+  upload_coveralls:
     needs: checks
     runs-on: ubuntu-latest
     steps:
@@ -145,7 +127,7 @@ jobs:
     if: always()  # Ref: https://github.com/marketplace/actions/alls-green#why
 
     needs:
-      - finish
+      - upload_coveralls
       - checks
 
     runs-on: ubuntu-latest
