@@ -106,9 +106,11 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # git-branch: ${{ github.head_ref }}
           git-commit: ${{ github.event.pull_request.head.sha }}
-          flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version}}
+          flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
           base-path: "gitlint-core"
+        env:
+          NODE_COVERALLS_DEBUG: 1
 
       # Coveralls integration doesn't properly work at this point, also see below
       # - name: Coveralls
@@ -137,6 +139,8 @@ jobs:
           path-to-lcov: ".coverage.lcov"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
+        env:
+          NODE_COVERALLS_DEBUG: 1
   
   check:  # This job does nothing and is only used for the branch protection
     if: always()  # Ref: https://github.com/marketplace/actions/alls-green#why
