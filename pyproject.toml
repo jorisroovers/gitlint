@@ -93,7 +93,7 @@ dependencies = [
 
 [tool.hatch.envs.test.scripts]
 unit-tests = [
-    "pytest --cov=gitlint-core -rw -s {args:gitlint-core}", #
+    "pytest --cov=gitlint-core --cov-report=term --cov-report=lcov:.coverage.lcov -rw -s {args:gitlint-core}",
 ]
 u = "unit-tests"
 unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
