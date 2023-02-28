@@ -88,7 +88,7 @@ jobs:
         run: hatch run dev:gitlint --debug
         continue-on-error: ${{ github.event_name	== 'pull_request' }} # Don't enforce gitlint in PRs
 
-      - name: Coveralls
+      - name: Code Coverage (coveralls)
         uses: coverallsapp/github-action@master
         with:
           path-to-lcov: ".coverage.lcov"
@@ -96,21 +96,17 @@ jobs:
           git-commit: ${{ github.event.pull_request.head.sha }}
           flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
-        env:
-          NODE_COVERALLS_DEBUG: 1
 
   upload_coveralls:
     needs: checks
     runs-on: ubuntu-latest
     steps:
-      - name: Coveralls Finished
+      - name: Upload coverage to coveralls
         uses: coverallsapp/github-action@master
         with:
           path-to-lcov: ".coverage.lcov"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
-        env:
-          NODE_COVERALLS_DEBUG: 1
   
   check:  # This job does nothing and is only used for the branch protection
     if: always()  # Ref: https://github.com/marketplace/actions/alls-green#why
