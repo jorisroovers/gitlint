@@ -1,0 +1,14 @@
+name: Github Release Publish
+run-name: "Github Release Publish (tag=${{github.ref_name}})"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-release:
+    uses: ./.github/workflows/publish-release.yml
+    secrets: inherit # pass all secrets (required to access secrets in a called workflow)
+    with:
+      pypi_target: "test.pypi.org"
+      repo_release_ref: ${{ github.ref_name }} 
