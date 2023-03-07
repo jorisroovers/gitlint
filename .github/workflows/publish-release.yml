@@ -2,6 +2,7 @@ name: Publish Release
 run-name: "Publish Release (pypi_target=${{ inputs.pypi_target }}, repo_release_ref=${{ inputs.repo_release_ref }})"
 
 on:
+  # Trigger release workflow from other workflows (e.g. release dev build as part of CI)
   workflow_call:
     inputs:
       pypi_target:
@@ -13,6 +14,8 @@ on:
         description: "Gitlint git reference to publish release for"
         type: string
         default: "main"
+  
+  # Manually trigger a release
   workflow_dispatch:
     inputs:
       pypi_target:
