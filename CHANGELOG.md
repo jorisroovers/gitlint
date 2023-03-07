@@ -2,7 +2,7 @@
 
 This file documents notable changes introduced in gitlint releases.
 
-# v0.19.0 (Unreleased)
+# v0.19.0 (2023-03-07)
 
 This release was primarily focussed on modernizing gitlint's build and test tooling (details: [#378](https://github.com/jorisroovers/gitlint/issues/378)).
 
@@ -26,6 +26,7 @@ This release was primarily focussed on modernizing gitlint's build and test tool
   - Gitlint now publishes a [`latest_dev` docker image](https://hub.docker.com/r/jorisroovers/gitlint/tags?name=latest_dev) on every commit to main ([#451](https://github.com/jorisroovers/gitlint/issues/452)) ([#452](https://github.com/jorisroovers/gitlint/issues/451))
   - Dependencies updated
   - Many improvements to the [CI/CD worfklows](https://github.com/jorisroovers/gitlint/tree/main/.github/workflows)
+  - Fixed coveralls integration: [coveralls.io/github/jorisroovers/gitlint](https://coveralls.io/github/jorisroovers/gitlint)
   - Improve unit test coverage ([#453](https://github.com/jorisroovers/gitlint/issues/453))
   - Integration test fixes on windows ([#392](https://github.com/jorisroovers/gitlint/issues/392), [#397](https://github.com/jorisroovers/gitlint/issues/397))
   - Devcontainer improvements ([#428](https://github.com/jorisroovers/gitlint/issues/428))
