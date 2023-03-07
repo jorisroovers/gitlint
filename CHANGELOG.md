@@ -2,6 +2,8 @@
 
 This file documents notable changes introduced in gitlint releases.
 
+# v0.20.0 (Unreleased)
+
 # v0.19.0 (2023-03-07)
 
 This release was primarily focussed on modernizing gitlint's build and test tooling (details: [#378](https://github.com/jorisroovers/gitlint/issues/378)).
