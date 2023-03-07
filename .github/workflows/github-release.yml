@@ -10,5 +10,5 @@ jobs:
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit # pass all secrets (required to access secrets in a called workflow)
     with:
-      pypi_target: "test.pypi.org"
+      pypi_target: "pypi.org"
       repo_release_ref: ${{ github.ref_name }} 
