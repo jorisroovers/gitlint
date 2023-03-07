@@ -151,21 +151,17 @@ to make it worthwhile or when there's a critical fix for a bug that fundamentall
 take weeks or months before merged code actually gets released - we know that can be frustrating but please
 understand it's a well-considered trade-off based on available time.</p>
 <h3 id="dev-builds">Dev Builds</h3>
-<p>While final releases are usually months apart, we do dev builds on every commit to <code>main</code> that get published
-to <strong>test.pypi.org</strong>:</p>
+<p>While final releases are usually months apart, we do dev builds on every commit to <code>main</code>:</p>
 <ul>
-<li><strong>gitlint</strong>: <a href="https://test.pypi.org/project/gitlint/#history">https://test.pypi.org/project/gitlint/#history</a></li>
-<li><strong>gitlint-core</strong>:  <a href="https://test.pypi.org/project/gitlint-core/#history">https://test.pypi.org/project/gitlint-core/#history</a></li>
+<li><strong>gitlint</strong>: <a href="https://pypi.org/project/gitlint/#history">https://pypi.org/project/gitlint/#history</a></li>
+<li><strong>gitlint-core</strong>:  <a href="https://pypi.org/project/gitlint-core/#history">https://pypi.org/project/gitlint-core/#history</a></li>
 </ul>
-<p>It usually takes about 15 min after merging a PR to <code>main</code> for new builds to show up. Note that the installation
-of a recently published version can still fail for a few minutes after a build shows up on (test) PyPI while the package
+<p>It usually takes about 5 min after merging a PR to <code>main</code> for new dev builds to show up. Note that the installation
+of a recently published version can still fail for a few minutes after a new version shows up on PyPI while the package
 is replicated to all download mirrors.</p>
 <p>To install a dev build of gitlint:</p>
-<pre><code class="language-sh">export VERSION=&quot;0.19.0.dev68&quot;
-pip install --no-cache-dir -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==$VERSION
-# Explanation:
-# --no-cache-dir: don't use local cache, this ensures pip checks for the latest version online
-# --extra-index-url: use regular PyPI to download dependencies
+<pre><code class="language-sh"># Find latest dev build on https://pypi.org/project/gitlint/#history
+pip install gitlint==&quot;0.19.0.dev68&quot;
 </code></pre>
 <h2 id="environment-setup">Environment setup</h2>
 <h3 id="local-setup">Local setup</h3>
