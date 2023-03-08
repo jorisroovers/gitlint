@@ -67,4 +67,5 @@ Homepage = "https://jorisroovers.github.io/gitlint"
 Documentation = "https://jorisroovers.github.io/gitlint"
 Source = "https://github.com/jorisroovers/gitlint/tree/main/gitlint-core"
 Changelog = "https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md"
-'Source Commit' = "https://github.com/jorisroovers/gitlint/tree/{commit_hash}/gitlint-core"
+# TODO(jorisroovers): Temporary disable until fixed in hatch-vcs
+# 'Source Commit' = "https://github.com/jorisroovers/gitlint/tree/{commit_hash}/gitlint-core"
