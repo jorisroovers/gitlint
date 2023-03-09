@@ -32,6 +32,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install pypa/build
+        run: python -m pip install build==0.10.0
+
       - name: Install Hatch
         run: python -m pip install hatch==1.6.3
 
@@ -74,12 +77,12 @@ jobs:
 
       - name: Build test (gitlint)
         run: |
-          hatch build
+          python -m build
           hatch clean
 
       - name: Build test (gitlint-core)
         run: |
-          hatch build
+          python -m build
           hatch clean
         working-directory: ./gitlint-core
       
