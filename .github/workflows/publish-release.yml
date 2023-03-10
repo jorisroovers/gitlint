@@ -43,6 +43,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install pypa/build
+        run: python -m pip install build==0.10.0
+
       - name: Install Hatch
         run: python -m pip install hatch==1.6.3
 
@@ -76,13 +79,13 @@ jobs:
           echo "gitlint_version=$(hatch version | cut -d+ -f1)" >> $GITHUB_OUTPUT
 
       - name: Build (gitlint-core)
-        run: hatch build
+        run: python -m build
         working-directory: ./gitlint-core
         env: 
           SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
       - name: Build (gitlint)
-        run: hatch build
+        run: python -m build
         env: 
           SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
