@@ -4,6 +4,13 @@ This file documents notable changes introduced in gitlint releases.
 
 # v0.20.0 (Unreleased)
 
+# v0.19.1 (2023-03-10)
+
+## Development
+- Fix issue that prevented homebrew packages from being built ([#460](https://github.com/jorisroovers/gitlint/issues/460))
+- Switch to using pypa/build in CI ([#463](https://github.com/jorisroovers/gitlint/issues/463)) - thanks @webknjaz
+
+
 # v0.19.0 (2023-03-07)
 
 This release was primarily focussed on modernizing gitlint's build and test tooling (details: [#378](https://github.com/jorisroovers/gitlint/issues/378)).
