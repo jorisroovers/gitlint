@@ -89,34 +89,32 @@ jobs:
         env: 
           SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
-      - name: Publish gitlint-core (pypi.org)
-        run: hatch publish
-        working-directory: ./gitlint-core
-        env:
-          HATCH_INDEX_USER: ${{ secrets.PYPI_GITLINT_CORE_USERNAME }}
-          HATCH_INDEX_AUTH: ${{ secrets.PYPI_GITLINT_CORE_PASSWORD }}
+      - name: Publish gitlint-core 🐍📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: gitlint-core/dist/
+          password: ${{ secrets.PYPI_GITLINT_CORE_PASSWORD }}
         if: inputs.pypi_target == 'pypi.org'
 
-      - name: Publish gitlint (pypi.org)
-        run: hatch publish
-        env:
-          HATCH_INDEX_USER: ${{ secrets.PYPI_GITLINT_USERNAME }}
-          HATCH_INDEX_AUTH: ${{ secrets.PYPI_GITLINT_PASSWORD }}
+      - name: Publish gitlint 🐍📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: gitlint-core/dist/
+          password: ${{ secrets.PYPI_GITLINT_PASSWORD }}
         if: inputs.pypi_target == 'pypi.org'
 
-      - name: Publish gitlint-core (test.pypi.org)
-        run: hatch publish -r test
-        working-directory: ./gitlint-core
-        env:
-          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_CORE_USERNAME }}
-          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
+      - name: Publish gitlint-core 🐍📦 to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
+          repository-url: https://test.pypi.org/legacy/
         if: inputs.pypi_target == 'test.pypi.org'
 
-      - name: Publish gitlint (test.pypi.org)
-        run: hatch publish -r test
-        env:
-          HATCH_INDEX_USER: ${{ secrets.TEST_PYPI_GITLINT_USERNAME }}
-          HATCH_INDEX_AUTH: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
+      - name: Publish gitlint 🐍📦 to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
+          repository-url: https://test.pypi.org/legacy/
         if: inputs.pypi_target == 'test.pypi.org'
 
   # Wait for gitlint package to be available in PyPI for installation
