@@ -22,7 +22,7 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.9]
         os: ["macos-latest", "ubuntu-latest", "windows-latest"]
     steps:
-      - uses: actions/checkout@v3.3.0
+      - uses: actions/checkout@v3.4.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
           fetch-depth: 0 # checkout all history, needed for hatch versioning
