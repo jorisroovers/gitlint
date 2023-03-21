@@ -1,0 +1,46 @@
+name: Test Docker
+run-name: "Test Docker (docker_tag=${{ inputs.docker_tag }}, gitlint_version=${{ inputs.gitlint_version }})"
+
+on:
+  workflow_call:
+    inputs:
+      docker_tag:
+        description: "Docker tag to pull and run (latest, latest_dev, 0.15.0, etc)"
+        required: true
+        default: "latest"
+      gitlint_version:
+        description: "Expected gitlint version (0.15.0, etc)"
+        required: true
+        default: "0.15.0"
+  workflow_dispatch:
+    inputs:
+      docker_tag:
+        description: "Docker tag to pull and run (latest, latest_dev, 0.15.0, etc)"
+        required: true
+        default: "latest"
+      gitlint_version:
+        description: "Expected gitlint version (0.15.0, etc)"
+        required: true
+        default: "0.15.0"
+
+jobs:
+  test-docker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Run gitlint --version using docker
+      run: |
+        DOCKER_TAG=${{ github.event.inputs.docker_tag }}
+        GITLINT_VERSION=${{ github.event.inputs.gitlint_version }}
+        
+        GITLINT_CURRENT_VERSION=$(docker run --rm -v $(pwd):/repo jorisroovers/gitlint:${DOCKER_TAG} --version)
+        echo "gitlint version: ${GITLINT_CURRENT_VERSION}"
+        
+        if [[ ! "${GITLINT_CURRENT_VERSION}" =~ "${GITLINT_VERSION}" ]]; then
+          echo "Error: Expected version ${GITLINT_VERSION} != ${GITLINT_CURRENT_VERSION}"
+          exit 1
+        fi
