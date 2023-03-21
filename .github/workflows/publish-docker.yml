@@ -1,5 +1,5 @@
 name: Publish Docker
-run-name: "Publish Docker (gitlint_version=${{ inputs.gitlint_version }})"
+run-name: "Publish Docker (gitlint_version=${{ inputs.gitlint_version }}, docker_image_tag=${{ inputs.docker_image_tag }})"
 
 on:
   workflow_call:
