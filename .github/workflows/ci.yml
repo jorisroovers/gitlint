@@ -140,3 +140,4 @@ jobs:
     with:
       pypi_target: "pypi.org"
       repo_release_ref: "main"
+      docker_image_tag: "latest_dev"

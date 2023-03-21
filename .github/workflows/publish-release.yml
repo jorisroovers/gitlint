@@ -14,6 +14,11 @@ on:
         description: "Gitlint git reference to publish release for"
         type: string
         default: "main"
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: string
+        default: "latest_dev"
   
   # Manually trigger a release
   workflow_dispatch:
@@ -30,6 +35,15 @@ on:
         description: "Gitlint git reference to publish release for"
         type: string
         default: "main"
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: choice
+        options:
+          - "latest_dev"
+          - "latest"
+          - "Use $gitlint_version"
+        default: "latest_dev"
 
 jobs:
   publish:

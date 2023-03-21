@@ -83,6 +83,6 @@ jobs:
       - publish-docker
     uses: ./.github/workflows/test-docker.yml
     with:
-      docker_image_tag: ${{ needs.publish.steps.set_tag.outputs.docker_image_tag }}
+      docker_image_tag: ${{ needs.publish-docker.steps.set_tag.outputs.docker_image_tag }}
       gitlint_version: ${{ inputs.gitlint_version }}
     if: inputs.push_to_dockerhub
