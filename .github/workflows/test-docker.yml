@@ -32,11 +32,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
     - name: Run gitlint --version using docker
       run: |
         gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ inputs.docker_image_tag }} --version)
+        echo "$gitlint_version == 'gitlint, version ${{ inputs.gitlint_version }}'"
         [ "$gitlint_version" == "gitlint, version ${{ inputs.gitlint_version }}" ]
