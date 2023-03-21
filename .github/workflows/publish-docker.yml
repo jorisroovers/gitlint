@@ -40,6 +40,8 @@ on:
 jobs:
   publish-docker:
     runs-on: "ubuntu-latest"
+    outputs:
+      docker_image_tag: ${{ steps.set_tag.outputs.docker_image_tag }}
     steps:
       - name: Determine docker tag
         id: set_tag
