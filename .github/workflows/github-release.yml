@@ -12,3 +12,4 @@ jobs:
     with:
       pypi_target: "pypi.org"
       repo_release_ref: ${{ github.ref_name }} 
+      docker_image_tag: "Use $gitlint_version"

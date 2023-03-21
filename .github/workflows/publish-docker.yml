@@ -1,5 +1,5 @@
 name: Publish Docker
-run-name: "Publish Docker (gitlint_version=${{ inputs.gitlint_version }})"
+run-name: "Publish Docker (gitlint_version=${{ inputs.gitlint_version }}, docker_image_tag=${{ inputs.docker_image_tag }})"
 
 on:
   workflow_call:
@@ -38,8 +38,10 @@ on:
         default: false
 
 jobs:
-  publish_docker:
+  publish-docker:
     runs-on: "ubuntu-latest"
+    outputs:
+      docker_image_tag: ${{ steps.set_tag.outputs.docker_image_tag }}
     steps:
       - name: Determine docker tag
         id: set_tag
@@ -62,11 +64,11 @@ jobs:
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
           tags: jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }}
 
-      - name: Test docker image
+      - name: Test docker image (local)
         run: |
           gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }} --version)
+          echo "$gitlint_version == 'gitlint, version ${{ inputs.gitlint_version }}'"
           [ "$gitlint_version" == "gitlint, version ${{ inputs.gitlint_version }}" ]
-
 
       # This won't actually rebuild the docker image, but just push the previously built and cached image
       - name: Push docker image
@@ -77,3 +79,12 @@ jobs:
           tags: jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }}
         if: inputs.push_to_dockerhub
  
+  # Retest docker image after publishing
+  test-docker:
+    needs:
+      - publish-docker
+    uses: ./.github/workflows/test-docker.yml
+    with:
+      docker_image_tag: ${{ needs.publish-docker.outputs.docker_image_tag }}
+      gitlint_version: ${{ inputs.gitlint_version }}
+    if: inputs.push_to_dockerhub

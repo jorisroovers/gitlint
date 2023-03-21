@@ -14,6 +14,11 @@ on:
         description: "Gitlint git reference to publish release for"
         type: string
         default: "main"
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: string
+        default: "latest_dev"
   
   # Manually trigger a release
   workflow_dispatch:
@@ -30,6 +35,15 @@ on:
         description: "Gitlint git reference to publish release for"
         type: string
         default: "main"
+      docker_image_tag:
+        description: "Docker image tag"
+        required: true
+        type: choice
+        options:
+          - "latest_dev"
+          - "latest"
+          - "Use $gitlint_version"
+        default: "latest_dev"
 
 jobs:
   publish:
@@ -172,5 +186,5 @@ jobs:
     secrets: inherit # pass all secrets (required to access secrets in a called workflow)
     with:
       gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
-      docker_image_tag: "latest_dev"
+      docker_image_tag: ${{ inputs.docker_image_tag }}
       push_to_dockerhub: true
