@@ -1,26 +1,30 @@
 name: Test Docker
-run-name: "Test Docker (docker_tag=${{ inputs.docker_tag }}, gitlint_version=${{ inputs.gitlint_version }})"
+run-name: "Test Docker (docker_image_tag=${{ inputs.docker_image_tag }}, gitlint_version=${{ inputs.gitlint_version }})"
 
 on:
   workflow_call:
     inputs:
-      docker_tag:
+      docker_image_tag:
         description: "Docker tag to pull and run (latest, latest_dev, 0.15.0, etc)"
         required: true
+        type: string
         default: "latest"
       gitlint_version:
         description: "Expected gitlint version (0.15.0, etc)"
         required: true
+        type: string
         default: "0.15.0"
   workflow_dispatch:
     inputs:
-      docker_tag:
+      docker_image_tag:
         description: "Docker tag to pull and run (latest, latest_dev, 0.15.0, etc)"
         required: true
+        type: string
         default: "latest"
       gitlint_version:
         description: "Expected gitlint version (0.15.0, etc)"
         required: true
+        type: string
         default: "0.15.0"
 
 jobs:
@@ -34,13 +38,5 @@ jobs:
 
     - name: Run gitlint --version using docker
       run: |
-        DOCKER_TAG=${{ github.event.inputs.docker_tag }}
-        GITLINT_VERSION=${{ github.event.inputs.gitlint_version }}
-        
-        GITLINT_CURRENT_VERSION=$(docker run --rm -v $(pwd):/repo jorisroovers/gitlint:${DOCKER_TAG} --version)
-        echo "gitlint version: ${GITLINT_CURRENT_VERSION}"
-        
-        if [[ ! "${GITLINT_CURRENT_VERSION}" =~ "${GITLINT_VERSION}" ]]; then
-          echo "Error: Expected version ${GITLINT_VERSION} != ${GITLINT_CURRENT_VERSION}"
-          exit 1
-        fi
+        gitlint_version=$(docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint:${{ inputs.docker_image_tag }} --version)
+        [ "$gitlint_version" == "gitlint, version ${{ inputs.gitlint_version }}" ]
