@@ -22,22 +22,6 @@ def platform_is_windows():
 PLATFORM_IS_WINDOWS = platform_is_windows()
 
 ########################################################################################################################
-# USE_SH_LIB
-# Determine whether to use the `sh` library
-# On windows we won't want to use the sh library since it's not supported - instead we'll use our own shell module.
-# However, we want to be able to overwrite this behavior for testing using the GITLINT_USE_SH_LIB env var.
-
-
-def use_sh_library():
-    gitlint_use_sh_lib_env = os.environ.get("GITLINT_USE_SH_LIB", None)
-    if gitlint_use_sh_lib_env:
-        return gitlint_use_sh_lib_env == "1"
-    return False
-
-
-USE_SH_LIB = use_sh_library()
-
-########################################################################################################################
 # TERMINAL_ENCODING
 # Encoding used for terminal encoding/decoding.
 

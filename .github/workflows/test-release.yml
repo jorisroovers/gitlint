@@ -70,16 +70,9 @@ jobs:
         with:
           ref: ${{ inputs.repo_test_ref }}
 
-      - name: Integration tests (default -> GITLINT_USE_SH_LIB=1)
+      - name: Integration tests
         run: |
           hatch run qa:integration-tests
-        if: matrix.os != 'windows-latest'
-
-      - name: Integration tests (GITLINT_USE_SH_LIB=1)
-        run: |
-          hatch run qa:integration-tests
-        env:
-          GITLINT_USE_SH_LIB: 1
         if: matrix.os != 'windows-latest'
 
       - name: Integration tests (GITLINT_QA_USE_SH_LIB=0)
