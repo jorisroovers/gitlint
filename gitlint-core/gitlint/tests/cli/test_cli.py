@@ -37,7 +37,6 @@ class CLITests(BaseTestCase):
             "platform": platform.platform(),
             "python_version": sys.version,
             "gitlint_version": __version__,
-            "GITLINT_USE_SH_LIB": BaseTestCase.GITLINT_USE_SH_LIB,
             "target": os.path.realpath(os.getcwd()),
             "TERMINAL_ENCODING": TERMINAL_ENCODING,
             "FILE_ENCODING": FILE_ENCODING,

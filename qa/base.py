@@ -21,7 +21,6 @@ class BaseTestCase(TestCase):
     maxDiff = None
     tmp_git_repo = None
 
-    GITLINT_USE_SH_LIB = os.environ.get("GITLINT_USE_SH_LIB", "[NOT SET]")
     GIT_CONTEXT_ERROR_CODE = 254
     GITLINT_USAGE_ERROR = 253
 
@@ -198,7 +197,6 @@ class BaseTestCase(TestCase):
             "python_version": sys.version,
             "git_version": expected_git_version,
             "gitlint_version": expected_gitlint_version,
-            "GITLINT_USE_SH_LIB": BaseTestCase.GITLINT_USE_SH_LIB,
             "TERMINAL_ENCODING": TERMINAL_ENCODING,
             "FILE_ENCODING": FILE_ENCODING,
         }
