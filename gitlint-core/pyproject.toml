@@ -49,7 +49,7 @@ gitlint = "gitlint.cli:cli"
 
 [tool.hatch.version]
 source = "vcs"
-raw-options = { root = ".." }
+raw-options = { root = "..", version_scheme = "release-branch-semver"}
 
 [tool.hatch.build]
 include = [
