@@ -10,22 +10,6 @@ class UtilsTests(BaseTestCase):
         # its value after we're done this doesn't influence other tests
         utils.PLATFORM_IS_WINDOWS = utils.platform_is_windows()
 
-    @patch("os.environ")
-    def test_use_sh_library(self, patched_env):
-        patched_env.get.return_value = "1"
-        self.assertEqual(utils.use_sh_library(), True)
-        patched_env.get.assert_called_once_with("GITLINT_USE_SH_LIB", None)
-
-        for invalid_val in ["0", "foöbar"]:
-            patched_env.get.reset_mock()  # reset mock call count
-            patched_env.get.return_value = invalid_val
-            self.assertEqual(utils.use_sh_library(), False, invalid_val)
-            patched_env.get.assert_called_once_with("GITLINT_USE_SH_LIB", None)
-
-        # Assert that when GITLINT_USE_SH_LIB is not set, we fallback to False (not using)
-        patched_env.get.return_value = None
-        self.assertEqual(utils.use_sh_library(), False)
-
     @patch("gitlint.utils.locale")
     def test_terminal_encoding_non_windows(self, mocked_locale):
         utils.PLATFORM_IS_WINDOWS = False
