@@ -1,6 +1,8 @@
 import copy
+from dataclasses import dataclass
 import logging
 import re
+from typing import Optional
 
 from gitlint.deprecation import Deprecation
 from gitlint.exception import GitlintError
@@ -71,21 +73,15 @@ class CommitMessageTitle(LineRuleTarget):
 class CommitMessageBody(LineRuleTarget):
     """Target class used for rules that apply to a commit message body"""
 
-
+@dataclass
 class RuleViolation:
     """Class representing a violation of a rule. I.e.: When a rule is broken, the rule will instantiate this class
     to indicate how and where the rule was broken."""
 
-    def __init__(self, rule_id, message, content=None, line_nr=None):
-        self.rule_id = rule_id
-        self.line_nr = line_nr
-        self.message = message
-        self.content = content
-
-    def __eq__(self, other):
-        equal = self.rule_id == other.rule_id and self.message == other.message
-        equal = equal and self.content == other.content and self.line_nr == other.line_nr
-        return equal
+    rule_id: str
+    message: str
+    content: Optional[str]  = None
+    line_nr: Optional[int] = None
 
     def __str__(self):
         return f'{self.line_nr}: {self.rule_id} {self.message}: "{self.content}"'

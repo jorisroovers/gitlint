@@ -3,6 +3,7 @@ This module implements a shim for the `sh` library (https://amoffat.github.io/sh
 We still keep the `sh` API and semantics so the rest of the gitlint codebase doesn't need to be changed.
 """
 
+from dataclasses import dataclass
 import subprocess
 
 from gitlint.utils import TERMINAL_ENCODING
@@ -18,14 +19,14 @@ class CommandNotFound(Exception):
     """Exception indicating a command was not found during execution"""
 
 
+@dataclass
 class ShResult:
     """Result wrapper class"""
 
-    def __init__(self, full_cmd, stdout, stderr="", exitcode=0):
-        self.full_cmd = full_cmd
-        self.stdout = stdout
-        self.stderr = stderr
-        self.exit_code = exitcode
+    full_cmd: str
+    stdout: str
+    stderr: str = ""
+    exit_code: int = 0
 
     def __str__(self):
         return self.stdout

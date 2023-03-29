@@ -2,9 +2,10 @@ import logging
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Optional
 
 import arrow
+from datetime import datetime
 
 from gitlint import shell as sh
 from gitlint.cache import PropertyCache, cache
@@ -233,27 +234,18 @@ class GitCommitMessage:
     def __str__(self):
         return self.full
 
-
+@dataclass
 class GitChangedFileStats:
     """Class representing the stats for a changed file in git"""
 
-    def __init__(self, filepath, additions, deletions):
-        self.filepath = Path(filepath)
-        self.additions = additions
-        self.deletions = deletions
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, GitChangedFileStats)
-            and self.filepath == other.filepath
-            and self.additions == other.additions
-            and self.deletions == other.deletions
-        )
+    filepath: Path
+    additions: int
+    deletions:int 
 
     def __str__(self) -> str:
         return f"{self.filepath}: {self.additions} additions, {self.deletions} deletions"
 
-
+@dataclass
 class GitCommit:
     """Class representing a git commit.
     A commit consists of: context, message, author name, author email, date, list of parent commit shas,
@@ -261,27 +253,15 @@ class GitCommit:
     In the context of gitlint, only the git context and commit message are required.
     """
 
-    def __init__(
-        self,
-        context,
-        message,
-        sha=None,
-        date=None,
-        author_name=None,
-        author_email=None,
-        parents=None,
-        changed_files_stats=None,
-        branches=None,
-    ):
-        self.context = context
-        self.message = message
-        self.sha = sha
-        self.date = date
-        self.author_name = author_name
-        self.author_email = author_email
-        self.parents = parents or []  # parent commit hashes
-        self.changed_files_stats = changed_files_stats or {}
-        self.branches = branches or []
+    context: GitContext = field(compare = False)
+    message: GitCommitMessage
+    sha: Optional[str] = None
+    date: Optional[datetime] = None
+    author_name: Optional[str] = None
+    author_email: Optional[str] = None
+    parents: List[str] = field(default_factory=list)
+    changed_files_stats: Dict[str, GitChangedFileStats] = field(default_factory=dict)
+    branches: List[str] = field(default_factory=list)
 
     @property
     def is_merge_commit(self):
@@ -332,27 +312,7 @@ class GitCommit:
             "-----------------------"
         )
 
-    def __eq__(self, other):
-        # skip checking the context as context refers back to this obj, this will trigger a cyclic dependency
-        return (
-            isinstance(other, GitCommit)
-            and self.message == other.message
-            and self.sha == other.sha
-            and self.author_name == other.author_name
-            and self.author_email == other.author_email
-            and self.date == other.date
-            and self.parents == other.parents
-            and self.is_merge_commit == other.is_merge_commit
-            and self.is_fixup_commit == other.is_fixup_commit
-            and self.is_fixup_amend_commit == other.is_fixup_amend_commit
-            and self.is_squash_commit == other.is_squash_commit
-            and self.is_revert_commit == other.is_revert_commit
-            and self.changed_files == other.changed_files
-            and self.changed_files_stats == other.changed_files_stats
-            and self.branches == other.branches
-        )
-
-
+@dataclass
 class LocalGitCommit(GitCommit, PropertyCache):
     """Class representing a git commit that exists in the local git repository.
     This class uses lazy loading: it defers reading information from the local git repository until the associated
@@ -447,7 +407,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
 
         return self._try_cache("changed_files_stats", cache_changed_files_stats)
 
-
+@dataclass
 class StagedLocalGitCommit(GitCommit, PropertyCache):
     """Class representing a git commit that has been staged, but not committed.
 

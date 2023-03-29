@@ -1,11 +1,13 @@
+from dataclasses import dataclass
 from sys import stderr, stdout
 
+from gitlint.config import LintConfig
 
+
+@dataclass
 class Display:
     """Utility class to print stuff to an output stream (stdout by default) based on the config's verbosity"""
-
-    def __init__(self, lint_config):
-        self.config = lint_config
+    config: LintConfig
 
     def _output(self, message, verbosity, exact, stream):
         """Output a message if the config's verbosity is >= to the given verbosity. If exact == True, the message

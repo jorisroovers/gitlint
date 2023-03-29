@@ -1,15 +1,17 @@
 import copy
+from dataclasses import dataclass
 import logging
 import os
 import platform
 import stat
 import sys
+from typing import Optional
 
 import click
 
 import gitlint
 from gitlint import hooks
-from gitlint.config import LintConfigBuilder, LintConfigError, LintConfigGenerator
+from gitlint.config import LintConfig, LintConfigBuilder, LintConfigError, LintConfigGenerator
 from gitlint.deprecation import DEPRECATED_LOG_FORMAT
 from gitlint.deprecation import LOG as DEPRECATED_LOG
 from gitlint.exception import GitlintError
@@ -230,17 +232,16 @@ def handle_gitlint_error(ctx, exc):
         ctx.exit(CONFIG_ERROR_CODE)
 
 
+@dataclass
 class ContextObj:
     """Simple class to hold data that is passed between Click commands via the Click context."""
 
-    def __init__(self, config, config_builder, commit_hash, refspec, msg_filename, gitcontext=None):
-        self.config = config
-        self.config_builder = config_builder
-        self.commit_hash = commit_hash
-        self.refspec = refspec
-        self.msg_filename = msg_filename
-        self.gitcontext = gitcontext
-
+    config: LintConfig
+    config_builder: LintConfigBuilder
+    commit_hash:str
+    refspec: str
+    msg_filename: str
+    gitcontext: Optional[GitContext] = None
 
 # fmt: off
 @click.group(invoke_without_command=True, context_settings={"max_content_width": 120},
