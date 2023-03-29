@@ -1,6 +1,8 @@
 import logging
 import os
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import List
 
 import arrow
 
@@ -108,6 +110,96 @@ def _parse_git_changed_file_stats(changed_files_stats_raw):
     return changed_files_stats
 
 
+class GitContext(PropertyCache):
+    """Class representing the git context in which gitlint is operating: a data object storing information about
+    the git repository that gitlint is linting.
+    """
+
+    def __init__(self, repository_path=None):
+        PropertyCache.__init__(self)
+        self.commits = []
+        self.repository_path = repository_path
+
+    @property
+    @cache
+    def commentchar(self):
+        return git_commentchar(self.repository_path)
+
+    @property
+    @cache
+    def current_branch(self):
+        try:
+            current_branch = _git("rev-parse", "--abbrev-ref", "HEAD", _cwd=self.repository_path).strip()
+        except GitContextError:
+            # Maybe there is no commit.  Try another way to get current branch (need Git 2.22+)
+            current_branch = _git("branch", "--show-current", _cwd=self.repository_path).strip()
+        return current_branch
+
+    @staticmethod
+    def from_commit_msg(commit_msg_str):
+        """Determines git context based on a commit message.
+        :param commit_msg_str: Full git commit message.
+        """
+        context = GitContext()
+        commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg_str)
+        commit = GitCommit(context, commit_msg_obj)
+        context.commits.append(commit)
+        return context
+
+    @staticmethod
+    def from_staged_commit(commit_msg_str, repository_path):
+        """Determines git context based on a commit message that is a staged commit for a local git repository.
+        :param commit_msg_str: Full git commit message.
+        :param repository_path: Path to the git repository to retrieve the context from
+        """
+        context = GitContext(repository_path=repository_path)
+        commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg_str)
+        commit = StagedLocalGitCommit(context, commit_msg_obj)
+        context.commits.append(commit)
+        return context
+
+    @staticmethod
+    def from_local_repository(repository_path, refspec=None, commit_hashes=None):
+        """Retrieves the git context from a local git repository.
+        :param repository_path: Path to the git repository to retrieve the context from
+        :param refspec: The commit(s) to retrieve (mutually exclusive with `commit_hash`)
+        :param commit_hash: Hash of the commit to retrieve (mutually exclusive with `refspec`)
+        """
+
+        context = GitContext(repository_path=repository_path)
+
+        if refspec:
+            sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
+        elif commit_hashes:  # One or more commit hashes, just pass it to `git log -1`
+            # Even though we have already been passed the commit hash, we ask git to retrieve this hash and
+            # return it to us. This way we verify that the passed hash is a valid hash for the target repo and we
+            # also convert it to the full hash format (we might have been passed a short hash).
+            sha_list = []
+            for commit_hash in commit_hashes:
+                sha_list.append(_git("log", "-1", commit_hash, "--pretty=%H", _cwd=repository_path).replace("\n", ""))
+        else:  # If no refspec is defined, fallback to the last commit on the current branch
+            # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
+            # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into
+            # problems with e.g. merge commits. Easiest solution is just taking the SHA from `git log -1`.
+            sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace("\n", "")]
+
+        for sha in sha_list:
+            commit = LocalGitCommit(context, sha)
+            context.commits.append(commit)
+
+        return context
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, GitContext)
+            and self.commits == other.commits
+            and self.repository_path == other.repository_path
+            and self.commentchar == other.commentchar
+            and self.current_branch == other.current_branch
+        )
+
+
+@dataclass
 class GitCommitMessage:
     """Class representing a git commit message. A commit message consists of the following:
     - context: The `GitContext` this commit message is part of
@@ -117,12 +209,11 @@ class GitCommitMessage:
     - body: all lines following the title
     """
 
-    def __init__(self, context, original=None, full=None, title=None, body=None):
-        self.context = context
-        self.original = original
-        self.full = full
-        self.title = title
-        self.body = body
+    context: GitContext = field(compare = False)
+    original: str
+    full: str
+    title: str
+    body: List[str]
 
     @staticmethod
     def from_full_message(context, commit_msg_str):
@@ -141,15 +232,6 @@ class GitCommitMessage:
 
     def __str__(self):
         return self.full
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, GitCommitMessage)
-            and self.original == other.original
-            and self.full == other.full
-            and self.title == other.title
-            and self.body == other.body
-        )
 
 
 class GitChangedFileStats:
@@ -419,92 +501,3 @@ class StagedLocalGitCommit(GitCommit, PropertyCache):
             self._cache["changed_files_stats"] = _parse_git_changed_file_stats(changed_files_stats_raw)
 
         return self._try_cache("changed_files_stats", cache_changed_files_stats)
-
-
-class GitContext(PropertyCache):
-    """Class representing the git context in which gitlint is operating: a data object storing information about
-    the git repository that gitlint is linting.
-    """
-
-    def __init__(self, repository_path=None):
-        PropertyCache.__init__(self)
-        self.commits = []
-        self.repository_path = repository_path
-
-    @property
-    @cache
-    def commentchar(self):
-        return git_commentchar(self.repository_path)
-
-    @property
-    @cache
-    def current_branch(self):
-        try:
-            current_branch = _git("rev-parse", "--abbrev-ref", "HEAD", _cwd=self.repository_path).strip()
-        except GitContextError:
-            # Maybe there is no commit.  Try another way to get current branch (need Git 2.22+)
-            current_branch = _git("branch", "--show-current", _cwd=self.repository_path).strip()
-        return current_branch
-
-    @staticmethod
-    def from_commit_msg(commit_msg_str):
-        """Determines git context based on a commit message.
-        :param commit_msg_str: Full git commit message.
-        """
-        context = GitContext()
-        commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg_str)
-        commit = GitCommit(context, commit_msg_obj)
-        context.commits.append(commit)
-        return context
-
-    @staticmethod
-    def from_staged_commit(commit_msg_str, repository_path):
-        """Determines git context based on a commit message that is a staged commit for a local git repository.
-        :param commit_msg_str: Full git commit message.
-        :param repository_path: Path to the git repository to retrieve the context from
-        """
-        context = GitContext(repository_path=repository_path)
-        commit_msg_obj = GitCommitMessage.from_full_message(context, commit_msg_str)
-        commit = StagedLocalGitCommit(context, commit_msg_obj)
-        context.commits.append(commit)
-        return context
-
-    @staticmethod
-    def from_local_repository(repository_path, refspec=None, commit_hashes=None):
-        """Retrieves the git context from a local git repository.
-        :param repository_path: Path to the git repository to retrieve the context from
-        :param refspec: The commit(s) to retrieve (mutually exclusive with `commit_hash`)
-        :param commit_hash: Hash of the commit to retrieve (mutually exclusive with `refspec`)
-        """
-
-        context = GitContext(repository_path=repository_path)
-
-        if refspec:
-            sha_list = _git("rev-list", refspec, _cwd=repository_path).split()
-        elif commit_hashes:  # One or more commit hashes, just pass it to `git log -1`
-            # Even though we have already been passed the commit hash, we ask git to retrieve this hash and
-            # return it to us. This way we verify that the passed hash is a valid hash for the target repo and we
-            # also convert it to the full hash format (we might have been passed a short hash).
-            sha_list = []
-            for commit_hash in commit_hashes:
-                sha_list.append(_git("log", "-1", commit_hash, "--pretty=%H", _cwd=repository_path).replace("\n", ""))
-        else:  # If no refspec is defined, fallback to the last commit on the current branch
-            # We tried many things here e.g.: defaulting to e.g. HEAD or HEAD^... (incl. dealing with
-            # repos that only have a single commit - HEAD^... doesn't work there), but then we still get into
-            # problems with e.g. merge commits. Easiest solution is just taking the SHA from `git log -1`.
-            sha_list = [_git("log", "-1", "--pretty=%H", _cwd=repository_path).replace("\n", "")]
-
-        for sha in sha_list:
-            commit = LocalGitCommit(context, sha)
-            context.commits.append(commit)
-
-        return context
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, GitContext)
-            and self.commits == other.commits
-            and self.repository_path == other.repository_path
-            and self.commentchar == other.commentchar
-            and self.current_branch == other.current_branch
-        )
