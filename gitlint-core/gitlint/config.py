@@ -1,12 +1,12 @@
 import copy
-from dataclasses import dataclass, field
 import os
 import re
 import shutil
 from collections import OrderedDict
 from configparser import ConfigParser
 from configparser import Error as ConfigParserError
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import ClassVar, Optional
 
 from gitlint import (
     options,
@@ -417,6 +417,7 @@ class RuleCollection:
                 return_str += f"     {option_name}={option_val_repr}\n"
         return return_str
 
+
 @dataclass
 class LintConfigBuilder:
     """Factory class that can build gitlint config.
@@ -425,9 +426,9 @@ class LintConfigBuilder:
     normalized, validated and build. Example usage can be found in gitlint.cli.
     """
 
-    RULE_QUALIFIER_SYMBOL = ":"
-    _config_blueprint: OrderedDict  = field(init=False, default_factory=OrderedDict)
-    _config_path: Optional[str] = field(init=False, default = None)
+    RULE_QUALIFIER_SYMBOL: ClassVar[str] = ":"
+    _config_blueprint: OrderedDict = field(init=False, default_factory=OrderedDict)
+    _config_path: Optional[str] = field(init=False, default=None)
 
     def set_option(self, section, option_name, option_value):
         if section not in self._config_blueprint:

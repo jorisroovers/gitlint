@@ -1,8 +1,11 @@
+from dataclasses import dataclass, field
+
+
+@dataclass
 class PropertyCache:
     """Mixin class providing a simple cache."""
 
-    def __init__(self):
-        self._cache = {}
+    _cache: dict = field(init=False, default_factory=dict)
 
     def _try_cache(self, cache_key, cache_populate_func):
         """Tries to get a value from the cache identified by `cache_key`.

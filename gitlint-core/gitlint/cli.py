@@ -1,17 +1,22 @@
 import copy
-from dataclasses import dataclass
 import logging
 import os
 import platform
 import stat
 import sys
+from dataclasses import dataclass
 from typing import Optional
 
 import click
 
 import gitlint
 from gitlint import hooks
-from gitlint.config import LintConfig, LintConfigBuilder, LintConfigError, LintConfigGenerator
+from gitlint.config import (
+    LintConfig,
+    LintConfigBuilder,
+    LintConfigError,
+    LintConfigGenerator,
+)
 from gitlint.deprecation import DEPRECATED_LOG_FORMAT
 from gitlint.deprecation import LOG as DEPRECATED_LOG
 from gitlint.exception import GitlintError
@@ -238,10 +243,11 @@ class ContextObj:
 
     config: LintConfig
     config_builder: LintConfigBuilder
-    commit_hash:str
+    commit_hash: str
     refspec: str
     msg_filename: str
     gitcontext: Optional[GitContext] = None
+
 
 # fmt: off
 @click.group(invoke_without_command=True, context_settings={"max_content_width": 120},

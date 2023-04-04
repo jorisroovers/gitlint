@@ -1,20 +1,24 @@
 import logging
+from dataclasses import dataclass, field
 
-from gitlint import display
 from gitlint import rules as gitlint_rules
+from gitlint.config import LintConfig
 from gitlint.deprecation import Deprecation
+from gitlint.display import Display
 
 LOG = logging.getLogger(__name__)
 logging.basicConfig()
 
 
+@dataclass
 class GitLinter:
     """Main linter class. This is where rules actually get applied. See the lint() method."""
 
-    def __init__(self, config):
-        self.config = config
+    config: LintConfig
+    display: Display = field(init=False)
 
-        self.display = display.Display(config)
+    def __post_init__(self):
+        self.display = Display(self.config)
 
     def should_ignore_rule(self, rule):
         """Determines whether a rule should be ignored based on the general list of commits to ignore"""

@@ -7,6 +7,7 @@ from gitlint.config import LintConfig
 @dataclass
 class Display:
     """Utility class to print stuff to an output stream (stdout by default) based on the config's verbosity"""
+
     config: LintConfig
 
     def _output(self, message, verbosity, exact, stream):

@@ -1,6 +1,8 @@
 import os
 import re
 from abc import abstractmethod
+from dataclasses import dataclass
+from typing import Any
 
 from gitlint.exception import GitlintError
 
@@ -21,6 +23,7 @@ class RuleOptionError(GitlintError):
     pass
 
 
+@dataclass
 class RuleOption:
     """Base class representing a configurable part (i.e. option) of a rule (e.g. the max-length of the title-max-line
     rule).
@@ -28,11 +31,12 @@ class RuleOption:
     options of a particular type like int, str, etc.
     """
 
-    def __init__(self, name, value, description):
-        self.name = name
-        self.description = description
-        self.value = None
-        self.set(value)
+    name: str
+    value: Any
+    description: str
+
+    def __post_init__(self):
+        self.set(self.value)
 
     @abstractmethod
     def set(self, value):
@@ -41,20 +45,17 @@ class RuleOption:
     def __str__(self):
         return f"({self.name}: {self.value} ({self.description}))"
 
-    def __eq__(self, other):
-        return self.name == other.name and self.description == other.description and self.value == other.value
 
-
+@dataclass
 class StrOption(RuleOption):
     @allow_none
     def set(self, value):
         self.value = str(value)
 
 
+@dataclass
 class IntOption(RuleOption):
-    def __init__(self, name, value, description, allow_negative=False):
-        self.allow_negative = allow_negative
-        super().__init__(name, value, description)
+    allow_negative: bool = False
 
     def _raise_exception(self, value):
         if self.allow_negative:
@@ -74,6 +75,7 @@ class IntOption(RuleOption):
             self._raise_exception(value)
 
 
+@dataclass
 class BoolOption(RuleOption):
     # explicit choice to not annotate with @allow_none: Booleans must be False or True, they cannot be unset.
     def set(self, value):
@@ -83,6 +85,7 @@ class BoolOption(RuleOption):
         self.value = value == "true"
 
 
+@dataclass
 class ListOption(RuleOption):
     """Option that is either a given list or a comma-separated string that can be split into a list when being set."""
 
@@ -96,12 +99,11 @@ class ListOption(RuleOption):
         self.value = [str(item.strip()) for item in the_list if item.strip() != ""]
 
 
+@dataclass
 class PathOption(RuleOption):
     """Option that accepts either a directory or both a directory and a file."""
 
-    def __init__(self, name, value, description, type="dir"):
-        self.type = type
-        super().__init__(name, value, description)
+    type: str = "dir"
 
     @allow_none
     def set(self, value):
@@ -129,6 +131,7 @@ class PathOption(RuleOption):
         self.value = os.path.realpath(value)
 
 
+@dataclass
 class RegexOption(RuleOption):
     @allow_none
     def set(self, value):

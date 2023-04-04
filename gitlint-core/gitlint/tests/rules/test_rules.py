@@ -8,12 +8,17 @@ class RuleTests(BaseTestCase):
         self.assertEqual(str(RuleViolation("rule-ïd", "Tēst message", "Tēst content", 57)), expected)
 
     def test_rule_equality(self):
-        self.assertEqual(Rule(), Rule())
-        # Ensure rules are not equal if they differ on their attributes
-        for attr in ["id", "name", "target", "options"]:
-            rule = Rule()
-            setattr(rule, attr, "åbc")
-            self.assertNotEqual(Rule(), rule)
+        # Ensure rules are not equal if they differ on one of their attributes
+        rule_attrs = ["id", "name", "target", "options"]
+        for attr in rule_attrs:
+            rule1 = Rule()
+            rule2 = Rule()
+            for attr2 in rule_attrs:
+                setattr(rule1, attr2, "föo")
+                setattr(rule2, attr2, "föo")
+            self.assertEqual(rule1, rule2)
+            setattr(rule1, attr, "åbc")
+            self.assertNotEqual(rule1, rule2)
 
     def test_rule_log(self):
         rule = Rule()

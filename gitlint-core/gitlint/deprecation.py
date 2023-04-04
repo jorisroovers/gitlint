@@ -1,4 +1,5 @@
 import logging
+from typing import Optional, Set
 
 LOG = logging.getLogger("gitlint.deprecated")
 DEPRECATED_LOG_FORMAT = "%(levelname)s: %(message)s"
@@ -8,10 +9,10 @@ class Deprecation:
     """Singleton class that handles deprecation warnings and behavior."""
 
     # LintConfig class that is used to determine deprecation behavior
-    config = None
+    config: Optional[object] = None
 
     # Set of warning messages that have already been logged, to prevent duplicate warnings
-    warning_msgs = set()
+    warning_msgs: Set[str] = set()
 
     @classmethod
     def get_regex_method(cls, rule, regex_option):

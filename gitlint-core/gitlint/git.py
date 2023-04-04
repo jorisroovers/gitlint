@@ -1,11 +1,11 @@
 import logging
 import os
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 import arrow
-from datetime import datetime
 
 from gitlint import shell as sh
 from gitlint.cache import PropertyCache, cache
@@ -111,15 +111,14 @@ def _parse_git_changed_file_stats(changed_files_stats_raw):
     return changed_files_stats
 
 
+@dataclass
 class GitContext(PropertyCache):
     """Class representing the git context in which gitlint is operating: a data object storing information about
     the git repository that gitlint is linting.
     """
 
-    def __init__(self, repository_path=None):
-        PropertyCache.__init__(self)
-        self.commits = []
-        self.repository_path = repository_path
+    commits: List["GitCommit"] = field(init=False, default_factory=list)
+    repository_path: Optional[str] = None
 
     @property
     @cache
@@ -210,7 +209,7 @@ class GitCommitMessage:
     - body: all lines following the title
     """
 
-    context: GitContext = field(compare = False)
+    context: GitContext = field(compare=False)
     original: str
     full: str
     title: str
@@ -234,16 +233,18 @@ class GitCommitMessage:
     def __str__(self):
         return self.full
 
+
 @dataclass
 class GitChangedFileStats:
     """Class representing the stats for a changed file in git"""
 
     filepath: Path
     additions: int
-    deletions:int 
+    deletions: int
 
     def __str__(self) -> str:
         return f"{self.filepath}: {self.additions} additions, {self.deletions} deletions"
+
 
 @dataclass
 class GitCommit:
@@ -253,7 +254,7 @@ class GitCommit:
     In the context of gitlint, only the git context and commit message are required.
     """
 
-    context: GitContext = field(compare = False)
+    context: GitContext = field(compare=False)
     message: GitCommitMessage
     sha: Optional[str] = None
     date: Optional[datetime] = None
@@ -311,6 +312,7 @@ class GitCommit:
             f"Changed Files Stats:{changed_files_stats_str}\n"
             "-----------------------"
         )
+
 
 @dataclass
 class LocalGitCommit(GitCommit, PropertyCache):
@@ -406,6 +408,7 @@ class LocalGitCommit(GitCommit, PropertyCache):
             self._cache["changed_files_stats"] = _parse_git_changed_file_stats(changed_files_stats_raw)
 
         return self._try_cache("changed_files_stats", cache_changed_files_stats)
+
 
 @dataclass
 class StagedLocalGitCommit(GitCommit, PropertyCache):

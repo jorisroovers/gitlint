@@ -3,8 +3,8 @@ This module implements a shim for the `sh` library (https://amoffat.github.io/sh
 We still keep the `sh` API and semantics so the rest of the gitlint codebase doesn't need to be changed.
 """
 
-from dataclasses import dataclass
 import subprocess
+from dataclasses import dataclass
 
 from gitlint.utils import TERMINAL_ENCODING
 
