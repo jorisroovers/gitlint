@@ -103,7 +103,7 @@ format = "black --check --diff {args:.}"
 lint = "ruff {args:gitlint-core/gitlint qa}"
 autoformat = "black {args:.}"
 autofix = [
-    "ruff --fix {args:gitlint-core/gitlint qa}",
+    "- ruff --fix {args:gitlint-core/gitlint qa}",
     "autoformat",                                #
 ]
 
