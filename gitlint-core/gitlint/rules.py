@@ -24,7 +24,7 @@ class Rule:
     options_spec: ClassVar[List] = []
     id: ClassVar[str]
     name: ClassVar[str]
-    target: ClassVar[Optional[Any]] = None
+    target: ClassVar[Optional["LineRuleTarget"]] = None
     _log: ClassVar[Optional[logging.Logger]] = None
     _log_deprecated_regex_style_search: ClassVar[Any]
 
