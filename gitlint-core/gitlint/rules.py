@@ -1,29 +1,42 @@
 import copy
 import logging
 import re
+from dataclasses import dataclass, field
+from typing import Any, ClassVar, Dict, List, Optional
 
 from gitlint.deprecation import Deprecation
 from gitlint.exception import GitlintError
-from gitlint.options import BoolOption, IntOption, ListOption, RegexOption, StrOption
+from gitlint.options import (
+    BoolOption,
+    IntOption,
+    ListOption,
+    RegexOption,
+    RuleOption,
+    StrOption,
+)
 
 
+@dataclass
 class Rule:
     """Class representing gitlint rules."""
 
-    options_spec = []
-    id = None
-    name = None
-    target = None
-    _log = None
-    _log_deprecated_regex_style_search = None
+    # Class attributes
+    options_spec: ClassVar[List] = []
+    id: ClassVar[str]
+    name: ClassVar[str]
+    target: ClassVar[Optional["LineRuleTarget"]] = None
+    _log: ClassVar[Optional[logging.Logger]] = None
+    _log_deprecated_regex_style_search: ClassVar[Any]
 
-    def __init__(self, opts=None):
-        if not opts:
-            opts = {}
+    # Instance attributes
+    _raw_options: Dict[str, str] = field(default_factory=dict, compare=False)
+    options: Dict[str, RuleOption] = field(init=False)
+
+    def __post_init__(self):
         self.options = {}
         for op_spec in self.options_spec:
             self.options[op_spec.name] = copy.deepcopy(op_spec)
-            actual_option = opts.get(op_spec.name)
+            actual_option = self._raw_options.get(op_spec.name)
             if actual_option is not None:
                 self.options[op_spec.name].set(actual_option)
 
@@ -72,20 +85,15 @@ class CommitMessageBody(LineRuleTarget):
     """Target class used for rules that apply to a commit message body"""
 
 
+@dataclass
 class RuleViolation:
     """Class representing a violation of a rule. I.e.: When a rule is broken, the rule will instantiate this class
     to indicate how and where the rule was broken."""
 
-    def __init__(self, rule_id, message, content=None, line_nr=None):
-        self.rule_id = rule_id
-        self.line_nr = line_nr
-        self.message = message
-        self.content = content
-
-    def __eq__(self, other):
-        equal = self.rule_id == other.rule_id and self.message == other.message
-        equal = equal and self.content == other.content and self.line_nr == other.line_nr
-        return equal
+    rule_id: str
+    message: str
+    content: Optional[str] = None
+    line_nr: Optional[int] = None
 
     def __str__(self):
         return f'{self.line_nr}: {self.rule_id} {self.message}: "{self.content}"'
