@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 
 @dataclass
 class PropertyCache:
     """Mixin class providing a simple cache."""
 
-    _cache: dict[str, Any] = field(init=False, default_factory=dict)
+    _cache: Dict[str, Any] = field(init=False, default_factory=dict)
 
     def _try_cache(self, cache_key, cache_populate_func):
         """Tries to get a value from the cache identified by `cache_key`.

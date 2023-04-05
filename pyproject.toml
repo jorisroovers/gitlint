@@ -227,18 +227,24 @@ disallow_incomplete_defs = true
 # disallow_untyped_defs = true
 # no_implicit_reexport = true
 
-
 exclude = [
     "hatch_build.py",
     "tools/*",
     "gitlint-core/gitlint/tests/samples/user_rules/import_exception/invalid_python.py",
 ]
 files = ["."]
+# Minimum supported python version by gitlint is 3.7, so enforce 3.7 typing semantics
+python_version = "3.7"
 
 [[tool.mypy.overrides]]
 # Ignore "Dataclass attribute may only be overridden by another attribute" errors in git.py
 module = "gitlint.git"
 disable_error_code = "misc"
+
+[[tool.mypy.overrides]]
+# Ignore "Cannot find implementation or library stub for module named "importlib_metadata"" error in gitlint/__init__.py
+module = "gitlint"
+disable_error_code = "import"
 
 [[tool.mypy.overrides]]
 # Ignore all errors in qa/shell.py (excluding this file isn't working because mypy include/exclude semantics
