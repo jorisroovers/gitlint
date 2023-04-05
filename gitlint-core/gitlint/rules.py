@@ -2,7 +2,7 @@ import copy
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional
 
 from gitlint.deprecation import Deprecation
 from gitlint.exception import GitlintError
@@ -26,7 +26,6 @@ class Rule:
     name: ClassVar[str]
     target: ClassVar[Optional["LineRuleTarget"]] = None
     _log: ClassVar[Optional[logging.Logger]] = None
-    _log_deprecated_regex_style_search: ClassVar[Any]
 
     # Instance attributes
     _raw_options: Dict[str, str] = field(default_factory=dict, compare=False)
