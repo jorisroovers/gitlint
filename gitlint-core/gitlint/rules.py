@@ -2,7 +2,7 @@ import copy
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import ClassVar, Dict, List, Optional
+from typing import ClassVar, Dict, List, Optional, Type
 
 from gitlint.deprecation import Deprecation
 from gitlint.exception import GitlintError
@@ -21,10 +21,10 @@ class Rule:
     """Class representing gitlint rules."""
 
     # Class attributes
-    options_spec: ClassVar[List] = []
+    options_spec: ClassVar[List[RuleOption]] = []
     id: ClassVar[str]
     name: ClassVar[str]
-    target: ClassVar[Optional["LineRuleTarget"]] = None
+    target: ClassVar[Optional[Type["LineRuleTarget"]]] = None
     _log: ClassVar[Optional[logging.Logger]] = None
 
     # Instance attributes

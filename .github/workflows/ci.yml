@@ -47,6 +47,9 @@ jobs:
       - name: Code linting (ruff)
         run: hatch run test:lint
 
+      - name: Static type checking (mypy)
+        run: hatch run test:type-check
+
       - name: Install local gitlint for integration tests
         run: |
           hatch run qa:install-local

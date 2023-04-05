@@ -15,7 +15,7 @@ LOG_FORMAT = "%(levelname)s: %(name)s %(message)s"
 # PLATFORM_IS_WINDOWS
 
 
-def platform_is_windows():
+def platform_is_windows() -> bool:
     return "windows" in platform.system().lower()
 
 
@@ -26,7 +26,7 @@ PLATFORM_IS_WINDOWS = platform_is_windows()
 # Encoding used for terminal encoding/decoding.
 
 
-def getpreferredencoding():
+def getpreferredencoding() -> str:
     """Modified version of local.getpreferredencoding() that takes into account LC_ALL, LC_CTYPE, LANG env vars
     on windows and falls back to UTF-8."""
     fallback_encoding = "UTF-8"
@@ -38,8 +38,8 @@ def getpreferredencoding():
     if PLATFORM_IS_WINDOWS:
         preferred_encoding = fallback_encoding
         for env_var in ["LC_ALL", "LC_CTYPE", "LANG"]:
-            encoding = os.environ.get(env_var, False)
-            if encoding:
+            encoding = os.environ.get(env_var, None)
+            if encoding is not None:
                 # Support dotted (C.UTF-8) and non-dotted (C or UTF-8) charsets:
                 # If encoding contains a dot: split and use second part, otherwise use everything
                 dot_index = encoding.find(".")

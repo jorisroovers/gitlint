@@ -1,7 +1,8 @@
 import re
 from pathlib import Path
-from typing import Tuple
+from typing import Set, Tuple
 
+from gitlint.git import GitContext
 from gitlint.rules import CommitRule, RuleViolation
 
 
@@ -16,9 +17,12 @@ class AllowedAuthors(CommitRule):
     id = "CC3"
 
     @classmethod
-    def _read_authors_from_file(cls, git_ctx) -> Tuple[str, str]:
+    def _read_authors_from_file(cls, git_ctx: GitContext) -> Tuple[Set[str], str]:
         for file_name in cls.authors_file_names:
-            path = Path(git_ctx.repository_path) / file_name
+            if git_ctx.repository_path:
+                path = Path(git_ctx.repository_path) / file_name
+            else:
+                path = Path(file_name)
             if path.exists():
                 authors_file = path
                 break

@@ -48,7 +48,7 @@ class GitLintUsageError(GitlintError):
     """Exception indicating there is an issue with how gitlint is used."""
 
 
-def setup_logging():
+def setup_logging() -> None:
     """Setup gitlint logging"""
 
     # Root log, mostly used for debug

@@ -6,7 +6,7 @@ import platform
 # PLATFORM_IS_WINDOWS
 
 
-def platform_is_windows():
+def platform_is_windows() -> bool:
     return "windows" in platform.system().lower()
 
 
@@ -19,7 +19,7 @@ PLATFORM_IS_WINDOWS = platform_is_windows()
 # However, we want to be able to overwrite this behavior for testing using the GITLINT_QA_USE_SH_LIB env var.
 
 
-def use_sh_library():
+def use_sh_library() -> bool:
     gitlint_use_sh_lib_env = os.environ.get("GITLINT_QA_USE_SH_LIB", None)
     if gitlint_use_sh_lib_env:
         return gitlint_use_sh_lib_env == "1"
@@ -33,7 +33,7 @@ USE_SH_LIB = use_sh_library()
 # Encoding for reading gitlint command output
 
 
-def getpreferredencoding():
+def getpreferredencoding() -> str:
     """Use local.getpreferredencoding() or fallback to UTF-8."""
     return locale.getpreferredencoding() or "UTF-8"
 
