@@ -66,9 +66,10 @@ You do not need to setup a `virtualenv`, hatch will take care of that for you.
 pip install hatch
 ```
 
-### Github Devcontainer
+### Github Codespace
 
-We provide a devcontainer on github to make it easier to get started with gitlint development using VSCode.
+We provide a devcontainer to use with github codespaces to make it easier to get started with gitlint development
+using VSCode.
 
 To start one, click the plus button under the *Code* dropdown on
 [the gitlint repo on github](https://github.com/jorisroovers/gitlint). 
@@ -88,11 +89,20 @@ source "$(brew --prefix asdf)/libexec/asdf.sh"
 
 # Install python 3.9.15
 asdf install python 3.9.15
+# Make python 3.9.15 the default python
+asdf global python 3.9.15
+
+# IMPORTANT: install hatch for this python version
+pip install hatch==1.6.3
+# You also need to prune your hatch environment first before running other commands
+hatch env prune
+
 # List all available python versions
 asdf list all python
 # List installed python versions
 asdf list python
 ```
+
 
 ## Running tests
 ```sh
