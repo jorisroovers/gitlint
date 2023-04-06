@@ -242,9 +242,11 @@ module = "gitlint.git"
 disable_error_code = "misc"
 
 [[tool.mypy.overrides]]
-# Ignore "Cannot find implementation or library stub for module named "importlib_metadata"" error in gitlint/__init__.py
+# Ignore in gitlint/__init__.py:
+# -  Cannot find implementation or library stub for module named "importlib_metadata" [import]
+# -  Call to untyped function "version" in typed context  [no-untyped-call]" (Python 3.7)
 module = "gitlint"
-disable_error_code = "import"
+disable_error_code = ["import", "no-untyped-call"]
 
 [[tool.mypy.overrides]]
 # Ignore all errors in qa/shell.py (excluding this file isn't working because mypy include/exclude semantics
