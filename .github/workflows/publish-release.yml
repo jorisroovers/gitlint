@@ -49,6 +49,9 @@ jobs:
   publish:
     timeout-minutes: 15
     runs-on: "ubuntu-latest"
+    permissions:
+      # Required for trusted publishing to PyPI
+      id-token: write
     outputs:
       gitlint_version: ${{ steps.set_version.outputs.gitlint_version }}
     steps:
@@ -107,27 +110,22 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: gitlint-core/dist/
-          password: ${{ secrets.PYPI_GITLINT_CORE_PASSWORD }}
         if: inputs.pypi_target == 'pypi.org'
 
       - name: Publish gitlint 🐍📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_GITLINT_PASSWORD }}
         if: inputs.pypi_target == 'pypi.org'
 
       - name: Publish gitlint-core 🐍📦 to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: gitlint-core/dist/
-          password: ${{ secrets.TEST_PYPI_GITLINT_CORE_PASSWORD }}
           repository-url: https://test.pypi.org/legacy/
         if: inputs.pypi_target == 'test.pypi.org'
 
       - name: Publish gitlint 🐍📦 to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.TEST_PYPI_GITLINT_PASSWORD }}
           repository-url: https://test.pypi.org/legacy/
         if: inputs.pypi_target == 'test.pypi.org'
 
