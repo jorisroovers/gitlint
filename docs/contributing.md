@@ -20,6 +20,7 @@ When contributing code, please consider all the parts that are typically require
 - [Integration tests](https://github.com/jorisroovers/gitlint/tree/main/qa) (also automatically
   [enforced by CI](https://github.com/jorisroovers/gitlint/actions)). Again, please consider writing new ones
   for your functionality, not only updating existing ones to make the build pass.
+- Code style checks: linting, formatting, type-checking
 - [Documentation](https://github.com/jorisroovers/gitlint/tree/main/docs).
 
 Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
@@ -124,8 +125,14 @@ hatch run qa:integration-tests   # Run integration tests
 # Formatting check (black)
 hatch run test:format            # Run formatting checks
 
-#  Linting (ruff)
+# Linting (ruff)
 hatch run test:lint              # Run Ruff
+
+# Type Check (mypy)
+hatch run test:type-check        # Run MyPy
+
+# Run unit-tests & all checks
+hatch run test:all               # Run unit-tests and all style checks (format, lint, type-check)
 
 # Project stats
 hatch run test:stats

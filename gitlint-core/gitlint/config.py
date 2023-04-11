@@ -7,6 +7,7 @@ from configparser import ConfigParser
 from configparser import Error as ConfigParserError
 from dataclasses import dataclass, field
 from typing import ClassVar, Optional
+from typing import OrderedDict as OrderedDictType
 
 from gitlint import (
     options,
@@ -427,7 +428,7 @@ class LintConfigBuilder:
     """
 
     RULE_QUALIFIER_SYMBOL: ClassVar[str] = ":"
-    _config_blueprint: OrderedDict = field(init=False, default_factory=OrderedDict)
+    _config_blueprint: OrderedDictType[str, OrderedDictType[str, str]] = field(init=False, default_factory=OrderedDict)
     _config_path: Optional[str] = field(init=False, default=None)
 
     def set_option(self, section, option_name, option_value):

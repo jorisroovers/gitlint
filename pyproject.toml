@@ -91,6 +91,8 @@ dependencies = [
     "ruff==0.0.252",
     "radon==5.1.0",
     "pdbr==0.8.2; sys_platform != \"win32\"",
+    "mypy==1.1.1",
+    "types-python-dateutil==2.8.19.12"
 ]
 
 [tool.hatch.envs.test.scripts]
@@ -101,16 +103,18 @@ u = "unit-tests"
 unit-tests-no-cov = "pytest -rw -s {args:gitlint-core}"
 format = "black --check --diff {args:.}"
 lint = "ruff {args:gitlint-core/gitlint qa}"
+type-check = "mypy {args}"
 autoformat = "black {args:.}"
 autofix = [
     "- ruff --fix {args:gitlint-core/gitlint qa}",
-    "autoformat",                                #
+    "autoformat",                                  #
 ]
 
 all = [
     "unit-tests",
     "format",
-    "lint",       #
+    "lint",
+    "type-check", #
 ]
 stats = ["./tools/stats.sh"]
 
@@ -202,3 +206,50 @@ branch = true # measure branch coverage in addition to statement coverage
 [tool.coverage.report]
 fail_under = 97
 show_missing = true
+
+[tool.mypy]
+# Selectively enable strictness options
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+no_implicit_optional = true
+strict_equality = true
+strict_concatenate = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_any_generics = true
+warn_return_any = true
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+
+# The following options are disabled because they're too strict for now
+# check_untyped_defs = true
+# disallow_untyped_defs = true
+# no_implicit_reexport = true
+
+exclude = [
+    "hatch_build.py",
+    "tools/*",
+    "gitlint-core/gitlint/tests/samples/user_rules/import_exception/invalid_python.py",
+]
+files = ["."]
+# Minimum supported python version by gitlint is 3.7, so enforce 3.7 typing semantics
+python_version = "3.7"
+
+[[tool.mypy.overrides]]
+# Ignore "Dataclass attribute may only be overridden by another attribute" errors in git.py
+module = "gitlint.git"
+disable_error_code = "misc"
+
+[[tool.mypy.overrides]]
+# Ignore in gitlint/__init__.py:
+# -  Cannot find implementation or library stub for module named "importlib_metadata" [import]
+# -  Call to untyped function "version" in typed context  [no-untyped-call]" (Python 3.7)
+module = "gitlint"
+disable_error_code = ["import", "no-untyped-call"]
+
+[[tool.mypy.overrides]]
+# Ignore all errors in qa/shell.py (excluding this file isn't working because mypy include/exclude semantics
+# are unintuitive, so we ignore all errors instead)
+module = "qa.shell"
+ignore_errors  = true

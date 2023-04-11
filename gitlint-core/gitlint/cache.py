@@ -1,11 +1,12 @@
 from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, Optional
 
 
 @dataclass
 class PropertyCache:
     """Mixin class providing a simple cache."""
 
-    _cache: dict = field(init=False, default_factory=dict)
+    _cache: Dict[str, Any] = field(init=False, default_factory=dict)
 
     def _try_cache(self, cache_key, cache_populate_func):
         """Tries to get a value from the cache identified by `cache_key`.
@@ -16,7 +17,7 @@ class PropertyCache:
         return self._cache[cache_key]
 
 
-def cache(original_func=None, cachekey=None):
+def cache(original_func: Optional[Callable[[Any], Any]] = None, cachekey: Optional[str] = None) -> Any:
     """Cache decorator. Caches function return values.
     Requires the parent class to extend and initialize PropertyCache.
     Usage:
@@ -33,7 +34,7 @@ def cache(original_func=None, cachekey=None):
 
     # Decorators with optional arguments are a bit convoluted in python, see some of the links below for details.
 
-    def cache_decorator(func):
+    def cache_decorator(func: Callable[[Any], Any]) -> Any:
         # Use 'nonlocal' keyword to access parent function variable:
         # https://stackoverflow.com/a/14678445/381010
         nonlocal cachekey
