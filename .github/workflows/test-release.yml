@@ -33,6 +33,7 @@ on:
 jobs:
   test-release:
     timeout-minutes: 10
+    environment: ${{ inputs.environment }}
     runs-on: "ubuntu-latest"
     strategy:
       matrix:

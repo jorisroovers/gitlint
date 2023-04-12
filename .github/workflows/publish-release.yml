@@ -115,6 +115,7 @@ jobs:
 
   # Wait for gitlint package to be available in PyPI for installation
   wait-for-package:
+    environment: ${{ inputs.environment }}
     needs:
       - publish
     runs-on: "ubuntu-latest"
