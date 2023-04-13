@@ -6,7 +6,7 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         type: string
         required: true
       repo_release_ref:
@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         type: environment
         required: true
       repo_release_ref:
