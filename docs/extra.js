@@ -3,3 +3,5 @@ document.addEventListener("DOMContentLoaded", function () {
         table.classList.add("docutils");
     });
 });
+
+var termynal = new Termynal('#termynal', { startDelay: 600 });

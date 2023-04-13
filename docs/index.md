@@ -4,7 +4,25 @@ Gitlint is a git commit message linter written in python: it checks your commit 
 Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or as part of your gating script in a
 [CI pipeline (e.g. Jenkins)](index.md#using-gitlint-in-a-ci-environment).
 
-<script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>
+<!-- <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>  -->
+
+<div id="termynal" data-termynal>
+    <span data-ty="input">pip install spacy</span>
+    <span data-ty="progress"></span>
+    <span data-ty>Successfully installed spacy</span>
+    <span data-ty></span>
+    <span data-ty="input">python -m spacy download en</span>
+    <span data-ty="progress"></span>
+    <span data-ty>Installed model 'en'</span>
+    <span data-ty></span>
+    <span data-ty="input">python</span>
+    <span data-ty="input" data-ty-prompt=">>>">import spacy</span>
+    <span data-ty="input" data-ty-prompt=">>>">nlp = spacy.load('en')</span>
+    <span data-ty="input" data-ty-prompt=">>>">doc = nlp(u'Hello world')</span>
+    <span data-ty="input" data-ty-prompt=">>>">print([(w.text, w.pos_) for w in doc])</span>
+    <span data-ty>[('Hello', 'INTJ'), ('world', 'NOUN')]</span>
+</div>
+
 
 !!! note
     **Gitlint works on Windows**, but [there are some known issues](https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows).
