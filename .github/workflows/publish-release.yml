@@ -1,15 +1,14 @@
 name: Publish Release
-run-name: "Publish Release (pypi_target=${{ inputs.pypi_target }}, repo_release_ref=${{ inputs.repo_release_ref }})"
+run-name: "Publish Release (environment=${{ inputs.environment }}, repo_release_ref=${{ inputs.repo_release_ref }})"
 
 on:
   # Trigger release workflow from other workflows (e.g. release dev build as part of CI)
   workflow_call:
     inputs:
-      pypi_target:
-        description: "PyPI repository to publish to"
-        required: true
+      environment:
+        description: "Target environment"
         type: string
-        default: "test.pypi.org"
+        required: true
       repo_release_ref:
         description: "Gitlint git reference to publish release for"
         type: string
@@ -23,14 +22,10 @@ on:
   # Manually trigger a release
   workflow_dispatch:
     inputs:
-      pypi_target:
-        description: "PyPI repository to publish to"
+      environment:
+        description: "Target environment"
+        type: environment
         required: true
-        type: choice
-        options:
-          - "pypi.org"
-          - "test.pypi.org"
-        default: "test.pypi.org"
       repo_release_ref:
         description: "Gitlint git reference to publish release for"
         type: string
@@ -49,6 +44,7 @@ jobs:
   publish:
     timeout-minutes: 15
     runs-on: "ubuntu-latest"
+    environment: ${{ inputs.environment }}
     permissions:
       # Required for trusted publishing to PyPI
       id-token: write
@@ -110,27 +106,16 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: gitlint-core/dist/
-        if: inputs.pypi_target == 'pypi.org'
+          repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
 
       - name: Publish gitlint 🐍📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        if: inputs.pypi_target == 'pypi.org'
-
-      - name: Publish gitlint-core 🐍📦 to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: gitlint-core/dist/
-          repository-url: https://test.pypi.org/legacy/
-        if: inputs.pypi_target == 'test.pypi.org'
-
-      - name: Publish gitlint 🐍📦 to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-        if: inputs.pypi_target == 'test.pypi.org'
+          repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
 
   # Wait for gitlint package to be available in PyPI for installation
   wait-for-package:
+    environment: ${{ inputs.environment }}
     needs:
       - publish
     runs-on: "ubuntu-latest"
@@ -140,18 +125,10 @@ jobs:
         with:
           timeout_minutes: 1
           max_attempts: 10
+          # We need to add the --extra-index-url to the pip install command to deal with PYPI_TARGET=https://test.pypi.org/legacy,
+          # because gitlint's dependencies are not available on Test PyPI
           command: |
-            python -m pip install gitlint==${{ needs.publish.outputs.gitlint_version }}
-        if: inputs.pypi_target == 'pypi.org'
-
-      - name: Install gitlint (test.pypi.org)
-        uses: nick-fields/retry@v2.8.3
-        with:
-          timeout_minutes: 1
-          max_attempts: 10
-          command: |
-            pip install --no-cache-dir -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple gitlint==${{ needs.publish.outputs.gitlint_version }}
-        if: inputs.pypi_target == 'test.pypi.org'
+            python -m pip install --no-cache-dir -i ${{ vars.PYPI_TARGET }} --extra-index-url https://pypi.org/simple gitlint==${{ needs.publish.outputs.gitlint_version }}
 
       - name: gitlint --version
         run: |
@@ -171,7 +148,7 @@ jobs:
     uses: ./.github/workflows/test-release.yml
     with:
       gitlint_version: ${{ needs.publish.outputs.gitlint_version }}
-      pypi_source: ${{ inputs.pypi_target }}
+      environment: ${{ inputs.environment }}
       repo_test_ref: ${{ inputs.repo_release_ref }}
 
   publish-docker:

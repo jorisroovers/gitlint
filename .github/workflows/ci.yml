@@ -134,6 +134,6 @@ jobs:
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit # pass all secrets (required to access secrets in a called workflow)
     with:
-      pypi_target: "pypi.org"
+      environment: "production"
       repo_release_ref: "main"
       docker_image_tag: "latest_dev"
