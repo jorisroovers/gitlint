@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../termynal.css" rel="stylesheet" />
         <link href="../extra.css" rel="stylesheet" />
     
       <script>
@@ -133,6 +134,7 @@ that's open to a lot of change and input.</p>
 <li><a href="https://github.com/jorisroovers/gitlint/tree/main/qa">Integration tests</a> (also automatically
   <a href="https://github.com/jorisroovers/gitlint/actions">enforced by CI</a>). Again, please consider writing new ones
   for your functionality, not only updating existing ones to make the build pass.</li>
+<li>Code style checks: linting, formatting, type-checking</li>
 <li><a href="https://github.com/jorisroovers/gitlint/tree/main/docs">Documentation</a>.</li>
 </ul>
 <p>Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
@@ -169,8 +171,9 @@ pip install gitlint==&quot;0.19.0.dev68&quot;
 You do not need to setup a <code>virtualenv</code>, hatch will take care of that for you.</p>
 <pre><code class="language-sh">pip install hatch
 </code></pre>
-<h3 id="github-devcontainer">Github Devcontainer</h3>
-<p>We provide a devcontainer on github to make it easier to get started with gitlint development using VSCode.</p>
+<h3 id="github-codespace">Github Codespace</h3>
+<p>We provide a devcontainer to use with github codespaces to make it easier to get started with gitlint development
+using VSCode.</p>
 <p>To start one, click the plus button under the <em>Code</em> dropdown on
 <a href="https://github.com/jorisroovers/gitlint">the gitlint repo on github</a>. </p>
 <p><strong>It can take ~15min for all post installation steps to finish.</strong></p>
@@ -183,6 +186,14 @@ source &quot;$(brew --prefix asdf)/libexec/asdf.sh&quot;
 
 # Install python 3.9.15
 asdf install python 3.9.15
+# Make python 3.9.15 the default python
+asdf global python 3.9.15
+
+# IMPORTANT: install hatch for this python version
+pip install hatch==1.6.3
+# You also need to prune your hatch environment first before running other commands
+hatch env prune
+
 # List all available python versions
 asdf list all python
 # List installed python versions
@@ -207,8 +218,14 @@ hatch run qa:integration-tests   # Run integration tests
 # Formatting check (black)
 hatch run test:format            # Run formatting checks
 
-#  Linting (ruff)
+# Linting (ruff)
 hatch run test:lint              # Run Ruff
+
+# Type Check (mypy)
+hatch run test:type-check        # Run MyPy
+
+# Run unit-tests &amp; all checks
+hatch run test:all               # Run unit-tests and all style checks (format, lint, type-check)
 
 # Project stats
 hatch run test:stats
@@ -320,6 +337,7 @@ Then, we suggest taking the following approach to add a Contrib rule:</p>
     <script>var base_url = '..';</script>
     <script src="../js/theme_extra.js" defer></script>
     <script src="../js/theme.js" defer></script>
+      <script src="../termynal.js" defer></script>
       <script src="../extra.js" defer></script>
       <script src="../search/main.js" defer></script>
     <script defer>
