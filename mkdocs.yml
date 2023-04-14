@@ -18,6 +18,8 @@ theme:
     navigation_depth: 2
 strict: true
 extra_css: 
+    - termynal.css
     - extra.css
 extra_javascript:
+    - termynal.js
     - extra.js
