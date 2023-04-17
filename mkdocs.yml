@@ -2,24 +2,28 @@ site_name: Gitlint
 site_description: Linting for your git commit messages
 site_url: http://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
-edit_uri: edit/main/docs
+# edit_uri: edit/main/docs
+markdown_extensions: [admonition]
+theme: 
+    name: material
+    features:
+        - navigation.tabs
+        - navigation.tabs.sticky
+# strict: true # Must be renabled after everything is changed, so that we can catch errors and warnings
+extra_css: 
+    - stylesheets/termynal.css
+    - stylesheets/extra.css
+extra_javascript:
+    - javascript/termynal.js
+    - javascript/extra.js
+
 nav:
     - Home: index.md
     - Configuration: configuration.md
-    - Rules: rules.md
-    - Contrib Rules: contrib_rules.md
-    - User Defined Rules: user_defined_rules.md
+    - Rules: 
+        - Overview: rules/overview.md
+        - Built-in Rules: rules/rules.md
+        - Contrib Rules: rules/contrib_rules.md
+        - User Defined Rules: rules/user_defined_rules.md
     - Contributing: contributing.md
     - Changelog: https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md
-
-markdown_extensions: [admonition]
-theme: 
-    name: readthedocs
-    navigation_depth: 2
-strict: true
-extra_css: 
-    - termynal.css
-    - extra.css
-extra_javascript:
-    - termynal.js
-    - extra.js

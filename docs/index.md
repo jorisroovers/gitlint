@@ -31,15 +31,10 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
 </div>
 
 !!! note
-    **Gitlint works on Windows**, but [there are some known issues](https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows).
-
     Also, gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
     have a look at [fit-commit](https://github.com/m1foley/fit-commit) (Ruby),
     [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js) or [commitlint](http://marionebl.github.io/commitlint) (Node.js).
 
-
-!!! important
-    **Gitlint requires Python 3.7 (or above). For Python 2.7 and Python 3.5 use `gitlint==0.14.0` (released 2020-10-24), for Python 3.6 `gitlint==0.18.0` (released 2022-11-16).**
 
 ## Features
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook). Also [works with pre-commit](#using-gitlint-through-pre-commit).
