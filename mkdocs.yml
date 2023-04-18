@@ -2,13 +2,57 @@ site_name: Gitlint
 site_description: Linting for your git commit messages
 site_url: http://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
-# edit_uri: edit/main/docs
-markdown_extensions: [admonition]
+repo_name: jorisroovers/gitlint
+edit_uri: edit/main/docs
+markdown_extensions: 
+    - admonition
+    - pymdownx.highlight:
+        anchor_linenums: true
+        line_spans: __span
+        pygments_lang_class: true
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences
+    - pymdownx.details # Collapsible admonitions
+    - tables
+
+    - pymdownx.snippets:
+        auto_append:
+            - docs/includes/release-tags.md
+
+    - pymdownx.tabbed: # Tabbed code blocks
+        alternate_style: true
+
+    - pymdownx.emoji: # Enable emoji shortcodes
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
+
 theme: 
     name: material
+    icon:
+        repo: fontawesome/brands/github
+    palette:
+        # Palette toggle for light mode
+        - media: "(prefers-color-scheme: light)"
+          scheme: default
+          toggle:
+            icon: material/brightness-7
+            name: Switch to dark mode
+
+        # Palette toggle for dark mode
+        - media: "(prefers-color-scheme: dark)"
+          scheme: slate
+          toggle:
+            icon: material/brightness-4
+            name: Switch to light mode
+
     features:
         - navigation.tabs
         - navigation.tabs.sticky
+        - content.code.annotate
+        - content.action.view
+        - content.action.edit # this won't work until code is merged to main
+
 # strict: true # Must be renabled after everything is changed, so that we can catch errors and warnings
 extra_css: 
     - stylesheets/termynal.css
@@ -19,7 +63,9 @@ extra_javascript:
 
 nav:
     - Home: index.md
-    - Configuration: configuration.md
+    - Configuration: 
+        - Overview: configuration/configuration.md
+        - General Options: configuration/general_options.md
     - Rules: 
         - Overview: rules/overview.md
         - Built-in Rules: rules/rules.md

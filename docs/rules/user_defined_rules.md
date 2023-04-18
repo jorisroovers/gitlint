@@ -8,18 +8,19 @@ for python files containing gitlint rule classes. You can also specify a single 
 `--extra-path /home/joe/my_rules.py`.
 
 ```sh
-cat examples/commit-message-1 | gitlint --extra-path examples/
-# Example output of a user-defined Signed-off-by rule
-1: UC2 Body does not contain a 'Signed-off-by Line'
-# other violations were removed for brevity
+$ cat examples/commit-message-1 | gitlint --extra-path examples/
+1: UC2 Body does not contain a 'Signed-off-by Line' # (1)
 ```
+
+1.  Example output of a user-defined **Signed-off-by** rule. Other violations occuring in `examples/commit-message-1` were
+    removed for brevity.
+
 
 The `SignedOffBy` user-defined `CommitRule` was discovered by gitlint when it scanned
 [examples/gitlint/my_commit_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_commit_rules.py),
 which is part of the examples directory that was passed via `--extra-path`:
 
-```python
-# -*- coding: utf-8 -*-
+```{ .python .copy title="my_commit_rules.py" linenums="1"}
 from gitlint.rules import CommitRule, RuleViolation
 
 class SignedOffBy(CommitRule):
@@ -33,7 +34,7 @@ class SignedOffBy(CommitRule):
 
     # A rule MUST have a *unique* id, we recommend starting with UC
     # (for User-defined Commit-rule).
-    id = "UC2"
+    id = "UC2" # (1)
 
     def validate(self, commit):
         self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")
@@ -91,7 +92,6 @@ The only 2 differences between a `CommitRule` and a `LineRule` are the parameter
 Consider the following `CommitRule` that can be found in [examples/my_commit_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_commit_rules.py):
 
 ```python
-# -*- coding: utf-8 -*-
 from gitlint.rules import CommitRule, RuleViolation
 
 class SignedOffBy(CommitRule):
@@ -122,7 +122,6 @@ Note the use of the `name` and `id` class attributes and the `validate(...)` met
 Contrast this with the following `LineRule` that can be found in [examples/my_line_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_line_rules.py):
 
 ```python
-# -*- coding: utf-8 -*-
 from gitlint.rules import LineRule, RuleViolation, CommitMessageTitle
 from gitlint.options import ListOption
 
@@ -249,7 +248,6 @@ In order to make your own rules configurable, you can add an optional `options_s
 (supported for both `LineRule` and `CommitRule`).
 
 ```python
-# -*- coding: utf-8 -*-
 from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption
 
@@ -323,7 +321,6 @@ specific circumstances.
 As with other user-defined rules, the easiest way to get started is by copying [`my_configuration.py` from the examples directory](https://github.com/jorisroovers/gitlint/tree/main/examples/my_configuration_rules.py) and modifying it to fit your need.
 
 ```python
-# -*- coding: utf-8 -*-
 from gitlint.rules import ConfigurationRule
 from gitlint.options import IntOption
 

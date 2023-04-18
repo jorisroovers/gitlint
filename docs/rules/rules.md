@@ -48,17 +48,18 @@ what you're looking for.
 
 ### Examples
 
-#### .gitlint
+=== ".gitlint"
 
-```ini
-# Titles should be max 72 chars
-[title-max-length]
-line-length=72
+    ```ini
+    # Titles should be max 72 chars
+    [title-max-length]
+    line-length=72
 
-# It's the 21st century, titles can be 120 chars long
-[title-max-length]
-line-length=120
-```
+    # It's the 21st century, titles can be 120 chars long
+    [title-max-length]
+    line-length=120
+    ```
+
 ------------------------------------------------------------------------------------------------------------------------
 
 ## T2: title-trailing-whitespace
@@ -131,13 +132,14 @@ words=crap,darn,damn
 
 ### Examples
 
-#### .gitlint
+=== ".gitlint"
 
-```ini
-# Ensure every title starts with a user-story like US123
-[title-match-regex]
-regex=^US[1-9][0-9]*
-```
+    ```ini
+    # Ensure every title starts with a user-story like US123
+    [title-match-regex]
+    regex=^US[1-9][0-9]*
+    ```
+
 ------------------------------------------------------------------------------------------------------------------------
 
 ## T8: title-min-length ##
