@@ -442,7 +442,7 @@ regex=^Co-Authored-By
     This can sometimes be confusing for end-users, especially as line numbers of violations will typically no longer
     match line numbers in the original commit message. Make sure to educate your users accordingly.
 
-!!! note
+!!! tip
 
     If you want to implement more complex ignore rules according to your own logic, you can do so using [user-defined
     configuration rules](user_defined_rules.md#configuration-rules).

@@ -12,7 +12,8 @@ $ cat examples/commit-message-1 | gitlint --extra-path examples/
 1: UC2 Body does not contain a 'Signed-off-by Line' # (1)
 ```
 
-1.  Example output of a user-defined **Signed-off-by** rule. Other violations occuring in `examples/commit-message-1` were
+1.  Example output of a user-defined **Signed-off-by** rule. Other violations occuring in
+    [examples/commit-message-1](https://github.com/jorisroovers/gitlint/blob/main/examples/commit-message-1) were
     removed for brevity.
 
 
@@ -34,7 +35,7 @@ class SignedOffBy(CommitRule):
 
     # A rule MUST have a *unique* id, we recommend starting with UC
     # (for User-defined Commit-rule).
-    id = "UC2" # (1)
+    id = "UC2"
 
     def validate(self, commit):
         self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")

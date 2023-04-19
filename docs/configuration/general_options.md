@@ -1,14 +1,13 @@
-Below we outline all configuration options that modify gitlint's overall behavior. These options can be specified
-using commandline flags or in `[general]` section in a `.gitlint` configuration file.
+Gitlint has a number of options that modify it's overall behavior, documented below.
 
 ## silent
 [:octicons-tag-24: v0.1.0][v0.1.0]
 
 Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| `False`       | >= 0.1.0        | `--silent`       | `GITLINT_SILENT`     |
+| Default value    | Type            | CLI flag   | Env var          |
+| ---------------- | --------------- | ---------- | ---------------- |
+| `#!python false` | `#!python bool` | `--silent` | `GITLINT_SILENT` |
 
 
 === ":octicons-terminal-16:  CLI"
@@ -23,17 +22,14 @@ Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determin
     GITLINT_SILENT=1 gitlint 
     ```
 
-------------------------------------------------------------------------------------------------------------------------
-
 ## verbosity
 [:octicons-tag-24: v0.1.0][v0.1.0]
 
-
 Amount of output gitlint will show when printing errors.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| 3             | >= 0.1.0        | `-v`             | `GITLINT_VERBOSITY`  |
+| Default value | Type           | CLI flag            | Env var             |
+| ------------- | -------------- | ------------------- | ------------------- |
+| `#!python 3`  | `#!python int` | `-v`, `-vv`, `-vvv` | `GITLINT_VERBOSITY` |
 
 
 
@@ -61,22 +57,20 @@ Amount of output gitlint will show when printing errors.
     GITLINT_VERBOSITY=2 gitlint   
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## ignore
 [:octicons-tag-24: v0.1.0][v0.1.0]
 
 Comma separated list of rules to ignore (by name or id).
 
-| Default value    | gitlint version | commandline flag | environment variable |
-| ---------------- | --------------- | ---------------- | -------------------- |
-| [] (=empty list) | >= 0.1.0        | `--ignore`       | `GITLINT_IGNORE`     |
+| Default value              | Type            | CLI flag   | Env var          |
+| -------------------------- | --------------- | ---------- | ---------------- |
+| `#!python []` (empty list) | `#!python list` | `--ignore` | `GITLINT_IGNORE` |
 
 
 === ":octicons-file-code-16:  .gitlint"
 
     ```ini
-    #.gitlint
     [general]
     ignore=T1,body-min-length
     ```
@@ -96,16 +90,15 @@ Comma separated list of rules to ignore (by name or id).
     ```
 
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## debug
 [:octicons-tag-24: v0.7.1][v0.7.1]
 
 Enable debugging output.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| false         | >= 0.7.1        | `--debug`        | `GITLINT_DEBUG`      |
+| Default value    | Type            | CLI flag  | Env var         |
+| ---------------- | --------------- | --------- | --------------- |
+| `#!python false` | `#!python bool` | `--debug` | `GITLINT_DEBUG` |
 
 
 === ":octicons-terminal-16:  CLI"
@@ -122,16 +115,15 @@ Enable debugging output.
     GITLINT_DEBUG=1 gitlint
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## target
 [:octicons-tag-24: v0.8.0][v0.8.0]
 
 Target git repository gitlint should be linting against.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| (empty)       | >= 0.8.0        | `--target`       | `GITLINT_TARGET`     |
+| Default value           | Type          | CLI flag | Env var    |
+| ----------------------- | ------------- | -------- | ---------- |
+| `#!python None` (empty) | `#!python str | None`    | `--target` | `GITLINT_TARGET` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -154,16 +146,15 @@ Target git repository gitlint should be linting against.
     GITLINT_TARGET=/home/joe/myrepo/ gitlint
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## config
 [:octicons-tag-24: v0.1.0][v0.1.0]
 
 Path where gitlint looks for a config file.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| `.gitlint`    | >= 0.1.0        | `--config`       | `GITLINT_CONFIG`     |
+| Default value         | Type           | CLI flag   | Env var          |
+| --------------------- | -------------- | ---------- | ---------------- |
+| `#!python ".gitlint"` | `#!python str` | `--config` | `GITLINT_CONFIG` |
 
 
 === ":octicons-terminal-16:  CLI"
@@ -179,16 +170,15 @@ Path where gitlint looks for a config file.
     GITLINT_CONFIG=/home/joe/gitlint.ini 
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## extra-path
 [:octicons-tag-24: v0.8.0][v0.8.0]
 
 Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| (empty)       | >= 0.8.0        | `--extra-path`   | `GITLINT_EXTRA_PATH` |
+| Default value          | Type          | CLI flag | Env var        |
+| ---------------------- | ------------- | -------- | -------------- |
+| `#!python None`(empty) | `#!python str | None`    | `--extra-path` | `GITLINT_EXTRA_PATH` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -211,15 +201,14 @@ Path where gitlint looks for [user-defined rules](user_defined_rules.md).
     GITLINT_EXTRA_PATH=/home/joe/rules/ gitlint    
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 ## contrib
 [:octicons-tag-24: v0.12.0][v0.12.0]
 
 Comma-separated list of [Contrib rules](contrib_rules.md) to enable (by name or id).
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| (empty)       | >= 0.12.0       | `--contrib`      | `GITLINT_CONTRIB`    |
+| Default value           | Type          | CLI flag | Env var     |
+| ----------------------- | ------------- | -------- | ----------- |
+| `#!python None` (empty) | `#!python str | None`    | `--contrib` | `GITLINT_CONTRIB` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -243,7 +232,6 @@ Comma-separated list of [Contrib rules](contrib_rules.md) to enable (by name or 
     GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## staged
 [:octicons-tag-24: v0.13.0][v0.13.0]
@@ -259,9 +247,9 @@ When not using the `--staged` flag while linting a commit message via stdin or `
 access to the commit message itself for linting and won't be able to enforce rules like
 [M1:author-valid-email](rules.md#m1-author-valid-email).
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| false         | >= 0.13.0       | `--staged`       | `GITLINT_STAGED`     |
+| Default value    | Type            | CLI flag   | Env var          |
+| ---------------- | --------------- | ---------- | ---------------- |
+| `#!python false` | `#!python bool` | `--staged` | `GITLINT_STAGED` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -284,7 +272,6 @@ access to the commit message itself for linting and won't be able to enforce rul
     GITLINT_STAGED=1 gitlint      
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## fail-without-commits
 [:octicons-tag-24: v0.16.0][v0.16.0]
@@ -294,9 +281,9 @@ Hard fail when the target commit range is empty. Note that gitlint will
 already fail by default on invalid commit ranges. This option is specifically
 to tell gitlint to fail on **valid but empty** commit ranges.
 
-| Default value | gitlint version | commandline flag         | environment variable           |
-| ------------- | --------------- | ------------------------ | ------------------------------ |
-| false         | >= 0.16.0       | `--fail-without-commits` | `GITLINT_FAIL_WITHOUT_COMMITS` |
+| Default value    | Type            | CLI flag                 | Env var                        |
+| ---------------- | --------------- | ------------------------ | ------------------------------ |
+| `#!python false` | `#!python bool` | `--fail-without-commits` | `GITLINT_FAIL_WITHOUT_COMMITS` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -320,44 +307,11 @@ to tell gitlint to fail on **valid but empty** commit ranges.
     GITLINT_FAIL_WITHOUT_COMMITS=1 gitlint      
     ```
 
----
 
 ## regex-style-search
 [:octicons-tag-24: v0.18.0][v0.18.0]
 
 Whether to use Python `re.search()` instead of `re.match()` semantics in all built-in rules that use regular expressions. 
-
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| false         | >= 0.18.0       | Not Available    | Not Available        |
-
-!!! important
-    At this time, `regex-style-search` is **disabled** by default, but it will be **enabled** by default in the future.
-    
-
-
-Gitlint will log a warning when you're using a rule that uses a custom regex and this option is not enabled:
-
-```plain
-WARNING: I1 - ignore-by-title: gitlint will be switching from using Python regex 'match' (match beginning) to
-'search' (match anywhere) semantics. Please review your ignore-by-title.regex option accordingly.
-To remove this warning, set general.regex-style-search=True. 
-More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-search
-```
-
-*If you don't have any custom regex specified, gitlint will not log a warning and no action is needed.*
-
-**To remove the warning:** 
-
-1. Review your regex in the rules gitlint warned for and ensure it's still accurate when using [`re.search()` semantics](https://docs.python.org/3/library/re.html#search-vs-match).
-2. Enable `regex-style-search` in your `.gitlint` file (or using [any other way to configure gitlint](http://127.0.0.1:8000/gitlint/configuration/)):
-
-=== ":octicons-file-code-16:  .gitlint"
-
-    ```ini
-    [general]
-    regex-style-search=true
-    ```
 
 ??? "More context on **regex-style-search**"
 
@@ -379,30 +333,51 @@ More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-
     The `regex-style-search` option is meant to fix this inconsistency. Setting it to `true` will force the above rules to
     use `re.search()` instead of `re.match()`. For detailed context, see [issue #254](https://github.com/jorisroovers/gitlint/issues/254).
 
+| Default value    | Type            | CLI flag                                | Env var       |
+| ---------------- | --------------- | --------------------------------------- | ------------- |
+| `#!python false` | `#!python bool` | `-c general.regex-style-search=<value>` | Not Available |
+
+!!! important
+    At this time, `regex-style-search` is **disabled** by default, but it will be **enabled** by default in the future.
+    
 
 
-=== ":octicons-file-code-16:  .gitlint"
+Gitlint will log a warning when you're using a rule that uses a custom regex and this option is not enabled:
 
-    ```ini
-    [general]
-    regex-style-search=true
-    ```
+```plain
+WARNING: I1 - ignore-by-title: gitlint will be switching from using Python regex 'match' (match beginning) to
+'search' (match anywhere) semantics. Please review your ignore-by-title.regex option accordingly.
+To remove this warning, set general.regex-style-search=True. 
+More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-search
+```
 
-=== ":octicons-terminal-16:  CLI"
+**If you don't use custom regexes, gitlint will not log a warning and no action is needed.**
 
-    ```sh
-    gitlint -c general.regex-style-search=true
-    ```
+**To remove the warning:** 
 
-------------------------------------------------------------------------------------------------------------------------
+1. Review your regex in the rules gitlint warned for and ensure it's still accurate when using [`re.search()` semantics](https://docs.python.org/3/library/re.html#search-vs-match).
+2. Enable `regex-style-search` in your gitlint config:
+
+    === ":octicons-file-code-16:  .gitlint"
+
+        ```ini
+        [general]
+        regex-style-search=true
+        ```
+
+    === ":octicons-terminal-16:  CLI"
+
+        ```sh
+        gitlint -c general.regex-style-search=true
+        ```
 ## ignore-stdin
 [:octicons-tag-24: v0.12.0][v0.12.0]
 
 Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
 
-| Default value | gitlint version | commandline flag | environment variable   |
-| ------------- | --------------- | ---------------- | ---------------------- |
-| false         | >= 0.12.0       | `--ignore-stdin` | `GITLINT_IGNORE_STDIN` |
+| Default value    | Type            | CLI flag         | Env var                |
+| ---------------- | --------------- | ---------------- | ---------------------- |
+| `#!python false` | `#!python bool` | `--ignore-stdin` | `GITLINT_IGNORE_STDIN` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -425,16 +400,15 @@ Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
     GITLINT_IGNORE_STDIN=1 gitlint      
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## ignore-merge-commits
 [:octicons-tag-24: v0.7.0][v0.7.0]
 
 Whether or not to ignore merge commits.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| true          | >= 0.7.0        | Not Available    | Not Available        |
+| Default value   | Type            | CLI flag                                  | Env var       |
+| --------------- | --------------- | ----------------------------------------- | ------------- |
+| `#!python true` | `#!python bool` | `-c general.ignore-merge-commits=<value>` | Not Available |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -450,16 +424,15 @@ Whether or not to ignore merge commits.
     gitlint -c general.ignore-merge-commits=false
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## ignore-revert-commits
 [:octicons-tag-24: v0.13.0][v0.13.0]
 
 Whether or not to ignore revert commits.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| true          | >= 0.13.0       | Not Available    | Not Available        |
+| Default value   | Type            | CLI flag                                   | Env var       |
+| --------------- | --------------- | ------------------------------------------ | ------------- |
+| `#!python true` | `#!python bool` | `-c general.ignore-revert-commits=<value>` | Not Available |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -475,16 +448,15 @@ Whether or not to ignore revert commits.
     gitlint -c general.ignore-revert-commits=false
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## ignore-fixup-commits
 [:octicons-tag-24: v0.9.0][v0.9.0]
 
 Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) commits.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| true          | >= 0.9.0        | Not Available    | Not Available        |
+| Default value   | Type            | CLI flag                                  | Env var       |
+| --------------- | --------------- | ----------------------------------------- | ------------- |
+| `#!python true` | `#!python bool` | `-c general.ignore-fixup-commits=<value>` | Not Available |
 
 
 
@@ -501,16 +473,15 @@ Whether or not to ignore [fixup](https://git-scm.com/docs/git-commit#git-commit-
     gitlint -c general.ignore-fixup-commits=false
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## ignore-fixup-amend-commits
 [:octicons-tag-24: v0.18.0][v0.18.0]
 
 Whether or not to ignore [fixup=amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt) commits.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| true          | >= 0.18.0       | Not Available    | Not Available        |
+| Default value   | Type            | CLI flag                                        | Env var       |
+| --------------- | --------------- | ----------------------------------------------- | ------------- |
+| `#!python true` | `#!python bool` | `-c general.ignore-fixup-amend-commits=<value>` | Not Available |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -525,16 +496,15 @@ Whether or not to ignore [fixup=amend](https://git-scm.com/docs/git-commit#Docum
     gitlint -c general.ignore-fixup-amend-commits=false
     ```
 
-------------------------------------------------------------------------------------------------------------------------
 
 ## ignore-squash-commits
 [:octicons-tag-24: v0.9.0][v0.9.0]
 
 Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
 
-| Default value | gitlint version | commandline flag | environment variable |
-| ------------- | --------------- | ---------------- | -------------------- |
-| true          | >= 0.9.0        | Not Available    | Not Available        |
+| Default value   | Type            | CLI flag                                   | Env var       |
+| --------------- | --------------- | ------------------------------------------ | ------------- |
+| `#!python true` | `#!python bool` | `-c general.ignore-squash-commits=<value>` | Not Available |
 
 
 === ":octicons-file-code-16:  .gitlint"

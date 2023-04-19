@@ -16,7 +16,7 @@ markdown_extensions:
     - pymdownx.details # Collapsible admonitions
     - tables
 
-    - pymdownx.snippets:
+    - pymdownx.snippets: # include files
         auto_append:
             - docs/includes/release-tags.md
 
@@ -65,6 +65,9 @@ nav:
     - Home: index.md
     - Configuration: 
         - Overview: configuration/configuration.md
+        - .gitlint file: configuration/gitlint_file.md
+        - Commandline config: configuration/cli.md
+        - Commit specific config: configuration/commit_config.md
         - General Options: configuration/general_options.md
     - Rules: 
         - Overview: rules/overview.md
