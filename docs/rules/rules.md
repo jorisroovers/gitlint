@@ -96,7 +96,7 @@ what you're looking for.
 
 | Name  | gitlint version | Default | Description                                                                                      |
 | ----- | --------------- | ------- | ------------------------------------------------------------------------------------------------ |
-| words | >= 0.3          | WIP     | Comma-separated list of words that should not be used in the title. Matching is case insensitive |
+| words | >= 0.3          | WIP     | Comma-separated list of words that should not be used in the title. Matching is case insensitive. Keywords occuring as part of a larger word are ignored (so "WIPING" is ignored).
 
 ### Examples
 

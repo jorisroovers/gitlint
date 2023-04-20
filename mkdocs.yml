@@ -62,7 +62,9 @@ extra_javascript:
     - javascript/extra.js
 
 nav:
-    - Home: index.md
+    - Home: 
+        - index.md
+        - Getting Started: home/getting_started.md
     - Configuration: 
         - Overview: configuration/configuration.md
         - .gitlint file: configuration/gitlint_file.md
@@ -72,6 +74,7 @@ nav:
     - Rules: 
         - Overview: rules/overview.md
         - Built-in Rules: rules/rules.md
+        - Named Rules: rules/named_rules.md
         - Contrib Rules: rules/contrib_rules.md
         - User Defined Rules: rules/user_defined_rules.md
     - Contributing: contributing.md

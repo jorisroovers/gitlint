@@ -370,6 +370,7 @@ More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-
         ```sh
         gitlint -c general.regex-style-search=true
         ```
+
 ## ignore-stdin
 [:octicons-tag-24: v0.12.0][v0.12.0]
 

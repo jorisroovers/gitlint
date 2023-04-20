@@ -1,14 +1,47 @@
 # Commandline config
 
-You can also use one or more `-c` flags like so:
+Gitlint behavior can be changed by various commandline flags and environment variables.
 
+There's 2 categories of these:
+
+1. [**General options**](general_options.md): configure gitlint's overall behavior
+2. **Rule specific options**: configure how specific rules behave
+
+To set `general` options ([full reference](general_options.md)) via the CLI, there's a number of convenience flags and environment
+variables available:
+
+=== ":octicons-terminal-16:  CLI"
+
+    ```sh
+    # Mute all output
+    gitlint --silent
+
+    # Lint a specific commit
+    gitlint --commit abc123
+    ```
+
+=== ":material-application-variable-outline: Env var"  
+
+    ```sh
+    # Mute all output
+    GITLINT_SILENT=1 gitlint
+
+    # Lint a specific commit
+    GITLINT_COMMIT=abc123 gitlint
+    ```
+
+Alternatively, you can also use one or more `-c` flags like so:
+
+```sh
+gitlint -c general.silent=true -c title-max-length.line-length=80
 ```
-$ gitlint -c general.verbosity=2 -c title-max-length.line-length=80 -c B1.line-length=100
-```
+
+The benefit of the `-c` flag is that it can set both `general` options as well as `rule` options.
+
 The generic config flag format is `-c <rule>.<option>=<value>` and supports all the same rules and options which
-you can also use in a `.gitlint` config file.
+you can also use in a [`.gitlint` config file](gitlint_file.md).
 
-Other commands and variations:
+# All commands and options
 
 ```no-highlight
 $ gitlint --help

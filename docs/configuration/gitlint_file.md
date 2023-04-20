@@ -11,30 +11,21 @@ You can also use a different config file like so:
 gitlint --config myconfigfile.ini
 ```
 
-The block below shows a sample `.gitlint` file. Details about rule config options can be found on the
-[Rules](rules.md) page, details about the `[general]` section can be found in the
-[General Configuration](configuration.md#general-configuration) section of this page.
+# Example `.gitlint`
 
-```ini title=".gitlint"
-# Edit this file as you like.
-#
-# All these sections are optional. Each section with the exception of [general] represents
-# one rule and each key in it is an option for that specific rule.
-#
-# Rules and sections can be referenced by their full name or by id. For example
-# section "[body-max-line-length]" could also be written as "[B1]". Full section names are
-# used in here for clarity.
-# Rule reference documentation: http://jorisroovers.github.io/gitlint/rules/
+```{ .ini .copy title=".gitlint"}
+### GENERAL CONFIG  ### (1)
 [general]
-# Ignore certain rules (comma-separated list), you can reference them by their
-# id or by their full name
+# Ignore rules, reference them by id or name (comma-separated)
 ignore=title-trailing-punctuation, T3
 
-# verbosity should be a value between 1 and 3, the commandline -v flags take
-# precedence over this
+# verbosity should be a value between 1 and 3
 verbosity = 2
 
-# By default gitlint will ignore merge, revert, fixup, fixup=amend, and squash commits.
+# Enable debug mode (prints more output). Disabled by default.
+debug=true
+
+# By default gitlint will ignore certain commits
 ignore-merge-commits=true
 ignore-revert-commits=true
 ignore-fixup-commits=true
@@ -48,50 +39,33 @@ ignore-stdin=true
 # commit message to gitlint via stdin or --commit-msg. Disabled by default.
 staged=true
 
-# Hard fail when the target commit range is empty. Note that gitlint will
-# already fail by default on invalid commit ranges. This option is specifically
-# to tell gitlint to fail on *valid but empty* commit ranges.
-# Disabled by default.
-fail-without-commits=true
+# Hard fail when the target commit range is empty. 
+fail-without-commits=true # (2)
 
-# Whether to use Python `search` instead of `match` semantics in rules that use
-# regexes. Context: https://github.com/jorisroovers/gitlint/issues/254
-# Disabled by default, but will be enabled by default in the future.
+# Whether to use Python `search` instead of `match` semantics in rules (3)
 regex-style-search=true
 
-# Enable debug mode (prints more output). Disabled by default.
-debug=true
-
 # Enable community contributed rules
-# See http://jorisroovers.github.io/gitlint/contrib_rules for details
-contrib=contrib-title-conventional-commits,CC1
+contrib=contrib-title-conventional-commits,CC1 # (4)
 
-# Set the extra-path where gitlint will search for user defined rules
-# See http://jorisroovers.github.io/gitlint/user_defined_rules for details
+# Set the extra-path where gitlint will search for user defined rules # (5)
 extra-path=examples/
 
-# This is an example of how to configure the "title-max-length" rule and
-# set the line-length it enforces to 80
-[title-max-length]
+
+### RULE CONFIGURATION ### (6)
+[title-max-length] 
 line-length=80
 
-# Conversely, you can also enforce minimal length of a title with the
-# "title-min-length" rule:
 [title-min-length]
 min-length=5
 
 [title-must-not-contain-word]
-# Comma-separated list of words that should not occur in the title. Matching is case
-# insensitive. It's fine if the keyword occurs as part of a larger word (so "WIPING"
-# will not cause a violation, but "WIP: my title" will.
+# Comma-separated list of words that should not occur in
+# the commit message title (case-insensitive).
 words=wip
 
 [title-match-regex]
-# python like regex (https://docs.python.org/3/library/re.html) that the
-# commit-msg title must be matched to.
-# Note that the regex can contradict with other rules if not used correctly
-# (e.g. title-must-not-contain-word).
-regex=^US[0-9]*
+regex=^US[0-9]* # (7)
 
 [body-max-line-length]
 line-length=120
@@ -100,65 +74,102 @@ line-length=120
 min-length=5
 
 [body-is-missing]
-# Whether to ignore this rule on merge commits (which typically only have a title)
-# default = True
+# Ignore this rule on merge commits (default=true) # (8)
 ignore-merge-commits=false
 
 [body-changed-file-mention]
-# List of files that need to be explicitly mentioned in the body when they are changed
-# This is useful for when developers often erroneously edit certain files or git submodules.
-# By specifying this rule, developers can only change the file when they explicitly
-# reference it in the commit message.
-files=gitlint-core/gitlint/rules.py,README.md
+# Files that need to be explicitly mentioned in the body when they change
+files=gitlint-core/gitlint/rules.py,README.md # (9)
 
 [body-match-regex]
-# python-style regex that the commit-msg body must match.
-# E.g. body must end in My-Commit-Tag: foo
-regex=My-Commit-Tag: foo$
+regex=My-Commit-Tag: foo$ # (10)
 
 [author-valid-email]
-# python like regex (https://docs.python.org/3/library/re.html) that the
-# commit author email address should be matched to
-# E.g.: For example, use the following regex if you only want to allow email
-# addresses from foo.com
-regex=[^@]+@foo.com
+# E.g.: Only allow email addresses from foo.com
+regex=[^@]+@foo.com # (11)
 
+
+### NAMED RULES ### (20)
+[title-must-not-contain-word:Additional-Words]
+words=foo,bar
+
+
+### CONTRIB RULES ### (12)
+[contrib-title-conventional-commits]
+types = bugfix,user-story,epic
+
+
+### USER DEFINED RULES ### (19)
+[body-max-line-count]
+max-line-count = 5
+
+
+### IGNORE RULES CONFIGURATION ### (13)
 [ignore-by-title]
-# Ignore certain rules for commits of which the title matches a regex
-# E.g. Match commit titles that start with "Release"
-regex=^Release(.*)
-
-# Ignore certain rules, you can reference them by their id or by their full name
-# Use 'all' to ignore all rules
-ignore=T1,body-min-length
+# Ignore rules for commits of which the title matches a regex
+regex=^Release(.*) # (14)
+ignore=T1,body-min-length # (15)
 
 [ignore-by-body]
-# Ignore certain rules for commits of which the body has a line that matches a regex
-# E.g. Match bodies that have a line that that contain "release"
-regex=(.*)release(.*)
-#
-# Ignore certain rules, you can reference them by their id or by their full name
-# Use 'all' to ignore all rules
+# Ignore rules for commits of which the body has a line that matches a regex
+regex=(.*)release(.*) # (16)
 ignore=T1,body-min-length
 
 [ignore-body-lines]
-# Ignore certain lines in a commit body that match a regex.
-# E.g. Ignore all lines that start with 'Co-Authored-By'
-regex=^Co-Authored-By
+regex=^Co-Authored-By # (17)
 
 [ignore-by-author-name]
-# Ignore certain rules for commits of which the author name matches a regex
-# E.g. Match commits made by dependabot
-regex=(.*)dependabot(.*)
-
-# Ignore certain rules, you can reference them by their id or by their full name
-# Use 'all' to ignore all rules
+regex=(.*)dependabot(.*) # (18)
 ignore=T1,body-min-length
 
-# This is a contrib rule - a community contributed rule. These are disabled by default.
-# You need to explicitly enable them one-by-one by adding them to the "contrib" option
-# under [general] section above.
-[contrib-title-conventional-commits]
-# Specify allowed commit types. For details see: https://www.conventionalcommits.org/
-types = bugfix,user-story,epic
 ```
+
+1. This section of the `.gitlint` file sets overall gitlint behavior. Details about all available `[general]` options can be found in [General Options](general_options.md).
+2. Gitlint will fail by default on invalid commit ranges. This option is specifically to tell gitlint to fail
+   on *valid but empty* commit ranges. Disabled by default.
+3. Disabled by default, but will be enabled by default in the future. [More information](general_options.md#regex-style-search).
+4. See [Contrib Rules](../rules/contrib_rules.md).
+5. See [User Defined Rules](../rules/user_defined_rules.md).
+6. All sections below sets rule specific behavior. <br/>
+   Rules and sections can be referenced by their full name or by id. For example, this rule
+   `[title-max-length]` could also be referenced as `[T1]`.
+   ```ini
+   [T1]
+   line-length=80
+   ```
+7. [Python style regex](https://docs.python.org/3/library/re.html) that the commit-msg title must be matched to.
+   Note that the regex can contradict with other rules if not used correctly (e.g. `title-must-not-contain-word`).
+8. Merge commits often don't have a body, so by default gitlint will ignore this rule for merge commits to avoid
+   unncessary violations.
+9. This is useful for when developers often erroneously edit certain files or git submodules. 
+   By specifying this rule, developers can only change the file when they explicitly reference it in the commit message.
+10. [Python style regex](https://docs.python.org/3/library/re.html) that the commit-msg body must match. In this case
+    the commit message body must end in <br> `My-Commit-Tag: foo`
+11. [Python style regex](https://docs.python.org/3/library/re.html) that the commit author email address should be
+    matched to.
+12. [Community **Contrib**uted rules](../rules/contrib_rules.md) are disabled by default. You need to explicitly enable
+    them one-by-one by adding them to the `contrib` option under `[general]` section.
+    You can then just configure their options like any other rule.
+    ```ini
+    [general]
+    # Enable contrib rules (comma-separated list)
+    contrib=contrib-title-conventional-commits
+
+    # Configure contrib rule
+    [contrib-title-conventional-commits]
+    types = bugfix,user-story,epic
+    ```
+13. You can configure gitlint to ignore specific commits or parts of a commit.
+14. [Python style regex](https://docs.python.org/3/library/re.html). This example matches commit titles that start
+    with "Release".
+15. Which rules to ignore (reference by id or name). Use `all` to ignore all rules.
+16. [Python style regex](https://docs.python.org/3/library/re.html). This example matches bodies that have a line
+    that contains `release`.
+17. [Python style regex](https://docs.python.org/3/library/re.html). This example will make gitlint ignores all lines
+    that start with `Co-Authored-By`.
+18. [Python style regex](https://docs.python.org/3/library/re.html). This example will make gitlint ignore all commits
+    made by `dependabot`.
+19. [User-Defined rules](../rules/user_defined_rules.md) can be written in python to tailor gitlint to your specific needs. 
+20. Named Rules allow you to specify multiple instances of the same rule by given them an extra name of your
+    choosing after the colon sign `:`. <br><br> In the example below we're configuring another instances of the
+    `title-must-not-contain-word` rule (the existing one will remain active as well) and naming it `Additional-Words`.

@@ -4,6 +4,7 @@ Gitlint provides multiple ways to configure its behavior:
 1. **[`.gitlint` file](gitlint_file.md)** (Recommended)
 2. **[CLI flags and environment variables](cli.md)**
 3. **[Config in your commit message](commit_config.md)**
+4. **Configuration Rules**: built-in or user-defined
 
 ## Quick start
 
@@ -20,14 +21,21 @@ Gitlint provides multiple ways to configure its behavior:
     # Set the extra-path where gitlint will search for user defined rules
     extra-path=./gitlint_rules/my_rules.py
 
-    ### Configuring rules ##########################################################
+    ### Configuring rules ### (1)
 
-    [title-max-length] # reference rules by name or id
-    line-length=80     # rule option 
+    [title-max-length]
+    line-length=80 
 
     [title-min-length]
     min-length=5
     ```
+
+    1.  Rules and sections can be referenced by their full name or by id. For example, the rule
+        `[title-max-length]` could also be referenced as `[T1]`.
+        ```ini
+        [T1]
+        line-length=80
+        ```
 
 === ":octicons-terminal-16:  CLI"
 
@@ -40,51 +48,12 @@ Gitlint provides multiple ways to configure its behavior:
     $ gitlint --debug
     # Load user-defined rules
     $ gitlint --extra-path /home/joe/mygitlint_rules
+    # Set any config option using -c
+    $ gitlint -c general.verbosity=2 -c title-max-length.line-length=80
     ```
 
-
-## Configuration
-
-For in-depth documentation of general and rule-specific configuration options, have a look at the [Configuration](configuration.md) and [Rules](rules.md) pages.
-
-Short example `.gitlint` file ([full reference](configuration.md)):
-
-```ini
-[general]
-# Ignore certain rules (comma-separated list), you can reference them by
-# their id or by their full name
-ignore=body-is-missing,T3
-
-# Ignore any data sent to gitlint via stdin
-ignore-stdin=true
-
-# Configure title-max-length rule, set title length to 80 (72 = default)
-[title-max-length]
-line-length=80
-
-# You can also reference rules by their id (B1 = body-max-line-length)
-[B1]
-line-length=123
-```
-
-Example use of flags:
-
-```sh
-# Change gitlint's verbosity.
-$ gitlint -v
-# Ignore certain rules
-$ gitlint --ignore body-is-missing,T3
-# Enable debug mode
-$ gitlint --debug
-# Load user-defined rules (see http://jorisroovers.github.io/gitlint/user_defined_rules)
-$ gitlint --extra-path /home/joe/mygitlint_rules
-```
-
-
-
-
 ## Configuration precedence
-gitlint configuration is applied in the following order of precedence:
+Gitlint configuration is applied in the following order of precedence:
 
 1. Commit specific config (e.g.: `gitlint-ignore: all` in the commit message)
 2. Configuration Rules (e.g.: [ignore-by-title](rules.md#i1-ignore-by-title))

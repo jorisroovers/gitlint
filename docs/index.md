@@ -52,71 +52,7 @@ useful throughout the years.
    python code standards ([black](https://github.com/psf/black), [ruff](https://github.com/charliermarsh/ruff)),
    good documentation, widely used, proven track record.
 
-## Getting Started
-### Installation
-```sh
-# Pip is recommended to install the latest version
-pip install gitlint
 
-# Alternative: by default, gitlint is installed with pinned dependencies.
-# To install gitlint with looser dependency requirements, only install gitlint-core.
-pip install gitlint-core
-
-# Community maintained packages:
-brew install gitlint       # Homebrew (macOS)
-sudo port install gitlint  # Macports (macOS)
-apt-get install gitlint    # Ubuntu
-# Other package managers, see https://repology.org/project/gitlint/versions
-
-# Docker: https://hub.docker.com/r/jorisroovers/gitlint
-docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint
-# NOTE: --ulimit is required to work around a limitation in Docker
-# Details: https://github.com/jorisroovers/gitlint/issues/129
-```
-
-### Usage
-```sh
-# Check the last commit message
-gitlint
-# Alternatively, pipe a commit message to gitlint:
-cat examples/commit-message-1 | gitlint
-# or
-git log -1 --pretty=%B | gitlint
-# Or read the commit-msg from a file, like so:
-gitlint --msg-filename examples/commit-message-2
-# Lint all commits in your repo
-gitlint --commits HEAD
-
-# To install a gitlint as a commit-msg git hook:
-gitlint install-hook
-```
-
-Output example:
-```sh
-$ cat examples/commit-message-2 | gitlint
-1: T1 Title exceeds max length (134>80): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
-1: T2 Title has trailing whitespace: "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
-1: T4 Title contains hard tab characters (\t): "This is the title of a commit message that 	is over 80 characters and contains hard tabs and trailing whitespace and the word wiping  "
-2: B4 Second line is not empty: "This line should not contain text"
-3: B1 Line exceeds max length (125>80): "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
-3: B2 Line has trailing whitespace: "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
-3: B3 Line contains hard tab characters (\t): "Lines typically need to have 	a max length, meaning that they can't exceed a preset number of characters, usually 80 or 120. "
-```
-!!! note
-    The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
-
-### Shell completion
-
-```sh
-# Bash: add to ~/.bashrc
-eval "$(_GITLINT_COMPLETE=bash_source gitlint)"
-
-# Zsh: add to ~/.zshrc
-eval "$(_GITLINT_COMPLETE=zsh_source gitlint)"
-
-# Fish: add to ~/.config/fish/completions/foo-bar.fish
-eval (env _GITLINT_COMPLETE=fish_source gitlint)
-```
 
 ## Configuration
 
@@ -446,67 +382,6 @@ regex=^Co-Authored-By
 
     If you want to implement more complex ignore rules according to your own logic, you can do so using [user-defined
     configuration rules](user_defined_rules.md#configuration-rules).
-
-## Named Rules
-
-Introduced in gitlint v0.14.0
-
-Named rules allow you to have multiple of the same rules active at the same time, which allows you to
-enforce the same rule multiple times but with different options. Named rules are so-called because they require an
-additional unique identifier (i.e. the rule *name*) during configuration.
-
-!!! warning
-
-    Named rules is an advanced topic. It's easy to make mistakes by defining conflicting instances of the same rule.
-    For example, by defining 2 `body-max-line-length` rules with different `line-length` options, you obviously create
-    a conflicting situation. Gitlint does not do any resolution of such conflicts, it's up to you to make sure
-    any configuration is non-conflicting. So caution advised!
-
-Defining a named rule is easy, for example using your `.gitlint` file:
-
-```ini
-# By adding the following section, you will add a second instance of the
-# title-must-not-contain-word (T5) rule (in addition to the one that is enabled
-# by default) with the name 'extra-words'.
-[title-must-not-contain-word:extra-words]
-words=foo,bar
-
-# So the generic form is
-# [<rule-id-or-name>:<your-chosen-name>]
-# Another example, referencing the rule type by id
-[T5:more-words]
-words=hur,dur
-
-# You can add as many additional rules and you can name them whatever you want
-# The only requirement is that names cannot contain whitespace or colons (:)
-[title-must-not-contain-word:This-Can_Be*Whatever$YouWant]
-words=wonderwoman,batman,power ranger
-```
-
-When executing gitlint, you will see the violations from the default `title-must-not-contain-word (T5)` rule, as well as
-the violations caused by the additional Named Rules.
-
-```sh
-$ gitlint
-1: T5 Title contains the word 'WIP' (case-insensitive): "WIP: foo wonderwoman hur bar"
-1: T5:This-Can_Be*Whatever$YouWant Title contains the word 'wonderwoman' (case-insensitive): "WIP: foo wonderwoman hur bar"
-1: T5:extra-words Title contains the word 'foo' (case-insensitive): "WIP: foo wonderwoman hur bar"
-1: T5:extra-words Title contains the word 'bar' (case-insensitive): "WIP: foo wonderwoman hur bar"
-1: T5:more-words Title contains the word 'hur' (case-insensitive): "WIP: foo wonderwoman hur bar"
-```
-
-Named rules are further treated identical to all other rules in gitlint:
-
-- You can reference them by their full name, when e.g. adding them to your `ignore` configuration
-```ini
-# .gitlint file example
-[general]
-ignore=T5:more-words,title-must-not-contain-word:extra-words
-```
-
-- You can use them to instantiate multiple of the same [user-defined rule](user_defined_rules.md)
-- You can configure them using [any of the ways you can configure regular gitlint rules](configuration.md)
-
 
 ## Exit codes
 Gitlint uses the exit code as a simple way to indicate the number of violations found.
