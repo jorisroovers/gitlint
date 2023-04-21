@@ -49,6 +49,7 @@ theme:
     features:
         - navigation.tabs
         - navigation.tabs.sticky
+        - navigation.sections
         - content.code.annotate
         - content.action.view
         - content.action.edit # this won't work until code is merged to main
@@ -63,19 +64,33 @@ extra_javascript:
 
 nav:
     - Home: 
-        - index.md
-        - Getting Started: home/getting_started.md
+        - home/index.md
+        - Getting Started:
+            - Quickstart: home/getting_started.md
+            - Installation: home/installation.md
+        - Using Gitlint:
+            - Commit hook Setup: home/commit_hooks.md
+            - CI Setup: home/ci.md
+            - Linting specific commits: home/linting_specific_commits.md
+            - Ignoring commits: home/ignoring_commits.md
+            - Exit Codes: home/exit_codes.md
     - Configuration: 
-        - Overview: configuration/configuration.md
+        - Overview: configuration/index.md
         - .gitlint file: configuration/gitlint_file.md
         - Commandline config: configuration/cli.md
         - Commit specific config: configuration/commit_config.md
         - General Options: configuration/general_options.md
     - Rules: 
-        - Overview: rules/overview.md
+        - Overview: rules/index.md
         - Built-in Rules: rules/rules.md
         - Named Rules: rules/named_rules.md
         - Contrib Rules: rules/contrib_rules.md
         - User Defined Rules: rules/user_defined_rules.md
-    - Contributing: contributing.md
+    - Contributing: 
+        - Overview: contributing/index.md
+        - Environment Setup: contributing/environment_setup.md
+        - Tests, Formatting, Docs: contributing/tests_formatting_docs.md
+        - Packaging: contributing/packaging.md
+        - Releases: contributing/releases.md
+        - Contributing Contrib Rules: contributing/contrib_rules.md
     - Changelog: https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md

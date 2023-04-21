@@ -52,6 +52,19 @@ Gitlint provides multiple ways to configure its behavior:
     $ gitlint -c general.verbosity=2 -c title-max-length.line-length=80
     ```
 
+=== ":material-application-variable-outline: Env var"
+
+    ```sh
+    # Change gitlint's verbosity.
+    $ GITLINT_VERBOSITY=1 gitlint
+    # Ignore certain rules
+    $ GITLINT_IGNORE="body-is-missing,T3" gitlint
+    # Enable debug mode
+    $ GITLINT_DEBUG=1 --debug
+    # Load user-defined rules
+    $ GITLINT_EXTRA_PATH="/home/joe/mygitlint_rules" gitlint
+    ```
+
 ## Configuration precedence
 Gitlint configuration is applied in the following order of precedence:
 

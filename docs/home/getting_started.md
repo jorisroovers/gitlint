@@ -1,41 +1,26 @@
-# Getting Started
-## Installation
+## Quick start
 ```sh
-# Pip is recommended to install the latest version
-pip install gitlint
+# Install gitlint
+pip install gitlint # (1)
 
-# Alternative: by default, gitlint is installed with pinned dependencies.
-# To install gitlint with looser dependency requirements, only install gitlint-core.
-pip install gitlint-core
-
-# Community maintained packages:
-brew install gitlint       # Homebrew (macOS)
-sudo port install gitlint  # Macports (macOS)
-apt-get install gitlint    # Ubuntu
-# Other package managers, see https://repology.org/project/gitlint/versions
-
-# Docker: https://hub.docker.com/r/jorisroovers/gitlint
-docker run --ulimit nofile=1024 -v $(pwd):/repo jorisroovers/gitlint
-# NOTE: --ulimit is required to work around a limitation in Docker
-# Details: https://github.com/jorisroovers/gitlint/issues/129
-```
-
-## Usage
-```sh
 # Check the last commit message
 gitlint
-# Alternatively, pipe a commit message to gitlint:
-cat examples/commit-message-1 | gitlint
-# or
-git log -1 --pretty=%B | gitlint
-# Or read the commit-msg from a file, like so:
-gitlint --msg-filename examples/commit-message-2
 # Lint all commits in your repo
 gitlint --commits HEAD
+# Lint specific single commit
+gitlint --commit abc123
 
-# To install a gitlint as a commit-msg git hook:
-gitlint install-hook
+# Read the commit-msg from a file
+gitlint --msg-filename examples/commit-message-2
+# Pipe a commit message to gitlint
+git log -1 --pretty=%B | gitlint
+
+# Install gitlint commit-msg hook
+gitlint install-hook # (2)
 ```
+
+1. See [Installation](installation.md) for all available packages and supported package managers.
+2. You can also use pre-commit
 
 Output example:
 ```sh
@@ -51,15 +36,65 @@ $ cat examples/commit-message-2 | gitlint
 !!! note
     The returned exit code equals the number of errors found. [Some exit codes are special](index.md#exit-codes).
 
-## Shell completion
+## Configuration
 
-```sh
-# Bash: add to ~/.bashrc
-eval "$(_GITLINT_COMPLETE=bash_source gitlint)"
+Gitlint can be configured via a ` .gitlint` file, CLI or environment variables - a short sample is provided below.
 
-# Zsh: add to ~/.zshrc
-eval "$(_GITLINT_COMPLETE=zsh_source gitlint)"
+For in-depth documentation of general and rule-specific configuration options, refer to the [Configuration](configuration/index.md) and [Rules](rules/index.md) pages.
 
-# Fish: add to ~/.config/fish/completions/foo-bar.fish
-eval (env _GITLINT_COMPLETE=fish_source gitlint)
-```
+=== ":octicons-file-code-16:  .gitlint"
+
+    ```ini title=".gitlint"
+    [general]
+    # Ignore rules, reference them by id or name (comma-separated)
+    ignore=title-trailing-punctuation, T3
+
+    # Enable specific community contributed rules
+    contrib=contrib-title-conventional-commits,CC1
+
+    # Set the extra-path where gitlint will search for user defined rules
+    extra-path=./gitlint_rules/my_rules.py
+
+    ### Configuring rules ### (1)
+
+    [title-max-length]
+    line-length=80 
+
+    [title-min-length]
+    min-length=5
+    ```
+
+    1.  Rules and sections can be referenced by their full name or by id. For example, the rule
+        `[title-max-length]` could also be referenced as `[T1]`.
+        ```ini
+        [T1]
+        line-length=80
+        ```
+
+=== ":octicons-terminal-16:  CLI"
+
+    ```sh
+    # Change gitlint's verbosity.
+    $ gitlint -v
+    # Ignore certain rules
+    $ gitlint --ignore body-is-missing,T3
+    # Enable debug mode
+    $ gitlint --debug
+    # Load user-defined rules
+    $ gitlint --extra-path /home/joe/mygitlint_rules
+    # Set any config option using -c
+    $ gitlint -c general.verbosity=2 -c title-max-length.line-length=80
+    ```
+
+=== ":material-application-variable-outline: Env var"
+
+    ```sh
+    # Change gitlint's verbosity.
+    $ GITLINT_VERBOSITY=1 gitlint
+    # Ignore certain rules
+    $ GITLINT_IGNORE="body-is-missing,T3" gitlint
+    # Enable debug mode
+    $ GITLINT_DEBUG=1 --debug
+    # Load user-defined rules
+    $ GITLINT_EXTRA_PATH="/home/joe/mygitlint_rules" gitlint
+    ```
