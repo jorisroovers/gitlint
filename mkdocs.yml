@@ -63,8 +63,8 @@ extra_javascript:
     - javascript/extra.js
 
 nav:
-    - Home: 
-        - home/index.md
+    - Home:  # TODO: all pages under this now have /home/ in URL, we don't want that :/
+        - index.md # a top-level index.md (not in subdir) must exist for the homepage to work
         - Getting Started:
             - Quickstart: home/getting_started.md
             - Installation: home/installation.md
