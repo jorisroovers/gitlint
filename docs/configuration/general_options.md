@@ -181,25 +181,55 @@ Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 | `#!python None`(empty) | `#!python str | None`    | `--extra-path` | `GITLINT_EXTRA_PATH` |
 
 
+
 === ":octicons-file-code-16:  .gitlint"
 
     ```ini
     [general]
-    extra-path=/home/joe/rules/
+    extra-path=tools/gitlint/myrules # (1)
+
+    # Alternatively, point to a specific file
+    [general]
+    extra-path=tools/gitlint/myrules/my_rules.py
     ```
+
+    1. This path is relative to the current working directory in which you're executing gitlint.
+        ```ini
+        # You can also use absolute paths of course
+        [general]
+        extra-path=/opt/gitlint/my_rules.py
+        ```
 
 === ":octicons-terminal-16:  CLI"
 
     ```sh
-    gitlint --extra-path=/home/joe/rules/
-    gitlint -c general.extra-path=/home/joe/rules/  # different way of doing the same
+    gitlint --extra-path "tools/gitlint/myrules" # (1)
+    # Alternatively, point to a specific file
+    gitlint --extra-path "tools/gitlint/myrules/my_rules.py"
+    
+    # You can also use -c style config flags
+    gitlint -c general.extra-path=tools/gitlint/myrules
     ```
+
+    1. This path is relative to the current working directory in which you're executing gitlint.
+        ```sh
+        # You can also use absolute paths of course
+        gitlint --extra-path "/opt/gitlint/my_rules.py"
+        ```
 
 === ":material-application-variable-outline: Env var"
 
     ```sh
-    GITLINT_EXTRA_PATH=/home/joe/rules/ gitlint    
+    GITLINT_EXTRA_PATH=tools/gitlint/myrules gitlint # (1)
+    # Alternatively, point to a specific file
+    GITLINT_EXTRA_PATH=tools/gitlint/myrules/my_rules.py gitlint
     ```
+
+    1. This path is relative to the current working directory in which you're executing gitlint.
+        ```sh
+        # You can also use absolute paths of course
+        GITLINT_EXTRA_PATH=/opt/gitlint/myrules gitlint
+        ```
 
 ## contrib
 [:octicons-tag-24: v0.12.0][v0.12.0]

@@ -85,7 +85,18 @@ nav:
         - Built-in Rules: rules/rules.md
         - Named Rules: rules/named_rules.md
         - Contrib Rules: rules/contrib_rules.md
-        - User Defined Rules: rules/user_defined_rules.md
+        - User Defined Rules: 
+            - Getting Started: rules/user_defined_rules/getting_started.md
+            - Line and Commit Rules: rules/user_defined_rules/line_and_commit_rules.md
+            - Configuration Rules: rules/user_defined_rules/configuration_rules.md
+            - Rule Violations: rules/user_defined_rules/violations.md
+            - Rule Options: rules/user_defined_rules/options.md
+            - Rule Specification: rules/user_defined_rules/rule_format_spec.md
+
+
+
+
+
     - Contributing: 
         - Overview: contributing/index.md
         - Environment Setup: contributing/environment_setup.md
