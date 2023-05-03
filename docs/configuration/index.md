@@ -4,7 +4,7 @@ Gitlint provides multiple ways to configure its behavior:
 1. **[`.gitlint` file](gitlint_file.md)** (Recommended)
 2. **[CLI flags and environment variables](cli.md)**
 3. **[Config in your commit message](commit_config.md)**
-4. **Configuration Rules**: built-in or user-defined
+4. **[Configuration Rules](../rules/user_defined_rules/configuration_rules.md)**
 
 ## Quick start
 

@@ -74,6 +74,7 @@ nav:
             - Linting specific commits: home/linting_specific_commits.md
             - Ignoring commits: home/ignoring_commits.md
             - Exit Codes: home/exit_codes.md
+        - Alternatives: home/alternatives.md
     - Configuration: 
         - Overview: configuration/index.md
         - .gitlint file: configuration/gitlint_file.md
@@ -82,9 +83,9 @@ nav:
         - General Options: configuration/general_options.md
     - Rules: 
         - Overview: rules/index.md
-        - Built-in Rules: rules/rules.md
-        - Named Rules: rules/named_rules.md
+        - Built-in Rules: rules/builtin_rules.md
         - Contrib Rules: rules/contrib_rules.md
+        - Named Rules: rules/named_rules.md
         - User Defined Rules: 
             - Getting Started: rules/user_defined_rules/getting_started.md
             - Line and Commit Rules: rules/user_defined_rules/line_and_commit_rules.md
@@ -92,11 +93,6 @@ nav:
             - Rule Violations: rules/user_defined_rules/violations.md
             - Rule Options: rules/user_defined_rules/options.md
             - Rule Specification: rules/user_defined_rules/rule_format_spec.md
-
-
-
-
-
     - Contributing: 
         - Overview: contributing/index.md
         - Environment Setup: contributing/environment_setup.md

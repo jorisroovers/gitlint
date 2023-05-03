@@ -10,8 +10,9 @@
 
 [data-termynal] {
     width: 100%;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     margin-bottom: 1rem;
+    padding: 3rem 0.5rem 1rem 1rem;
 }
 
 [data-termynal] > [data-ty="comment"] {

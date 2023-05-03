@@ -148,7 +148,7 @@ Documentation environment. Run docs build and serve commands.
 """
 detached = true
 dependencies = [
-    "mkdocs-material==9.1.6", #
+    "mkdocs-material==9.1.9", #
 ]
 
 [tool.hatch.envs.docs.scripts]

@@ -1,6 +1,9 @@
 In order to make your own rules configurable, you can add an optional `options_spec` attribute to your rule class.
 
 ```{ .python .copy title="examples/my_commit_rules.py" linenums="1"}
+from gitlint.rules import CommitRule, RuleViolation
+from gitlint.options import IntOption
+
 class BodyMaxLineCount(CommitRule):
     # A rule MUST have a human friendly name
     name = "body-max-line-count"

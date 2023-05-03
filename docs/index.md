@@ -1,8 +1,8 @@
 # Introduction
-Gitlint is a git commit message linter written in python: it checks your commit messages for style.
+Gitlint checks your commit messages for style. 
 
-Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or as part of your gating script in a
-[CI pipeline (e.g. Jenkins)](index.md#using-gitlint-in-a-ci-environment).
+Great for use as a [commit-msg git hook](home/commit_hooks.md) or as part of your gating script in
+a [CI pipeline](home/ci.md).
 
 <!-- <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>  -->
 
@@ -25,28 +25,22 @@ Great for use as a [commit-msg git hook](#using-gitlint-as-a-commit-msg-hook) or
                   3: B5 Body message is too short (10&lt;20): "who &emsp; cares "
     </span>
     <span data-ty data-ty-delay="2000"></span>
-    <span data-ty></span>
     <span data-ty="comment"># Gitlint is perfect for use in your CI pipeline.</span>
     <span data-ty="comment"># Also available as a commit-msg hook or via pre-commit.</span>
 </div>
 
-!!! note
-    Also, gitlint is not the only git commit message linter out there, if you are looking for an alternative written in a different language,
-    have a look at [fit-commit](https://github.com/m1foley/fit-commit) (Ruby),
-    [node-commit-msg](https://github.com/clns/node-commit-msg) (Node.js) or [commitlint](http://marionebl.github.io/commitlint) (Node.js).
-
-
 ## Features
- - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](#using-gitlint-as-a-commit-msg-hook). Also [works with pre-commit](#using-gitlint-through-pre-commit).
- - **Easily integrated**: Gitlint is designed to work [with your own scripts or CI system](#using-gitlint-in-a-ci-environment).
+
+ - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](home/commit_hooks.md). Also [works with pre-commit](home/commit_hooks.md#pre-commit).
+ - **Perfect for CI**: Gitlint is designed to work [with your own scripts or CI system](home/ci.md).
+ - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](rules/contrib_rules.md).
+ - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](rules/user_defined_rules/getting_started.md).
  - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](https://addamhardy.com/2013-06-05-good-commit-messages-and-enforcing-them-with-git-hooks),
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
- - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration.md).
- - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](contrib_rules.md).
- - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](user_defined_rules.md).
+ - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration/index.md).
  - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
  - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
    python code standards ([black](https://github.com/psf/black), [ruff](https://github.com/charliermarsh/ruff)),

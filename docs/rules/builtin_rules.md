@@ -3,7 +3,7 @@ The page documents all of gitlint's built-in rules and their options.
 **All built-in rules are enabled by default**. It's possible to [ignore specific rules through configuration](../configuration/general_options.md#ignore).
 
 ## T1: title-max-length
-[:octicons-tag-24: v0.1.0][v0.1.0]
+[:octicons-tag-24: v0.1.0][v0.1.0] · **ID**: T1 · **Name**: title-max-length
 
 Title length must be &lt;= 72 chars.
 
@@ -103,7 +103,9 @@ Title length must be &gt;= 5 chars.
     ```
 
 ## B1: body-max-line-length
-[:octicons-tag-24: v0.1.0][v0.1.0] · **ID**: B1 · **Name**: Lines in the body must be &lt;= 80 chars.
+[:octicons-tag-24: v0.1.0][v0.1.0] · **ID**: B1 · **Name**: body-max-line-length
+
+Lines in the body must be &lt;= 80 chars.
 
 ### Options
 
@@ -136,11 +138,9 @@ Body cannot contain hard tab characters (`\t`).
 First line of the body (second line of commit message) must be empty
 
 ## B5: body-min-length
-[:octicons-tag-24: v0.4.0][v0.4.0] · **ID**: B5 · **Name**: title-trailing-whitespace
+[:octicons-tag-24: v0.4.0][v0.4.0] · **ID**: B5 · **Name**: body-min-length
 
-| ID  | Name            | gitlint version | Description                                                                                                  |
-| --- | --------------- | --------------- | ------------------------------------------------------------------------------------------------------------ |
-| B5  | body-min-length | >= 0.4          | Body length must be at least 20 characters. In versions >= 0.8.0, gitlint will not count newline characters. |
+Body length must be at least 20 characters. In versions >= `0.8.0`, gitlint will not count newline characters.
 
 ### Options ###
 
