@@ -3,6 +3,7 @@ site_description: Linting for your git commit messages
 site_url: http://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
 repo_name: jorisroovers/gitlint
+strict: true
 edit_uri: edit/main/docs
 markdown_extensions: 
     - admonition
@@ -47,6 +48,7 @@ theme:
             name: Switch to light mode
 
     features:
+        - navigation.footer
         - navigation.tabs
         - navigation.tabs.sticky
         - navigation.sections
@@ -54,13 +56,30 @@ theme:
         - content.action.view
         - content.action.edit # this won't work until code is merged to main
 
-# strict: true # Must be renabled after everything is changed, so that we can catch errors and warnings
 extra_css: 
     - stylesheets/termynal.css
     - stylesheets/extra.css
 extra_javascript:
     - javascript/termynal.js
     - javascript/extra.js
+
+extra:
+    social:
+        - icon: simple/github
+          link: https://github.com/jorisroovers/gitlint
+          name: gitlint on github
+        - icon: simple/python
+          link: https://pypi.org/project/gitlint/
+          name: gitlint on PyPI
+        - icon: simple/docker
+          link: https://hub.docker.com/r/jorisroovers/gitlint
+          name: gitlint on dockerhub
+        - icon: material/web
+          link: https://jorisroovers.com
+          name: Joris Roovers personal website
+        - icon: simple/twitter
+          link: https://twitter.com/jorisroovers
+          name: Joris Roovers on twitter
 
 nav:
     - Home:  # TODO: all pages under this now have /home/ in URL, we don't want that :/

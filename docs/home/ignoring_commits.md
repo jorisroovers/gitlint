@@ -3,7 +3,7 @@
 
 You can configure gitlint to ignore specific commits or parts of a commit.
 
-One way to do this, is by [adding a gitlint-ignore line to your commit message](configuration.md#commit-specific-config).
+One way to do this, is by [adding a gitlint-ignore line to your commit message](../configuration/commit_config.md).
 
 If you have a case where you want to ignore a certain type of commits all-together, you can
 use gitlint's *ignore* rules.
@@ -29,7 +29,7 @@ ignore=all
 ```
 
 If you just want to ignore certain lines in a commit, you can do that using the
-[ignore-body-lines](rules.md#i3-ignore-body-lines) rule.
+[ignore-body-lines](../rules/builtin_rules.md#i3-ignore-body-lines) rule.
 
 ```ini
 # Ignore all lines that start with 'Co-Authored-By'
@@ -45,13 +45,13 @@ regex=^Co-Authored-By
 
 !!! tip
 
-    If you want to implement more complex ignore rules according to your own logic, you can do so using [user-defined
-    configuration rules](user_defined_rules.md#configuration-rules).
+    If you want to implement more complex ignore rules according to your own logic, you can do so using
+    [user-defined configuration rules](../rules/user_defined_rules/configuration_rules.md).
 
 ## Merge, fixup, squash and revert commits
 
 [:octicons-tag-24: v0.7.0][v0.7.0] _(merge)_ ·
-[:octicons-tag-24: v0.9.0][v0.9.0] _(fixup, squash)_ ·
+[:octicons-tag-24: v0.9.0][v0.9.0] _(fixup, squash)_ ·e
 [:octicons-tag-24: v0.13.0][v0.13.0] _(revert)_ ·
 [:octicons-tag-24: v0.18.0][v0.18.0] _(fixup=amend)_
 
@@ -62,14 +62,14 @@ that most users keep git's default messages for these commits (i.e *Merge/Revert
 Often times these commit messages are also auto-generated through tools like github.
 These default/auto-generated commit messages tend to cause gitlint violations.
 For example, a common case is that *"Merge:"* being auto-prepended triggers a
-[title-max-length](rules.md#t1-title-max-length) violation. Most users don't want this, so we disable linting
+[title-max-length](../rules/builtin_rules.md#t1-title-max-length) violation. Most users don't want this, so we disable linting
 on Merge and Revert commits by default.
 
 For [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) and [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) (including [fixup=amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)) commits, the rationale is that these are temporary
 commits that will be squashed into a different commit, and hence the commit messages for these commits are very
 short-lived and not intended to make it into the final commit history. In addition, by prepending *"fixup!"*,
 *"amend!"* or *"squash!"* to your commit message, certain gitlint rules might be violated
-(e.g. [title-max-length](rules.md#t1-title-max-length)) which is often undesirable.
+(e.g. [title-max-length](../rules/builtin_rules.md#t1-title-max-length)) which is often undesirable.
 
 In case you *do* want to lint these commit messages, you can disable this behavior by setting the
 general `ignore-merge-commits`, `ignore-revert-commits`,  `ignore-fixup-commits`, `ignore-fixup-amend-commits` or

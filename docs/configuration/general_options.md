@@ -123,7 +123,7 @@ Target git repository gitlint should be linting against.
 
 | Default value           | Type          | CLI flag | Env var    |
 | ----------------------- | ------------- | -------- | ---------- |
-| `#!python None` (empty) | `#!python str | None`    | `--target` | `GITLINT_TARGET` |
+| `#!python None` (empty) | `#!python str`    | `--target` | `GITLINT_TARGET` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -146,6 +146,84 @@ Target git repository gitlint should be linting against.
     GITLINT_TARGET=/home/joe/myrepo/ gitlint
     ```
 
+
+## commit
+[:octicons-tag-24: v0.16.0][v0.16.0]
+
+Git reference of specific commit to lint.
+
+| Default value | Type           | CLI flag   | Env var          |
+| ------------- | -------------- | ---------- | ---------------- |
+| `(empty)`     | `#!python str` | `--commit` | `GITLINT_COMMIT` |
+
+
+=== ":octicons-terminal-16:  CLI"
+
+    ```sh
+    gitlint --commit 019cf40580a471a3958d3c346aa8bfd265fe5e16
+    gitlint --commit 019cf40  # short SHAs work too
+    gitlint --commit HEAD~2   # as do special references
+    gitlint --commit mybranch # lint latest commit on a branch 
+    ```
+
+=== ":material-application-variable-outline: Env var"
+
+    ```sh
+    GITLINT_COMMIT=019cf40580a471a3958d3c346aa8bfd265fe5e16 gitlint
+    GITLINT_COMMIT=019cf40 gitlint  # short SHAs work too
+    GITLINT_COMMIT=HEAD~2 gitlint   # as do special references
+    GITLINT_COMMIT=mybranch gitlint # lint latest commit on a branch 
+    ```
+
+## commits
+[:octicons-tag-24: v0.8.1][v0.8.1]
+
+Range of commits (refspec or comma-separated hashes) to lint.
+
+| Default value     | Type           | CLI flag    | Env var           |
+| ----------------- | -------------- | ----------- | ----------------- |
+| `#!python "HEAD"` | `#!python str` | `--commits` | `GITLINT_COMMITS` |
+
+
+=== ":octicons-terminal-16:  CLI"
+
+    ```sh
+    # Lint a specific commit range
+    gitlint --commits "019cf40...d6bc75a"
+    # Lint all commits on a branch
+    gitlint --commits mybranch
+    # Lint all commits that are different between a branch and your main branch
+    gitlint --commits "main..mybranch"
+    # Use git's special references
+    gitlint --commits "origin/main..HEAD"
+
+    # You can also pass multiple, comma separated commit hashes
+    gitlint --commits 019cf40,c50eb150,d6bc75a
+    # These can include special references as well
+    gitlint --commits HEAD~1,mybranch-name,origin/main,d6bc75a
+    # You can also lint a single commit by adding a trailing comma
+    gitlint --commits 019cf40,
+    ```
+
+=== ":material-application-variable-outline: Env var"
+
+    ```sh
+    # Lint a specific commit range
+    GITLINT_COMMITS="019cf40...d6bc75a" gitlint
+    # Lint all commits on a branch
+    GITLINT_COMMITS=mybranch gitlint
+    # Lint all commits that are different between a branch and your main branch
+    GITLINT_COMMITS="main..mybranch" gitlint
+    # Use git's special references
+    GITLINT_COMMITS="origin/main..HEAD" gitlint
+
+    # You can also pass multiple, comma separated commit hashes
+    GITLINT_COMMITS=019cf40,c50eb150,d6bc75a gitlint
+    # These can include special references as well
+    GITLINT_COMMITS=HEAD~1,mybranch-name,origin/main,d6bc75a gitlint
+    # You can also lint a single commit by adding a trailing comma
+    GITLINT_COMMITS=019cf40, gitlint
+    ```
 
 ## config
 [:octicons-tag-24: v0.1.0][v0.1.0]
@@ -174,11 +252,11 @@ Path where gitlint looks for a config file.
 ## extra-path
 [:octicons-tag-24: v0.8.0][v0.8.0]
 
-Path where gitlint looks for [user-defined rules](user_defined_rules.md).
+Path where gitlint looks for [user-defined rules](../rules/user_defined_rules/getting_started.md).
 
 | Default value          | Type          | CLI flag | Env var        |
 | ---------------------- | ------------- | -------- | -------------- |
-| `#!python None`(empty) | `#!python str | None`    | `--extra-path` | `GITLINT_EXTRA_PATH` |
+| `#!python None`(empty) | `#!python str`    | `--extra-path` | `GITLINT_EXTRA_PATH` |
 
 
 
@@ -234,11 +312,11 @@ Path where gitlint looks for [user-defined rules](user_defined_rules.md).
 ## contrib
 [:octicons-tag-24: v0.12.0][v0.12.0]
 
-Comma-separated list of [Contrib rules](contrib_rules.md) to enable (by name or id).
+Comma-separated list of [Contrib rules](../rules/contrib_rules.md) to enable (by name or id).
 
 | Default value           | Type          | CLI flag | Env var     |
 | ----------------------- | ------------- | -------- | ----------- |
-| `#!python None` (empty) | `#!python str | None`    | `--contrib` | `GITLINT_CONTRIB` |
+| `#!python None` (empty) | `#!python str`    | `--contrib` | `GITLINT_CONTRIB` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -262,6 +340,22 @@ Comma-separated list of [Contrib rules](contrib_rules.md) to enable (by name or 
     GITLINT_CONTRIB=contrib-title-conventional-commits,CC1 gitlint
     ```
 
+## msg-filename
+[:octicons-tag-24: v0.8.0][v0.8.0]
+
+Path to a file containing the commit-msg to be linted.
+
+| Default value           | Type          | CLI flag | Env var          |
+| ----------------------- | ------------- | -------- | ---------------- |
+| `#!python None` (empty) | `#!python str`    | `--msg-filename` | Not Available |
+
+
+
+=== ":octicons-terminal-16:  CLI"
+
+    ```sh
+    gitlint --msg-filename=/home/joe/mycommit-msg.txt
+    ```
 
 ## staged
 [:octicons-tag-24: v0.13.0][v0.13.0]
@@ -275,7 +369,7 @@ likely author name, email, commit date, changed files and branch of the ensuing 
 
 When not using the `--staged` flag while linting a commit message via stdin or `--commit-msg`, gitlint will only have
 access to the commit message itself for linting and won't be able to enforce rules like
-[M1:author-valid-email](rules.md#m1-author-valid-email).
+[M1:author-valid-email](../rules/builtin_rules.md#m1-author-valid-email).
 
 | Default value    | Type            | CLI flag   | Env var          |
 | ---------------- | --------------- | ---------- | ---------------- |

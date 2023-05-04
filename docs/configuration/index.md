@@ -1,3 +1,6 @@
+---
+title: Configuration
+---
 # Configuration
 Gitlint provides multiple ways to configure its behavior:
 
@@ -69,7 +72,7 @@ Gitlint provides multiple ways to configure its behavior:
 Gitlint configuration is applied in the following order of precedence:
 
 1. Commit specific config (e.g.: `gitlint-ignore: all` in the commit message)
-2. Configuration Rules (e.g.: [ignore-by-title](rules.md#i1-ignore-by-title))
+2. Configuration Rules (e.g.: [ignore-by-title](../rules/builtin_rules.md#i1-ignore-by-title))
 3. Commandline convenience flags (e.g.:  `-vv`, `--silent`, `--ignore`)
 4. Environment variables (e.g.: `GITLINT_VERBOSITY=3`)
 5. Commandline configuration flags (e.g.: `-c title-max-length=123`)

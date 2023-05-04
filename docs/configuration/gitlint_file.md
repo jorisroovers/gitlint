@@ -129,7 +129,7 @@ ignore=T1,body-min-length
    on *valid but empty* commit ranges. Disabled by default.
 3. Disabled by default, but will be enabled by default in the future. [More information](general_options.md#regex-style-search).
 4. See [Contrib Rules](../rules/contrib_rules.md).
-5. See [User Defined Rules](../rules/user_defined_rules.md).
+5. See [User Defined Rules](../rules/user_defined_rules/getting_started.md).
 6. All sections below sets rule specific behavior. <br/>
    Rules and sections can be referenced by their full name or by id. For example, this rule
    `[title-max-length]` could also be referenced as `[T1]`.
@@ -169,7 +169,7 @@ ignore=T1,body-min-length
     that start with `Co-Authored-By`.
 18. [Python style regex](https://docs.python.org/3/library/re.html). This example will make gitlint ignore all commits
     made by `dependabot`.
-19. [User-Defined rules](../rules/user_defined_rules.md) can be written in python to tailor gitlint to your specific needs. 
+19. [User-Defined rules](../rules/user_defined_rules/getting_started.md) can be written in python to tailor gitlint to your specific needs. 
 20. Named Rules allow you to specify multiple instances of the same rule by given them an extra name of your
     choosing after the colon sign `:`. <br><br> In the example below we're configuring another instances of the
     `title-must-not-contain-word` rule (the existing one will remain active as well) and naming it `Additional-Words`.

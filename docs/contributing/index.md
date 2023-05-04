@@ -1,3 +1,7 @@
+---
+title: Contributing
+---
+
 # Contributing
 
 We'd love for you to contribute to gitlint. Thanks for your interest!

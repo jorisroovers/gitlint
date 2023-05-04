@@ -9,7 +9,7 @@ gitlint --commit mybranch # lint latest commit on a branch
 You can also lint multiple commits using `--commits` (plural):
 
 ```sh
-# Lint a specific commit range:
+# Lint a specific commit range
 gitlint --commits "019cf40...d6bc75a"
 # Lint all commits on a branch
 gitlint --commits mybranch
@@ -18,12 +18,12 @@ gitlint --commits "main..mybranch"
 # Use git's special references
 gitlint --commits "origin/main..HEAD"
 
-# You can also pass multiple, comma separated commit hashes:
+# You can also pass multiple, comma separated commit hashes
 gitlint --commits 019cf40,c50eb150,d6bc75a
 # These can include special references as well
 gitlint --commits HEAD~1,mybranch-name,origin/main,d6bc75a
-# You can also lint a single commit with --commits:
-gitling --commits 019cf40,
+# You can also lint a single commit by adding a trailing comma
+gitlint --commits 019cf40,
 ```
 
 The `--commits` flag takes a **single** refspec argument or commit range. Basically, any range that is understood
