@@ -6,8 +6,8 @@ title: User Defined Rules
 
 Gitlint supports the concept of **user-defined** rules: the ability for users to write their own custom rules in python.
 
-In a nutshell, set the `extra-path` configuration variable to point gitlint to a directory where it will search
-for python files containing gitlint rule classes.
+To use this, set the `extra-path` option to point to a directory where gitlint will search
+for python files containing user-defined rule classes.
 
 === ":octicons-file-code-16:  .gitlint"
 
@@ -116,4 +116,3 @@ $ gitlint --debug --extra-path examples/
 !!! Tip
     In most cases it's really the easiest to just copy an example from the
     [examples](https://github.com/jorisroovers/gitlint/tree/main/examples) directory and modify it to your needs.
-    The remainder of this page contains the technical details, mostly for reference.

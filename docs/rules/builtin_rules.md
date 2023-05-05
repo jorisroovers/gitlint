@@ -41,13 +41,13 @@ Title cannot contain hard tab character (`\t`).
 ## T5: title-must-not-contain-word
 [:octicons-tag-24: v0.1.0][v0.1.0] · **ID**: T5 · **Name**: title-must-not-contain-word
 
-Title cannot contain certain words (default: `WIP`).
+Title cannot contain certain words.
 
 ### Options
 
 | Name    | Type           | Default          | gitlint version                    | Description                                                                                                                                                                                   |
 | ------- | -------------- | ---------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `words` | `#!python str` | `#!python "WIP"` | [:octicons-tag-24: v0.3.0][v0.3.0] | Comma-separated list of words that should not be used in the title. Matching is case insensitive. Keywords occuring as part of a larger word are ignored (so `#!python "WIPING"` is ignored). |
+| `words` | `#!python str` | `#!python "WIP"` | [:octicons-tag-24: v0.3.0][v0.3.0] | Comma-separated list of words that should not be used in the title. Matching is case insensitive. Keywords occuring as part of a larger word are not matched (so `#!python "WIPING"` is allowed). |
 
 === ":octicons-file-code-16:  .gitlint"
 
@@ -71,12 +71,12 @@ Title must match a given regex (default: `.*`).
 
 | Name    | Type           | Default       | gitlint version                    | Description                                                                          |
 | ------- | -------------- | ------------- | ---------------------------------- | ------------------------------------------------------------------------------------ |
-| `regex` | `#!python str` | `#!python .*` | [:octicons-tag-24: v0.5.0][v0.5.0] | [Python regex](https://docs.python.org/library/re.html) that the title should match. |
+| `regex` | `#!python str` | `#!python .*` | [:octicons-tag-24: v0.5.0][v0.5.0] | [Python regex](https://docs.python.org/library/re.html) the title should match. |
 
 === ":octicons-file-code-16:  .gitlint"
 
     ```ini
-    # Ensure every title starts with a user-story like US123
+    # Ensure every title starts with a user-story identifier like US123
     [title-match-regex]
     regex=^US[1-9][0-9]*
     ```
@@ -125,7 +125,7 @@ Lines in the body must be &lt;= 80 chars.
 ## B2: body-trailing-whitespace
 [:octicons-tag-24: v0.1.0][v0.1.0] · **ID**: B2 · **Name**: body-trailing-whitespace
 
-Body cannot have trailing whitespace (space or tab)
+Body cannot have trailing whitespace (space or tab).
 
 ## B3: body-hard-tab
 [:octicons-tag-24: v0.1.0][v0.1.0] · **ID**: B3 · **Name**: body-hard-tab
@@ -135,12 +135,12 @@ Body cannot contain hard tab characters (`\t`).
 ## B4: body-first-line-empty
 [:octicons-tag-24: v0.1.0][v0.1.0] · **ID**: B4 · **Name**: body-first-line-empty
 
-First line of the body (second line of commit message) must be empty
+First line of the body (second line of commit message) must be empty.
 
 ## B5: body-min-length
 [:octicons-tag-24: v0.4.0][v0.4.0] · **ID**: B5 · **Name**: body-min-length
 
-Body length must be at least 20 characters. In versions >= `0.8.0`, gitlint will not count newline characters.
+Body length must be at least 20 characters. Gitlint will not count newline characters towards this limit.
 
 ### Options ###
 
@@ -201,8 +201,8 @@ Body must contain references to certain files if those files are changed in the 
 === ":octicons-file-code-16:  .gitlint"
 
     ```ini
-    # Prevent that certain sensitive files are committed by mistake by forcing
-    # users to mention them explicitly if they're deliberately changing them
+    # Prevent that certain files are committed by mistake by forcing
+    # users to mention them explicitly when they're deliberately changing them
     [body-changed-file-mention]
     files=generated.xml,secrets.txt,private-key.pem
     ```
@@ -216,7 +216,7 @@ Body must match a given regex.
 
 | Name    | Type           | Default | gitlint version                      | Description                                                                         |
 | ------- | -------------- | ------- | ------------------------------------ | ----------------------------------------------------------------------------------- |
-| `regex` | `#!python str` | `empty` | [:octicons-tag-24: v0.14.0][v0.14.0] | [Python regex](https://docs.python.org/library/re.html) that the body should match. |
+| `regex` | `#!python str` | `empty` | [:octicons-tag-24: v0.14.0][v0.14.0] | [Python regex](https://docs.python.org/library/re.html) the body should match. |
 
 === ":octicons-file-code-16:  .gitlint"
 

@@ -8,8 +8,7 @@ Gitlint has 2 types of user-defined rules for linting commit messages:
 The benefit of a `CommitRule` is that it allows for more complex checks that span multiple lines and/or checks
 that should only be done once per commit. Conversely a `LineRule` allows for greater code re-use and implementation simplicity.
 
-While every `LineRule` can be implemented as a `CommitRule`, it's usually easier and more concise to go with a `LineRule` if
-that fits your needs.
+While every `LineRule` can be implemented as a `CommitRule`, the opposite is not true.
 
 ### Examples
 
@@ -19,7 +18,7 @@ The only 2 differences between a `CommitRule` and a `LineRule` are the parameter
 
 Consider the following `CommitRule` that can be found in [examples/my_commit_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_commit_rules.py):
 
-```{ .python .copy title="examples/my_commit_rules.py" linenums="1"}
+```{ .python .copy title="examples/my_commit_rules.py" linenums="1" hl_lines="16"}
 from gitlint.rules import CommitRule, RuleViolation
 
 class SignedOffBy(CommitRule):
@@ -35,7 +34,7 @@ class SignedOffBy(CommitRule):
     # We recommend starting with UC (for User-defined Commit-rule).
     id = "UC2"
 
-    def validate(self, commit):
+    def validate(self, commit): # (1)
         log_msg = "This will be visible when running `gitlint --debug`"
         self.log.debug(log_msg)
 
@@ -46,11 +45,12 @@ class SignedOffBy(CommitRule):
         msg = "Body does not contain a 'Signed-off-by' line"
         return [RuleViolation(self.id, msg, line_nr=1)]
 ```
-Note the use of the `name` and `id` class attributes and the `validate(...)` method taking a single `commit` parameter.
+
+1. When extending from `CommitRule`, `validate(...)` takes a single [`commit` argument](#commit-object).
 
 Contrast this with the following `LineRule` that can be found in [examples/my_line_rules.py](https://github.com/jorisroovers/gitlint/blob/main/examples/my_line_rules.py):
 
-```{ .python .copy title="examples/my_line_rules.py" linenums="1"}
+```{ .python .copy title="examples/my_line_rules.py" linenums="1" hl_lines="17 28"}
 from gitlint.rules import LineRule, RuleViolation, CommitMessageTitle
 from gitlint.options import ListOption
 
@@ -67,7 +67,7 @@ class SpecialChars(LineRule):
     id = "UL1"
 
     # A line-rule MUST have a target (not required for CommitRules).
-    target = CommitMessageTitle
+    target = CommitMessageTitle # (1)
 
     # A rule MAY have an option_spec if its behavior should be configurable.
     options_spec = [
@@ -78,7 +78,7 @@ class SpecialChars(LineRule):
         )
     ]
 
-    def validate(self, line, _commit):
+    def validate(self, line, _commit): # (2)
         self.log.debug("This will be visible when running `gitlint --debug`")
 
         violations = []
@@ -92,16 +92,14 @@ class SpecialChars(LineRule):
         return violations
 ```
 
-Note the following 2 differences:
+1. In this example, we set to `target = CommitMessageTitle`  indicating that this `LineRule`
+   should only be applied once to the commit message title. <br><br>
+   The alternative value for `target` is `CommitMessageBody`,
+   in which case gitlint will apply your rule to **every** line in the commit message body.
+2. When extending from `LineRule`, `validate(...)` get the `line` against which they are applied as the first argument and
+   the [`commit` object](#commit-object) of which the line is part of as second.
 
-- **extra `target` class attribute**: in this example set to `CommitMessageTitle`  indicating that this `LineRule`
-should only be applied once to the commit message title. The alternative value for `target` is `CommitMessageBody`,
- in which case gitlint will apply
-your rule to **every** line in the commit message body.
-- **`validate(...)` takes 2 parameters**: Line rules get the `line` against which they are applied as the first parameter and
-the `commit` object of which the line is part of as second.
-
-In addition, you probably also noticed the extra `options_spec` class attribute which allows you to make your rules configurable.
+You might also noticed the extra `options_spec` class attribute which allows you to make your rules configurable.
 [Options](options.md) are not unique to `LineRule`s, they can also be used by `CommitRule`s.
 
 

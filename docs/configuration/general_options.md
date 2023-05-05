@@ -3,11 +3,11 @@ Gitlint has a number of options that modify it's overall behavior, documented be
 ## silent
 [:octicons-tag-24: v0.1.0][v0.1.0]
 
-Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determine result.
+Enable silent mode (no output).
 
-| Default value    | Type            | CLI flag   | Env var          |
-| ---------------- | --------------- | ---------- | ---------------- |
-| `#!python false` | `#!python bool` | `--silent` | `GITLINT_SILENT` |
+| Default value    | Type            | CLI flag         | Env var          |
+| ---------------- | --------------- | ---------------- | ---------------- |
+| `#!python false` | `#!python bool` | `--silent`, `-s` | `GITLINT_SILENT` |
 
 
 === ":octicons-terminal-16:  CLI"
@@ -27,9 +27,9 @@ Enable silent mode (no output). Use [exit](index.md#exit-codes) code to determin
 
 Amount of output gitlint will show when printing errors.
 
-| Default value | Type           | CLI flag            | Env var             |
-| ------------- | -------------- | ------------------- | ------------------- |
-| `#!python 3`  | `#!python int` | `-v`, `-vv`, `-vvv` | `GITLINT_VERBOSITY` |
+| Default value | Type           | CLI flag                          | Env var             |
+| ------------- | -------------- | --------------------------------- | ------------------- |
+| `#!python 3`  | `#!python int` | `--verbose`, `-v`, `-vv`, `-vvv`, | `GITLINT_VERBOSITY` |
 
 
 
@@ -43,10 +43,11 @@ Amount of output gitlint will show when printing errors.
 === ":octicons-terminal-16: CLI"
 
     ```sh
-    gitlint -vvv                   # default     (level 3)
-    gitlint -vv                    # less output (level 2)
-    gitlint -v                     # even less   (level 1)
-    gitlint --silent               # no output   (level 0)
+    gitlint -vvv                   # default         (level 3)
+    gitlint -vv                    # less output     (level 2)
+    gitlint -v                     # even less       (level 1)
+    gitlint --silent               # no output       (level 0)
+    gitlint --verbose 2            # specific level  (level 2)
     gitlint -c general.verbosity=1 # Set specific level
     gitlint -c general.verbosity=0 # Same as --silent
     ```
@@ -96,9 +97,9 @@ Comma separated list of rules to ignore (by name or id).
 
 Enable debugging output.
 
-| Default value    | Type            | CLI flag  | Env var         |
-| ---------------- | --------------- | --------- | --------------- |
-| `#!python false` | `#!python bool` | `--debug` | `GITLINT_DEBUG` |
+| Default value    | Type            | CLI flag        | Env var         |
+| ---------------- | --------------- | --------------- | --------------- |
+| `#!python false` | `#!python bool` | `--debug`, `-d` | `GITLINT_DEBUG` |
 
 
 === ":octicons-terminal-16:  CLI"
@@ -121,9 +122,9 @@ Enable debugging output.
 
 Target git repository gitlint should be linting against.
 
-| Default value           | Type          | CLI flag | Env var    |
-| ----------------------- | ------------- | -------- | ---------- |
-| `#!python None` (empty) | `#!python str`    | `--target` | `GITLINT_TARGET` |
+| Default value                      | Type           | CLI flag   | Env var          |
+| ---------------------------------- | -------------- | ---------- | ---------------- |
+| `#!python .` (current working dir) | `#!python str` | `--target` | `GITLINT_TARGET` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -230,9 +231,9 @@ Range of commits (refspec or comma-separated hashes) to lint.
 
 Path where gitlint looks for a config file.
 
-| Default value         | Type           | CLI flag   | Env var          |
-| --------------------- | -------------- | ---------- | ---------------- |
-| `#!python ".gitlint"` | `#!python str` | `--config` | `GITLINT_CONFIG` |
+| Default value         | Type           | CLI flag         | Env var          |
+| --------------------- | -------------- | ---------------- | ---------------- |
+| `#!python ".gitlint"` | `#!python str` | `--config`, `-C` | `GITLINT_CONFIG` |
 
 
 === ":octicons-terminal-16:  CLI"
@@ -254,9 +255,9 @@ Path where gitlint looks for a config file.
 
 Path where gitlint looks for [user-defined rules](../rules/user_defined_rules/getting_started.md).
 
-| Default value          | Type          | CLI flag | Env var        |
-| ---------------------- | ------------- | -------- | -------------- |
-| `#!python None`(empty) | `#!python str`    | `--extra-path` | `GITLINT_EXTRA_PATH` |
+| Default value          | Type           | CLI flag             | Env var              |
+| ---------------------- | -------------- | -------------------- | -------------------- |
+| `#!python None`(empty) | `#!python str` | `--extra-path`, `-e` | `GITLINT_EXTRA_PATH` |
 
 
 
@@ -314,9 +315,9 @@ Path where gitlint looks for [user-defined rules](../rules/user_defined_rules/ge
 
 Comma-separated list of [Contrib rules](../rules/contrib_rules.md) to enable (by name or id).
 
-| Default value           | Type          | CLI flag | Env var     |
-| ----------------------- | ------------- | -------- | ----------- |
-| `#!python None` (empty) | `#!python str`    | `--contrib` | `GITLINT_CONTRIB` |
+| Default value           | Type           | CLI flag    | Env var           |
+| ----------------------- | -------------- | ----------- | ----------------- |
+| `#!python None` (empty) | `#!python str` | `--contrib` | `GITLINT_CONTRIB` |
 
 
 === ":octicons-file-code-16:  .gitlint"
@@ -345,9 +346,9 @@ Comma-separated list of [Contrib rules](../rules/contrib_rules.md) to enable (by
 
 Path to a file containing the commit-msg to be linted.
 
-| Default value           | Type          | CLI flag | Env var          |
-| ----------------------- | ------------- | -------- | ---------------- |
-| `#!python None` (empty) | `#!python str`    | `--msg-filename` | Not Available |
+| Default value           | Type           | CLI flag         | Env var       |
+| ----------------------- | -------------- | ---------------- | ------------- |
+| `#!python None` (empty) | `#!python str` | `--msg-filename` | Not Available |
 
 
 
@@ -498,7 +499,7 @@ More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-
 ## ignore-stdin
 [:octicons-tag-24: v0.12.0][v0.12.0]
 
-Ignore any stdin data. Sometimes useful when running gitlint in a CI server.
+Ignore any stdin data.
 
 | Default value    | Type            | CLI flag         | Env var                |
 | ---------------- | --------------- | ---------------- | ---------------------- |
@@ -625,7 +626,7 @@ Whether or not to ignore [fixup=amend](https://git-scm.com/docs/git-commit#Docum
 ## ignore-squash-commits
 [:octicons-tag-24: v0.9.0][v0.9.0]
 
-Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) commits.
+Whether or not to ignore [squash](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---squashltcommitgt) commits.
 
 | Default value   | Type            | CLI flag                                   | Env var       |
 | --------------- | --------------- | ------------------------------------------ | ------------- |

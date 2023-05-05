@@ -68,7 +68,7 @@ Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit mes
 ### CC1: contrib-body-requires-signed-off-by ##
 [:octicons-tag-24: v0.12.0][v0.12.0] · **ID**: CC1 · **Name**: contrib-body-requires-signed-off-by
 
-Commit body must contain a `Signed-off-by` line. This means, a line that starts with the `Signed-off-by` keyword.
+Commit body must contain a line that starts with `Signed-off-by`.
 
 ### CC2: contrib-disallow-cleanup-commits
 [:octicons-tag-24: v0.18.0][v0.18.0] · **ID**: CC2 · **Name**: contrib-disallow-cleanup-commits

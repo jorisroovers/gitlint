@@ -6,7 +6,7 @@ pip install gitlint # (1)
 # Check the last commit message
 gitlint
 # Lint all commits in your repo
-gitlint --commits HEAD
+gitlint --commits HEAD # (2)
 # Lint specific single commit
 gitlint --commit abc123
 
@@ -16,11 +16,12 @@ gitlint --msg-filename examples/commit-message-2
 git log -1 --pretty=%B | gitlint
 
 # Install gitlint commit-msg hook
-gitlint install-hook # (2)
+gitlint install-hook # (3)
 ```
 
 1. See [Installation](installation.md) for all available packages and supported package managers.
-2. You can also use pre-commit
+2. Any [refspec or comma separated list of commit hashes](linting_specific_commits.md) will work.
+3. You can also [use pre-commit](commit_hooks.md#pre-commit).
 
 Output example:
 ```sh

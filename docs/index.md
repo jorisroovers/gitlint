@@ -41,7 +41,7 @@ a [CI pipeline](home/ci.md).
 [standards](http://chris.beams.io/posts/git-commit/), others are based on checks that we've found
 useful throughout the years.
  - **Easily configurable:** Gitlint has sane defaults, but [you can also easily customize it to your own liking](configuration/index.md).
- - **Full unicode support:** Lint your Russian, Chinese or Emoji commit messages with ease!
- - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, high unit test coverage, integration tests,
+ - **Full unicode support:** Lint your Chinese or Emoji commit messages with ease!
+ - **Production-ready:** Gitlint checks a lot of the boxes you're looking for: actively maintained, full unit test coverage, integration tests,
    python code standards ([black](https://github.com/psf/black), [ruff](https://github.com/charliermarsh/ruff)),
-   good documentation, widely used, proven track record.
+   good documentation, [widely used](https://github.com/jorisroovers/gitlint/network/dependents), proven track record.

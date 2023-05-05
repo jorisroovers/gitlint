@@ -2,13 +2,13 @@
 
 Gitlint behavior can be changed by various commandline flags and environment variables.
 
-There's 2 categories of these:
+These fall in 2 categories:
 
 1. [**General options**](general_options.md): configure gitlint's overall behavior
 2. **Rule specific options**: configure how specific rules behave
 
 To set `general` options ([full reference](general_options.md)) via the CLI, there's a number of convenience flags and environment
-variables available:
+variables available. Example:
 
 === ":octicons-terminal-16:  CLI"
 

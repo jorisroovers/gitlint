@@ -4,7 +4,7 @@ working directory.
 
 This makes it easy to use gitlint in a CI environment (Jenkins, TravisCI, Github Actions, pre-commit, CircleCI, Gitlab, etc).
 In fact, this is exactly what we do ourselves: on every commit,
-[we run gitlint as part of our CI checks](https://github.com/jorisroovers/gitlint/blob/v0.12.0/run_tests.sh#L133-L134).
+[we run gitlint as part of our CI checks](https://github.com/jorisroovers/gitlint/blob/2a77afd845832c1a00a65e210f9339344dd6f114/.github/workflows/ci.yml#L90-L92).
 This will cause the build to fail when we submit a bad commit message.
 
 Alternatively, gitlint will also lint any commit message that you feed it via stdin like so:

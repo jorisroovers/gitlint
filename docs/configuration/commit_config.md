@@ -16,6 +16,6 @@ You can also specify specific rules to be ignored as follows:
 ```
 WIP: This is my commit message
 
-I want gitlint to ignore this entire commit message.
+I want gitlint to only ignore certain rules specified below.
 gitlint-ignore: T1, body-hard-tab
 ```

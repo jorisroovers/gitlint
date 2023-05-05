@@ -6,7 +6,8 @@ after each commit.
 
 ```sh
 gitlint install-hook
-# To remove the hook
+
+# Remove the hook
 gitlint uninstall-hook
 ```
 
@@ -16,16 +17,16 @@ gitlint uninstall-hook
     file in your local repository, gitlint will refuse to install the `commit-msg` hook. Gitlint will also only
     uninstall unmodified commit-msg hooks that were installed by gitlint.
     If you're looking to use gitlint in conjunction with other hooks, you should consider
-    [using gitlint with pre-commit](#using-gitlint-through-pre-commit).
+    [using gitlint with pre-commit](#pre-commit).
 
 ## Pre-commit
 
 `gitlint` can be configured as a plugin for the [pre-commit](https://pre-commit.com) git hooks
-framework.  Simply add the configuration to your `.pre-commit-config.yaml`:
+framework.  Simply add the following configuration to your `.pre-commit-config.yaml`:
 
 ```yaml
 -   repo: https://github.com/jorisroovers/gitlint
-    rev:  # Fill in a tag / sha here
+    rev:  # Fill in a tag / sha here (e.g. v0.19.1)
     hooks:
     -   id: gitlint
 ```
@@ -48,7 +49,7 @@ In case you want to change gitlint's behavior, you should either [use a `.gitlin
 or modify the gitlint invocation in your `.pre-commit-config.yaml` file like so:
 ```yaml
 -   repo: https://github.com/jorisroovers/gitlint
-    rev:  # Fill in a tag / sha here (e.g. v0.18.0)
+    rev:  # Fill in a tag / sha here (e.g. v0.19.1)
     hooks:
     -   id: gitlint
         args: [--contrib=CT1, --msg-filename]
@@ -65,7 +66,7 @@ gitlint also supports a `gitlint-ci` pre-commit hook that can be used in CI envi
 Configure it like so:
 ```yaml
 -   repo: https://github.com/jorisroovers/gitlint
-    rev:  # insert ref, e.g. v0.18.0
+    rev:  # Fill in a tag / sha here (e.g. v0.19.1)
     hooks:
     -   id: gitlint    # this is the regular commit-msg hook
     -   id: gitlint-ci # hook for CI environments
@@ -82,7 +83,7 @@ If you want to lint more commits you can modify the `gitlint-ci` hook like so:
 
 ```yaml
 -   repo: https://github.com/jorisroovers/gitlint
-    rev:  # insert ref, e.g. v0.18.0
+    rev:  # Fill in a tag / sha here (e.g. v0.19.1)
     hooks:
     -   id: gitlint
     -   id: gitlint-ci

@@ -1,6 +1,6 @@
 In order to make your own rules configurable, you can add an optional `options_spec` attribute to your rule class.
 
-```{ .python .copy title="examples/my_commit_rules.py" linenums="1"}
+```{ .python .copy title="examples/my_commit_rules.py" linenums="1" hl_lines="12-19"}
 from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption
 

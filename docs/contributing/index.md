@@ -25,7 +25,7 @@ When contributing code, please consider all the parts that are typically require
   [enforced by CI](https://github.com/jorisroovers/gitlint/actions)). Again, please consider writing new ones
   for your functionality, not only updating existing ones to make the build pass.
 - Code style checks: linting, formatting, type-checking
-- [Documentation](https://github.com/jorisroovers/gitlint/tree/main/docs).
+- [Documentation](https://github.com/jorisroovers/gitlint/tree/main/docs)
 
 Since we want to maintain a high standard of quality, all of these things will have to be done regardless before code
 can make it as part of a release. **Gitlint commits and pull requests are gated on all of our tests and checks as well as

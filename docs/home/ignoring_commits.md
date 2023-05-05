@@ -6,36 +6,46 @@ You can configure gitlint to ignore specific commits or parts of a commit.
 One way to do this, is by [adding a gitlint-ignore line to your commit message](../configuration/commit_config.md).
 
 If you have a case where you want to ignore a certain type of commits all-together, you can
-use gitlint's *ignore* rules.
-Here's a few examples snippets from a `.gitlint` file:
+use gitlint's **ignore** rules.
+Here's a few examples:
 
-```ini
-[ignore-by-title]
-# Match commit titles starting with Release
-regex=^Release(.*)
-ignore=title-max-length,body-min-length
-# ignore all rules by setting ignore to 'all'
-# ignore=all
+=== ":octicons-file-code-16:  .gitlint"
 
-[ignore-by-body]
-# Match commits message bodies that have a line that contains 'release'
-regex=(.*)release(.*)
-ignore=all
+    ```ini
+    [ignore-by-title]
+    # Match commit titles starting with "Release"
+    regex=^Release(.*)
+    ignore=title-max-length,body-min-length # (1)
 
-[ignore-by-author-name]
-# Match commits by author name (e.g. ignore all rules when a commit is made by dependabot)
-regex=dependabot
-ignore=all
-```
+    [ignore-by-body]
+    # Match commits message bodies that have a line that contains 'release'
+    regex=(.*)release(.*)
+    ignore=all
 
-If you just want to ignore certain lines in a commit, you can do that using the
+    [ignore-by-author-name]
+    # Match commits by author name (e.g. ignore dependabot commits)
+    regex=dependabot
+    ignore=all
+    ```
+
+    1. Ignore all rules by setting `ignore` to 'all'. 
+    ```ini
+    [ignore-by-title]
+    regex=^Release(.*)
+    ignore=all
+    ```
+
+If you just want to ignore certain lines in a commit but still lint the other
+ones,  you can do that using the
 [ignore-body-lines](../rules/builtin_rules.md#i3-ignore-body-lines) rule.
 
-```ini
-# Ignore all lines that start with 'Co-Authored-By'
-[ignore-body-lines]
-regex=^Co-Authored-By
-```
+=== ":octicons-file-code-16:  .gitlint"
+
+    ```ini
+    # Ignore all lines that start with 'Co-Authored-By'
+    [ignore-body-lines]
+    regex=^Co-Authored-By
+    ```
 
 !!! warning
 
@@ -51,7 +61,7 @@ regex=^Co-Authored-By
 ## Merge, fixup, squash and revert commits
 
 [:octicons-tag-24: v0.7.0][v0.7.0] _(merge)_ ·
-[:octicons-tag-24: v0.9.0][v0.9.0] _(fixup, squash)_ ·e
+[:octicons-tag-24: v0.9.0][v0.9.0] _(fixup, squash)_ ·
 [:octicons-tag-24: v0.13.0][v0.13.0] _(revert)_ ·
 [:octicons-tag-24: v0.18.0][v0.18.0] _(fixup=amend)_
 
@@ -65,7 +75,7 @@ For example, a common case is that *"Merge:"* being auto-prepended triggers a
 [title-max-length](../rules/builtin_rules.md#t1-title-max-length) violation. Most users don't want this, so we disable linting
 on Merge and Revert commits by default.
 
-For [squash](https://git-scm.com/docs/git-commit#git-commit---squashltcommitgt) and [fixup](https://git-scm.com/docs/git-commit#git-commit---fixupltcommitgt) (including [fixup=amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)) commits, the rationale is that these are temporary
+For [squash](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---squashltcommitgt) and [fixup](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt) (including [fixup=amend](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)) commits, the rationale is that these are temporary
 commits that will be squashed into a different commit, and hence the commit messages for these commits are very
 short-lived and not intended to make it into the final commit history. In addition, by prepending *"fixup!"*,
 *"amend!"* or *"squash!"* to your commit message, certain gitlint rules might be violated

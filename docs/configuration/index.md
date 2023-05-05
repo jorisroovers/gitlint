@@ -33,7 +33,8 @@ Gitlint provides multiple ways to configure its behavior:
     min-length=5
     ```
 
-    1.  Rules and sections can be referenced by their full name or by id. For example, the rule
+    1.  Configure the behavior of a specific rule by adding a section for it to the ini file.<br><br>
+        Rules can be referenced by their full name or by id. For example, the rule
         `[title-max-length]` could also be referenced as `[T1]`.
         ```ini
         [T1]

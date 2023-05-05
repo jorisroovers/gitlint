@@ -22,10 +22,7 @@ ignore=title-trailing-punctuation, T3
 # verbosity should be a value between 1 and 3
 verbosity = 2
 
-# Enable debug mode (prints more output). Disabled by default.
-debug=true
-
-# By default gitlint will ignore certain commits
+# By default gitlint will ignore certain commits (21)
 ignore-merge-commits=true
 ignore-revert-commits=true
 ignore-fixup-commits=true
@@ -62,7 +59,7 @@ min-length=5
 [title-must-not-contain-word]
 # Comma-separated list of words that should not occur in
 # the commit message title (case-insensitive).
-words=wip
+words=wip,foobar
 
 [title-match-regex]
 regex=^US[0-9]* # (7)
@@ -116,12 +113,12 @@ regex=(.*)release(.*) # (16)
 ignore=T1,body-min-length
 
 [ignore-body-lines]
+# Ignore all lines that start with 'Co-Authored-By'
 regex=^Co-Authored-By # (17)
 
 [ignore-by-author-name]
 regex=(.*)dependabot(.*) # (18)
 ignore=T1,body-min-length
-
 ```
 
 1. This section of the `.gitlint` file sets overall gitlint behavior. Details about all available `[general]` options can be found in [General Options](general_options.md).
@@ -167,9 +164,16 @@ ignore=T1,body-min-length
     that contains `release`.
 17. [Python style regex](https://docs.python.org/3/library/re.html). This example will make gitlint ignores all lines
     that start with `Co-Authored-By`.
-18. [Python style regex](https://docs.python.org/3/library/re.html). This example will make gitlint ignore all commits
-    made by `dependabot`.
+18. [Python style regex](https://docs.python.org/3/library/re.html). This example will make gitlint ignore certain rules
+    for commits made by `dependabot`. You can also ignore the the commit all-together by setting `ignore=all`:
+    ```ini
+    [ignore-by-author-name]
+    regex=(.*)dependabot(.*) # (18)
+    ignore=all
+    ```
+    
 19. [User-Defined rules](../rules/user_defined_rules/getting_started.md) can be written in python to tailor gitlint to your specific needs. 
-20. Named Rules allow you to specify multiple instances of the same rule by given them an extra name of your
+20. [Named Rules](../rules/named_rules.md) allow you to specify multiple instances of the same rule by given them an extra name of your
     choosing after the colon sign `:`. <br><br> In the example below we're configuring another instances of the
     `title-must-not-contain-word` rule (the existing one will remain active as well) and naming it `Additional-Words`.
+21. [Gitlint ignores merge, revert, fixup, and squash commits by default.](../home/ignoring_commits.md#merge-fixup-squash-and-revert-commits)
