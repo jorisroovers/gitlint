@@ -120,3 +120,10 @@ nav:
         - Releases: contributing/releases.md
         - Contributing Contrib Rules: contributing/contrib_rules.md
     - Changelog: https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md
+
+plugins:
+    redirects:
+        redirect_maps:
+            # URLs present in the generated .gitlint file
+            contrib_rules.md : rules/contrib_rules.md
+            user_defined_rules.md : rules/contrib_rules.md
