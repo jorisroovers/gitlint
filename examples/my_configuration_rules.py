@@ -44,7 +44,6 @@ class ReleaseConfigurationRule(ConfigurationRule):
         # If the commit title starts with 'Release', we want to modify
         # how all subsequent rules interpret that commit
         if commit.message.title.startswith("Release"):
-
             # If your Release commit messages are auto-generated, the
             # body might contain trailing whitespace. Let's ignore that
             config.ignore.append("body-trailing-whitespace")
