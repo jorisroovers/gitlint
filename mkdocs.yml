@@ -3,19 +3,20 @@ site_description: Linting for your git commit messages
 site_url: http://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
 repo_name: jorisroovers/gitlint
-strict: true
+# strict: true
 edit_uri: edit/main/docs
 markdown_extensions: 
     - admonition
-    - pymdownx.highlight:
-        anchor_linenums: true
-        line_spans: __span
-        pygments_lang_class: true
     - pymdownx.inlinehilite
     - pymdownx.snippets
     - pymdownx.superfences
     - pymdownx.details # Collapsible admonitions
     - tables
+
+    - pymdownx.highlight:
+        anchor_linenums: true
+        line_spans: __span
+        pygments_lang_class: true
 
     - pymdownx.snippets: # include files
         auto_append:
@@ -27,6 +28,13 @@ markdown_extensions:
     - pymdownx.emoji: # Enable emoji shortcodes
         emoji_index: !!python/name:materialx.emoji.twemoji
         emoji_generator: !!python/name:materialx.emoji.to_svg
+
+plugins:
+    redirects:
+        redirect_maps:
+            # URLs present in the generated .gitlint file
+            contrib_rules.md : rules/contrib_rules.md
+            user_defined_rules.md : rules/contrib_rules.md
 
 theme: 
     name: material
@@ -54,7 +62,7 @@ theme:
         - navigation.sections
         - content.code.annotate
         - content.action.view
-        - content.action.edit # this won't work until code is merged to main
+        - content.action.edit
 
 extra_css: 
     - stylesheets/termynal.css
@@ -82,18 +90,18 @@ extra:
           name: Joris Roovers on twitter
 
 nav:
-    - Home:  # TODO: all pages under this now have /home/ in URL, we don't want that :/
+    - Home:
         - index.md # a top-level index.md (not in subdir) must exist for the homepage to work
         - Getting Started:
-            - Quickstart: home/getting_started.md
-            - Installation: home/installation.md
+            - Quickstart: getting_started.md
+            - Installation: installation.md
         - Using Gitlint:
-            - Commit hook Setup: home/commit_hooks.md
-            - CI Setup: home/ci.md
-            - Linting specific commits: home/linting_specific_commits.md
-            - Ignoring commits: home/ignoring_commits.md
-            - Exit Codes: home/exit_codes.md
-        - Alternatives: home/alternatives.md
+            - Commit hook Setup: commit_hooks.md
+            - CI Setup: ci.md
+            - Linting specific commits: linting_specific_commits.md
+            - Ignoring commits: ignoring_commits.md
+            - Exit Codes: exit_codes.md
+        - Alternatives: alternatives.md
     - Configuration: 
         - Overview: configuration/index.md
         - .gitlint file: configuration/gitlint_file.md
@@ -120,10 +128,3 @@ nav:
         - Releases: contributing/releases.md
         - Contributing Contrib Rules: contributing/contrib_rules.md
     - Changelog: https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md
-
-plugins:
-    redirects:
-        redirect_maps:
-            # URLs present in the generated .gitlint file
-            contrib_rules.md : rules/contrib_rules.md
-            user_defined_rules.md : rules/contrib_rules.md

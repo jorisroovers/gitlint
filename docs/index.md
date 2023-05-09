@@ -1,8 +1,8 @@
 # Introduction
 Gitlint checks your commit messages for style. 
 
-Great for use as a [commit-msg git hook](home/commit_hooks.md) or as part of your gating script in
-a [CI pipeline](home/ci.md).
+Great for use as a [commit-msg git hook](commit_hooks.md) or as part of your gating script in
+a [CI pipeline](ci.md).
 
 <!-- <script type="text/javascript" src="https://asciinema.org/a/30477.js" id="asciicast-30477" async></script>  -->
 
@@ -31,8 +31,8 @@ a [CI pipeline](home/ci.md).
 
 ## Features
 
- - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](home/commit_hooks.md). Also [works with pre-commit](home/commit_hooks.md#pre-commit).
- - **Perfect for CI**: Gitlint is designed to work [with your own scripts or CI system](home/ci.md).
+ - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](commit_hooks.md). Also [works with pre-commit](commit_hooks.md#pre-commit).
+ - **Perfect for CI**: Gitlint is designed to work [with your own scripts or CI system](ci.md).
  - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](rules/contrib_rules.md).
  - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](rules/user_defined_rules/getting_started.md).
  - **Sane defaults:** Many of gitlint's validations are based on

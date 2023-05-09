@@ -10,10 +10,4 @@ document.addEventListener("DOMContentLoaded", function () {
     if (window.location.pathname == "/gitlint/configuration/" && window.location.hash === "#regex-style-search") {
         window.location.href = "/gitlint/configuration/general_options/#regex-style-search";
     }
-
-
 });
-
-
-
-

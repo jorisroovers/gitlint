@@ -185,7 +185,7 @@ Body message must be specified.
     ignore-merge-commits=false 
     ```
 
-    1. By default, [gitlint will ignore merge commits all-together](../home/ignoring_commits.md#merge-fixup-squash-and-revert-commits).
+    1. By default, [gitlint will ignore merge commits all-together](../ignoring_commits.md#merge-fixup-squash-and-revert-commits).
 
 ## B7: body-changed-file-mention
 [:octicons-tag-24: v0.4.0][v0.4.0] · **ID**: B7 · **Name**: body-changed-file-mention

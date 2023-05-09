@@ -176,4 +176,4 @@ ignore=T1,body-min-length
 20. [Named Rules](../rules/named_rules.md) allow you to specify multiple instances of the same rule by given them an extra name of your
     choosing after the colon sign `:`. <br><br> In the example below we're configuring another instances of the
     `title-must-not-contain-word` rule (the existing one will remain active as well) and naming it `Additional-Words`.
-21. [Gitlint ignores merge, revert, fixup, and squash commits by default.](../home/ignoring_commits.md#merge-fixup-squash-and-revert-commits)
+21. [Gitlint ignores merge, revert, fixup, and squash commits by default.](../ignoring_commits.md#merge-fixup-squash-and-revert-commits)

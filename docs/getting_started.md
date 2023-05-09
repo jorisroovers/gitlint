@@ -41,7 +41,7 @@ $ cat examples/commit-message-2 | gitlint
 
 Gitlint can be configured via a ` .gitlint` file, CLI or environment variables - a short sample is provided below.
 
-For in-depth documentation of general and rule-specific configuration options, refer to the [Configuration](../configuration/index.md) and [Rules](../rules/index.md) documentation.
+For in-depth documentation of general and rule-specific configuration options, refer to the [Configuration](configuration/index.md) and [Rules](rules/index.md) documentation.
 
 === ":octicons-file-code-16:  .gitlint"
 

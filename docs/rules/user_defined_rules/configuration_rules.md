@@ -10,7 +10,7 @@ specific circumstances.
     Configuration rules can drastically change the way gitlint behaves and are typically only needed for more advanced
     use-cases. We recommend you double check:
 
-    1. Whether gitlint already supports your use-case out-of-the-box (special call-out for [ignore rules](../../home/ignoring_commits.md) which allow you to ignore (parts) of your commit message).
+    1. Whether gitlint already supports your use-case out-of-the-box (special call-out for [ignore rules](../../ignoring_commits.md) which allow you to ignore (parts) of your commit message).
     2. Whether there's a [Contrib Rule](../contrib_rules.md) that implements your use-case.
     3. Whether you can implement your use-case using a [Commit or Line user-defined rule](line_and_commit_rules.md).
 
