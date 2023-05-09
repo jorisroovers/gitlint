@@ -2,32 +2,157 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>http://jorisroovers.github.io/gitlint/</loc>
-         <lastmod>2023-04-14</lastmod>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/alternatives/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/ci/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/commit_hooks/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/exit_codes/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/getting_started/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/ignoring_commits/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/installation/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/linting_specific_commits/</loc>
+         <lastmod>2023-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://jorisroovers.github.io/gitlint/configuration/</loc>
-         <lastmod>2023-04-14</lastmod>
+         <lastmod>2023-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://jorisroovers.github.io/gitlint/contrib_rules/</loc>
-         <lastmod>2023-04-14</lastmod>
+         <loc>http://jorisroovers.github.io/gitlint/configuration/cli/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/configuration/commit_config/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/configuration/general_options/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/configuration/gitlint_file/</loc>
+         <lastmod>2023-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://jorisroovers.github.io/gitlint/contributing/</loc>
-         <lastmod>2023-04-14</lastmod>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/contributing/contrib_rules/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/contributing/environment_setup/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/contributing/packaging/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/contributing/releases/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/contributing/tests_formatting_docs/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/includes/release-tags/</loc>
+         <lastmod>2023-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>http://jorisroovers.github.io/gitlint/rules/</loc>
-         <lastmod>2023-04-14</lastmod>
+         <lastmod>2023-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>http://jorisroovers.github.io/gitlint/user_defined_rules/</loc>
-         <lastmod>2023-04-14</lastmod>
+         <loc>http://jorisroovers.github.io/gitlint/rules/builtin_rules/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/contrib_rules/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/named_rules/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/user_defined_rules/configuration_rules/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/user_defined_rules/getting_started/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/user_defined_rules/line_and_commit_rules/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/user_defined_rules/options/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/user_defined_rules/rule_format_spec/</loc>
+         <lastmod>2023-05-09</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://jorisroovers.github.io/gitlint/rules/user_defined_rules/violations/</loc>
+         <lastmod>2023-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
