@@ -1,12 +1,3 @@
-a.toctree-l3 {
-    margin-left: 10px;
-    /* display: none; */
-}
-
-.wy-nav-content {
-    max-width: 1000px;
-}
-
 .document hr {
     border-top: 1px solid #666;
 }
@@ -19,8 +10,9 @@ a.toctree-l3 {
 
 [data-termynal] {
     width: 100%;
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     margin-bottom: 1rem;
+    padding: 3rem 0.5rem 1rem 1rem;
 }
 
 [data-termynal] > [data-ty="comment"] {

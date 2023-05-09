@@ -1,5 +1,5 @@
-from gitlint.rules import CommitRule, RuleViolation
 from gitlint.options import IntOption, ListOption
+from gitlint.rules import CommitRule, RuleViolation
 
 """
 Full details on user-defined rules: https://jorisroovers.com/gitlint/user_defined_rules
@@ -21,41 +21,50 @@ class BodyMaxLineCount(CommitRule):
     # A rule MUST have a human friendly name
     name = "body-max-line-count"
 
-    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    # A rule MUST have a *unique* id
+    # we recommend starting with UC (for User-defined Commit-rule).
     id = "UC1"
 
-    # A rule MAY have an option_spec if its behavior should be configurable.
-    options_spec = [IntOption("max-line-count", 3, "Maximum body line count")]
+    # A rule MAY have an option_spec if its behavior is configurable.
+    options_spec = [
+        IntOption(
+            "max-line-count",  # option name
+            3,  # default value
+            "Maximum body line count",  # description
+        )
+    ]
 
     def validate(self, commit):
-        self.log.debug("BodyMaxLineCount: This will be visible when running `gitlint --debug`")
-
         line_count = len(commit.message.body)
-        max_line_count = self.options["max-line-count"].value
-        if line_count > max_line_count:
-            message = f"Body contains too many lines ({line_count} > {max_line_count})"
-            return [RuleViolation(self.id, message, line_nr=1)]
+        max_count = self.options["max-line-count"].value
+        if line_count > max_count:
+            msg = f"Body has too many lines ({line_count} > {max_count})"
+            return [RuleViolation(self.id, msg, line_nr=1)]
 
 
 class SignedOffBy(CommitRule):
-    """This rule will enforce that each commit contains a "Signed-off-by" line.
-    We keep things simple here and just check whether the commit body contains a line that starts with "Signed-off-by".
+    """Enforce that each commit contains a "Signed-off-by" line.
+    We keep things simple here and just check whether the commit body
+    contains a line that starts with "Signed-off-by".
     """
 
     # A rule MUST have a human friendly name
     name = "body-requires-signed-off-by"
 
-    # A rule MUST have a *unique* id, we recommend starting with UC (for User-defined Commit-rule).
+    # A rule MUST have a *unique* id
+    # We recommend starting with UC (for User-defined Commit-rule).
     id = "UC2"
 
     def validate(self, commit):
-        self.log.debug("SignedOffBy: This will be visible when running `gitlint --debug`")
+        log_msg = "This will be visible when running `gitlint --debug`"
+        self.log.debug(log_msg)
 
         for line in commit.message.body:
             if line.startswith("Signed-off-by"):
                 return
 
-        return [RuleViolation(self.id, "Body does not contain a 'Signed-off-by' line", line_nr=1)]
+        msg = "Body does not contain a 'Signed-off-by' line"
+        return [RuleViolation(self.id, msg, line_nr=1)]
 
 
 class BranchNamingConventions(CommitRule):

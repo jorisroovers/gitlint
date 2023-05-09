@@ -2,24 +2,129 @@ site_name: Gitlint
 site_description: Linting for your git commit messages
 site_url: http://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
+repo_name: jorisroovers/gitlint
+# strict: true
 edit_uri: edit/main/docs
-nav:
-    - Home: index.md
-    - Configuration: configuration.md
-    - Rules: rules.md
-    - Contrib Rules: contrib_rules.md
-    - User Defined Rules: user_defined_rules.md
-    - Contributing: contributing.md
-    - Changelog: https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md
+markdown_extensions: 
+    - admonition
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - pymdownx.superfences
+    - pymdownx.details # Collapsible admonitions
+    - tables
 
-markdown_extensions: [admonition]
+    - pymdownx.highlight:
+        anchor_linenums: true
+        line_spans: __span
+        pygments_lang_class: true
+
+    - pymdownx.snippets: # include files
+        auto_append:
+            - docs/includes/release-tags.md
+
+    - pymdownx.tabbed: # Tabbed code blocks
+        alternate_style: true
+
+    - pymdownx.emoji: # Enable emoji shortcodes
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
+
+plugins:
+    redirects:
+        redirect_maps:
+            # URLs present in the generated .gitlint file
+            contrib_rules.md : rules/contrib_rules.md
+            user_defined_rules.md : rules/contrib_rules.md
+
 theme: 
-    name: readthedocs
-    navigation_depth: 2
-strict: true
+    name: material
+    icon:
+        repo: fontawesome/brands/github
+    palette:
+        # Palette toggle for light mode
+        - media: "(prefers-color-scheme: light)"
+          scheme: default
+          toggle:
+            icon: material/brightness-7
+            name: Switch to dark mode
+
+        # Palette toggle for dark mode
+        - media: "(prefers-color-scheme: dark)"
+          scheme: slate
+          toggle:
+            icon: material/brightness-4
+            name: Switch to light mode
+
+    features:
+        - navigation.footer
+        - navigation.tabs
+        - navigation.tabs.sticky
+        - navigation.sections
+        - content.code.annotate
+        - content.action.view
+        - content.action.edit
+
 extra_css: 
-    - termynal.css
-    - extra.css
+    - stylesheets/termynal.css
+    - stylesheets/extra.css
 extra_javascript:
-    - termynal.js
-    - extra.js
+    - javascript/termynal.js
+    - javascript/extra.js
+
+extra:
+    social:
+        - icon: simple/github
+          link: https://github.com/jorisroovers/gitlint
+          name: gitlint on github
+        - icon: simple/python
+          link: https://pypi.org/project/gitlint/
+          name: gitlint on PyPI
+        - icon: simple/docker
+          link: https://hub.docker.com/r/jorisroovers/gitlint
+          name: gitlint on dockerhub
+        - icon: material/web
+          link: https://jorisroovers.com
+          name: Joris Roovers personal website
+        - icon: simple/twitter
+          link: https://twitter.com/jorisroovers
+          name: Joris Roovers on twitter
+
+nav:
+    - Home:
+        - index.md # a top-level index.md (not in subdir) must exist for the homepage to work
+        - Getting Started:
+            - Quickstart: getting_started.md
+            - Installation: installation.md
+        - Using Gitlint:
+            - Commit hook Setup: commit_hooks.md
+            - CI Setup: ci.md
+            - Linting specific commits: linting_specific_commits.md
+            - Ignoring commits: ignoring_commits.md
+            - Exit Codes: exit_codes.md
+        - Alternatives: alternatives.md
+    - Configuration: 
+        - Overview: configuration/index.md
+        - .gitlint file: configuration/gitlint_file.md
+        - Commandline config: configuration/cli.md
+        - Commit specific config: configuration/commit_config.md
+        - General Options: configuration/general_options.md
+    - Rules: 
+        - Overview: rules/index.md
+        - Built-in Rules: rules/builtin_rules.md
+        - Contrib Rules: rules/contrib_rules.md
+        - Named Rules: rules/named_rules.md
+        - User Defined Rules: 
+            - Getting Started: rules/user_defined_rules/getting_started.md
+            - Line and Commit Rules: rules/user_defined_rules/line_and_commit_rules.md
+            - Configuration Rules: rules/user_defined_rules/configuration_rules.md
+            - Rule Violations: rules/user_defined_rules/violations.md
+            - Rule Options: rules/user_defined_rules/options.md
+            - Rule Specification: rules/user_defined_rules/rule_format_spec.md
+    - Contributing: 
+        - Overview: contributing/index.md
+        - Environment Setup: contributing/environment_setup.md
+        - Tests, Formatting, Docs: contributing/tests_formatting_docs.md
+        - Packaging: contributing/packaging.md
+        - Releases: contributing/releases.md
+        - Contributing Contrib Rules: contributing/contrib_rules.md
+    - Changelog: https://github.com/jorisroovers/gitlint/blob/main/CHANGELOG.md

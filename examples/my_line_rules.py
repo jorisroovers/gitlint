@@ -1,5 +1,5 @@
-from gitlint.rules import LineRule, RuleViolation, CommitMessageTitle
 from gitlint.options import ListOption
+from gitlint.rules import CommitMessageTitle, LineRule, RuleViolation
 
 """
 Full details on user-defined rules: https://jorisroovers.com/gitlint/user_defined_rules
@@ -19,14 +19,15 @@ that fits your needs.
 
 
 class SpecialChars(LineRule):
-    """This rule will enforce that the commit message title does not contain any of the following characters:
-    $^%@!*()"""
+    """This rule will enforce that the commit message title does not
+    contain any of the following characters: $^%@!*()
+    """
 
     # A rule MUST have a human friendly name
     name = "title-no-special-chars"
 
-    # A rule MUST have a *unique* id, we recommend starting with UL (for User-defined Line-rule), but this can
-    # really be anything.
+    # A rule MUST have a *unique* id.
+    # We recommend starting with UL (for User-defined Line-rule)
     id = "UL1"
 
     # A line-rule MUST have a target (not required for CommitRules).
@@ -35,17 +36,17 @@ class SpecialChars(LineRule):
     # A rule MAY have an option_spec if its behavior should be configurable.
     options_spec = [
         ListOption(
-            "special-chars",
-            ["$", "^", "%", "@", "!", "*", "(", ")"],
-            "Comma separated list of characters that should not occur in the title",
+            "special-chars",  # option name
+            ["$", "^", "%", "@", "!", "*", "(", ")"],  # default value
+            "Comma separated list of chars that cannot occur in the title",
         )
     ]
 
     def validate(self, line, _commit):
-        self.log.debug("SpecialChars: This will be visible when running `gitlint --debug`")
+        self.log.debug("This will be visible when running `gitlint --debug`")
 
         violations = []
-        # options can be accessed by looking them up by their name in self.options
+        # Options can be accessed by name lookup in self.options
         for char in self.options["special-chars"].value:
             if char in line:
                 msg = f"Title contains the special character '{char}'"
