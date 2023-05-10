@@ -1106,7 +1106,7 @@ should be able to discover and execute them. While clearly you can run any pytho
 you might run into some issues if you don't follow the conventions that gitlint requires.</p>
 <p>While the <a href="https://github.com/jorisroovers/gitlint/blob/main/gitlint-core/gitlint/rule_finder.py">rule finding source-code</a> is the
 ultimate source of truth, here are some of the requirements that gitlint enforces.</p>
-<h3 id="rule-class-requirements">Rule class requirements</h3>
+<h3 id="rule-class-requirements">Rule class requirements<a class="headerlink" href="#rule-class-requirements" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Rules <strong>must</strong> extend from  <code>LineRule</code>, <code>CommitRule</code> or <code>ConfigurationRule</code></li>
 <li>Rule classes <strong>must</strong> have <code>id</code> and <code>name</code> string attributes. The <code>options_spec</code> is optional,
@@ -1120,7 +1120,7 @@ ultimate source of truth, here are some of the requirements that gitlint enforce
 <li>Rules <strong>should</strong> have a case-insensitive unique id as only one rule can exist with a given id. While gitlint does not
   enforce this, having multiple rules with the same id might lead to unexpected or undeterministic behavior.</li>
 </ul>
-<h3 id="extra-path-requirements">extra-path requirements</h3>
+<h3 id="extra-path-requirements">extra-path requirements<a class="headerlink" href="#extra-path-requirements" title="Permanent link">&para;</a></h3>
 <ul>
 <li>If  <code>extra-path</code> is a directory, it does <strong>not</strong> need to be a proper python package, i.e. it doesn't require an <code>__init__.py</code> file.</li>
 <li>Python files containing user-defined rules must have a <code>.py</code> extension. Files with a different extension will be ignored.</li>

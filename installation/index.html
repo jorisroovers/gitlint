@@ -1222,8 +1222,8 @@
 
   <h1>Installation</h1>
 
-<h2 id="fully-supported">Fully supported</h2>
-<h3 id="pip-recommended">Pip (recommended)</h3>
+<h2 id="fully-supported">Fully supported<a class="headerlink" href="#fully-supported" title="Permanent link">&para;</a></h2>
+<h3 id="pip-recommended">Pip (recommended)<a class="headerlink" href="#pip-recommended" title="Permanent link">&para;</a></h3>
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip<span class="w"> </span>install<span class="w"> </span>gitlint
 </span></code></pre></div>
 <p>By default, gitlint is installed with pinned dependencies.
@@ -1236,7 +1236,7 @@ To install gitlint with looser dependency requirements, only install gitlint-cor
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>gitlint<span class="w"> </span>gitlint-core<span class="w"> </span>
 </span></code></pre></div></p>
 </details>
-<h3 id="docker">Docker</h3>
+<h3 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h3>
 <p>There is a fully maintained and supported <a href="https://hub.docker.com/r/jorisroovers/gitlint">docker image for gitlint</a>.
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--ulimit<span class="w"> </span><span class="nv">nofile</span><span class="o">=</span><span class="m">1024</span><span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/repo<span class="w"> </span>jorisroovers/gitlint<span class="w"> </span><span class="c1"># (1)</span>
 </span></code></pre></div></p>
@@ -1244,20 +1244,20 @@ To install gitlint with looser dependency requirements, only install gitlint-cor
 <li><code>--ulimit</code> is required to work around a limitation in Docker.
    Details: see issue <a href="https://github.com/jorisroovers/gitlint/issues/129">#129</a></li>
 </ol>
-<h2 id="community-maintained-packages">Community Maintained Packages</h2>
+<h2 id="community-maintained-packages">Community Maintained Packages<a class="headerlink" href="#community-maintained-packages" title="Permanent link">&para;</a></h2>
 <p>These packages are not officially maintained by gitlint. For the latest and fully supported version, always use <code>pip</code>.</p>
-<h4 id="brew">Brew</h4>
+<h4 id="brew">Brew<a class="headerlink" href="#brew" title="Permanent link">&para;</a></h4>
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>brew<span class="w"> </span>install<span class="w"> </span>gitlint
 </span></code></pre></div>
-<h4 id="macports">MacPorts</h4>
+<h4 id="macports">MacPorts<a class="headerlink" href="#macports" title="Permanent link">&para;</a></h4>
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>port<span class="w"> </span>install<span class="w"> </span>gitlint
 </span></code></pre></div>
-<h4 id="ubuntu">Ubuntu</h4>
+<h4 id="ubuntu">Ubuntu<a class="headerlink" href="#ubuntu" title="Permanent link">&para;</a></h4>
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>apt-get<span class="w"> </span>install<span class="w"> </span>gitlint
 </span></code></pre></div>
-<h4 id="all-available-packages">All available packages</h4>
+<h4 id="all-available-packages">All available packages<a class="headerlink" href="#all-available-packages" title="Permanent link">&para;</a></h4>
 <p><a href="https://repology.org/project/gitlint/versions"><img alt="Packaging status" src="https://repology.org/badge/vertical-allrepos/gitlint.svg" /></a></p>
-<h2 id="shell-completion">Shell completion</h2>
+<h2 id="shell-completion">Shell completion<a class="headerlink" href="#shell-completion" title="Permanent link">&para;</a></h2>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Bash: add to ~/.bashrc</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_GITLINT_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>gitlint<span class="k">)</span><span class="s2">&quot;</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
