@@ -31,7 +31,7 @@ This release was primarily focussed on modernizing gitlint's build and test tool
   - Adopted [hatch](https://hatch.pypa.io/latest/) for project management ([#384](https://github.com/jorisroovers/gitlint/issues/384)).
     This significantly improves the developer workflow, please read the updated [CONTRIBUTING](https://jorisroovers.com/gitlint/contributing/) page.
   - Adopted [ruff](https://github.com/charliermarsh/ruff) for linting, replacing pylint ([#404](https://github.com/jorisroovers/gitlint/issues/404))
-  - Gitlint now publishes [dev builds on every commit to main](https://jorisroovers.github.io/gitlint/contributing/#dev-builds) ([#429](https://github.com/jorisroovers/gitlint/issues/429))
+  - Gitlint now publishes [dev builds on every commit to main](https://jorisroovers.com/gitlint/contributing/releases/#dev-builds) ([#429](https://github.com/jorisroovers/gitlint/issues/429))
   - Gitlint now publishes a [`latest_dev` docker image](https://hub.docker.com/r/jorisroovers/gitlint/tags?name=latest_dev) on every commit to main ([#451](https://github.com/jorisroovers/gitlint/issues/452)) ([#452](https://github.com/jorisroovers/gitlint/issues/451))
   - Dependencies updated
   - Many improvements to the [CI/CD worfklows](https://github.com/jorisroovers/gitlint/tree/main/.github/workflows)
@@ -342,8 +342,10 @@ Thanks to [tommyip](https://github.com/tommyip) for implementing this!
 be improved upon in later releases.
 
 ## Bugfixes
-    - [#24: --commits doesn't take commit specific config into account](https://github.com/jorisroovers/gitlint/issues/24)
-    - [#27: --commits returns the wrong exit code](https://github.com/jorisroovers/gitlint/issues/27)
+
+- [#24: --commits doesn't take commit specific config into account](https://github.com/jorisroovers/gitlint/issues/24)
+- [#27: --commits returns the wrong exit code](https://github.com/jorisroovers/gitlint/issues/27)
+  
 ## Development
 - Better unit and integration test coverage for `--commits`
 
