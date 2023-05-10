@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="http://jorisroovers.github.io/gitlint/contributing/tests_formatting_docs/">
+        <link rel="canonical" href="https://jorisroovers.github.io/gitlint/contributing/tests_formatting_docs/">
       
       
         <link rel="prev" href="../environment_setup/">
@@ -756,7 +756,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/user_defined_rules/getting_started/" class="md-nav__link">
+      <a href="../../rules/user_defined_rules/" class="md-nav__link">
         Getting Started
       </a>
     </li>
@@ -1126,7 +1126,7 @@
 
   <h1>Tests, Formatting, Docs</h1>
 
-<h2 id="running-tests">Running tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h2>
+<h2 id="running-tests">Running tests</h2>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Gitlint</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>hatch<span class="w"> </span>run<span class="w"> </span>dev:gitlint<span class="w"> </span><span class="c1"># run the local source copy of gitlint</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>hatch<span class="w"> </span>run<span class="w"> </span>dev:gitlint<span class="w"> </span>--version<span class="w"> </span>
@@ -1166,7 +1166,7 @@
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>hatch<span class="w"> </span>run<span class="w"> </span>qa:integration-tests
 </span></code></pre></div></li>
 </ol>
-<h2 id="autoformatting-and-autofixing">Autoformatting and autofixing<a class="headerlink" href="#autoformatting-and-autofixing" title="Permanent link">&para;</a></h2>
+<h2 id="autoformatting-and-autofixing">Autoformatting and autofixing</h2>
 <p>We use <a href="https://black.readthedocs.io/en/stable/">black</a> for code formatting.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># format all python code</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>hatch<span class="w"> </span>run<span class="w"> </span>test:autoformat
@@ -1178,14 +1178,14 @@
 (although not always perfect).
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>hatch<span class="w"> </span>run<span class="w"> </span>test:autofix
 </span></code></pre></div></p>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<h2 id="documentation">Documentation</h2>
 <p>We use <a href="https://www.mkdocs.org/">mkdocs</a> with <a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a> for
 generating our documentation from markdown.</p>
 <p>To use it:
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>hatch<span class="w"> </span>run<span class="w"> </span>docs:serve
 </span></code></pre></div></p>
 <p>Then access the documentation website on <a href="">http://localhost:8000</a>.</p>
-<h2 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">&para;</a></h2>
+<h2 id="tools">Tools</h2>
 <p>We keep a small set of scripts in the <code>tools/</code> directory:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Create a test git repo in your /tmp directory</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>tools/create-test-repo.sh

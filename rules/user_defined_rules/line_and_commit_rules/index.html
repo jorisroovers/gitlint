@@ -10,10 +10,10 @@
       
       
       
-        <link rel="canonical" href="http://jorisroovers.github.io/gitlint/rules/user_defined_rules/line_and_commit_rules/">
+        <link rel="canonical" href="https://jorisroovers.github.io/gitlint/rules/user_defined_rules/line_and_commit_rules/">
       
       
-        <link rel="prev" href="../getting_started/">
+        <link rel="prev" href="../">
       
       
         <link rel="next" href="../configuration_rules/">
@@ -760,7 +760,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../getting_started/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         Getting Started
       </a>
     </li>
@@ -1109,7 +1109,7 @@
 <p>The benefit of a <code>CommitRule</code> is that it allows for more complex checks that span multiple lines and/or checks
 that should only be done once per commit. Conversely a <code>LineRule</code> allows for greater code re-use and implementation simplicity.</p>
 <p>While every <code>LineRule</code> can be implemented as a <code>CommitRule</code>, the opposite is not true.</p>
-<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<h3 id="examples">Examples</h3>
 <p>In terms of code, writing your own <code>CommitRule</code> or <code>LineRule</code> is very similar.
 The only 2 differences between a <code>CommitRule</code> and a <code>LineRule</code> are the parameters of the <code>validate(...)</code> method and the extra
 <code>target</code> attribute that <code>LineRule</code> requires.</p>
@@ -1256,7 +1256,7 @@ The only 2 differences between a <code>CommitRule</code> and a <code>LineRule</c
 </ol>
 <p>You might also noticed the extra <code>options_spec</code> class attribute which allows you to make your rules configurable.
 <a href="../options/">Options</a> are not unique to <code>LineRule</code>s, they can also be used by <code>CommitRule</code>s.</p>
-<h2 id="commit-object">Commit object<a class="headerlink" href="#commit-object" title="Permanent link">&para;</a></h2>
+<h2 id="commit-object">Commit object</h2>
 <p>Both <code>CommitRule</code>s and <code>LineRule</code>s take a <code>commit</code> object in their <code>validate(...)</code> methods.
 The table below outlines the various attributes of that commit object that can be used during validation.</p>
 <table>
@@ -1416,7 +1416,7 @@ The table below outlines the various attributes of that commit object that can b
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../getting_started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting Started" rel="prev">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting Started" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>

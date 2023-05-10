@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="http://jorisroovers.github.io/gitlint/commit_hooks/">
+        <link rel="canonical" href="https://jorisroovers.github.io/gitlint/commit_hooks/">
       
       
         <link rel="prev" href="../installation/">
@@ -817,7 +817,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../rules/user_defined_rules/getting_started/" class="md-nav__link">
+      <a href="../rules/user_defined_rules/" class="md-nav__link">
         Getting Started
       </a>
     </li>
@@ -1126,7 +1126,7 @@
 
   <h1>Commit hook Setup</h1>
 
-<h2 id="commit-msg-hook">Commit-msg hook<a class="headerlink" href="#commit-msg-hook" title="Permanent link">&para;</a></h2>
+<h2 id="commit-msg-hook">Commit-msg hook</h2>
 <p><a href="https://github.com/jorisroovers/gitlint/releases/tag/v0.4.0"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> v0.4.0</a></p>
 <p>You can install gitlint as a git <code>commit-msg</code> hook so that gitlint checks your commit messages automatically
 after each commit.</p>
@@ -1143,7 +1143,7 @@ uninstall unmodified commit-msg hooks that were installed by gitlint.
 If you're looking to use gitlint in conjunction with other hooks, you should consider
 <a href="#pre-commit">using gitlint with pre-commit</a>.</p>
 </div>
-<h2 id="pre-commit">Pre-commit<a class="headerlink" href="#pre-commit" title="Permanent link">&para;</a></h2>
+<h2 id="pre-commit">Pre-commit</h2>
 <p><code>gitlint</code> can be configured as a plugin for the <a href="https://pre-commit.com">pre-commit</a> git hooks
 framework.  Simply add the following configuration to your <code>.pre-commit-config.yaml</code>:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p p-Indicator">-</span><span class="w">   </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/jorisroovers/gitlint</span>
@@ -1174,7 +1174,7 @@ or modify the gitlint invocation in your <code>.pre-commit-config.yaml</code> fi
 <p class="admonition-title">Important</p>
 <p>You need to add <code>--msg-filename</code> at the end of your custom <code>args</code> list as the gitlint-hook will fail otherwise.</p>
 </div>
-<h3 id="gitlint-and-pre-commit-in-ci">gitlint and pre-commit in CI<a class="headerlink" href="#gitlint-and-pre-commit-in-ci" title="Permanent link">&para;</a></h3>
+<h3 id="gitlint-and-pre-commit-in-ci">gitlint and pre-commit in CI</h3>
 <p>gitlint also supports a <code>gitlint-ci</code> pre-commit hook that can be used in CI environments.</p>
 <p>Configure it like so:
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p p-Indicator">-</span><span class="w">   </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/jorisroovers/gitlint</span>

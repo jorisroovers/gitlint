@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="http://jorisroovers.github.io/gitlint/configuration/gitlint_file/">
+        <link rel="canonical" href="https://jorisroovers.github.io/gitlint/configuration/gitlint_file/">
       
       
         <link rel="prev" href="../">
@@ -768,7 +768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../rules/user_defined_rules/getting_started/" class="md-nav__link">
+      <a href="../../rules/user_defined_rules/" class="md-nav__link">
         Getting Started
       </a>
     </li>
@@ -1042,7 +1042,7 @@
   
 
 
-<h1 id="the-gitlint-file">The .gitlint file<a class="headerlink" href="#the-gitlint-file" title="Permanent link">&para;</a></h1>
+<h1 id="the-gitlint-file">The .gitlint file</h1>
 <p>You can modify gitlint's behavior by adding a <code>.gitlint</code> file to your git repository.</p>
 <p>Generate a default <code>.gitlint</code> config file by running:
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gitlint<span class="w"> </span>generate-config
@@ -1050,7 +1050,7 @@
 You can also use a different config file like so:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gitlint<span class="w"> </span>--config<span class="w"> </span>myconfigfile.ini
 </span></code></pre></div>
-<h1 id="example-gitlint">Example <code>.gitlint</code><a class="headerlink" href="#example-gitlint" title="Permanent link">&para;</a></h1>
+<h1 id="example-gitlint">Example <code>.gitlint</code></h1>
 <div class="language-ini copy highlight"><span class="filename">.gitlint</span><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">### GENERAL CONFIG  ### (1)</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">[general]</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Ignore rules, reference them by id or name (comma-separated)</span>
@@ -1163,7 +1163,7 @@ You can also use a different config file like so:</p>
    on <em>valid but empty</em> commit ranges. Disabled by default.</li>
 <li>Disabled by default, but will be enabled by default in the future. <a href="../general_options/#regex-style-search">More information</a>.</li>
 <li>See <a href="../../rules/contrib_rules/">Contrib Rules</a>.</li>
-<li>See <a href="../../rules/user_defined_rules/getting_started/">User Defined Rules</a>.</li>
+<li>See <a href="../../rules/user_defined_rules/">User Defined Rules</a>.</li>
 <li>All sections below sets rule specific behavior. <br/>
    Rules and sections can be referenced by their full name or by id. For example, this rule
    <code>[title-max-length]</code> could also be referenced as <code>[T1]</code>.
@@ -1208,7 +1208,7 @@ You can also use a different config file like so:</p>
 </span></code></pre></div></p>
 </li>
 <li>
-<p><a href="../../rules/user_defined_rules/getting_started/">User-Defined rules</a> can be written in python to tailor gitlint to your specific needs. </p>
+<p><a href="../../rules/user_defined_rules/">User-Defined rules</a> can be written in python to tailor gitlint to your specific needs. </p>
 </li>
 <li><a href="../../rules/named_rules/">Named Rules</a> allow you to specify multiple instances of the same rule by given them an extra name of your
     choosing after the colon sign <code>:</code>. <br><br> In the example below we're configuring another instances of the
