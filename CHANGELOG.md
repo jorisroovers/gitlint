@@ -29,9 +29,9 @@ This release was primarily focussed on modernizing gitlint's build and test tool
 
 ## Development
   - Adopted [hatch](https://hatch.pypa.io/latest/) for project management ([#384](https://github.com/jorisroovers/gitlint/issues/384)).
-    This significantly improves the developer workflow, please read the updated [CONTRIBUTING](https://jorisroovers.com/gitlint/contributing/) page.
+    This significantly improves the developer workflow, please read the updated [CONTRIBUTING](https://jorisroovers.github.io/gitlint/contributing/) page.
   - Adopted [ruff](https://github.com/charliermarsh/ruff) for linting, replacing pylint ([#404](https://github.com/jorisroovers/gitlint/issues/404))
-  - Gitlint now publishes [dev builds on every commit to main](https://jorisroovers.github.io/gitlint/contributing/#dev-builds) ([#429](https://github.com/jorisroovers/gitlint/issues/429))
+  - Gitlint now publishes [dev builds on every commit to main](https://jorisroovers.github.io/gitlint/contributing/releases/#dev-builds) ([#429](https://github.com/jorisroovers/gitlint/issues/429))
   - Gitlint now publishes a [`latest_dev` docker image](https://hub.docker.com/r/jorisroovers/gitlint/tags?name=latest_dev) on every commit to main ([#451](https://github.com/jorisroovers/gitlint/issues/452)) ([#452](https://github.com/jorisroovers/gitlint/issues/451))
   - Dependencies updated
   - Many improvements to the [CI/CD worfklows](https://github.com/jorisroovers/gitlint/tree/main/.github/workflows)
@@ -53,18 +53,18 @@ Special thanks to all contributors for this release - details inline!
 ## General
 - Python 3.11 support
 - Last release to support Python 3.6 ([EOL since 2021-12-23](https://endoflife.date/python))
-- **Behavior Change**: In a future release, gitlint will be switching to use `re.search` instead of `re.match` semantics for all rules. Your rule regexes might need updating as a result, gitlint will print a warning if so. [More details are in the docs](https://jorisroovers.com/gitlint/configuration/#regex-style-search). ([#254](https://github.com/jorisroovers/gitlint/issues/254))
+- **Behavior Change**: In a future release, gitlint will be switching to use `re.search` instead of `re.match` semantics for all rules. Your rule regexes might need updating as a result, gitlint will print a warning if so. [More details are in the docs](https://jorisroovers.github.io/gitlint/configuration/#regex-style-search). ([#254](https://github.com/jorisroovers/gitlint/issues/254))
 - gitlint no longer uses the [sh](https://amoffat.github.io/sh/) library by default in an attempt to reduce external dependencies. In case of issues, the use of `sh` can be re-enabled by setting the env var `GITLINT_USE_SH_LIB=1`. This fallback will be removed entirely in a future gitlint release. ([#351](https://github.com/jorisroovers/gitlint/issues/351))
 
 ## Features
 - `--commits` now also accepts a comma-separated list of commit hashes, making it possible to lint a list of non-contiguous commits without invoking gitlint multiple times ([#283](https://github.com/jorisroovers/gitlint/issues/283))
 - Improved handling of branches that have no commits ([#188](https://github.com/jorisroovers/gitlint/issues/189)) - thanks [domsekotill](https://github.com/domsekotill)
 - Support for `GITLINT_CONFIG` env variable ([#189](https://github.com/jorisroovers/gitlint/issues/188)) - thanks [Notgnoshi](https://github.com/Notgnoshi)
-- Added [a new `gitlint-ci` pre-commit hook](https://jorisroovers.com/gitlint/#gitlint-and-pre-commit-in-ci), making it easier to run gitlint through pre-commit in CI ([#191](https://github.com/jorisroovers/gitlint/issues/191)) - thanks [guillaumelambert](https://github.com/guillaumelambert)
+- Added [a new `gitlint-ci` pre-commit hook](https://jorisroovers.github.io/gitlint/#gitlint-and-pre-commit-in-ci), making it easier to run gitlint through pre-commit in CI ([#191](https://github.com/jorisroovers/gitlint/issues/191)) - thanks [guillaumelambert](https://github.com/guillaumelambert)
 
 ## Contrib Rules
-  - New [contrib-disallow-cleanup-commits](https://jorisroovers.com/gitlint/contrib_rules/#cc2-contrib-disallow-cleanup-commits) rule ([#312](https://github.com/jorisroovers/gitlint/issues/312)) - thanks [matthiasbeyer](https://github.com/matthiasbeyer)
-  - New [contrib-allowed-authors](https://jorisroovers.com/gitlint/contrib_rules/#cc3-contrib-allowed-authors) rule ([#358](https://github.com/jorisroovers/gitlint/issues/358)) - thanks [stauchert](https://github.com/stauchert)
+  - New [contrib-disallow-cleanup-commits](https://jorisroovers.github.io/gitlint/contrib_rules/#cc2-contrib-disallow-cleanup-commits) rule ([#312](https://github.com/jorisroovers/gitlint/issues/312)) - thanks [matthiasbeyer](https://github.com/matthiasbeyer)
+  - New [contrib-allowed-authors](https://jorisroovers.github.io/gitlint/contrib_rules/#cc3-contrib-allowed-authors) rule ([#358](https://github.com/jorisroovers/gitlint/issues/358)) - thanks [stauchert](https://github.com/stauchert)
 
 ## User Defined rules
   - Gitlint now recognizes `fixup=amend` commits (see related [git documentation](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt---fixupamendrewordltcommitgt)), available as `commit.is_fixup_amend_commit=True`
@@ -103,14 +103,14 @@ Special thanks to all contributors for this release, in particular [sigmavirus24
 
 ## Features
 - `--commit <ref>` flag to more easily lint a single commit message ([#141](https://github.com/jorisroovers/gitlint/issues/141))
-- `--fail-without-commits` flag will force gitlint to fail ([exit code 253](https://jorisroovers.com/gitlint/#exit-codes)) when the target commit range is empty (typically when using `--commits`)  ([#193](https://github.com/jorisroovers/gitlint/issues/193))
+- `--fail-without-commits` flag will force gitlint to fail ([exit code 253](https://jorisroovers.github.io/gitlint/#exit-codes)) when the target commit range is empty (typically when using `--commits`)  ([#193](https://github.com/jorisroovers/gitlint/issues/193))
 
 ## Rules
-- **New Rule**: [ignore-by-author-name](http://jorisroovers.github.io/gitlint/rules/#i4-ignore-by-author-name) allows users to skip linting commit messages made by specific authors
+- **New Rule**: [ignore-by-author-name](https://jorisroovers.github.io/gitlint/rules/builtin_rules/#i4-ignore-by-author-name) allows users to skip linting commit messages made by specific authors
 
 ## Bugfixes
-  - [contrib-title-conventional-commits (CT1)](https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits)  now properly enforces the commit type ([#185](https://github.com/jorisroovers/gitlint/issues/185))
-  - [contrib-title-conventional-commits (CT1)](https://jorisroovers.com/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits) now supports the BREAKING CHANGE symbol "!" ([#186](https://github.com/jorisroovers/gitlint/issues/186))
+  - [contrib-title-conventional-commits (CT1)](https://jorisroovers.github.io/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits)  now properly enforces the commit type ([#185](https://github.com/jorisroovers/gitlint/issues/185))
+  - [contrib-title-conventional-commits (CT1)](https://jorisroovers.github.io/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits) now supports the BREAKING CHANGE symbol "!" ([#186](https://github.com/jorisroovers/gitlint/issues/186))
 
 ## Development
 - Dependencies updated
@@ -153,19 +153,19 @@ Special thanks to all contributors for this release, in particular [mrshu](https
 ## General
 - **IMPORTANT: Gitlint 0.14.x will be the last gitlint release to support Python 2.7 and Python 3.5, as [both are EOL](https://endoflife.date/python) which makes it difficult to keep supporting them.**
 - Python 3.9 support
-- [Named Rules](http://jorisroovers.github.io/gitlint/#named-rules) allow users to have multiple instances of the same rule active at the same time. This is useful when you want to enforce the same rule multiple times but with different options ([#113](https://github.com/jorisroovers/gitlint/issues/113), [#66](https://github.com/jorisroovers/gitlint/issues/66))
-- [User-defined Configuration Rules](http://jorisroovers.github.io/gitlint/user_defined_rules/#configuration-rules) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
+- [Named Rules](https://jorisroovers.github.io/gitlint/rules/named_rules/) allow users to have multiple instances of the same rule active at the same time. This is useful when you want to enforce the same rule multiple times but with different options ([#113](https://github.com/jorisroovers/gitlint/issues/113), [#66](https://github.com/jorisroovers/gitlint/issues/66))
+- [User-defined Configuration Rules](https://jorisroovers.github.io/gitlint/rules/user_defined_rules/configuration_rules/) allow users to dynamically change gitlint's configuration and/or the commit *before* any other rules are applied.
 - The `commit-msg` hook has been re-written in Python (it contained a lot of Bash before), fixing a number of platform specific issues. Existing users will need to reinstall their hooks (`gitlint uninstall-hook; gitlint install-hook`) to make use of this.
-- Most general options can now be set through environment variables (e.g. set the `general.ignore` option via `GITLINT_IGNORE=T1,T2`). The list of available environment variables can be found in the [configuration documentation](http://jorisroovers.github.io/gitlint/configuration).
+- Most general options can now be set through environment variables (e.g. set the `general.ignore` option via `GITLINT_IGNORE=T1,T2`). The list of available environment variables can be found in the [configuration documentation](https://jorisroovers.github.io/gitlint/configuration).
 - Users can now use `self.log.debug("my message")` for debugging purposes in their user-defined rules. Debug messages will show up when running `gitlint --debug`.
-- **Breaking**: User-defined rule id's can no longer start with 'I', as those are reserved for [built-in gitlint ignore rules](http://jorisroovers.github.io/gitlint/rules/#i1-ignore-by-title).
--  New `RegexOption` rule [option type for use in user-defined rules](http://jorisroovers.github.io/gitlint/user_defined_rules/#options). By using the `RegexOption`, regular expressions are pre-validated at gitlint startup and compiled only once which is much more efficient when linting multiple commits.
+- **Breaking**: User-defined rule id's can no longer start with 'I', as those are reserved for [built-in gitlint ignore rules](https://jorisroovers.github.io/gitlint/rules/builtin_rules/#i1-ignore-by-title).
+-  New `RegexOption` rule [option type for use in user-defined rules](https://jorisroovers.github.io/gitlint/rules/user_defined_rules/options/). By using the `RegexOption`, regular expressions are pre-validated at gitlint startup and compiled only once which is much more efficient when linting multiple commits.
 
 ## Rules
-- **New Rule**: [title-min-length](http://jorisroovers.github.io/gitlint/rules/#t8-title-min-length) enforces a minimum length on titles (default: 5 chars) ([#138](https://github.com/jorisroovers/gitlint/issues/138))
-- **New Rule**: [body-match-regex](http://jorisroovers.github.io/gitlint/rules/#b8-body-match-regex) allows users to enforce that the commit-msg body matches a given regex ([#130](https://github.com/jorisroovers/gitlint/issues/130))
-- **New Rule**: [ignore-body-lines](http://jorisroovers.github.io/gitlint/rules/#i3-ignore-body-lines) allows users to
-[ignore parts of a commit](http://jorisroovers.github.io/gitlint/gitlint/#ignoring-commits) by matching a regex against
+- **New Rule**: [title-min-length](https://jorisroovers.github.io/gitlint/rules/builtin_rules/#t8-title-min-length) enforces a minimum length on titles (default: 5 chars) ([#138](https://github.com/jorisroovers/gitlint/issues/138))
+- **New Rule**: [body-match-regex](https://jorisroovers.github.io/gitlint/rules/builtin_rules/#b8-body-match-regex) allows users to enforce that the commit-msg body matches a given regex ([#130](https://github.com/jorisroovers/gitlint/issues/130))
+- **New Rule**: [ignore-body-lines](https://jorisroovers.github.io/gitlint/rules/builtin_rules/#i3-ignore-body-lines) allows users to
+[ignore parts of a commit](https://jorisroovers.github.io/gitlint/ignoring_commits/) by matching a regex against
 the lines in a commit message body ([#126](https://github.com/jorisroovers/gitlint/issues/126))
 
 ## Contrib Rules
@@ -203,7 +203,7 @@ the lines in a commit message body ([#126](https://github.com/jorisroovers/gitli
 - **Behavior Change**: Revert Commits are now recognized and ignored by default ([#99](https://github.com/jorisroovers/gitlint/issues/99))
 
 ## Features
-- `--staged` flag: gitlint can now detect meta-data (such as author details, changed files, etc) of staged/pre-commits. Useful when you use [gitlint's commit-msg hook](https://jorisroovers.github.io/gitlint/#using-gitlint-as-a-commit-msg-hook) or [precommit](https://jorisroovers.github.io/gitlint/#using-gitlint-through-pre-commit) ([#105](https://github.com/jorisroovers/gitlint/issues/105))
+- `--staged` flag: gitlint can now detect meta-data (such as author details, changed files, etc) of staged/pre-commits. Useful when you use [gitlint's commit-msg hook](https://jorisroovers.github.io/gitlint/commit_hooks/) or [precommit](https://jorisroovers.github.io/gitlint/commit_hooks/#pre-commit) ([#105](https://github.com/jorisroovers/gitlint/issues/105))
 - New branch properties on `GitCommit` and `GitContext`, useful when writing your own user-defined rules: `commit.branches` and `commit.context.current_branch` ([#108](https://github.com/jorisroovers/gitlint/issues/108))
 
 ## Bugfixes
@@ -229,13 +229,13 @@ Special thanks to all contributors for this release, in particular [@rogalksi](h
 
 
 ## Features
-- [Contrib Rules](http://jorisroovers.github.io/gitlint/contrib_rules): community-contributed rules that are disabled
+- [Contrib Rules](https://jorisroovers.github.io/gitlint/contrib_rules): community-contributed rules that are disabled
    by default, but can be enabled through configuration. Contrib rules are meant to augment default gitlint behavior by
    providing users with rules for common use-cases without forcing these rules on all gitlint users.
-    - **New Contrib Rule**: `contrib-title-conventional-commits` enforces the [Conventional Commits](https://www.conventionalcommits.org) spec. Details in our [documentation](http://jorisroovers.github.io/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits).
-    - **New Contrib Rule**: `cc1-contrib-requires-signed-off-by` ensures that all commit messages contain a `Sign-Off-By` line. Details in our [documentation](http://jorisroovers.github.io/gitlint/contrib_rules/#cc1-contrib-requires-signed-off-by).
+    - **New Contrib Rule**: `contrib-title-conventional-commits` enforces the [Conventional Commits](https://www.conventionalcommits.org) spec. Details in our [documentation](https://jorisroovers.github.io/gitlint/contrib_rules/#ct1-contrib-title-conventional-commits).
+    - **New Contrib Rule**: `cc1-contrib-requires-signed-off-by` ensures that all commit messages contain a `Sign-Off-By` line. Details in our [documentation](https://jorisroovers.github.io/gitlint/rules/contrib_rules/#cc1-contrib-body-requires-signed-off-by).
     - If you're interested in adding new Contrib rules to gitlint, please start by reading the
-      [Contributing](http://jorisroovers.github.io/gitlint/contributing/) page. Thanks for considering!
+      [Contributing](https://jorisroovers.github.io/gitlint/contributing/) page. Thanks for considering!
 - *Experimental (!)* Windows support: Basic functionality is working, but there are still caveats. For more details, please refer to [#20](https://github.com/jorisroovers/gitlint/issues/20) and the [open issues related to Windows](https://github.com/jorisroovers/gitlint/issues?q=is%3Aissue+is%3Aopen+label%3Awindows).
 - Support for `--ignore-stdin` command-line flag to ignore any text send via stdin. ([#56](https://github.com/jorisroovers/gitlint/issues/56), [#89](https://github.com/jorisroovers/gitlint/issues/89))
 
@@ -272,7 +272,7 @@ Special thanks to [asottile](https://github.com/asottile), [bdrung](https://gith
 
 ## Features
 - Gitlint now supports [pre-commit.com](https://pre-commit.com).
-[Details in our documentation](http://jorisroovers.github.io/gitlint/#using-gitlint-through-pre-commit)
+[Details in our documentation](https://jorisroovers.github.io/gitlint/commit_hooks/#gitlint-and-pre-commit-in-ci)
 ([#62](https://github.com/jorisroovers/gitlint/issues/62)).
 - Gitlint now has a `--msg-filename` commandline flag that allows you to specify the commit message to lint via
   a file ([#39](https://github.com/jorisroovers/gitlint/issues/39)).
@@ -283,10 +283,10 @@ Special thanks to [asottile](https://github.com/asottile), [bdrung](https://gith
 
 ## Rules
 - **New Rule**: `ignore-by-title` allows users to
-[ignore certain commits](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
+[ignore certain commits](https://jorisroovers.github.io/gitlint/ignoring_commits/) by matching a regex against
 a commit message title. ([#54](https://github.com/jorisroovers/gitlint/issues/54), [#57](https://github.com/jorisroovers/gitlint/issues/57)).
 - **New Rule**: `ignore-by-body` allows users to
-[ignore certain commits](http://jorisroovers.github.io/gitlint/#ignoring-commits) by matching a regex against
+[ignore certain commits](https://jorisroovers.github.io/gitlint/ignoring_commits/) by matching a regex against
 a line in a commit message body.
 
 ## Bugfixes
@@ -312,7 +312,7 @@ and [AlexMooney](https://github.com/AlexMooney) for their contributions.
   This fixes [#40](https://github.com/jorisroovers/gitlint/issues/40) and
   [#42](https://github.com/jorisroovers/gitlint/issues/42).
 - **Behavior Change**: Gitlint will now by default
-  [ignore squash and fixup commits](http://jorisroovers.github.io/gitlint/#merge-fixup-and-squash-commits)
+  [ignore squash and fixup commits](https://jorisroovers.github.io/gitlint/ignoring_commits/#merge-fixup-squash-and-revert-commits)
   (fix for [#33: fixup messages should not trigger a gitlint violation](https://github.com/jorisroovers/gitlint/issues/33))
 
 ## Features
@@ -322,7 +322,7 @@ and [AlexMooney](https://github.com/AlexMooney) for their contributions.
 
 ## Rules
 - New Rule: `author-valid-email` enforces a valid author email address. Details can be found in the
-  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/#m1-author-valid-email).
+  [Rules section of the documentation](https://jorisroovers.github.io/gitlint/rules/builtin_rules/#m1-author-valid-email).
 
 ## Bugfixes
 - [#37: Prevent Commas in text fields from breaking git log printing](https://github.com/jorisroovers/gitlint/issues/37)
@@ -342,8 +342,10 @@ Thanks to [tommyip](https://github.com/tommyip) for implementing this!
 be improved upon in later releases.
 
 ## Bugfixes
-    - [#24: --commits doesn't take commit specific config into account](https://github.com/jorisroovers/gitlint/issues/24)
-    - [#27: --commits returns the wrong exit code](https://github.com/jorisroovers/gitlint/issues/27)
+
+- [#24: --commits doesn't take commit specific config into account](https://github.com/jorisroovers/gitlint/issues/24)
+- [#27: --commits returns the wrong exit code](https://github.com/jorisroovers/gitlint/issues/27)
+  
 ## Development
 - Better unit and integration test coverage for `--commits`
 
@@ -359,7 +361,7 @@ The 0.8.1 release brings minor tweaks and some experimental features. Special th
 
 ## Features
 - Experimental: Linting a range of commits.
-  [Documentation](http://jorisroovers.github.io/gitlint/#linting-a-range-of-commits).
+  [Documentation](https://jorisroovers.github.io/gitlint/linting_specific_commits/).
   Known Caveats: [#23](https://github.com/jorisroovers/gitlint/issues/23),
   [#24](https://github.com/jorisroovers/gitlint/issues/24).
   Closes [#14](https://github.com/jorisroovers/gitlint/issues/14). Thanks to [tommyip](https://github.com/tommyip)
@@ -379,7 +381,7 @@ The 0.8.0 release is a significant release that has been in the works for a long
 
 ## Features
 - User-defined rules: you can now
-  [define your own custom rules](http://jorisroovers.github.io/gitlint/user_defined_rules/)
+  [define your own custom rules](https://jorisroovers.github.io/gitlint/rules/user_defined_rules/)
   if you want to extend gitlint's functionality.
 - Debug output improvements: Gitlint will now print your active configuration when using `--debug`
 - The `general.target` option can now also be set via `-c` flags or a `.gitlint` file
@@ -445,9 +447,9 @@ requests.
 
 ## General
 - Python 3 (3.3+) support!
-- All documentation is now hosted on [http://jorisroovers.github.io/gitlint/]()
+- All documentation is now hosted on [https://jorisroovers.github.io/gitlint/]()
 - **Breaking change**: exit code behavior has changed. More details in the
-  [Exit codes section of the documentation](http://jorisroovers.github.io/gitlint/#exit-codes).
+  [Exit codes section of the documentation](https://jorisroovers.github.io/gitlint/exit_codes/).
 - **Breaking change**: `--install-hook` and `--uninstall-hook` have been renamed to `install-hook` and
   `uninstall-hook` respectively to better express that they are commands instead of options.
 
@@ -478,7 +480,7 @@ requests.
 
 ## Rules
 - New Rule: `title-match-regex`. Details can be found in the
-  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/).
+  [Rules section of the documentation](https://jorisroovers.github.io/gitlint/rules/).
 
 # v0.4.1 (2015-09-19)
 
@@ -497,7 +499,7 @@ requests.
 
 - New rules: `body-is-missing`, `body-min-length`, `title-leading-whitespace`,
   `body-changed-file-mention`. Details can be found in the
-  [Rules section of the documentation](http://jorisroovers.github.io/gitlint/rules/).
+  [Rules section of the documentation](https://jorisroovers.github.io/gitlint/rules/).
 
 ## Development
 - Internal: rule classes now have access to a gitcontext containing body the commit message and the files changed in the

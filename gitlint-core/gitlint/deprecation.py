@@ -28,7 +28,7 @@ class Deprecation:
             "'search' (match anywhere) semantics. "
             f"Please review your {rule.name}.regex option accordingly. "
             "To remove this warning, set general.regex-style-search=True. "
-            "More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-search"
+            "More details: https://jorisroovers.github.io/gitlint/configuration/general_options/#regex-style-search"
         )
 
         # Only log warnings once

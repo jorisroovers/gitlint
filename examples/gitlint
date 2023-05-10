@@ -6,7 +6,7 @@
 # Rules and sections can be referenced by their full name or by id. For example
 # section "[body-max-line-length]" could be written as "[B1]". Full section names are
 # used in here for clarity.
-# Rule reference documentation: http://jorisroovers.github.io/gitlint/rules/
+# Rule reference documentation: https://jorisroovers.github.io/gitlint/rules/
 #
 # Note that this file is not exhaustive, it's just an example
 # Use 'gitlint generate-config' to generate a config file with all possible options
@@ -20,7 +20,7 @@ ignore-merge-commits=true
 debug = true
 
 # Set the extra-path where gitlint will search for user defined rules
-# See http://jorisroovers.github.io/gitlint/user_defined_rules for details
+# See https://jorisroovers.github.io/gitlint/user_defined_rules for details
 # extra-path=examples/
 
 [title-max-length]

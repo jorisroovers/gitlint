@@ -3,7 +3,7 @@ from gitlint.options import IntOption
 
 
 """
-Full details on user-defined rules: https://jorisroovers.com/gitlint/user_defined_rules
+Full details on user-defined rules: https://jorisroovers.github.io/gitlint/user_defined_rules
 
 The ReleaseConfigurationRule class below is an example of a user-defined ConfigurationRule. Configuration rules are
 gitlint rules that are applied once per commit and BEFORE any other rules are run. Configuration Rules are meant to

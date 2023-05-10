@@ -6,7 +6,7 @@ Contrib rules are community-**contrib**uted rules that are disabled by default, 
 
 Contrib rules are meant to augment default gitlint behavior by providing users with rules for common use-cases without
 forcing these rules on all gitlint users. This also means that users don't have to
-re-implement these commonly used rules themselves as [user-defined](user_defined_rules/getting_started.md) rules.
+re-implement these commonly used rules themselves as [user-defined](user_defined_rules/index.md) rules.
 
 Example:
 

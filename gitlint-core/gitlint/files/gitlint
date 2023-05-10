@@ -35,7 +35,8 @@
 # fail-without-commits=true
 
 # Whether to use Python `search` instead of `match` semantics in rules that use
-# regexes. Context: https://github.com/jorisroovers/gitlint/issues/254
+# regexes. 
+# Context: https://jorisroovers.github.io/gitlint/configuration/general_options/#regex-style-search
 # Disabled by default, but will be enabled by default in the future.
 # regex-style-search=true
 
@@ -43,11 +44,11 @@
 # debug=true
 
 # Enable community contributed rules
-# See http://jorisroovers.github.io/gitlint/contrib_rules for details
+# See https://jorisroovers.github.io/gitlint/contrib_rules for details
 # contrib=contrib-title-conventional-commits,CC1
 
 # Set the extra-path where gitlint will search for user defined rules
-# See http://jorisroovers.github.io/gitlint/user_defined_rules for details
+# See https://jorisroovers.github.io/gitlint/user_defined_rules for details
 # extra-path=examples/
 
 # This is an example of how to configure the "title-max-length" rule and

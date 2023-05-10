@@ -68,7 +68,7 @@ gitlint
 
 gitlint --ignore title-trailing-punctuation
 
-# For more info, visit: http://jorisroovers.github.io/gitlint
+# For more info, visit: https://jorisroovers.github.io/gitlint
 
 exit
 

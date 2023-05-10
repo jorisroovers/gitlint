@@ -6,7 +6,7 @@ itself. Thanks for considering to add a new one to gitlint!
 Before starting, please read all the other documentation about contributing first.
 Then, we suggest taking the following approach to add a Contrib rule:
 
-1. **Write your rule as a [user-defined rule](../rules/user_defined_rules/getting_started.md)**. In terms of code, Contrib rules are identical to
+1. **Write your rule as a [user-defined rule](../rules/user_defined_rules/index.md)**. In terms of code, Contrib rules are identical to
    user-defined rules, they just happen to have their code sit within the gitlint codebase itself.
 2. **Add your user-defined rule to gitlint**. You should put your file(s) in the [gitlint/contrib/rules](https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/contrib/rules) directory.
 3. **Write unit tests**. The gitlint codebase contains [Contrib rule test files you can copy and modify](https://github.com/jorisroovers/gitlint/tree/main/gitlint-core/gitlint/tests/contrib/rules).
