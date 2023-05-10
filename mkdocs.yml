@@ -1,9 +1,9 @@
 site_name: Gitlint
 site_description: Linting for your git commit messages
-site_url: http://jorisroovers.github.io/gitlint/
+site_url: https://jorisroovers.github.io/gitlint/
 repo_url: https://github.com/jorisroovers/gitlint
 repo_name: jorisroovers/gitlint
-# strict: true
+strict: true
 edit_uri: edit/main/docs
 markdown_extensions: 
     - admonition
@@ -34,7 +34,7 @@ plugins:
         redirect_maps:
             # URLs present in the generated .gitlint file
             contrib_rules.md : rules/contrib_rules.md
-            user_defined_rules.md : rules/contrib_rules.md
+            user_defined_rules.md : rules/user_defined_rules/index.md
 
 theme: 
     name: material
@@ -114,7 +114,7 @@ nav:
         - Contrib Rules: rules/contrib_rules.md
         - Named Rules: rules/named_rules.md
         - User Defined Rules: 
-            - Getting Started: rules/user_defined_rules/getting_started.md
+            - Getting Started: rules/user_defined_rules/index.md
             - Line and Commit Rules: rules/user_defined_rules/line_and_commit_rules.md
             - Configuration Rules: rules/user_defined_rules/configuration_rules.md
             - Rule Violations: rules/user_defined_rules/violations.md

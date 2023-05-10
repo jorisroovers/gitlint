@@ -471,7 +471,7 @@ class IgnoreByAuthorName(ConfigurationRule):
             warning_msg = (
                 "%s - %s: skipping - commit.author_name unknown. "
                 "Suggested fix: Use the --staged flag (or set general.staged=True in .gitlint). "
-                "More details: https://jorisroovers.com/gitlint/configuration/#staged"
+                "More details: https://jorisroovers.github.io/gitlint/configuration/general_options/#staged"
             )
 
             self.log.warning(warning_msg, self.name, self.id)

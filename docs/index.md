@@ -34,7 +34,7 @@ a [CI pipeline](ci.md).
  - **Commit message hook**: [Auto-trigger validations against new commit message right when you're committing](commit_hooks.md). Also [works with pre-commit](commit_hooks.md#pre-commit).
  - **Perfect for CI**: Gitlint is designed to work [with your own scripts or CI system](ci.md).
  - **Community contributed rules**: Conventions that are common but not universal [can be selectively enabled](rules/contrib_rules.md).
- - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](rules/user_defined_rules/getting_started.md).
+ - **User-defined rules:** Want to do more then what gitlint offers out of the box? Write your own [user defined rules](rules/user_defined_rules/index.md).
  - **Sane defaults:** Many of gitlint's validations are based on
 [well-known](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html),
 [community](https://addamhardy.com/2013-06-05-good-commit-messages-and-enforcing-them-with-git-hooks),

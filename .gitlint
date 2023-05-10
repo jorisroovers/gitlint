@@ -1,5 +1,5 @@
 [general]
-# See https://jorisroovers.com/gitlint/configuration/#regex-style-search
+# https://jorisroovers.github.io/gitlint/configuration/general_options/#regex-style-search
 regex-style-search=True
 
 # Dependabot tends to generate lines that exceed the default 80 char limit.

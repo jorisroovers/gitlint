@@ -76,5 +76,5 @@ Named rules are further treated identical to all other rules in gitlint:
         GITLINT_IGNORE="T5:more-words,title-must-not-contain-word:extra-words" gitlint
         ```
 
-- You can use them to instantiate multiple of the same [user-defined rule](user_defined_rules/getting_started.md)
+- You can use them to instantiate multiple of the same [user-defined rule](user_defined_rules/index.md)
 - You can configure them using [any of the ways you can configure regular gitlint rules](../configuration/index.md)

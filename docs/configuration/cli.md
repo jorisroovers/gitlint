@@ -49,7 +49,7 @@ Usage: gitlint [OPTIONS] COMMAND [ARGS]...
 
   Git lint tool, checks your git commit messages for styling issues
 
-  Documentation: http://jorisroovers.github.io/gitlint
+  Documentation: https://jorisroovers.github.io/gitlint
 
 Options:
   --target DIRECTORY       Path of the target git repository. [default:

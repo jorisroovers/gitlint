@@ -253,7 +253,7 @@ Path where gitlint looks for a config file.
 ## extra-path
 [:octicons-tag-24: v0.8.0][v0.8.0]
 
-Path where gitlint looks for [user-defined rules](../rules/user_defined_rules/getting_started.md).
+Path where gitlint looks for [user-defined rules](../rules/user_defined_rules/index.md).
 
 | Default value          | Type           | CLI flag             | Env var              |
 | ---------------------- | -------------- | -------------------- | -------------------- |

@@ -295,7 +295,7 @@ def cli(
 ):
     """ Git lint tool, checks your git commit messages for styling issues
 
-        Documentation: http://jorisroovers.github.io/gitlint
+        Documentation: https://jorisroovers.github.io/gitlint
     """
     try:
         if debug:
