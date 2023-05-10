@@ -12,6 +12,9 @@ markdown_extensions:
     - pymdownx.superfences
     - pymdownx.details # Collapsible admonitions
     - tables
+    
+    - toc:
+        permalink: true
 
     - pymdownx.highlight:
         anchor_linenums: true
