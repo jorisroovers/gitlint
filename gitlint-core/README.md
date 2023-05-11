@@ -15,10 +15,8 @@ Git commit message linter written in python, checks your commit messages for sty
 <img src="https://raw.githubusercontent.com/jorisroovers/gitlint/main/docs/images/readme-gitlint.png" />
 </a>
 
-## Contributing ##
+## Contributing
 All contributions are welcome and very much appreciated!
-
-**I'm [looking for contributors](https://github.com/jorisroovers/gitlint/issues/134) that are interested in taking a more active co-maintainer role as it's becoming increasingly difficult for me to find time to maintain gitlint. Please leave a comment in [#134](https://github.com/jorisroovers/gitlint/issues/134) if you're interested!**
 
 See [jorisroovers.github.io/gitlint/contributing](https://jorisroovers.github.io/gitlint/contributing) for details on
 how to get started - it's easy!
