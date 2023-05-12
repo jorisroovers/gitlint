@@ -38,6 +38,8 @@ plugins:
             # URLs present in the generated .gitlint file
             contrib_rules.md : rules/contrib_rules.md
             user_defined_rules.md : rules/user_defined_rules/index.md
+    mike:
+        alias_type: copy
 
 theme: 
     name: material
@@ -91,6 +93,8 @@ extra:
         - icon: simple/twitter
           link: https://twitter.com/jorisroovers
           name: Joris Roovers on twitter
+    version:
+        provider: mike
 
 nav:
     - Home:
