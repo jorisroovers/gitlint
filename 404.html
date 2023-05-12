@@ -3,9 +3,11 @@
     const defaultVersion = "latest"
     const basePath = "/gitlint";
     const versionedBasePath = `${basePath}/${defaultVersion}`;
-    if (!window.location.pathname.startsWith(versionedBasePath)){
+    if (!window.location.pathname.startsWith(versionedBasePath)) {
         // Replace only the first occurence of the base path with the versioned base path
         // Replace it in href, so we keep hashes and query params
         window.location.href = window.location.href.replace(basePath, versionedBasePath);
+    } else {
+        window.location.href = `${versionedBasePath}/404`;
     }
 </script>
