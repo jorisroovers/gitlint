@@ -1,0 +1,20 @@
+.document hr {
+    border-top: 1px solid #666;
+}
+
+/* Termynal */
+
+[data-termynal]:after {
+    content: ''; /* Don't display a window title */
+}
+
+[data-termynal] {
+    width: 100%;
+    font-size: 0.7rem;
+    margin-bottom: 1rem;
+    padding: 3rem 0.5rem 1rem 1rem;
+}
+
+[data-termynal] > [data-ty="comment"] {
+    color: #DAD6AF;
+}
