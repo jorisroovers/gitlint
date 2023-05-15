@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // This is to support old links that are in gitlint's CLI Output
     // If the trailing slash is missing from /gitlint/configuration, mkdocs will redirect to the trailing slash version,
     // and then this code will redirect to the correct page
-    if (window.location.pathname == "/gitlint/configuration/") {
+    if (window.location.pathname.endsWith("configuration/")) {
         if (window.location.hash === "#regex-style-search") {
             window.location.href = "/gitlint/configuration/general_options/#regex-style-search";
         } else if (window.location.hash === "#staged") {
