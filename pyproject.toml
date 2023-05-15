@@ -156,7 +156,7 @@ dependencies = [
 
 [tool.hatch.envs.docs.scripts]
 build = "mkdocs build --clean --strict"
-serve = "mkdocs serve"
+serve = "mike serve"
 
 # Tool config ##########################################################################################################
 

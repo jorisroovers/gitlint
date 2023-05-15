@@ -60,8 +60,8 @@ hatch run test:autofix
 ```
 
 ## Documentation
-We use [mkdocs](https://www.mkdocs.org/) with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) for
-generating our documentation from markdown.
+We use [mkdocs](https://www.mkdocs.org/) with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) and
+[mike](https://github.com/jimporter/mike) for generating our documentation from markdown.
 
 To use it:
 ```{.sh .copy}
@@ -69,7 +69,6 @@ hatch run docs:serve
 ```
 
 Then access the documentation website on [http://localhost:8000]().
-
 
 ## Tools
 We keep a small set of scripts in the `tools/` directory:
