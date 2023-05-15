@@ -160,9 +160,15 @@ build = "mkdocs build --clean --strict"
 serve = "mike serve"
 
 validate = [
-    "build",             #
-    "linkchecker site/",
-    # hatch run docs:linkchecker --check-extern --ignore-url=sitemap.xml site
+    "build", #
+    # Check all links in the docs
+    # Ignore 404.html and sitemap.xml since those contain absolute URLs to the site, 
+    # which are missing the /gitlint prefix that is automatically added when hosting on github pages.
+    # Also: don't bombard github.com with requests (will lead to 429 errors)
+    """
+    linkchecker --check-extern --ignore sitemap.xml --ignore 404.html \
+        --ignore-url https://github.com/jorisroovers/gitlint/ site
+    """,
 ]
 
 # Tool config ##########################################################################################################

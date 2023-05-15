@@ -1,6 +1,6 @@
 site_name: Gitlint
 site_description: Linting for your git commit messages
-site_url: https://jorisroovers.github.io/gitlint/
+site_url: https://jorisroovers.github.io/gitlint/latest
 repo_url: https://github.com/jorisroovers/gitlint
 repo_name: jorisroovers/gitlint
 strict: true
