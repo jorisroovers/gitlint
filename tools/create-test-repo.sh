@@ -6,6 +6,8 @@ BLUE="\033[94m"
 GREEN="\033[32m"
 NO_COLOR="\033[0m"
 
+GITLINT_DIR=$(pwd)
+
 # Create the repo
 echo -e "${YELLOW}Creating new temp repo...${NO_COLOR}"
 cd /tmp
@@ -28,7 +30,7 @@ git commit -m "test cömmit title" -m "test cömmit body that has a bit more tex
 
 
 echo -e "${YELLOW}Reconfiguring hatch...${NO_COLOR}"
-hatch config set projects.gitlint /workspaces/gitlint
+hatch config set projects.gitlint $GITLINT_DIR
 
 
 # Let the user know
@@ -36,4 +38,10 @@ echo -e "${YELLOW}All Done!${NO_COLOR}"
 echo ""
 echo -e "Entering subshell at $GREEN/tmp/${reponame}$NO_COLOR. Type 'exit' to exit."
 
-bash --rcfile <(echo "source ~/.bash_profile; cd /tmp/$reponame; alias gitlint='HATCH_PROJECT=gitlint hatch run dev:gitlint --target /tmp/$reponame'")
+rcfile="""
+source ~/.bash_profile;
+cd /tmp/$reponame;
+alias gitlint='HATCH_PROJECT=gitlint hatch run dev:gitlint --target /tmp/$reponame'
+"""
+
+bash --rcfile <(echo "$rcfile")
