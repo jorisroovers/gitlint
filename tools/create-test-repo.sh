@@ -6,12 +6,14 @@ BLUE="\033[94m"
 GREEN="\033[32m"
 NO_COLOR="\033[0m"
 
-CWD="$(pwd)"
-echo "pwd=$CWD"
+GITLINT_DIR=$(pwd)
+
 # Create the repo
+echo -e "${YELLOW}Creating new temp repo...${NO_COLOR}"
 cd /tmp
 reponame=$(date +gitlint-test-%Y-%m-%d_%H-%M-%S)
 git init --initial-branch main $reponame
+
 cd $reponame
 
 # Do some basic config
@@ -25,11 +27,21 @@ echo "tëst 123" > test.txt
 git add test.txt
 # commit -m -> use multiple -m args to add multiple paragraphs (/n in strings are ignored)
 git commit -m "test cömmit title" -m "test cömmit body that has a bit more text"
-cd $CWD
+
+
+echo -e "${YELLOW}Reconfiguring hatch...${NO_COLOR}"
+hatch config set projects.gitlint $GITLINT_DIR
+
 
 # Let the user know
+echo -e "${YELLOW}All Done!${NO_COLOR}"
 echo ""
-echo -e "Created $GREEN/tmp/${reponame}$NO_COLOR"
-echo "Hit key up to access 'cd /tmp/$reponame'"
-echo "(Run this script using 'source' for this to work)"
-history -s "cd /tmp/$reponame"
+echo -e "Entering subshell at $GREEN/tmp/${reponame}$NO_COLOR. Type 'exit' to exit."
+
+rcfile="""
+source ~/.bash_profile;
+cd /tmp/$reponame;
+alias gitlint='HATCH_PROJECT=gitlint hatch run dev:gitlint --target /tmp/$reponame'
+"""
+
+bash --rcfile <(echo "$rcfile")
