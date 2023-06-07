@@ -63,12 +63,19 @@ hatch run test:autofix
 We use [mkdocs](https://www.mkdocs.org/) with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) and
 [mike](https://github.com/jimporter/mike) for generating our documentation from markdown.
 
-To use it:
+To browse the documentation locally (live reload enabled):
 ```{.sh .copy}
 hatch run docs:serve
 ```
 
 Then access the documentation website on [http://localhost:8000]().
+
+!!! note "Documentation versioning"
+    When browsing the docs locally, they will show up under the `latest` version ([http://localhost:8000/latest]()).
+    
+    However, the online docs at [https://jorisroovers.github.io/gitlint]() are versioned, with new changes first
+    being published to `dev` ([https://jorisroovers.github.io/gitlint/dev]()) when they're merged in the `main` branch.
+    Only with gitlint releases are the versioned docs updated - `latest` always points to the latest gitlint release.
 
 ## Tools
 We keep a small set of scripts in the `tools/` directory:

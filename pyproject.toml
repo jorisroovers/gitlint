@@ -157,7 +157,8 @@ dependencies = [
 
 [tool.hatch.envs.docs.scripts]
 build = "mkdocs build --clean --strict"
-serve = "mike serve"
+serve = "mkdocs serve"
+# Note: `mike serve` will add the doc version selector but doesn't do auto-reload
 
 validate = [
     "build", #
