@@ -17,9 +17,9 @@ asdf global python 3.11.0
 
 # If you do this, you also need to install hatch for each python version
 # asdf global python 3.7.15
-# pip install hatch==1.6.3
+# pip install hatch==1.7.0
 
 # Setup virtualenv, install all dependencies
 cd /workspaces/gitlint
-pip install hatch==1.6.3
+pip install hatch==1.7.0
 hatch env create

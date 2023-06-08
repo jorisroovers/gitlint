@@ -14,7 +14,7 @@ cd gitlint
 # You can choose whether to install hatch in a virtualenv or globally
 # Either way, hatch will use virtualenvs under-the-hood for gitlint
 virtualenv .venv && source .venv/bin/activate
-pip install hatch==1.6.3
+pip install hatch==1.7.0
 
 # Run gitlint
 hatch run dev:gitlint --version # (1)
@@ -68,7 +68,7 @@ asdf install python 3.9.15
 asdf global python 3.9.15
 
 # IMPORTANT: install hatch for this python version
-pip install hatch==1.6.3
+pip install hatch==1.7.0
 # You also need to prune your hatch environment first before running other commands
 hatch env prune
 
