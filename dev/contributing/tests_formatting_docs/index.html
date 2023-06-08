@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://jorisroovers.github.io/gitlint/latest/contributing/tests_formatting_docs/">
+        <link rel="canonical" href="https://jorisroovers.github.io/gitlint/latest/latest/contributing/tests_formatting_docs/">
       
       
         <link rel="prev" href="../environment_setup/">
@@ -1185,10 +1185,17 @@
 <h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
 <p>We use <a href="https://www.mkdocs.org/">mkdocs</a> with <a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a> and
 <a href="https://github.com/jimporter/mike">mike</a> for generating our documentation from markdown.</p>
-<p>To use it:
+<p>To browse the documentation locally (live reload enabled):
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>hatch<span class="w"> </span>run<span class="w"> </span>docs:serve
 </span></code></pre></div></p>
 <p>Then access the documentation website on <a href="">http://localhost:8000</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Documentation versioning</p>
+<p>When browsing the docs locally, they will show up under the <code>latest</code> version (<a href="">http://localhost:8000/latest</a>).</p>
+<p>However, the online docs at <a href="">https://jorisroovers.github.io/gitlint</a> are versioned, with new changes first
+being published to <code>dev</code> (<a href="">https://jorisroovers.github.io/gitlint/dev</a>) when they're merged in the <code>main</code> branch.
+Only with gitlint releases are the versioned docs updated - <code>latest</code> always points to the latest gitlint release.</p>
+</div>
 <h2 id="tools">Tools<a class="headerlink" href="#tools" title="Permanent link">&para;</a></h2>
 <p>We keep a small set of scripts in the <code>tools/</code> directory:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Create a test git repo in your /tmp directory</span>
