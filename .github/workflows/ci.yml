@@ -146,7 +146,6 @@ jobs:
   auto-publish-dev:
     needs:
       - check
-      - doc_checks
 
     if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/publish-release.yml
@@ -155,3 +154,14 @@ jobs:
       environment: "production"
       repo_release_ref: "main"
       docker_image_tag: "latest_dev"
+
+  # When on main, auto publish docs
+  auto-publish-docs:
+    needs:
+      - check
+
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/publish-docs.yml
+    secrets: inherit # pass all secrets (required to access secrets in a called workflow)
+    with:
+      docs_version: "dev"
