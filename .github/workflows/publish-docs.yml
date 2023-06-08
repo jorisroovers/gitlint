@@ -29,5 +29,10 @@ jobs:
       - name: Install Hatch
         run: python -m pip install hatch==1.6.3
 
+      - name: Configure Git for GitHub Actions bot
+        run: |
+          git config --local user.name 'github-actions[bot]'
+          git config --local user.email 'github-actions[bot]@users.noreply.github.com'
+
       - name: Deploy dev docs
         run: hatch run docs:mike deploy --push --update-aliases ${{ inputs.docs_version }}
