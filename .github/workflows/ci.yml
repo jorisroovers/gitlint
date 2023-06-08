@@ -36,7 +36,7 @@ jobs:
         run: python -m pip install build==0.10.0
 
       - name: Install Hatch
-        run: python -m pip install hatch==1.6.3
+        run: python -m pip install hatch==1.7.0
 
       - name: Unit Tests
         run: hatch run test:unit-tests
@@ -110,7 +110,7 @@ jobs:
           python-version: 3.11
 
       - name: Install Hatch
-        run: python -m pip install hatch==1.6.3
+        run: python -m pip install hatch==1.7.0
 
       - name: Docs validation (mkdocs build & linkchecker)
         run: hatch run docs:validate

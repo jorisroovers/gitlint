@@ -27,7 +27,7 @@ jobs:
           python-version: 3.11
 
       - name: Install Hatch
-        run: python -m pip install hatch==1.6.3
+        run: python -m pip install hatch==1.7.0
 
       - name: Deploy dev docs
         run: hatch run docs:mike deploy --push --update-aliases ${{ inputs.docs_version }}

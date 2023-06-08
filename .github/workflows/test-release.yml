@@ -46,7 +46,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install Hatch
-        run: python -m pip install hatch==1.6.3
+        run: python -m pip install hatch==1.7.0
 
       - name: Install gitlint
         # We need to add the --extra-index-url to the pip install command to deal with PYPI_TARGET=https://test.pypi.org/legacy,
