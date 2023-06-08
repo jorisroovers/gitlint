@@ -1,4 +1,5 @@
 name: Publish Docs
+run-name: "Publish Docs (docs_version=${{ inputs.docs_version }})"
 
 on:
   workflow_call:
@@ -21,10 +22,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+
+      # Checkout the gh-pages branch, we need to commit the docs to this branch below
       - uses: actions/checkout@v3.3.0
         with:
           ref: gh-pages
-        
+      
+      #  Now checkout the git ref on which we're working
       - uses: actions/checkout@v3.3.0
 
       - uses: actions/setup-python@v4.6.1
@@ -41,3 +45,5 @@ jobs:
 
       - name: Deploy dev docs
         run: hatch run docs:mike deploy --push --update-aliases ${{ inputs.docs_version }}
+
+      # Note that it will take a few mins after this action has finished for the docs to be published
