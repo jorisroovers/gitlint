@@ -3,11 +3,12 @@ import importlib
 import inspect
 import os
 import sys
+from typing import List, Type
 
 from gitlint import options, rules
 
 
-def find_rule_classes(extra_path):
+def find_rule_classes(extra_path: str) -> List[Type[rules.Rule]]:
     """
     Searches a given directory or python module for rule classes. This is done by
     adding the directory path to the python path, importing the modules and then finding
@@ -48,7 +49,7 @@ def find_rule_classes(extra_path):
     sys.path.append(directory)
 
     # Find all the rule classes in the found python files
-    rule_classes = []
+    rule_classes: List[Type[rules.Rule]] = []
     for module in modules:
         # Import the module
         try:
@@ -78,7 +79,9 @@ def find_rule_classes(extra_path):
     return rule_classes
 
 
-def assert_valid_rule_class(clazz, rule_type="User-defined"):  # noqa: PLR0912 (too many branches)
+def assert_valid_rule_class(  # noqa: PLR0912 (too many branches)
+    clazz: Type[rules.Rule], rule_type: str = "User-defined"
+) -> None:
     """
     Asserts that a given rule clazz is valid by checking a number of its properties:
      - Rules must extend from  LineRule, CommitRule or ConfigurationRule

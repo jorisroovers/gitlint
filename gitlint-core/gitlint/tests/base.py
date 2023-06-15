@@ -7,6 +7,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any, Dict, Optional
 from unittest.mock import patch
 
 from gitlint.config import LintConfig
@@ -84,7 +85,7 @@ class BaseTestCase(unittest.TestCase):
             shutil.rmtree(tmpdir)
 
     @staticmethod
-    def get_sample_path(filename=""):
+    def get_sample_path(filename: str = "") -> str:
         # Don't join up empty files names because this will add a trailing slash
         if filename == "":
             return BaseTestCase.SAMPLES_DIR
@@ -92,7 +93,7 @@ class BaseTestCase(unittest.TestCase):
         return os.path.join(BaseTestCase.SAMPLES_DIR, filename)
 
     @staticmethod
-    def get_sample(filename=""):
+    def get_sample(filename: str = "") -> str:
         """Read and return the contents of a file in gitlint/tests/samples"""
         sample_path = BaseTestCase.get_sample_path(filename)
         return Path(sample_path).read_text(encoding=FILE_ENCODING)
@@ -105,7 +106,7 @@ class BaseTestCase(unittest.TestCase):
         return patched_module
 
     @staticmethod
-    def get_expected(filename="", variable_dict=None):
+    def get_expected(filename: str = "", variable_dict: Optional[Dict[str, Any]] = None) -> str:
         """Utility method to read an expected file from gitlint/tests/expected and return it as a string.
         Optionally replace template variables specified by variable_dict."""
         expected_path = os.path.join(BaseTestCase.EXPECTED_DIR, filename)

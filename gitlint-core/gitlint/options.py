@@ -39,7 +39,7 @@ class RuleOption:
         self.set(self.value)
 
     @abstractmethod
-    def set(self, value):
+    def set(self, value: Any) -> None:
         """Validates and sets the option's value"""
 
     def __str__(self):

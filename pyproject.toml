@@ -244,6 +244,9 @@ disallow_incomplete_defs = true
 # disallow_untyped_defs = true
 # no_implicit_reexport = true
 
+# Allow not explicitly returning when the function return type includes None
+no_warn_no_return = true
+
 exclude = [
     "hatch_build.py",
     "tools/*",
