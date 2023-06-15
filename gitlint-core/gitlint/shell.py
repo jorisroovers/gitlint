@@ -5,12 +5,13 @@ We still keep the `sh` API and semantics so the rest of the gitlint codebase doe
 
 import subprocess
 from dataclasses import dataclass
+from typing import Any
 
 from gitlint.utils import TERMINAL_ENCODING
 
 
-def shell(cmd):
-    """Convenience function that opens a given command in a shell. Does not use 'sh' library."""
+def shell(cmd: str) -> None:
+    """Convenience function that opens a given command in a shell."""
     with subprocess.Popen(cmd, shell=True) as p:
         p.communicate()
 
@@ -36,7 +37,7 @@ class ErrorReturnCode(ShResult, Exception):
     """ShResult subclass for unexpected results (acts as an exception)."""
 
 
-def git(*command_parts, **kwargs):
+def git(*command_parts: str, **kwargs: Any) -> ShResult:
     """Git shell wrapper.
     Implemented as separate function here, so we can do a 'sh' style imports:
     `from shell import git`
@@ -45,7 +46,7 @@ def git(*command_parts, **kwargs):
     return _exec(*args, **kwargs)
 
 
-def _exec(*args, **kwargs):
+def _exec(*args: str, **kwargs: Any) -> ShResult:
     pipe = subprocess.PIPE
     popen_kwargs = {"stdout": pipe, "stderr": pipe, "shell": kwargs.get("_tty_out", False)}
     if "_cwd" in kwargs:

@@ -6,6 +6,7 @@ from typing import ClassVar, Dict, List, Optional, Type
 
 from gitlint.deprecation import Deprecation
 from gitlint.exception import GitlintError
+from gitlint.git import GitCommit
 from gitlint.options import (
     BoolOption,
     IntOption,
@@ -58,6 +59,20 @@ class Rule:
         return f"{self.id} {self.name}"  # pragma: no cover
 
 
+@dataclass
+class RuleViolation:
+    """Class representing a violation of a rule. I.e.: When a rule is broken, the rule will instantiate this class
+    to indicate how and where the rule was broken."""
+
+    rule_id: str
+    message: str
+    content: Optional[str] = None
+    line_nr: Optional[int] = None
+
+    def __str__(self):
+        return f'{self.line_nr}: {self.rule_id} {self.message}: "{self.content}"'
+
+
 class ConfigurationRule(Rule):
     """Class representing rules that can dynamically change the configuration of gitlint during runtime."""
 
@@ -84,20 +99,6 @@ class CommitMessageBody(LineRuleTarget):
     """Target class used for rules that apply to a commit message body"""
 
 
-@dataclass
-class RuleViolation:
-    """Class representing a violation of a rule. I.e.: When a rule is broken, the rule will instantiate this class
-    to indicate how and where the rule was broken."""
-
-    rule_id: str
-    message: str
-    content: Optional[str] = None
-    line_nr: Optional[int] = None
-
-    def __str__(self):
-        return f'{self.line_nr}: {self.rule_id} {self.message}: "{self.content}"'
-
-
 class UserRuleError(GitlintError):
     """Error used to indicate that an error occurred while trying to load a user rule"""
 
@@ -108,7 +109,7 @@ class MaxLineLength(LineRule):
     options_spec = [IntOption("line-length", 80, "Max line length")]
     violation_message = "Line exceeds max length ({0}>{1})"
 
-    def validate(self, line, _commit):
+    def validate(self, line: str, _commit: GitCommit) -> Optional[List[RuleViolation]]:
         max_length = self.options["line-length"].value
         if len(line) > max_length:
             return [RuleViolation(self.id, self.violation_message.format(len(line), max_length), line)]

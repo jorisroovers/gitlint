@@ -3,7 +3,7 @@ import os
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import arrow
 
@@ -34,13 +34,13 @@ class GitNotInstalledError(GitContextError):
 
 
 class GitExitCodeError(GitContextError):
-    def __init__(self, command, stderr):
+    def __init__(self, command: str, stderr: str):
         self.command = command
         self.stderr = stderr
         super().__init__(f"An error occurred while executing '{command}': {stderr}")
 
 
-def _git(*command_parts, **kwargs):
+def _git(*command_parts: str, **kwargs: Any) -> Union[str, sh.ShResult]:
     """Convenience function for running git commands. Automatically deals with exceptions and unicode."""
     git_kwargs = {"_tty_out": False}
     git_kwargs.update(kwargs)
@@ -57,13 +57,13 @@ def _git(*command_parts, **kwargs):
         raise GitNotInstalledError from e
     except ErrorReturnCode as e:  # Something went wrong while executing the git command
         error_msg = e.stderr.strip()
-        error_msg_lower = error_msg.lower()
-        if "_cwd" in git_kwargs and b"not a git repository" in error_msg_lower:
+        error_msg_lower = str(error_msg.lower())
+        if "_cwd" in git_kwargs and "not a git repository" in error_msg_lower:
             raise GitContextError(f"{git_kwargs['_cwd']} is not a git repository.") from e
 
         if (
-            b"does not have any commits yet" in error_msg_lower
-            or b"ambiguous argument 'head': unknown revision" in error_msg_lower
+            "does not have any commits yet" in error_msg_lower
+            or "ambiguous argument 'head': unknown revision" in error_msg_lower
         ):
             msg = "Current branch has no commits. Gitlint requires at least one commit to function."
             raise GitContextError(msg) from e
@@ -85,9 +85,9 @@ def git_commentchar(repository_path=None):
     return commentchar.replace("\n", "")
 
 
-def git_hooks_dir(repository_path):
+def git_hooks_dir(repository_path: str) -> str:
     """Determine hooks directory for a given target dir"""
-    hooks_dir = _git("rev-parse", "--git-path", "hooks", _cwd=repository_path)
+    hooks_dir = str(_git("rev-parse", "--git-path", "hooks", _cwd=repository_path))
     hooks_dir = hooks_dir.replace("\n", "")
     return os.path.realpath(os.path.join(repository_path, hooks_dir))
 

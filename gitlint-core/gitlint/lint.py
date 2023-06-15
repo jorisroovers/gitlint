@@ -1,5 +1,6 @@
 import logging
 from dataclasses import dataclass, field
+from typing import List
 
 from gitlint import rules as gitlint_rules
 from gitlint.config import LintConfig
@@ -20,7 +21,7 @@ class GitLinter:
     def __post_init__(self):
         self.display = Display(self.config)
 
-    def should_ignore_rule(self, rule):
+    def should_ignore_rule(self, rule: gitlint_rules.Rule) -> bool:
         """Determines whether a rule should be ignored based on the general list of commits to ignore"""
         return rule.id in self.config.ignore or rule.name in self.config.ignore
 
@@ -115,7 +116,7 @@ class GitLinter:
         violations.sort(key=lambda v: (-1 if v.line_nr is None else v.line_nr, v.rule_id))
         return violations
 
-    def print_violations(self, violations):
+    def print_violations(self, violations: List[gitlint_rules.RuleViolation]) -> None:
         """Print a given set of violations to the standard error output"""
         for v in violations:
             line_nr = v.line_nr if v.line_nr else "-"

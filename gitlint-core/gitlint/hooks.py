@@ -2,6 +2,7 @@ import os
 import shutil
 import stat
 
+from gitlint.config import LintConfig
 from gitlint.exception import GitlintError
 from gitlint.git import git_hooks_dir
 from gitlint.utils import FILE_ENCODING
@@ -19,7 +20,7 @@ class GitHookInstaller:
     """Utility class that provides methods for installing and uninstalling the gitlint commitmsg hook."""
 
     @staticmethod
-    def commit_msg_hook_path(lint_config):
+    def commit_msg_hook_path(lint_config: LintConfig) -> str:
         return os.path.join(git_hooks_dir(lint_config.target), COMMIT_MSG_HOOK_DST_PATH)
 
     @staticmethod
