@@ -2,157 +2,157 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/alternatives/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/ci/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/commit_hooks/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/exit_codes/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/getting_started/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/ignoring_commits/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/installation/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/linting_specific_commits/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/configuration/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/configuration/cli/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/configuration/commit_config/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/configuration/general_options/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/configuration/gitlint_file/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/contributing/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/contributing/contrib_rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/contributing/environment_setup/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/contributing/packaging/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/contributing/releases/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/contributing/tests_formatting_docs/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/includes/release-tags/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/builtin_rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/contrib_rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/named_rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/user_defined_rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/user_defined_rules/configuration_rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/user_defined_rules/line_and_commit_rules/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/user_defined_rules/options/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/user_defined_rules/rule_format_spec/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://jorisroovers.github.io/gitlint/latest/latest/rules/user_defined_rules/violations/</loc>
-         <lastmod>2023-06-15</lastmod>
+         <lastmod>2023-06-16</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
