@@ -10,7 +10,20 @@ To install gitlint with looser dependency requirements, only install gitlint-cor
 ```{.sh .copy}
 pip install gitlint-core
 ```
-??? "Uninstalling gitlint"
+
+??? info "Installing from GitHub source Git archive URLs"
+    ```{.sh .copy}
+    # Set version to install
+    export GITLINT_VERSION="v0.20.0"
+
+    # Install using pinned dependencies
+    pip install "gitlint-core [trusted-deps] @ https://github.com/jorisroovers/gitlint/archive/$GITLINT_VERSION.tar.gz#subdirectory=gitlint-core"
+    
+    # Install using looser dependencies
+    pip install "https://github.com/jorisroovers/gitlint/archive/$GITLINT_VERSION.tar.gz#subdirectory=gitlint-core"
+    ```
+
+??? info "Uninstalling gitlint"
     To fully uninstall gitlint, you need to remove both `gitlint` and `gitlint-core`:
     ```{.sh .copy}
     pip uninstall gitlint gitlint-core 

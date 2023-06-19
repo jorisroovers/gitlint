@@ -16,7 +16,22 @@ of a recently published version can still fail for a few minutes after a new ver
 is replicated to all download mirrors.
 
 To install a dev build of gitlint:
-```sh
+```{.sh .copy}
 # Find latest dev build on https://pypi.org/project/gitlint/#history
 pip install gitlint=="0.19.0.dev68"
+```
+
+### Git archive installs
+You can also install directly from GitHub source Git archive URLs.
+This can even be done for unmerged commits (pending PRs). It will work as long as you have a commit hash.
+
+```{.sh .copy}
+# Set commit hash to install
+export COMMIT_HASH="345414171baea56c5b2b8290f17a2a13a685274c"
+
+# Install using pinned dependencies
+pip install "gitlint-core [trusted-deps] @ https://github.com/jorisroovers/gitlint/archive/$COMMIT_HASH.tar.gz#subdirectory=gitlint-core"
+
+# Install using looser dependencies
+pip install "https://github.com/jorisroovers/gitlint/archive/$COMMIT_HASH.tar.gz#subdirectory=gitlint-core"
 ```
