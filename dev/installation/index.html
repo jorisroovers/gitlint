@@ -1234,15 +1234,27 @@
 To install gitlint with looser dependency requirements, only install gitlint-core:
 <div class="language-sh copy highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>gitlint-core
 </span></code></pre></div></p>
-<details>
+<details class="info">
+<summary>Installing from GitHub source Git archive URLs</summary>
+<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Set version to install</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GITLINT_VERSION</span><span class="o">=</span><span class="s2">&quot;v0.20.0&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Install using pinned dependencies</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;gitlint-core [trusted-deps] @ https://github.com/jorisroovers/gitlint/archive/</span><span class="nv">$GITLINT_VERSION</span><span class="s2">.tar.gz#subdirectory=gitlint-core&quot;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Install using looser dependencies</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;https://github.com/jorisroovers/gitlint/archive/</span><span class="nv">$GITLINT_VERSION</span><span class="s2">.tar.gz#subdirectory=gitlint-core&quot;</span>
+</span></code></pre></div>
+</details>
+<details class="info">
 <summary>Uninstalling gitlint</summary>
 <p>To fully uninstall gitlint, you need to remove both <code>gitlint</code> and <code>gitlint-core</code>:
-<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>gitlint<span class="w"> </span>gitlint-core<span class="w"> </span>
+<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>gitlint<span class="w"> </span>gitlint-core<span class="w"> </span>
 </span></code></pre></div></p>
 </details>
 <h3 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h3>
 <p>There is a fully maintained and supported <a href="https://hub.docker.com/r/jorisroovers/gitlint">docker image for gitlint</a>.
-<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--ulimit<span class="w"> </span><span class="nv">nofile</span><span class="o">=</span><span class="m">1024</span><span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/repo<span class="w"> </span>jorisroovers/gitlint<span class="w"> </span><span class="c1"># (1)</span>
+<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--ulimit<span class="w"> </span><span class="nv">nofile</span><span class="o">=</span><span class="m">1024</span><span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/repo<span class="w"> </span>jorisroovers/gitlint<span class="w"> </span><span class="c1"># (1)</span>
 </span></code></pre></div></p>
 <ol>
 <li><code>--ulimit</code> is required to work around a limitation in Docker.
@@ -1251,25 +1263,25 @@ To install gitlint with looser dependency requirements, only install gitlint-cor
 <h2 id="community-maintained-packages">Community Maintained Packages<a class="headerlink" href="#community-maintained-packages" title="Permanent link">&para;</a></h2>
 <p>These packages are not officially maintained by gitlint. For the latest and fully supported version, always use <code>pip</code>.</p>
 <h4 id="brew">Brew<a class="headerlink" href="#brew" title="Permanent link">&para;</a></h4>
-<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>brew<span class="w"> </span>install<span class="w"> </span>gitlint
+<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>brew<span class="w"> </span>install<span class="w"> </span>gitlint
 </span></code></pre></div>
 <h4 id="macports">MacPorts<a class="headerlink" href="#macports" title="Permanent link">&para;</a></h4>
-<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>port<span class="w"> </span>install<span class="w"> </span>gitlint
+<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>port<span class="w"> </span>install<span class="w"> </span>gitlint
 </span></code></pre></div>
 <h4 id="ubuntu">Ubuntu<a class="headerlink" href="#ubuntu" title="Permanent link">&para;</a></h4>
-<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>apt-get<span class="w"> </span>install<span class="w"> </span>gitlint
+<div class="language-sh copy highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>apt-get<span class="w"> </span>install<span class="w"> </span>gitlint
 </span></code></pre></div>
 <h4 id="all-available-packages">All available packages<a class="headerlink" href="#all-available-packages" title="Permanent link">&para;</a></h4>
 <p><a href="https://repology.org/project/gitlint/versions"><img alt="Packaging status" src="https://repology.org/badge/vertical-allrepos/gitlint.svg" /></a></p>
 <h2 id="shell-completion">Shell completion<a class="headerlink" href="#shell-completion" title="Permanent link">&para;</a></h2>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Bash: add to ~/.bashrc</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_GITLINT_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>gitlint<span class="k">)</span><span class="s2">&quot;</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Zsh: add to ~/.zshrc</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_GITLINT_COMPLETE</span><span class="o">=</span>zsh_source<span class="w"> </span>gitlint<span class="k">)</span><span class="s2">&quot;</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Fish: add to ~/.config/fish/completions/foo-bar.fish</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nb">eval</span><span class="w"> </span><span class="o">(</span>env<span class="w"> </span><span class="nv">_GITLINT_COMPLETE</span><span class="o">=</span>fish_source<span class="w"> </span>gitlint<span class="o">)</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Bash: add to ~/.bashrc</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_GITLINT_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>gitlint<span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Zsh: add to ~/.zshrc</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_GITLINT_COMPLETE</span><span class="o">=</span>zsh_source<span class="w"> </span>gitlint<span class="k">)</span><span class="s2">&quot;</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Fish: add to ~/.config/fish/completions/foo-bar.fish</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="nb">eval</span><span class="w"> </span><span class="o">(</span>env<span class="w"> </span><span class="nv">_GITLINT_COMPLETE</span><span class="o">=</span>fish_source<span class="w"> </span>gitlint<span class="o">)</span>
 </span></code></pre></div>
 
 
