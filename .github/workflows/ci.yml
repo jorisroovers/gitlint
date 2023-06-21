@@ -176,7 +176,7 @@ jobs:
         run: hatch run docs:validate
   
   upload-coveralls:
-    needs: checks
+    needs: tests
     runs-on: ubuntu-latest
     steps:
       - name: Upload coverage to coveralls
@@ -190,7 +190,7 @@ jobs:
     if: always()  # Ref: https://github.com/marketplace/actions/alls-green#why
 
     needs:
-      - checks
+      - tests
       - build-test
       - sdist-build-smoke-test
       - doc-checks
