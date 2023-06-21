@@ -102,7 +102,8 @@ jobs:
           flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
 
-  sdist_build_check:
+  sdist_build_smoke_test:
+    needs: checks
     runs-on: "ubuntu-latest"
     # strategy:
     #   matrix:
@@ -152,6 +153,7 @@ jobs:
 
     needs:
       - checks
+      - sdist_build_smoke_test
       - doc_checks
       - upload_coveralls
 
