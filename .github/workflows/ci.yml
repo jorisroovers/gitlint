@@ -79,9 +79,14 @@ jobs:
       - name: Build test (gitlint-core)
         run: |
           python -m build
-          hatch clean
         working-directory: ./gitlint-core
-      
+
+      - name: "Upload sdist tarball"
+        uses: actions/upload-artifact@v3
+        with:
+          name: sdist-tarball-${{ matrix.python-version }}
+          path: ./gitlint-core/dist/*.tar.gz
+        
       # Run gitlint. Skip during PR runs, since PR commit messages are transient and usually full of gitlint violations.
       # PRs get squashed and get a proper commit message during merge.
       - name: gitlint --debug
@@ -96,6 +101,22 @@ jobs:
           git-commit: ${{ github.event.pull_request.head.sha }}
           flag-name: gitlint-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
+
+  sdist_build_check:
+    runs-on: "ubuntu-latest"
+    # strategy:
+    #   matrix:
+    #     python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.9]
+    #     os: ["macos-latest", "ubuntu-latest", "windows-latest"]
+    steps:
+      - uses: re-actors/checkout-python-sdist@release/v1
+        with:
+          workflow-artifact-name: sdist-tarball-3.8
+      
+      - name: Build test (gitlint-core)
+        run: |
+          python -m build
+      
 
   doc_checks:
     runs-on: ubuntu-latest
