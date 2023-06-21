@@ -114,9 +114,11 @@ jobs:
         with:
           workflow-artifact-name: sdist-tarball-3.8
       
+      - name: Install pypa/build
+        run: python -m pip install build==0.10.0
+
       - name: Build test (gitlint-core)
-        run: |
-          python -m build
+        run: python -m build
       
 
   doc_checks:
