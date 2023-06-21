@@ -185,9 +185,10 @@ jobs:
 
     needs:
       - checks
-      - sdist_build_smoke_test
-      - doc_checks
-      - upload_coveralls
+      - build-test
+      - sdist-build-smoke-test
+      - doc-checks
+      - upload-coveralls
 
     runs-on: ubuntu-latest
 
