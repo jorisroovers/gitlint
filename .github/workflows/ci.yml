@@ -129,30 +129,58 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Checkout sdist tarball (gitlint)
-        uses: re-actors/checkout-python-sdist@release/v1
-        with:
-          workflow-artifact-name: sdist-gitlint-${{ matrix.python-version }}
+      # TODO: continue here. Need to create working dirs for gitlint and gitlint-core,
+      # then use working-dir in the checkout action steps below
 
-      - name: Checkout sdist tarball (gitlint-core)
-        uses: re-actors/checkout-python-sdist@release/v1
+      # - name: Checkout sdist tarball (gitlint)
+      #   uses: re-actors/checkout-python-sdist@release/v1
+      #   with:
+      #     workflow-artifact-name: sdist-gitlint-${{ matrix.python-version }}
+
+      # - name: Checkout sdist tarball (gitlint-core)
+      #   uses: re-actors/checkout-python-sdist@release/v1
+      #   with:
+      #     workflow-artifact-name: sdist-gitlint-core-${{ matrix.python-version }}
+
+      - name: Download sdist artifact (gitlint)
+        uses: actions/download-artifact@v3
         with:
-          workflow-artifact-name: sdist-gitlint-core-${{ matrix.python-version }}
+          name: sdist-gitlint-${{ matrix.python-version }}
+          path: gitlint
+
+      - name: Download sdist artifact (gitlint-core)
+        uses: actions/download-artifact@v3
+        with:
+          name: sdist-gitlint-core-${{ matrix.python-version }}
+          path: gitlint-core
+
+      - name: Extract sdist tarball (gitlint)
+        run: tar xzvf *.tar.gz --strip-components=1
+        working-directory: ./gitlint
+
+      - name: Extract sdist tarball (gitlint-core)
+        run: tar xzvf *.tar.gz --strip-components=1
+        working-directory: ./gitlint-core
       
       - name: Install pypa/build
         run: python -m pip install build==0.10.0
 
+      - name: Build test (gitlint)
+        run: python -m build
+        working-directory: ./gitlint
+
       - name: Build test (gitlint-core)
         run: python -m build
+        working-directory: ./gitlint-core
 
       - name: List wheels
         run: |
-          ls dist
-          echo "---------"
-          ls dist/*.whl
+          ls gitlint/dist
+          echo "----"
+          ls gitlint-core/dist
 
       - name: Install from wheel (gitlint and gitlint-core)
-        run: python -m pip install dist/*.whl
+        run: python -m pip install gitlint-core/dist/*.whl gitlint/dist/*.whl
 
       - name: gitlint --version
         run: gitlint --version
