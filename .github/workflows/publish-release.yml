@@ -106,16 +106,16 @@ jobs:
         env: 
           SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
-      - name: Publish gitlint-core 🐍📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: gitlint-core/dist/
-          repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
+      # - name: Publish gitlint-core 🐍📦 to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     packages-dir: gitlint-core/dist/
+      #     repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
 
-      - name: Publish gitlint 🐍📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
+      # - name: Publish gitlint 🐍📦 to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
 
   # Wait for gitlint package to be available in PyPI for installation
   wait-for-package:
@@ -123,6 +123,7 @@ jobs:
     needs:
       - publish
     runs-on: "ubuntu-latest"
+    if: ${{ false }} 
     steps:
       - name: Install gitlint
         uses: nick-fields/retry@v2.8.3
@@ -146,6 +147,7 @@ jobs:
         run: sleep 600
 
   test-release:
+    if: ${{ false }} 
     needs:
       - publish
       - wait-for-package
@@ -156,6 +158,7 @@ jobs:
       repo_test_ref: ${{ inputs.repo_release_ref }}
 
   publish-docker:
+    if: ${{ false }} 
     needs:
       - publish
       - test-release
