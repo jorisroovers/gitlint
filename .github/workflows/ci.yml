@@ -32,7 +32,7 @@ jobs:
           script: |
             const body = `Build 
             [${{ needs.publish-test.outputs.gitlint_version }}](https://pypi.org/project/gitlint/${{ needs.publish-test.outputs.gitlint_version }})
-            is now available on PyPI!'
+            is now available on PyPI!
 
             Install using:
                 \`\`\`sh
