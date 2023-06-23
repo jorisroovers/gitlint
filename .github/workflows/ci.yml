@@ -6,9 +6,11 @@ on:
   push:
     branches:
     - main
+    - pr-number-base
   pull_request:
     branches:
     - main
+    - pr-number-base
 
 concurrency:
   group: ci-${{ github.ref }}-1
