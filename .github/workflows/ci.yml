@@ -27,14 +27,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check PR number
-        id: pr_check
-        run: |
-          if [[ -z "${{ github.event.pull_request.number }}" ]]; then
-            echo "::error::This workflow requires a pull request to be associated with the push event."
-            exit 1
-          fi
-
       - name: Get PR number
         id: pr
         run: |
@@ -50,6 +42,7 @@ jobs:
           echo "PR_NUMBER=$pr_number" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - uses: actions/github-script@v6
         with:
@@ -68,3 +61,4 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+        if: ${{ env.PR_NUMBER != '' }}
