@@ -246,6 +246,18 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: "ubuntu-latest"
     steps:
+      # Checkout code in order to determine PR number
+      - uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
+      
+      # https://stackoverflow.com/a/70102700
+      - name: Get Pull Request Number
+        id: pr
+        run: echo "::set-output name=pull_request_number::$(gh pr view --json number -q .number || echo "")"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: actions/github-script@v6
         with:
           script: |
@@ -259,7 +271,7 @@ jobs:
             \`\`\`
             `;
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: ${{ steps.pr.outputs.pull_request_number }},
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: body
