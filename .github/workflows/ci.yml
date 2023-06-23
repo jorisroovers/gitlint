@@ -15,39 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  publish-test:
-    uses: ./.github/workflows/publish-release.yml
-    secrets: inherit # pass all secrets (required to access secrets in a called workflow)
-    with:
-      environment: "testing"
-      repo_release_ref: "main"
-      docker_image_tag: "latest_dev"
-  
-  notify:
-    needs: publish-test
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            const body = `Build \
-            [${{ needs.publish-test.outputs.gitlint_version }}](https://pypi.org/project/gitlint/${{ needs.publish-test.outputs.gitlint_version }})\
-            is now available on PyPI!
-      
-            Install using:
-            \`\`\`sh
-            pip install gitlint==${{ needs.publish-test.outputs.gitlint_version }}
-            \`\`\`
-            `;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body
-            });
-    
   tests:
-    needs: notify
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
@@ -57,12 +25,13 @@ jobs:
       - uses: actions/checkout@v3.3.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
+          fetch-depth: 0 # checkout all history, needed for hatch versioning
 
       - name: Setup python
         uses: actions/setup-python@v4.6.1
         with:
           python-version: ${{ matrix.python-version }}
-      
+
       - name: Install Hatch
         run: python -m pip install hatch==1.7.0
 
@@ -251,31 +220,13 @@ jobs:
     needs:
       - check
 
-    # if: github.ref == 'refs/heads/main'
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: actions/checkout@v3.3.0
-        with:
-          ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-
-      - uses: ./.github/workflows/publish-release.yml
-        id: publish_release
-        # secrets: inherit # pass all secrets (required to access secrets in a called workflow)
-        with:
-          environment: "production"
-          repo_release_ref: "main"
-          docker_image_tag: "latest_dev"
-        continue-on-error: true
-
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Post release ${{ steps.publish_release.outputs.gitlint_version }}'
-            })
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/publish-release.yml
+    secrets: inherit # pass all secrets (required to access secrets in a called workflow)
+    with:
+      environment: "production"
+      repo_release_ref: "main"
+      docker_image_tag: "latest_dev"
 
   # When on main, auto publish docs
   auto-publish-docs:
@@ -287,3 +238,29 @@ jobs:
     secrets: inherit # pass all secrets (required to access secrets in a called workflow)
     with:
       docs_version: "dev"
+
+  # After merging a PR, leave a comment on the PR with a link to the new dev build
+  notify:
+    needs:
+      - auto-publish-dev
+    if: github.ref == 'refs/heads/main'
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const body = `Build \
+            [${{ needs.auto-publish-dev.outputs.gitlint_version }}](https://pypi.org/project/gitlint/${{ needs.auto-publish-dev.outputs.gitlint_version }}) \
+            is now available on PyPI!
+
+            Install using:
+            \`\`\`sh
+            pip install gitlint==${{ needs.auto-publish-dev.outputs.gitlint_version }}
+            \`\`\`
+            `;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
