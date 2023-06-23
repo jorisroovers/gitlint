@@ -15,7 +15,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  publish-test:
+    uses: ./.github/workflows/publish-release.yml
+    secrets: inherit # pass all secrets (required to access secrets in a called workflow)
+    with:
+      environment: "testing"
+      repo_release_ref: "main"
+      docker_image_tag: "latest_dev"
+  
+  notify:
+    needs: publish-test
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Post release ${{ needs.publish-test.outputs.gitlint_version }}'
+            })
+
   tests:
+    needs: notify
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
@@ -25,25 +48,6 @@ jobs:
       - uses: actions/checkout@v3.3.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-
-      - uses: ./.github/workflows/publish-release.yml
-        id: publish_release
-        # secrets: inherit # pass all secrets (required to access secrets in a called workflow)
-        with:
-          environment: "testing"
-          repo_release_ref: "main"
-          docker_image_tag: "latest_dev"
-        continue-on-error: true
-
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: 'Post release ${{ steps.publish_release.outputs.gitlint_version }}'
-            })
 
       - name: Setup python
         uses: actions/setup-python@v4.6.1
@@ -244,7 +248,7 @@ jobs:
       - uses: actions/checkout@v3.3.0
         with:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
-          
+
       - uses: ./.github/workflows/publish-release.yml
         id: publish_release
         # secrets: inherit # pass all secrets (required to access secrets in a called workflow)
