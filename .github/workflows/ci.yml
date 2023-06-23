@@ -30,14 +30,14 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            const body = `Build 
-            [${{ needs.publish-test.outputs.gitlint_version }}](https://pypi.org/project/gitlint/${{ needs.publish-test.outputs.gitlint_version }})
+            const body = `Build \
+            [${{ needs.publish-test.outputs.gitlint_version }}](https://pypi.org/project/gitlint/${{ needs.publish-test.outputs.gitlint_version }})\
             is now available on PyPI!
       
             Install using:
-                \`\`\`sh
-                pip install gitlint==${{ needs.publish-test.outputs.gitlint_version }}
-                \`\`\`
+            \`\`\`sh
+            pip install gitlint==${{ needs.publish-test.outputs.gitlint_version }}
+            \`\`\`
             `;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
