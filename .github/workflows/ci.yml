@@ -278,3 +278,5 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+        # Don't run this step if there is no PR number, i.e. on a direct push to main
+        if: ${{ env.PR_NUMBER != '' }}
