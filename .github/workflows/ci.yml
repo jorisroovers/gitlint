@@ -246,6 +246,20 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: "ubuntu-latest"
     steps:
+      # Checkout code in order to determine PR number
+      - uses: actions/checkout@v3.3.0
+        with:
+          fetch-depth: 0
+
+      - name: Get PR number
+        run: |
+          commit_sha=$(git rev-parse HEAD)
+          pr_number=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/jorisroovers/gitlint/commits/$commit_sha/pulls" | jq -r '.[0].number')
+          echo "PR_NUMBER=$pr_number" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: actions/github-script@v6
         with:
           script: |
@@ -259,7 +273,7 @@ jobs:
             \`\`\`
             `;
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: process.env.PR_NUMBER,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: body
