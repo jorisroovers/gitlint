@@ -33,10 +33,10 @@ jobs:
             const body = `Build 
             [${{ needs.publish-test.outputs.gitlint_version }}](https://pypi.org/project/gitlint/${{ needs.publish-test.outputs.gitlint_version }})
             is now available on PyPI!
-
+      
             Install using:
                 \`\`\`sh
-                pip install gitlint==${{ needs.publish-test.outputs.gitlint_version }}`
+                pip install gitlint==${{ needs.publish-test.outputs.gitlint_version }}
                 \`\`\`
             `;
             github.rest.issues.createComment({
@@ -44,8 +44,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: body
-            })
-
+            });
+    
   tests:
     needs: notify
     runs-on: "ubuntu-latest"
