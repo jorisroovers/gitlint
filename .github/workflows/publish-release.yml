@@ -18,6 +18,10 @@ on:
         required: true
         type: string
         default: "latest_dev"
+    outputs:
+      gitlint_version:
+        description: "Gitlint version that was published"
+        value: ${{ jobs.publish.outputs.gitlint_version }}
   
   # Manually trigger a release
   workflow_dispatch:
@@ -102,16 +106,16 @@ jobs:
         env: 
           SETUPTOOLS_SCM_PRETEND_VERSION: ${{ steps.set_version.outputs.gitlint_version }}
 
-      - name: Publish gitlint-core 🐍📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: gitlint-core/dist/
-          repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
+      # - name: Publish gitlint-core 🐍📦 to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     packages-dir: gitlint-core/dist/
+      #     repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
 
-      - name: Publish gitlint 🐍📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
+      # - name: Publish gitlint 🐍📦 to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     repository-url: ${{ vars.PYPI_TARGET }} # PYPI_TARGET is defined in the GHA environment
 
   # Wait for gitlint package to be available in PyPI for installation
   wait-for-package:
