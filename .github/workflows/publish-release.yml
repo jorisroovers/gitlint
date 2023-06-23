@@ -18,6 +18,10 @@ on:
         required: true
         type: string
         default: "latest_dev"
+    outputs:
+      gitlint_version:
+        description: "Gitlint version that was published"
+        value: ${{ jobs.publish.outputs.gitlint_version }}
   
   # Manually trigger a release
   workflow_dispatch:

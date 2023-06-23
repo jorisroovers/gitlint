@@ -238,3 +238,29 @@ jobs:
     secrets: inherit # pass all secrets (required to access secrets in a called workflow)
     with:
       docs_version: "dev"
+
+  # After merging a PR, leave a comment on the PR with a link to the new dev build
+  notify:
+    needs:
+      - auto-publish-dev
+    if: github.ref == 'refs/heads/main'
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const body = `Build \
+            [${{ needs.auto-publish-dev.outputs.gitlint_version }}](https://pypi.org/project/gitlint/${{ needs.auto-publish-dev.outputs.gitlint_version }}) \
+            is now available on PyPI!
+
+            Install using:
+            \`\`\`sh
+            pip install gitlint==${{ needs.auto-publish-dev.outputs.gitlint_version }}
+            \`\`\`
+            `;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
