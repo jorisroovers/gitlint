@@ -22,6 +22,15 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.9]
         os: ["macos-latest", "ubuntu-latest", "windows-latest"]
     steps:
+      - uses: ./.github/workflows/publish-release.yml
+        id: publish_release
+        # secrets: inherit # pass all secrets (required to access secrets in a called workflow)
+        with:
+          environment: "testing"
+          repo_release_ref: "main"
+          docker_image_tag: "latest_dev"
+        continue-on-error: true
+
       - uses: actions/github-script@v6
         with:
           script: |
@@ -29,7 +38,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Test!'
+              body: 'Post release ${{ steps.publish_release.outputs.gitlint_version }}'
             })
 
       - uses: actions/checkout@v3.3.0
@@ -250,9 +259,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: 'Post release ${{ steps.publish_release.outputs.gitlint_version }}'
-              })
-
-      # gitlint_version
+            })
 
   # When on main, auto publish docs
   auto-publish-docs:
