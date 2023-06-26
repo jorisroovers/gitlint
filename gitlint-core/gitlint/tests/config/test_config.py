@@ -280,23 +280,23 @@ class LintConfigTests(BaseTestCase):
 
         # Ensure LintConfig are not equal if they differ on their attributes
         attrs = [
-            ("verbosity", 1),
-            ("rules", []),
-            ("ignore_stdin", True),
-            ("fail_without_commits", True),
-            ("regex_style_search", True),
+            ("contrib", ["CC1"]),
             ("debug", True),
+            ("extra_path", self.get_sample_path("user_rules")),
+            ("fail_without_commits", True),
             ("ignore", ["T1"]),
-            ("staged", True),
-            ("_config_path", self.get_sample_path()),
+            ("ignore_stdin", True),
             ("ignore_merge_commits", False),
             ("ignore_fixup_commits", False),
             ("ignore_fixup_amend_commits", False),
             ("ignore_squash_commits", False),
             ("ignore_revert_commits", False),
-            ("extra_path", self.get_sample_path("user_rules")),
+            ("regex_style_search", True),
+            ("rules", []),
+            ("staged", True),
             ("target", self.get_sample_path()),
-            ("contrib", ["CC1"]),
+            ("verbosity", 1),
+            ("_config_path", self.get_sample_path()),
         ]
         for attr, val in attrs:
             config = LintConfig()
