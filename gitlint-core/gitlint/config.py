@@ -362,7 +362,6 @@ class LintConfig:
             f"ignore_squash_commits={self.ignore_squash_commits!r}, "
             f"ignore_stdin={self.ignore_stdin!r}, "
             f"regex_style_search={self.regex_style_search!r}, "
-            f"rules={self.rules!r}, "
             f"staged={self.staged!r}, "
             f"target={self.target!r}, "
             f"verbosity={self.verbosity!r})"
@@ -438,7 +437,9 @@ class RuleCollection:
                     option_val_repr = option_value.value
                 return_str += f"     {option_name}={option_val_repr}\n"
         return return_str
-
+    
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self._rules!r})"
 
 @dataclass
 class LintConfigBuilder:
