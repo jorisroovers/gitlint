@@ -305,22 +305,22 @@ class LintConfig:
     def __eq__(self, other):
         return (
             isinstance(other, LintConfig)
-            and self.rules == other.rules
-            and self.verbosity == other.verbosity
-            and self.target == other.target
-            and self.extra_path == other.extra_path
             and self.contrib == other.contrib
-            and self.ignore_merge_commits == other.ignore_merge_commits
-            and self.ignore_fixup_commits == other.ignore_fixup_commits
-            and self.ignore_fixup_amend_commits == other.ignore_fixup_amend_commits
-            and self.ignore_squash_commits == other.ignore_squash_commits
-            and self.ignore_revert_commits == other.ignore_revert_commits
-            and self.ignore_stdin == other.ignore_stdin
-            and self.staged == other.staged
-            and self.fail_without_commits == other.fail_without_commits
-            and self.regex_style_search == other.regex_style_search
             and self.debug == other.debug
+            and self.extra_path == other.extra_path
+            and self.fail_without_commits == other.fail_without_commits
             and self.ignore == other.ignore
+            and self.ignore_fixup_amend_commits == other.ignore_fixup_amend_commits
+            and self.ignore_fixup_commits == other.ignore_fixup_commits
+            and self.ignore_merge_commits == other.ignore_merge_commits
+            and self.ignore_revert_commits == other.ignore_revert_commits
+            and self.ignore_squash_commits == other.ignore_squash_commits
+            and self.ignore_stdin == other.ignore_stdin
+            and self.regex_style_search == other.regex_style_search
+            and self.rules == other.rules
+            and self.staged == other.staged
+            and self.target == other.target
+            and self.verbosity == other.verbosity
             and self._config_path == other._config_path
         )
 
@@ -345,6 +345,26 @@ class LintConfig:
             f"debug: {self.debug}\n"
             f"target: {self.target}\n"
             f"[RULES]\n{self.rules}"
+        )
+
+    def __repr__(self):
+        return (
+            f"{self.__class__.__name__}("
+            f"contrib={self.contrib!r}, "
+            f"debug={self.debug!r}, "
+            f"extra_path={self.extra_path!r}, "
+            f"fail_without_commits={self.fail_without_commits!r}, "
+            f"ignore={self.ignore!r}, "
+            f"ignore_fixup_amend_commits={self.ignore_fixup_amend_commits!r}, "
+            f"ignore_fixup_commits={self.ignore_fixup_commits!r}, "
+            f"ignore_merge_commits={self.ignore_merge_commits!r}, "
+            f"ignore_revert_commits={self.ignore_revert_commits!r}, "
+            f"ignore_squash_commits={self.ignore_squash_commits!r}, "
+            f"ignore_stdin={self.ignore_stdin!r}, "
+            f"regex_style_search={self.regex_style_search!r}, "
+            f"staged={self.staged!r}, "
+            f"target={self.target!r}, "
+            f"verbosity={self.verbosity!r})"
         )
 
 
@@ -417,6 +437,9 @@ class RuleCollection:
                     option_val_repr = option_value.value
                 return_str += f"     {option_name}={option_val_repr}\n"
         return return_str
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self._rules!r})"
 
 
 @dataclass
