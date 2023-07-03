@@ -346,7 +346,7 @@ class LintConfig:
             f"target: {self.target}\n"
             f"[RULES]\n{self.rules}"
         )
-    
+
     def __repr__(self):
         return (
             f"{self.__class__.__name__}("
@@ -437,9 +437,10 @@ class RuleCollection:
                     option_val_repr = option_value.value
                 return_str += f"     {option_name}={option_val_repr}\n"
         return return_str
-    
+
     def __repr__(self):
         return f"{self.__class__.__name__}({self._rules!r})"
+
 
 @dataclass
 class LintConfigBuilder:
