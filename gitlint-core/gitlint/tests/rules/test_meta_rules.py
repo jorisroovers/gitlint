@@ -1,6 +1,5 @@
 from gitlint.rules import AuthorValidEmail, RuleViolation
 from gitlint.tests.base import (
-    EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING,
     BaseTestCase,
 )
 
@@ -75,6 +74,3 @@ class MetaRuleTests(BaseTestCase):
             commit = self.gitcommit("", author_email=email)
             violations = rule.validate(commit)
             self.assertListEqual(violations, [RuleViolation("M1", "Author email for commit is invalid", email)])
-
-        # When a custom regex is used, a warning should be logged by default
-        self.assert_logged([EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING.format("M1", "author-valid-email")])

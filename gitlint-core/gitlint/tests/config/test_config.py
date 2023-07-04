@@ -55,7 +55,7 @@ class LintConfigTests(BaseTestCase):
         self.assertFalse(config.ignore_stdin)
         self.assertFalse(config.staged)
         self.assertFalse(config.fail_without_commits)
-        self.assertFalse(config.regex_style_search)
+        self.assertTrue(config.regex_style_search)
         self.assertFalse(config.debug)
         self.assertEqual(config.verbosity, 3)
         active_rule_classes = tuple(type(rule) for rule in config.rules)
@@ -291,7 +291,7 @@ class LintConfigTests(BaseTestCase):
             ("ignore_fixup_amend_commits", False),
             ("ignore_squash_commits", False),
             ("ignore_revert_commits", False),
-            ("regex_style_search", True),
+            ("regex_style_search", False),
             ("rules", []),
             ("staged", True),
             ("target", self.get_sample_path()),

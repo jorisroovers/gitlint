@@ -90,7 +90,7 @@ class LintConfig:
             "fail-without-commits", False, "Hard fail when the target commit range is empty"
         )
         self._regex_style_search = options.BoolOption(
-            "regex-style-search", False, "Use `search` instead of `match` semantics for regex rules"
+            "regex-style-search", True, "Use `search` instead of `match` semantics for regex rules"
         )
 
     @property

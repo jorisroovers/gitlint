@@ -20,7 +20,7 @@ ignore-revert-commits: True
 ignore-stdin: True
 staged: False
 fail-without-commits: True
-regex-style-search: False
+regex-style-search: True
 verbosity: 2
 debug: True
 target: {target}

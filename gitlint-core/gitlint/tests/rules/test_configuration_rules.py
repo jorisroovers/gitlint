@@ -1,7 +1,6 @@
 from gitlint import rules
 from gitlint.config import LintConfig
 from gitlint.tests.base import (
-    EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING,
     BaseTestCase,
 )
 
@@ -25,7 +24,6 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assertEqual(config, expected_config)
 
         expected_log_messages = [
-            EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING.format("I1", "ignore-by-title"),
             "DEBUG: gitlint.rules Ignoring commit because of rule 'I1': "
             "Commit title 'Releäse' matches the regex '^Releäse(.*)', ignoring rules: all",
         ]
@@ -62,7 +60,6 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assertEqual(config, expected_config)
 
         expected_log_messages = [
-            EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING.format("I2", "ignore-by-body"),
             "DEBUG: gitlint.rules Ignoring commit because of rule 'I2': "
             "Commit message line ' a relëase body' matches the regex '(.*)relëase(.*)',"
             " ignoring rules: all",
@@ -119,7 +116,6 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assertEqual(config, expected_config)
 
         expected_log_messages += [
-            EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING.format("I4", "ignore-by-author-name"),
             "DEBUG: gitlint.rules Ignoring commit because of rule 'I4': "
             "Commit Author Name 'Tëst nåme' matches the regex '(.*)ëst(.*)',"
             " ignoring rules: all",
@@ -164,7 +160,6 @@ class ConfigurationRuleTests(BaseTestCase):
         self.assertEqual(commit1, expected_commit)
         self.assertEqual(config, LintConfig())  # config shouldn't have been modified
         expected_log_messages = [
-            EXPECTED_REGEX_STYLE_SEARCH_DEPRECATION_WARNING.format("I3", "ignore-body-lines"),
             "DEBUG: gitlint.rules Ignoring line ' a relëase body' because it " + "matches '(.*)relëase(.*)'",
         ]
         self.assert_logged(expected_log_messages)
