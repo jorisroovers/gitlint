@@ -1936,7 +1936,7 @@ use <code>re.search()</code> instead of <code>re.match()</code>. For detailed co
 </thead>
 <tbody>
 <tr>
-<td><code class="language-python highlight"><span class="n">false</span></code></td>
+<td><code class="language-python highlight"><span class="n">true</span></code></td>
 <td><code class="language-python highlight"><span class="nb">bool</span></code></td>
 <td><code>-c general.regex-style-search=&lt;value&gt;</code></td>
 <td>Not Available</td>
@@ -1945,7 +1945,8 @@ use <code>re.search()</code> instead of <code>re.match()</code>. For detailed co
 </table>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>At this time, <code>regex-style-search</code> is <strong>disabled</strong> by default, but it will be <strong>enabled</strong> by default in the future.</p>
+<p>At this time, <code>regex-style-search</code> is <strong>enabled</strong> by default, but you can still manually <strong>disable</strong> it.
+Future versions of gitlint will no longer allow this, please follow the steps below to migrate. </p>
 </div>
 <p>Gitlint will log a warning when you're using a rule that uses a custom regex and this option is not enabled:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>WARNING: I1 - ignore-by-title: gitlint will be switching from using Python regex &#39;match&#39; (match beginning) to
