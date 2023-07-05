@@ -460,12 +460,12 @@ Whether to use Python `re.search()` instead of `re.match()` semantics in all bui
 
 | Default value    | Type            | CLI flag                                | Env var       |
 | ---------------- | --------------- | --------------------------------------- | ------------- |
-| `#!python false` | `#!python bool` | `-c general.regex-style-search=<value>` | Not Available |
+| `#!python true` | `#!python bool` | `-c general.regex-style-search=<value>` | Not Available |
 
 !!! important
-    At this time, `regex-style-search` is **disabled** by default, but it will be **enabled** by default in the future.
+    At this time, `regex-style-search` is **enabled** by default, but you can still manually **disable** it.
+    Future versions of gitlint will no longer allow this, please follow the steps below to migrate. 
     
-
 
 Gitlint will log a warning when you're using a rule that uses a custom regex and this option is not enabled:
 
