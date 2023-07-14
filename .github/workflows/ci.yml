@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0 # checkout all history, needed for hatch versioning
 
       - name: Setup python
-        uses: actions/setup-python@v4.6.1
+        uses: actions/setup-python@v4.7.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -126,7 +126,7 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", pypy-3.9]
     steps:
       - name: Setup python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4.6.1
+        uses: actions/setup-python@v4.7.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -176,7 +176,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }} # Checkout pull request HEAD commit instead of merge commit
 
       - name: Setup python
-        uses: actions/setup-python@v4.6.1
+        uses: actions/setup-python@v4.7.0
         with:
           python-version: 3.11
 
