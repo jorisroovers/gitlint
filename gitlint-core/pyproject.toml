@@ -41,7 +41,7 @@ dependencies = [
 [project.optional-dependencies]
 trusted-deps = [
     "arrow==1.2.3",
-    "Click==8.1.6",
+    "Click==8.1.7",
 ]
 
 [project.scripts]
