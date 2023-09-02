@@ -61,7 +61,7 @@ Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit mes
 
     ```ini
     [contrib-title-conventional-commits]
-    line-length=bugfix,user-story,epic
+    types=bugfix,user-story,epic
     ```
 
 
