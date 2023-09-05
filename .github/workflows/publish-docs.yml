@@ -24,12 +24,12 @@ jobs:
     steps:
 
       # Checkout the gh-pages branch, we need to commit the docs to this branch below
-      - uses: actions/checkout@v3.3.0
+      - uses: actions/checkout@v4
         with:
           ref: gh-pages
       
       #  Now checkout the git ref on which we're working
-      - uses: actions/checkout@v3.3.0
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v4.7.0
         with:
