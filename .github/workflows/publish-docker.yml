@@ -59,7 +59,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
           tags: jorisroovers/gitlint:${{ steps.set_tag.outputs.docker_image_tag }}
@@ -72,7 +72,7 @@ jobs:
 
       # This won't actually rebuild the docker image, but just push the previously built and cached image
       - name: Push docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           push: ${{ inputs.push_to_dockerhub }}
           build-args: GITLINT_VERSION=${{ inputs.gitlint_version }}
