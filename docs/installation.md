@@ -1,6 +1,11 @@
 ## Fully supported
 
-### Pip (recommended)
+### Pipx (recommended)
+```{.sh .copy}
+pipx install gitlint --include-deps
+```
+
+### Pip
 ```{.sh .copy}
 pip install gitlint
 ```
