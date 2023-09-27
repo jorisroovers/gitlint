@@ -125,7 +125,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: Install gitlint
-        uses: nick-fields/retry@v2.8.3
+        uses: nick-fields/retry@v2.9.0
         with:
           timeout_minutes: 1
           max_attempts: 10
