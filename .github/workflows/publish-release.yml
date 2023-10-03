@@ -56,7 +56,7 @@ jobs:
       gitlint_version: ${{ steps.set_version.outputs.gitlint_version }}
     steps:
       - name: Setup python
-        uses: actions/setup-python@v4.7.0
+        uses: actions/setup-python@v4.7.1
         with:
           python-version: "3.11"
 
