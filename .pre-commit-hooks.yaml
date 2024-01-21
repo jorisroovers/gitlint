@@ -13,4 +13,4 @@
   entry: gitlint
   always_run: true
   pass_filenames: false
-  stages: [manual]
+  stages: [manual, pre-commit]
