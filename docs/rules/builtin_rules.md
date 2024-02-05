@@ -47,7 +47,7 @@ Title cannot contain certain words.
 
 | Name    | Type           | Default          | gitlint version                    | Description                                                                                                                                                                                   |
 | ------- | -------------- | ---------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `words` | `#!python str` | `#!python "WIP"` | [:octicons-tag-24: v0.3.0][v0.3.0] | Comma-separated list of words that should not be used in the title. Matching is case insensitive. Keywords occuring as part of a larger word are not matched (so `#!python "WIPING"` is allowed). |
+| `words` | `#!python str` | `#!python "WIP"` | [:octicons-tag-24: v0.3.0][v0.3.0] | Comma-separated list of words that should not be used in the title. Matching is case insensitive. Keywords occurring as part of a larger word are not matched (so `#!python "WIPING"` is allowed). |
 
 === ":octicons-file-code-16:  .gitlint"
 
