@@ -3,7 +3,7 @@
 Gitlint has 2 types of user-defined rules for linting commit messages:
 
 - `CommitRule`: applied once per commit
-- `LineRule`: applied on a line-by line basis (targetting either the commit message title or every line in the commit message body).
+- `LineRule`: applied on a line-by line basis (targeting either the commit message title or every line in the commit message body).
 
 The benefit of a `CommitRule` is that it allows for more complex checks that span multiple lines and/or checks
 that should only be done once per commit. Conversely a `LineRule` allows for greater code re-use and implementation simplicity.

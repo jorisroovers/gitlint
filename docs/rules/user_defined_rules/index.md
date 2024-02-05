@@ -65,7 +65,7 @@ $ cat examples/commit-message-1 | gitlint --extra-path examples/
 1: UC2 Body does not contain a 'Signed-off-by Line' # (1)
 ```
 
-1.  Example output of a user-defined **Signed-off-by** rule. Other violations occuring in
+1.  Example output of a user-defined **Signed-off-by** rule. Other violations occurring in
     [examples/commit-message-1](https://github.com/jorisroovers/gitlint/blob/main/examples/commit-message-1) were
     removed for brevity.
 

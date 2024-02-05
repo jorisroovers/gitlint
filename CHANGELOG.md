@@ -34,7 +34,7 @@ This release was primarily focussed on modernizing gitlint's build and test tool
   - Gitlint now publishes [dev builds on every commit to main](https://jorisroovers.github.io/gitlint/contributing/releases/#dev-builds) ([#429](https://github.com/jorisroovers/gitlint/issues/429))
   - Gitlint now publishes a [`latest_dev` docker image](https://hub.docker.com/r/jorisroovers/gitlint/tags?name=latest_dev) on every commit to main ([#451](https://github.com/jorisroovers/gitlint/issues/452)) ([#452](https://github.com/jorisroovers/gitlint/issues/451))
   - Dependencies updated
-  - Many improvements to the [CI/CD worfklows](https://github.com/jorisroovers/gitlint/tree/main/.github/workflows)
+  - Many improvements to the [CI/CD workflows](https://github.com/jorisroovers/gitlint/tree/main/.github/workflows)
   - Fixed coveralls integration: [coveralls.io/github/jorisroovers/gitlint](https://coveralls.io/github/jorisroovers/gitlint)
   - Improve unit test coverage ([#453](https://github.com/jorisroovers/gitlint/issues/453))
   - Integration test fixes on windows ([#392](https://github.com/jorisroovers/gitlint/issues/392), [#397](https://github.com/jorisroovers/gitlint/issues/397))
@@ -303,7 +303,7 @@ and [AlexMooney](https://github.com/AlexMooney) for their contributions.
 - **Breaking change**: The `--commits` commandline flag now strictly follows the refspec format as interpreted
   by the [`git rev-list <refspec>`](https://git-scm.com/docs/git-rev-list) command. This means
   that linting a single commit using `gitlint --commits <ref>` won't work anymore. Instead, for single commits,
-  users now need to specificy `gitlint --commits <ref>^...<ref>`. On the upside, this change also means
+  users now need to specify `gitlint --commits <ref>^...<ref>`. On the upside, this change also means
   that gitlint will now understand all refspec formatters, including `gitlint --commits HEAD` to lint all commits
   in the repository. This fixes [#23](https://github.com/jorisroovers/gitlint/issues/23).
 - **Breaking change**: Gitlint now always falls back on trying to read a git message from a local git repository, only

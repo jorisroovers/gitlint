@@ -137,7 +137,7 @@ ignore=T1,body-min-length
 7. [Python style regex](https://docs.python.org/3/library/re.html) that the commit-msg title must be matched to.
    Note that the regex can contradict with other rules if not used correctly (e.g. `title-must-not-contain-word`).
 8. Merge commits often don't have a body, so by default gitlint will ignore this rule for merge commits to avoid
-   unncessary violations.
+   unnecessary violations.
 9. This is useful for when developers often erroneously edit certain files or git submodules. 
    By specifying this rule, developers can only change the file when they explicitly reference it in the commit message.
 10. [Python style regex](https://docs.python.org/3/library/re.html) that the commit-msg body must match. In this case
