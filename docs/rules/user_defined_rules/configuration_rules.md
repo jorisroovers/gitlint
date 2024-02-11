@@ -3,7 +3,7 @@
 Configuration rules are special rules that are applied once per commit and **BEFORE** any other rules are run.
 Configuration rules are meant to dynamically change gitlint's configuration and/or the commit that is about to be
 linted.
-A typically use-case for this is when you want to modifying gitlint's behavior for all rules against a commit matching
+A typically use-case for this is when you want to modify gitlint's behavior for all rules against a commit matching
 specific circumstances.
 
 !!! warning
