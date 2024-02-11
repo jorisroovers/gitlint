@@ -360,7 +360,7 @@ def lint(ctx):
         config_builder.set_config_from_commit(commit)
 
         # Create a deepcopy from the original config, so we have a unique config object per commit
-        # This is important for configuration rules to be able to modifying the config on a per commit basis
+        # This is important for configuration rules to be able to modify the config on a per commit basis
         commit_config = config_builder.build(copy.deepcopy(lint_config))
 
         # Actually do the linting
