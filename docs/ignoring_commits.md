@@ -13,12 +13,12 @@ Here's a few examples:
     ```ini
     [ignore-by-title]
     # Match commit titles starting with "Release"
-    regex=^Release(.*)
+    regex=^Release.*
     ignore=title-max-length,body-min-length # (1)
 
     [ignore-by-body]
     # Match commits message bodies that have a line that contains 'release'
-    regex=(.*)release(.*)
+    regex=.*release.*
     ignore=all
 
     [ignore-by-author-name]
@@ -30,7 +30,7 @@ Here's a few examples:
     1. Ignore all rules by setting `ignore` to 'all'. 
     ```ini
     [ignore-by-title]
-    regex=^Release(.*)
+    regex=^Release.*
     ignore=all
     ```
 
@@ -43,7 +43,7 @@ ones,  you can do that using the
     ```ini
     # Ignore all lines that start with 'Co-Authored-By'
     [ignore-body-lines]
-    regex=^Co-Authored-By
+    regex=^Co-Authored-By.*
     ```
 
 !!! warning

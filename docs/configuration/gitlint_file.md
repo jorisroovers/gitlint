@@ -83,7 +83,7 @@ regex=My-Commit-Tag: foo$ # (10)
 
 [author-valid-email]
 # E.g.: Only allow email addresses from foo.com
-regex=[^@]+@foo.com # (11)
+regex=[^@]+@foo\.com$ # (11)
 
 
 ### NAMED RULES ### (20)
@@ -104,20 +104,20 @@ max-line-count = 5
 ### IGNORE RULES CONFIGURATION ### (13)
 [ignore-by-title]
 # Ignore rules for commits of which the title matches a regex
-regex=^Release(.*) # (14)
+regex=^Release.* # (14)
 ignore=T1,body-min-length # (15)
 
 [ignore-by-body]
 # Ignore rules for commits of which the body has a line that matches a regex
-regex=(.*)release(.*) # (16)
+regex=.*release.* # (16)
 ignore=T1,body-min-length
 
 [ignore-body-lines]
 # Ignore all lines that start with 'Co-Authored-By'
-regex=^Co-Authored-By # (17)
+regex=^Co-Authored-By.* # (17)
 
 [ignore-by-author-name]
-regex=(.*)dependabot(.*) # (18)
+regex=.*dependabot.* # (18)
 ignore=T1,body-min-length
 ```
 
@@ -168,7 +168,7 @@ ignore=T1,body-min-length
     for commits made by `dependabot`. You can also ignore the the commit all-together by setting `ignore=all`:
     ```ini
     [ignore-by-author-name]
-    regex=(.*)dependabot(.*) # (18)
+    regex=.*dependabot.* # (18)
     ignore=all
     ```
     

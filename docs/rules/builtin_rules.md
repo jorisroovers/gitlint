@@ -223,11 +223,11 @@ Body must match a given regex.
     ```ini
     # Ensure the body ends with Reviewed-By: <some value>
     [body-match-regex]
-    regex=Reviewed-By:(.*)$
+    regex=Reviewed-By: .+
 
     # Ensure body contains the word "Foo" somewhere
     [body-match-regex]
-    regex=(*.)Foo(.*)
+    regex=.*\bFoo\b.*
     ```
 
 ## M1: author-valid-email
@@ -252,7 +252,7 @@ Author email address must be a valid email address.
     ```ini
     # Only allow email addresses from a foo.com domain
     [author-valid-email]
-    regex=[^@]+@foo.com
+    regex=[^@]+@foo\.com$
     ```
 
 ## I1: ignore-by-title
@@ -273,12 +273,12 @@ Ignore a commit based on matching its title.
     # Match commit titles starting with Release
     # For those commits, ignore title-max-length and body-min-length rules
     [ignore-by-title]
-    regex=^Release(.*)
+    regex=^Release.*
     ignore=title-max-length,body-min-length,B6 # (1)
 
     # Ignore all rules by setting ignore to 'all'
     [ignore-by-title]
-    regex=^Release(.*)
+    regex=^Release.*
     ignore=all
     ```
 
@@ -303,12 +303,12 @@ Ignore a commit based on matching its body.
     # Ignore all commits with a commit message body with a line that contains 'release'
     # For matching commits, only ignore rules T1, body-min-length, B6.
     [ignore-by-body]
-    regex=(.*)release(.*)
+    regex=.*release.*
     ignore=T1,body-min-length,B6 # (1)
 
     # Ignore all rules by setting ignore to 'all'
     [ignore-by-body]
-    regex=(.*)release(.*)
+    regex=.*release.*
     ignore=all
     ```
 
@@ -331,15 +331,15 @@ Ignore certain lines in a commit body that match a regex.
     ```ini
     # Ignore all lines that start with 'Co-Authored-By'
     [ignore-body-lines]
-    regex=^Co-Authored-By
+    regex=^Co-Authored-By.*
 
     # Ignore lines that start with 'Co-Authored-By' or with 'Signed-off-by'
     [ignore-body-lines]
-    regex=(^Co-Authored-By)|(^Signed-off-by)
+    regex=^(Co-Authored-By|Signed-off-by).*
 
     # Ignore lines that contain 'foobar'
     [ignore-body-lines]
-    regex=(.*)foobar(.*)
+    regex=.*foobar.*
     ```
 
 ## I4: ignore-by-author-name
@@ -365,7 +365,7 @@ Ignore a commit based on matching its author name.
 
     # For commits made by authors with "[bot]" in their name, ignore specific rules
     [ignore-by-author-name]
-    regex=(.*)\[bot\](.*)
+    regex=.*\[bot\].*
     ignore=T1,body-min-length,B6 # (1)
     ```
 

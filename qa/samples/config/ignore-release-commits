@@ -1,7 +1,7 @@
 [ignore-by-title]
-regex=^Release(.*)
+regex=^Release.*
 ignore=T5,T3
 
 [ignore-by-body]
-regex=(.*)relëase(.*)
+regex=.*relëase.*
 ignore=T3,B3
