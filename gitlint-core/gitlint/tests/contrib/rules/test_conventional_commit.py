@@ -80,3 +80,19 @@ class ContribConventionalCommitTests(BaseTestCase):
         for typ in ["föo123", "123bär"]:
             violations = rule.validate(typ + ": hür dur", None)
             self.assertListEqual([], violations)
+
+        # assert no violation in case of valid scope
+        rule = ConventionalCommit({"scopes": ["föo", "bär"]})
+        for scope in ["föo", "bär"]:
+            violations = rule.validate("feat(" + scope + "): yep", None)
+            self.assertListEqual([], violations)
+
+        # assert violation in case of invalid scope
+        expected_violation = RuleViolation(
+            "CT1",
+            "Title does not use one of these scopes: föo, bär",
+            "feat(invalid): nope",
+        )
+        rule = ConventionalCommit({"scopes": ["föo", "bär"]})
+        violations = rule.validate("feat(invalid): nope", None)
+        self.assertListEqual([expected_violation], violations)
