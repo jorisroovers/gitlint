@@ -26,7 +26,7 @@ exit_code=$?
 # This is the case for Atlassian SourceTree, where $PATH deviates from the user's shell $PATH.
 if [ $exit_code -eq 127 ]; then
     echo "Fallback to python module execution"
-    python -m gitlint.cli --staged --msg-filename "$1" run-hook
+    python3 -m gitlint.cli --staged --msg-filename "$1" run-hook
     exit_code=$?
 fi
 
