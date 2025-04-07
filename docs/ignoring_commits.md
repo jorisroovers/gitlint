@@ -23,7 +23,7 @@ Here's a few examples:
 
     [ignore-by-author-name]
     # Match commits by author name (e.g. ignore dependabot commits)
-    regex=dependabot
+    regex=^dependabot\[bot\]$
     ignore=all
     ```
 
