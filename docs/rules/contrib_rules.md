@@ -74,6 +74,7 @@ Commit body must contain a line that starts with `Signed-off-by`.
 [:octicons-tag-24: v0.18.0][v0.18.0] · **ID**: CC2 · **Name**: contrib-disallow-cleanup-commits
 
 Commit title must not contain `fixup!`, `squash!` or `amend!`. This means `git commit --fixup` and `git commit --squash` commits are not allowed.
+> **_NOTE:_**  gitlint ignores merge, fixup, squash and revert commits by default. To enable this rule you must disable this behavior, as outlined [here](../ignoring-commits.md#merge-fixup-squash-and-revert-commits).
 
 ### CC3: contrib-allowed-authors
 [:octicons-tag-24: v0.18.0][v0.18.0] · **ID**: CC3 · **Name**: contrib-allowed-authors
