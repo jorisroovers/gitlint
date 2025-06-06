@@ -42,7 +42,8 @@ def git(*command_parts: str, **kwargs: Any) -> ShResult:
     Implemented as separate function here, so we can do a 'sh' style imports:
     `from shell import git`
     """
-    args = ["git", *list(command_parts)]
+    default_configs = ["-c", "log.showSignature=false"]
+    args = ["git", *default_configs, *list(command_parts)]
     return _exec(*args, **kwargs)
 
 
