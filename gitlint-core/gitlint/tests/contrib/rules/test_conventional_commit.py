@@ -16,7 +16,19 @@ class ContribConventionalCommitTests(BaseTestCase):
         rule = ConventionalCommit()
 
         # No violations when using a correct type and format
-        for type in ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test", "revert", "ci", "build"]:
+        for type in [
+            "fix",
+            "feat",
+            "chore",
+            "docs",
+            "style",
+            "refactor",
+            "perf",
+            "test",
+            "revert",
+            "ci",
+            "build",
+        ]:
             violations = rule.validate(type + ": föo", None)
             self.assertListEqual([], violations)
 
@@ -80,3 +92,30 @@ class ContribConventionalCommitTests(BaseTestCase):
         for typ in ["föo123", "123bär"]:
             violations = rule.validate(typ + ": hür dur", None)
             self.assertListEqual([], violations)
+
+        # assert violation if scope is not in scopes
+        rule = ConventionalCommit({"scopes": ["foo", "bar"]})
+        violations = rule.validate("fix(baz): hellö", None)
+        expected_violation = RuleViolation("CT1", "Scope is not one of foo, bar", "fix(baz): hellö")
+        self.assertListEqual([expected_violation], violations)
+
+        # assert no violation if scope is in scopes
+        rule = ConventionalCommit({"scopes": ["foo", "bar"]})
+        violations = rule.validate("fix(foo): hellö", None)
+        self.assertListEqual([], violations)
+
+        # assert no violation if scopes is empty
+        rule = ConventionalCommit({"scopes": []})
+        violations = rule.validate("fix(scope): hellö", None)
+        self.assertListEqual([], violations)
+
+        # assert violation if scope is required but not specified
+        rule = ConventionalCommit({"require-scope": True})
+        violations = rule.validate("fix: hellö", None)
+        expected_violation = RuleViolation("CT1", "Scope is required", "fix: hellö")
+        self.assertListEqual([expected_violation], violations)
+
+        # assert no violation if scope is not required and not specified
+        rule = ConventionalCommit({"require-scope": False})
+        violations = rule.validate("fix: hellö", None)
+        self.assertListEqual([], violations)

@@ -135,14 +135,29 @@ class LintConfigTests(BaseTestCase):
         self.assertEqual(actual_rule.name, "contrib-title-conventional-commits")
         self.assertEqual(actual_rule.target, rules.CommitMessageTitle)
 
-        expected_rule_option = options.ListOption(
-            "types",
-            ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test", "revert", "ci", "build"],
-            "Comma separated list of allowed commit types.",
-        )
+        expected_rule_options = [
+            options.ListOption(
+                "types",
+                ["fix", "feat", "chore", "docs", "style", "refactor", "perf", "test", "revert", "ci", "build"],
+                "Comma separated list of allowed commit types.",
+            ),
+            options.ListOption(
+                "scopes",
+                [],
+                "Comma separated list of allowed scopes. An empty list will allow anything.",
+            ),
+            options.BoolOption("require-scope", False, "Whether to require a scope."),
+        ]
 
-        self.assertListEqual(actual_rule.options_spec, [expected_rule_option])
-        self.assertDictEqual(actual_rule.options, {"types": expected_rule_option})
+        self.assertListEqual(actual_rule.options_spec, expected_rule_options)
+        self.assertDictEqual(
+            actual_rule.options,
+            {
+                "types": expected_rule_options[0],
+                "scopes": expected_rule_options[1],
+                "require-scope": expected_rule_options[2],
+            },
+        )
 
         # Check contrib-body-requires-signed-off-by contrib rule
         actual_rule = config.rules.find_rule("contrib-body-requires-signed-off-by")

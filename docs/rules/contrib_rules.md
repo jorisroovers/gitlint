@@ -55,7 +55,8 @@ Enforces [Conventional Commits](https://www.conventionalcommits.org/) commit mes
 | Name          | Type           | Default       | gitlint version                    | Description                   |
 | ------------- | -------------- | ------------- | ---------------------------------- | ----------------------------- |
 | `types` | `#!python str` | `fix,feat,chore,docs,style,refactor,perf,test,revert,ci,build` | [:octicons-tag-24: v0.12.0][v0.12.0] | Comma separated list of allowed commit types. |
-
+| `scopes` | `#!python str` | | | Comma separated list of allowed scopes. An empty list will allow anything. |
+| `require-scope` | `#!python bool` | `False` | | Whether to require a scope. |
 
 === ":octicons-file-code-16:  .gitlint"
 
