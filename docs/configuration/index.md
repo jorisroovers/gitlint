@@ -76,6 +76,6 @@ Gitlint configuration is applied in the following order of precedence:
 2. Configuration Rules (e.g.: [ignore-by-title](../rules/builtin_rules.md#i1-ignore-by-title))
 3. Commandline convenience flags (e.g.:  `-vv`, `--silent`, `--ignore`)
 4. Environment variables (e.g.: `GITLINT_VERBOSITY=3`)
-5. Commandline configuration flags (e.g.: `-c title-max-length=123`)
+5. Commandline configuration flags (e.g.: `-c title-max-length.line-length=123`)
 6. Configuration file (local `.gitlint` file, or file specified using `-C`/`--config`)
 7. Default gitlint config
